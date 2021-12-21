@@ -1,40 +1,63 @@
 import React from 'react';
 import './App.css';
 
-function PathPane() {
+function SectionPane({ children }: { children?: JSX.Element; }) {
     return (
-        <div className="">pane</div>
+        <div className="">
+            <div className="bg-slate-500 uppercase">header</div>
+            {children}
+        </div>
     );
 }
 
 function PathOptions() {
     return (
-        <div className="">options</div>
+        <SectionPane>
+            <div className="">options</div>
+        </SectionPane>
     );
 }
 
 function PathOperations() {
     return (
-        <div className="">operations</div>
+        <SectionPane>
+            <div className="">operations</div>
+        </SectionPane>
     );
 }
 
 function PathCommands() {
     return (
-        <div className="">commands</div>
+        <SectionPane>
+            <div className="">commands</div>
+        </SectionPane>
+    );
+}
+
+function PathPane() {
+    return (
+        <div className="w-[300px] max-w-[300px] bg-slate-100 border">
+            <p className='text-red-700 font-black'>Ground zero</p>
+            pane
+            <PathOptions />
+            <PathOptions />
+            <PathOperations />
+            <PathCommands />
+        </div>
+    );
+}
+
+function PathViewer() {
+    return (
+        <div className="flex-1">view</div>
     );
 }
 
 function App() {
     return (
-        <div className="App">
-            <header className="App-header">
-                <p className='text-red-700 font-black'>Ground zero</p>
-                <PathOptions />
-                <PathOptions />
-                <PathOperations />
-                <PathCommands />
-            </header>
+        <div className="h-screen flex">
+            <PathPane />
+            <PathViewer />
         </div>
     );
 }
