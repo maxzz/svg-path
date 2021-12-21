@@ -3,9 +3,9 @@ import React, { HTMLAttributes, ReactNode, useState } from 'react';
 import './App.css';
 import { IconChevronDown } from './components/UI/icons/Icons';
 
-function SectionPane({ children, ...rest }: { children?: ReactNode; } & HTMLAttributes<HTMLDivElement>) {
+function SectionPane({ children, className, ...rest }: { children?: ReactNode; } & HTMLAttributes<HTMLDivElement>) {
     return (
-        <div className="px-2 py-1 bg-slate-500 text-stone-100 uppercase flex items-center justify-between select-none font-ui" {...rest}>
+        <div className={`px-2 py-1 bg-slate-500 text-stone-100 uppercase flex items-center justify-between select-none font-ui ${className}`} {...rest}>
             <div className="pt-1">{children}</div>
             <div className="pr-1">
                 <IconChevronDown className="w-6 h-6" />
@@ -19,7 +19,9 @@ function PanelPath() {
     const [open, setOpen] = useAtom(openAtom);
     return (
         <div className="">
-            <SectionPane onClick={() => setOpen(v => !v)}>Path</SectionPane>
+            <SectionPane className={`${open ? 'rotate-90': ''}`} onClick={() => setOpen(v => !v)}>
+                Path
+            </SectionPane>
             {open &&
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     <label>
