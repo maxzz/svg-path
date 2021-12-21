@@ -92,14 +92,56 @@ function PanelOperations() {
     );
 }
 
-// function PanelCommands() {
-//     return (
-//         <div className="">
-//             <SectionPane>Path commands</SectionPane>
-//             Commands
-//         </div>
-//     );
-// }
+function CommandName({ command, abs }: { command: string; abs: boolean; }) {
+    return (
+        <label className={`flex-0 overflow-hidden focus-within:text-blue-500`}>
+            {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
+            <button className="px-1 rounded-l-sm text-xs text-center text-slate-900 bg-slate-500 ">{command}</button>
+        </label>
+    );
+}
+
+function CommandInput() {
+    return (
+        <label className={`flex-1 w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500`}>
+            <input className="px-1 w-full h-full text-xs text-center text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none" defaultValue={"11"} />
+        </label>
+    );
+}
+
+function PathCommand() {
+    return (
+        <div className="">
+            <div className="my-1 flex items-center space-x-0.5">
+                <CommandName command="m" abs={true} />
+                <CommandInput />
+                <CommandInput />
+                <CommandInput />
+                <CommandInput />
+                <CommandInput />
+                <CommandInput />
+                <button className="px-1 flex-1 mx-auto border rounded border-slate-400 active:scale-[.97]">...</button>
+            </div>
+        </div>
+    );
+}
+
+function PanelCommands() {
+    const [openAtom] = useState(atom(true));
+    const [open, setOpen] = useAtom(openAtom);
+    return (
+        <div className="">
+            <SectionPane open={open} onClick={() => setOpen(v => !v)}>
+                Path Commands
+            </SectionPane>
+            {open &&
+                <div className="px-1 text-sm bg-slate-300 overflow-hidden">
+                    <PathCommand />
+                </div>
+            }
+        </div>
+    );
+}
 
 function PathPane() {
     return (
@@ -108,7 +150,7 @@ function PathPane() {
             <PanelPath />
             {/* <PanelOptions /> */}
             <PanelOperations />
-            {/* <PanelCommands /> */}
+            <PanelCommands />
         </div>
     );
 }
