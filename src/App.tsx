@@ -46,14 +46,20 @@ function PanelPath() {
 //     );
 // }
 
-// function PanelOperations() {
-//     return (
-//         <div className="">
-//             <SectionPane>Operations</SectionPane>
-//             scale, translate, round ...
-//         </div>
-//     );
-// }
+function PanelOperations() {
+    const [openAtom] = useState(atom(true));
+    const [open, setOpen] = useAtom(openAtom);
+    return (
+        <div className="">
+            <SectionPane onClick={() => setOpen(v => !v)}>Operations</SectionPane>
+            {open &&
+                <div className="px-1 text-sm bg-slate-300 overflow-hidden">
+                    scale, translate, round ...
+                </div>
+            }
+        </div>
+    );
+}
 
 // function PanelCommands() {
 //     return (
@@ -69,9 +75,9 @@ function PathPane() {
         <div className="w-[300px] max-w-[300px] bg-slate-100 border">
             <p className='text-red-700 font-black'>Ground zero</p>
             <PanelPath />
-            {/* <PanelOptions />
+            {/* <PanelOptions /> */}
             <PanelOperations />
-            <PanelCommands /> */}
+            {/* <PanelCommands /> */}
         </div>
     );
 }
