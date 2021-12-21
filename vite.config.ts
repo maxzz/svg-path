@@ -11,6 +11,7 @@ const buildAt = () => {
 };
 
 export default defineConfig({
+    base: '',
     plugins: [
         react(),
 
