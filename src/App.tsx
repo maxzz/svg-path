@@ -103,7 +103,7 @@ function CommandName({ command, abs }: { command: string; abs: boolean; }) {
 
 function CommandInput() {
     return (
-        <label className={`flex-1 w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500`}>
+        <label className={`flex-1 max-w-[2rem] rounded-tl-sm overflow-hidden focus-within:text-blue-500`}>
             <input className="px-1 pb-[1px] w-full h-full text-xs text-center text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none" defaultValue={"11"} />
         </label>
     );
@@ -111,16 +111,49 @@ function CommandInput() {
 
 function PathCommand() {
     return (
-        <div className="">
-            <div className="my-1 flex items-center space-x-0.5">
-                <CommandName command="m" abs={true} />
-                <CommandInput />
-                <CommandInput />
-                <CommandInput />
-                <CommandInput />
-                <CommandInput />
-                <CommandInput />
-                <button className="px-1 mt-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">
+        <div className="my-1">
+            {/* Row */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center justify-items-start space-x-0.5">
+                    <CommandName command="m" abs={true} />
+                    <CommandInput />
+                    <CommandInput />
+                    <CommandInput />
+                    <CommandInput />
+                    <CommandInput />
+                    <CommandInput />
+                </div>
+                <button className="flex-0 px-1 mt-0.5 active:scale-[.97]">
+                    <IconMenu className="w-4 h-4" />
+                </button>
+            </div>
+            {/* Row */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center justify-items-start space-x-0.5">
+                    <CommandName command="m" abs={true} />
+                    <CommandInput />
+                    <CommandInput />
+                    <CommandInput />
+                    <CommandInput />
+                    <CommandInput />
+                    <CommandInput />
+                </div>
+                <button className="flex-0 px-1 mt-0.5 active:scale-[.97]">
+                    <IconMenu className="w-4 h-4" />
+                </button>
+            </div>
+            {/* Row */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center justify-items-start space-x-0.5">
+                    <CommandName command="m" abs={true} />
+                    <CommandInput />
+                    <CommandInput />
+                    <CommandInput />
+                    <CommandInput />
+                    <CommandInput />
+                    <CommandInput />
+                </div>
+                <button className="flex-0 px-1 mt-0.5 active:scale-[.97]">
                     <IconMenu className="w-4 h-4" />
                 </button>
             </div>
