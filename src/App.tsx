@@ -51,6 +51,15 @@ function PanelPath() {
 //     );
 // }
 
+function OperationInput({ label }: { label: string; }) {
+    return (
+        <label className="relative w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500">
+            <div className="px-1 -mt-1 absolute text-[.6rem]">{label}</div>
+            <input className="px-1 pt-3 h-8 w-full border-b-2 text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none" defaultValue={"11"} />
+        </label>
+    );
+}
+
 function PanelOperations() {
     const [openAtom] = useState(atom(true));
     const [open, setOpen] = useAtom(openAtom);
@@ -60,14 +69,8 @@ function PanelOperations() {
             {open &&
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     <div className="my-1 flex space-x-1">
-                        <label className="relative w-1/3 rounded-tl-sm overflow-hidden">
-                            <div className="px-1 -mt-1 absolute text-[.6rem]">Scale X</div>
-                            <input className="px-1 pt-3 h-8 w-full border-b-2 focus:border-blue-500 bg-slate-200 focus:outline-none" defaultValue={"11"} />
-                        </label>
-                        <label className="relative w-1/3 rounded-tr-sm overflow-hidden">
-                            <div className="px-1 -mt-1 absolute text-[.6rem]">Scale Y</div>
-                            <input className="px-1 pt-3 h-8 w-full border-b-2 focus:border-blue-400 bg-slate-200 focus:outline-none" defaultValue={"11"} />
-                        </label>
+                        <OperationInput label="Scale X"/>
+                        <OperationInput label="Scale Y"/>
                         <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Scale</button>
                     </div>
                     scale, translate, round ...
