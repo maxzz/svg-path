@@ -1,10 +1,9 @@
 import React from 'react';
 import './App.css';
 
-function SectionPane({ children }: { children?: JSX.Element; }) {
+function SectionPane({ children }: { children?: React.ReactNode; }) {
     return (
-        <div className="">
-            <div className="bg-slate-500 uppercase">header</div>
+        <div className="bg-slate-500">
             {children}
         </div>
     );
@@ -12,25 +11,22 @@ function SectionPane({ children }: { children?: JSX.Element; }) {
 
 function PathOptions() {
     return (
-        <SectionPane>
-            <div className="">options</div>
-        </SectionPane>
+        <div className="">
+            <SectionPane>options</SectionPane>
+            options
+        </div>
     );
 }
 
 function PathOperations() {
     return (
-        <SectionPane>
-            <div className="">operations</div>
-        </SectionPane>
+        <div className="">operations</div>
     );
 }
 
 function PathCommands() {
     return (
-        <SectionPane>
-            <div className="">commands</div>
-        </SectionPane>
+        <div className="">commands</div>
     );
 }
 
@@ -39,7 +35,6 @@ function PathPane() {
         <div className="w-[300px] max-w-[300px] bg-slate-100 border">
             <p className='text-red-700 font-black'>Ground zero</p>
             pane
-            <PathOptions />
             <PathOptions />
             <PathOperations />
             <PathCommands />
