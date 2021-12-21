@@ -5,7 +5,7 @@ import { IconChevronDown } from './components/UI/icons/Icons';
 
 function SectionPane({ children, ...rest }: { children?: ReactNode; } & HTMLAttributes<HTMLDivElement>) {
     return (
-        <div className="px-2 py-1 bg-slate-500 text-stone-100 uppercase flex items-center justify-between select-none font-ui-font" {...rest}>
+        <div className="px-2 py-1 bg-slate-500 text-stone-100 uppercase flex items-center justify-between select-none font-ui" {...rest}>
             <div className="pt-1">{children}</div>
             <div className="pr-1">
                 <IconChevronDown className="w-6 h-6" />

@@ -3,7 +3,7 @@ module.exports = {
   theme: {
     extend: {},
     fontFamily: {
-        'ui-font': 'Yanone',
+        'ui': 'Yanone',
     }
   },
   plugins: [],
