@@ -24,16 +24,16 @@ function PanelPath() {
             </SectionPane>
             {open &&
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
-                    <label>
-                        <div className="flex justify-between">
-                            <div className="text-xs tracking-tighter self-end">path</div>
-                            <div className="py-1 flex space-x-1">
-                                <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Open</button>
-                                <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Save</button>
-                                <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Clear</button>
-                            </div>
+                    <div className="flex justify-between">
+                        <div className="text-xs tracking-tighter self-end">path</div>
+                        <div className="py-1 flex space-x-1">
+                            <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Open</button>
+                            <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Save</button>
+                            <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Clear</button>
                         </div>
+                    </div>
 
+                    <label>
                         <textarea className="w-full bg-slate-200" rows={5}></textarea>
                     </label>
                 </div>
@@ -69,8 +69,8 @@ function PanelOperations() {
             {open &&
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     <div className="my-1 flex space-x-1">
-                        <OperationInput label="Scale X"/>
-                        <OperationInput label="Scale Y"/>
+                        <OperationInput label="Scale X" />
+                        <OperationInput label="Scale Y" />
                         <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Scale</button>
                     </div>
                     scale, translate, round ...
