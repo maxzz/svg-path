@@ -5,7 +5,7 @@ function App() {
     return (
         <div className="App">
             <header className="App-header">
-                <p className='text-red-700 font-black'>Hello Vite + React!</p>
+                <p className='text-red-700 font-black'>Ground zero</p>
             </header>
         </div>
     );
