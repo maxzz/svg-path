@@ -59,16 +59,16 @@ function PanelOperations() {
             <SectionPane onClick={() => setOpen(v => !v)}>Path Operations</SectionPane>
             {open &&
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
-                    <div className="flex">
-                        <label className="relative w-1/3">
+                    <div className="my-1 flex space-x-1">
+                        <label className="relative w-[40%]">
                             <div className="absolute text-[.65rem]">Scale X</div>
-                            <input className="h-8 w-full" />
+                            <input className="pt-3 h-8 w-full" defaultValue={"11"} />
                         </label>
-                        <label className="relative w-1/3">
+                        <label className="relative w-[40%]">
                             <div className="absolute text-[.65rem]">Scale Y</div>
-                            <input className="h-8 w-full" />
+                            <input className="pt-3 h-8 w-full" />
                         </label>
-                        <button className="px-1 py-0.5 mx-auto border rounded border-slate-400">Scale</button>
+                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400">Scale</button>
                     </div>
                     scale, translate, round ...
                 </div>
