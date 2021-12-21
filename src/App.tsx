@@ -3,30 +3,46 @@ import './App.css';
 
 function SectionPane({ children }: { children?: React.ReactNode; }) {
     return (
-        <div className="bg-slate-500">
+        <div className="px-1 py-0.5 bg-slate-500 text-stone-100 uppercase font-bold flex justify-between">
             {children}
+            <div className="pr-4">v</div>
         </div>
     );
 }
 
-function PathOptions() {
+function PanelPath() {
+    return (
+        <div className="">
+            <SectionPane>Path</SectionPane>
+            path edit
+        </div>
+    );
+}
+
+function PanelOptions() {
     return (
         <div className="">
             <SectionPane>options</SectionPane>
-            options
+            configuration
         </div>
     );
 }
 
-function PathOperations() {
+function PanelOperations() {
     return (
-        <div className="">operations</div>
+        <div className="">
+            <SectionPane>Operations</SectionPane>
+            scale, translate, round ...
+        </div>
     );
 }
 
-function PathCommands() {
+function PanelCommands() {
     return (
-        <div className="">commands</div>
+        <div className="">
+            <SectionPane>Path commands</SectionPane>
+            Commands
+        </div>
     );
 }
 
@@ -34,10 +50,10 @@ function PathPane() {
     return (
         <div className="w-[300px] max-w-[300px] bg-slate-100 border">
             <p className='text-red-700 font-black'>Ground zero</p>
-            pane
-            <PathOptions />
-            <PathOperations />
-            <PathCommands />
+            <PanelPath />
+            <PanelOptions />
+            <PanelOperations />
+            <PanelCommands />
         </div>
     );
 }
