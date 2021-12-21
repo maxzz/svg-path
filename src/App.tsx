@@ -28,9 +28,9 @@ function PanelPath() {
                         <div className="flex justify-between">
                             <div className="text-xs tracking-tighter self-end">path</div>
                             <div className="py-1 flex space-x-1">
-                                <button className="px-1 py-0.5 border rounded border-slate-400">Open</button>
-                                <button className="px-1 py-0.5 border rounded border-slate-400">Save</button>
-                                <button className="px-1 py-0.5 border rounded border-slate-400">Clear</button>
+                                <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Open</button>
+                                <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Save</button>
+                                <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Clear</button>
                             </div>
                         </div>
 
@@ -60,15 +60,15 @@ function PanelOperations() {
             {open &&
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     <div className="my-1 flex space-x-1">
-                        <label className="relative w-[40%]">
-                            <div className="absolute text-[.65rem]">Scale X</div>
-                            <input className="pt-3 h-8 w-full" defaultValue={"11"} />
+                        <label className="relative w-1/3 rounded-tl-sm overflow-hidden">
+                            <div className="px-1 -mt-1 absolute text-[.6rem]">Scale X</div>
+                            <input className="px-1 pt-3 h-8 w-full border-b-2 focus:border-blue-500 bg-slate-200 focus:outline-none" defaultValue={"11"} />
                         </label>
-                        <label className="relative w-[40%]">
-                            <div className="absolute text-[.65rem]">Scale Y</div>
-                            <input className="pt-3 h-8 w-full" />
+                        <label className="relative w-1/3 rounded-tr-sm overflow-hidden">
+                            <div className="px-1 -mt-1 absolute text-[.6rem]">Scale Y</div>
+                            <input className="px-1 pt-3 h-8 w-full border-b-2 focus:border-blue-400 bg-slate-200 focus:outline-none" defaultValue={"11"} />
                         </label>
-                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400">Scale</button>
+                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Scale</button>
                     </div>
                     scale, translate, round ...
                 </div>
