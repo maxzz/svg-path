@@ -1,0 +1,6 @@
+@font-face {
+    font-family: "Yanone";
+    src: url("./assets/fonts/YanoneKaffeesatz-VariableFont_wght.ttf") format("truetype supports variations"),
+        url("./assets/fonts/YanoneKaffeesatz-VariableFont_wght.ttf") format("truetype-variations");
+    font-weight: 200 700;
+}

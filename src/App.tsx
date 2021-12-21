@@ -1,11 +1,14 @@
 import React from 'react';
 import './App.css';
+import { IconChevronDown } from './components/UI/icons/Icons';
 
 function SectionPane({ children }: { children?: React.ReactNode; }) {
     return (
-        <div className="px-1 py-0.5 bg-slate-500 text-stone-100 uppercase font-bold flex justify-between">
-            {children}
-            <div className="pr-4">v</div>
+        <div className="px-2 py-1 bg-slate-500 text-stone-100 uppercase flex items-center justify-between" style={{fontFamily: "Yanone"}}>
+            <div className="pt-1">{children}</div>
+            <div className="pr-1">
+                <IconChevronDown className="w-6 h-6" />
+            </div>
         </div>
     );
 }
