@@ -1,7 +1,7 @@
 import { atom, useAtom } from 'jotai';
 import React, { HTMLAttributes, ReactNode, useState } from 'react';
 import './App.css';
-import { IconChevronDown } from './components/UI/icons/Icons';
+import { IconChevronDown, IconMenu } from './components/UI/icons/Icons';
 
 function SectionPane({ children, open = true, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
     return (
@@ -96,7 +96,7 @@ function CommandName({ command, abs }: { command: string; abs: boolean; }) {
     return (
         <label className={`flex-0 overflow-hidden focus-within:text-blue-500`}>
             {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
-            <button className="px-1 rounded-l-sm text-xs text-center text-slate-900 bg-slate-500 ">{command}</button>
+            <button className="px-1 pb-[1px] rounded-l-sm text-xs text-center text-slate-900 bg-slate-500 ">{command}</button>
         </label>
     );
 }
@@ -104,7 +104,7 @@ function CommandName({ command, abs }: { command: string; abs: boolean; }) {
 function CommandInput() {
     return (
         <label className={`flex-1 w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500`}>
-            <input className="px-1 w-full h-full text-xs text-center text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none" defaultValue={"11"} />
+            <input className="px-1 pb-[1px] w-full h-full text-xs text-center text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none" defaultValue={"11"} />
         </label>
     );
 }
@@ -120,7 +120,9 @@ function PathCommand() {
                 <CommandInput />
                 <CommandInput />
                 <CommandInput />
-                <button className="px-1 flex-1 mx-auto border rounded border-slate-400 active:scale-[.97]">...</button>
+                <button className="px-1 mt-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">
+                    <IconMenu className="w-4 h-4" />
+                </button>
             </div>
         </div>
     );
