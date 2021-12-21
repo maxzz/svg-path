@@ -51,9 +51,9 @@ function PanelPath() {
 //     );
 // }
 
-function OperationInput({ label }: { label: string; }) {
+function OperationInput({ label, className = "" }: { label: string; className?: string; }) {
     return (
-        <label className="relative w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500">
+        <label className={`relative w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500 ${className}`}>
             <div className="px-1 -mt-1 absolute text-[.6rem]">{label}</div>
             <input className="px-1 pt-3 h-8 w-full border-b-2 text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none" defaultValue={"11"} />
         </label>
@@ -79,7 +79,7 @@ function PanelOperations() {
                         <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Translate</button>
                     </div>
                     <div className="my-1 flex space-x-1">
-                        <OperationInput label="Round" />
+                        <OperationInput label="Round" className="w-[68%]" />
                         <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Round</button>
                     </div>
                     scale, translate, round ...
