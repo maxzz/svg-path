@@ -25,14 +25,17 @@ function PanelPath() {
             {open &&
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     <label>
-                        <div className="text-xs tracking-tighter">path</div>
+                        <div className="flex justify-between">
+                            <div className="text-xs tracking-tighter self-end">path</div>
+                            <div className="py-1 flex space-x-1">
+                                <button className="px-1 py-0.5 border rounded border-slate-400">Open</button>
+                                <button className="px-1 py-0.5 border rounded border-slate-400">Save</button>
+                                <button className="px-1 py-0.5 border rounded border-slate-400">Clear</button>
+                            </div>
+                        </div>
+
                         <textarea className="w-full bg-slate-200" rows={5}></textarea>
                     </label>
-                    <div className="pb-1 flex space-x-1">
-                        <button className="px-1 py-0.5 border rounded border-slate-400">Open</button>
-                        <button className="px-1 py-0.5 border rounded border-slate-400">Save</button>
-                        <button className="px-1 py-0.5 border rounded border-slate-400">Clear</button>
-                    </div>
                 </div>
             }
         </div>
@@ -53,7 +56,7 @@ function PanelOperations() {
     const [open, setOpen] = useAtom(openAtom);
     return (
         <div className="">
-            <SectionPane onClick={() => setOpen(v => !v)}>Operations</SectionPane>
+            <SectionPane onClick={() => setOpen(v => !v)}>Path Operations</SectionPane>
             {open &&
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     scale, translate, round ...
