@@ -103,7 +103,7 @@ function PanelOperations() {
 
 function PathPane() {
     return (
-        <div className="w-[300px] max-w-[300px] bg-slate-100 border">
+        <div className="w-[300px] max-w-[300px] flex flex-col space-y-1 bg-slate-100 border">
             <p className='text-red-700 font-black'>Ground zero</p>
             <PanelPath />
             {/* <PanelOptions /> */}
