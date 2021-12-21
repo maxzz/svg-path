@@ -73,6 +73,15 @@ function PanelOperations() {
                         <OperationInput label="Scale Y" />
                         <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Scale</button>
                     </div>
+                    <div className="my-1 flex space-x-1">
+                        <OperationInput label="Translate X" />
+                        <OperationInput label="Translate Y" />
+                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Translate</button>
+                    </div>
+                    <div className="my-1 flex space-x-1">
+                        <OperationInput label="Round" />
+                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Round</button>
+                    </div>
                     scale, translate, round ...
                 </div>
             }
