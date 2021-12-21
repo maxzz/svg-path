@@ -6,8 +6,8 @@ import { IconChevronDown } from './components/UI/icons/Icons';
 function SectionPane({ children, open = true, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
     return (
         <div className="px-2 py-1 bg-slate-500 text-stone-100 uppercase flex items-center justify-between select-none font-ui" {...rest}>
-            <div className="pt-1">{children}</div>
-            <div className={`pr-1 ${open ? '' : 'rotate-180'}`}>
+            <div className="pr-1 pt-1">{children}</div>
+            <div className={`${open ? '' : 'rotate-180'}`}>
                 <IconChevronDown className="w-6 h-6" />
             </div>
         </div>
