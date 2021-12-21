@@ -3,9 +3,9 @@ import React, { HTMLAttributes, ReactNode, useState } from 'react';
 import './App.css';
 import { IconChevronDown } from './components/UI/icons/Icons';
 
-function SectionPane({ children, ...rest }: { children?: ReactNode; } & HTMLAttributes<HTMLDivElement> ) {
+function SectionPane({ children, ...rest }: { children?: ReactNode; } & HTMLAttributes<HTMLDivElement>) {
     return (
-        <div className="px-2 py-1 bg-slate-500 text-stone-100 uppercase flex items-center justify-between" style={{fontFamily: "Yanone"}} {...rest}>
+        <div className="px-2 py-1 bg-slate-500 text-stone-100 uppercase flex items-center justify-between select-none" style={{ fontFamily: "Yanone" }} {...rest}>
             <div className="pt-1">{children}</div>
             <div className="pr-1">
                 <IconChevronDown className="w-6 h-6" />
@@ -20,7 +20,14 @@ function PanelPath() {
     return (
         <div className="">
             <SectionPane onClick={() => setOpen(v => !v)}>Path</SectionPane>
-            {open && <div className="">path edit</div>}
+            {open &&
+                <div className="h-96 px-1 text-sm bg-slate-300 overflow-hidden">
+                    <label>
+                        <div className="text-xs">path</div>
+                        <textarea className="w-full bg-slate-200" rows={5}></textarea>
+                    </label>
+                </div>
+            }
         </div>
     );
 }
