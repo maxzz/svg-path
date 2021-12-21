@@ -3,8 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build": "vite build",
+    "build:check": "tsc && vite build",
+    "preview": "vite preview",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d dist"
+  },
+  "resolutions": {
+    "styled-components": "^5"
   },
   "dependencies": {
     "@react-spring/web": "^9.3.1",
