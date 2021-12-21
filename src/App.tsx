@@ -79,10 +79,11 @@ function PanelOperations() {
                         <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Translate</button>
                     </div>
                     <div className="my-1 flex space-x-1">
-                        <OperationInput label="Round" className="w-[68%]" />
-                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Round</button>
+                        <OperationInput label="Number of decimals" className="" />
+                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Round all path numbers">Round</button>
+                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Convert to relative">To rel</button>
+                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Convert to absolute">To abs</button>
                     </div>
-                    scale, translate, round ...
                 </div>
             }
         </div>
