@@ -65,7 +65,9 @@ function PanelOperations() {
     const [open, setOpen] = useAtom(openAtom);
     return (
         <div className="">
-            <SectionPane onClick={() => setOpen(v => !v)}>Path Operations</SectionPane>
+            <SectionPane open={open} onClick={() => setOpen(v => !v)}>
+                Path Operations
+            </SectionPane>
             {open &&
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     <div className="my-1 flex space-x-1">
