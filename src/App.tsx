@@ -45,14 +45,20 @@ function PanelPath() {
     );
 }
 
-// function PanelOptions() {
-//     return (
-//         <div className="">
-//             <SectionPane>options</SectionPane>
-//             configuration
-//         </div>
-//     );
-// }
+function PanelOptions() {
+    const [openAtom] = useState(atom(true));
+    const [open, setOpen] = useAtom(openAtom);
+    return (
+        <div className="">
+            <SectionPane open={open} onClick={() => setOpen(v => !v)}>
+                Options
+            </SectionPane>
+            <Accordion toggle={open}>
+                configuration
+            </Accordion>
+        </div>
+    );
+}
 
 function OperationInput({ label, className = "" }: { label: string; className?: string; }) {
     return (
@@ -71,7 +77,7 @@ function PanelOperations() {
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
                 Path Operations
             </SectionPane>
-            {open &&
+            <Accordion toggle={open}>
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     <div className="my-1 flex space-x-1">
                         <OperationInput label="Scale X" />
@@ -90,7 +96,7 @@ function PanelOperations() {
                         <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Convert to absolute">To abs</button>
                     </div>
                 </div>
-            }
+            </Accordion>
         </div>
     );
 }
@@ -186,9 +192,9 @@ function PathPane() {
         <div className="w-[300px] max-w-[300px] flex flex-col space-y-1 bg-slate-100 border">
             <p className='text-red-700 font-black'>Ground zero</p>
             <PanelPath />
-            {/* <PanelOptions /> */}
-            <PanelOperations />
             <PanelCommands />
+            <PanelOperations />
+            <PanelOptions />
         </div>
     );
 }
