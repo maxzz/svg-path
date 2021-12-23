@@ -2,7 +2,7 @@ import { atom, useAtom } from 'jotai';
 import React, { HTMLAttributes, ReactNode, useState } from 'react';
 import './App.css';
 import { IconChevronDown, IconMenu } from './components/UI/icons/Icons';
-import background from './assets/background-grid.svg';
+import Background from './assets/background-grid.svg';
 
 function SectionPane({ children, open = true, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
     return (
@@ -199,7 +199,8 @@ function PathViewer() {
 
 function App() {
     return (
-        <div className="h-screen flex" style={{backgroundImage: `url("${background}")`}}>
+        <div className="h-screen flex" style={{backgroundImage: `url("${Background}")`}}>
+            <Background />
             {/* <PathPane />
             <PathViewer /> */}
         </div>
