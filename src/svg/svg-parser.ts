@@ -4,7 +4,7 @@ const kNumberRegex = /^[+-]?(([0-9]*\.[0-9]+)|([0-9]+\.)|([0-9]+))([eE][+-]?[0-9
 const kCoordinateRegex = kNumberRegex;
 const kCommaWsp = /^(([\t\n\f\r ]+,?[\t\n\f\r ]*)|(,[\t\n\f\r ]*))/;
 
-const kGrammar: {[key: string]: RegExp[]}  = {
+const kGrammar: { [key: string]: RegExp[]; } = {
     M: [kCoordinateRegex, kCoordinateRegex],
     L: [kCoordinateRegex, kCoordinateRegex],
     H: [kCoordinateRegex],
@@ -19,8 +19,7 @@ const kGrammar: {[key: string]: RegExp[]}  = {
 
 export class SvgParser {
 
-    static components(type: string, path: string, cursor: number): [number, string[][]]
-    {
+    static components(type: string, path: string, cursor: number): [number, string[][]] {
         const expectedRegexList = kGrammar[type.toUpperCase()];
 
         const components: string[][] = [];

@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { SvgParser } from './svg-parser';
 
 const parse = SvgParser.parse;
