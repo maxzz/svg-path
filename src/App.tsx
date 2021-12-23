@@ -5,6 +5,7 @@ import { IconChevronDown, IconMenu } from './components/UI/icons/Icons';
 import background from './assets/background-grid.svg';
 import { BgGrid } from './components/UI/icons/BgGrid';
 import { Accordion } from './components/UI/Accordion';
+import { Svg } from './svg/svg';
 
 function SectionPane({ children, open = true, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
     return (
@@ -18,12 +19,18 @@ function SectionPane({ children, open = true, ...rest }: { children?: ReactNode;
 }
 
 const pathAtom = atom('M 0 100 L 25 100 C 34 20 40 0 100 0');
+const svgAtom = atom(
+    (get) => {
+        const path = get(pathAtom);
+        return new Svg(path);
+    }
+);
 
 function PathEditor() {
     const [path, setPath] = useAtom(pathAtom);
     return (
         <textarea
-            className="w-full bg-slate-200 font-mono"
+            className="w-full bg-slate-200 font-mono text-xs"
             rows={5}
             value={path}
             onChange={(event) => setPath(event.target.value)}
@@ -133,6 +140,10 @@ function CommandInput() {
 }
 
 function PathCommand() {
+    const [svg] = useAtom(svgAtom);
+    console.log('svg', svg);
+
+
     return (
         <div className="my-1">
             {/* Row */}
@@ -180,6 +191,11 @@ function PathCommand() {
                     <IconMenu className="w-4 h-4" />
                 </button>
             </div>
+            {svg.path.map((path, idx) => (
+                <React.Fragment key={idx}>
+                    <div className="">{path.asString()}</div>
+                </React.Fragment>
+            ))}
         </div>
     );
 }

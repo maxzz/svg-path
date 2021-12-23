@@ -32,17 +32,17 @@ export class SvgControlPoint extends SvgPoint {
 }
 
 export abstract class SvgItem {
+    relative: boolean;
+    values: number[];
+    
+    previousPoint: Point = new Point(0, 0);
+    absolutePoints: SvgPoint[] = [];
+    absoluteControlPoints: SvgControlPoint[] = [];
 
     constructor(values: number[], relative: boolean) {
         this.values = values;
         this.relative = relative;
     }
-
-    relative: boolean;
-    values: number[];
-    previousPoint: Point = new Point(0, 0);
-    absolutePoints: SvgPoint[] = [];
-    absoluteControlPoints: SvgControlPoint[] = [];
 
     public static Make(rawItem: string[]): SvgItem {
         let result: SvgItem | undefined = undefined;
@@ -588,7 +588,7 @@ export class Svg {
 
     controlLocations(): SvgControlPoint[] {
         let result: SvgControlPoint[] = [];
-        
+
         for (let i = 1; i < this.path.length; ++i) {
             const controls = this.path[i].controlLocations();
             controls.forEach((it, idx) => {
