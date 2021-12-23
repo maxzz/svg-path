@@ -6,16 +6,16 @@ import { IconMenu } from "../UI/icons/Icons";
 
 function CommandName({ command, abs }: { command: string; abs: boolean; }) {
     return (
-        <label className={`flex-0 overflow-hidden focus-within:text-blue-500`}>
+        <label className={`flex-0 px-1 w-6 leading-3 text-xs rounded-l-[0.2rem] text-center text-slate-900 bg-slate-500 focus-within:text-blue-500 overflow-hidden`}>
             {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
-            <button className="px-1 pb-[1px] rounded-l-sm text-xs text-center text-slate-900 bg-slate-500 ">{command}</button>
+            <button className="py-1">{command}</button>
         </label>
     );
 }
 
 function CommandInput({ atom }: { atom: PrimitiveAtom<number>; }) {
     return (
-        <label className={`flex-1 max-w-[2rem] rounded-tl-sm overflow-hidden focus-within:text-blue-500`}>
+        <label className={`flex-1 max-w-[2rem] rounded-tl-sm overflow-hidden bg-slate-200 focus-within:text-blue-500`}>
             <input
                 className="px-1 pb-[1px] w-full h-full text-xs text-center text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
                 defaultValue={"11"}
@@ -25,7 +25,7 @@ function CommandInput({ atom }: { atom: PrimitiveAtom<number>; }) {
 }
 
 function OneCommand({ path }: { path: SvgItem; }) {
-    const createAtoms = () => Array.from({ length: path.values.length }).map((_, idx) => atom(path.values[idx]));
+    const createAtoms = () => path.values.map((value) => atom(value));
 
     const [valuesAtoms, setValuesAtoms] = React.useState(createAtoms());
     useEffect(() => {
@@ -33,10 +33,12 @@ function OneCommand({ path }: { path: SvgItem; }) {
     }, [path]);
 
     return (<>
-        <CommandName command={path.getType()} abs={true} />
-        {path.values.map((value, idx) => (
-            <CommandInput atom={valuesAtoms[idx]} key={idx} />
-        ))}
+        <div className="flex items-center justify-items-start space-x-0.5">
+            <CommandName command={path.getType()} abs={false} />
+            {valuesAtoms.map((atom, idx) => (
+                <CommandInput atom={atom} key={idx} />
+            ))}
+        </div>
     </>);
 }
 
@@ -45,7 +47,7 @@ export function PathCommandEditor() {
     console.log('svg', [...svg.path]);
 
     return (
-        <div className="my-1">
+        <div className="my-1 space-y-0.5">
             {/* Row */}
             {/* <div className="flex items-center justify-between">
                 <div className="flex items-center justify-items-start space-x-0.5">
@@ -66,9 +68,10 @@ export function PathCommandEditor() {
                     <div className="">{path.asString()}</div>
                 </React.Fragment>
             ))}
+
             {svg.path.map((path, idx) => (
                 <OneCommand path={path} key={idx} />
             ))}
-        </div>
+        </div >
     );
 }
