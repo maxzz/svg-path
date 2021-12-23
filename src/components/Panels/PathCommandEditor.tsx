@@ -35,11 +35,18 @@ function OneCommand({ path }: { path: SvgItem; }) {
     }, [path]);
 
     return (<>
-        <div className="flex items-center justify-items-start font-mono space-x-0.5">
-            <CommandName command={path.getType()} abs={false} />
-            {valuesAtoms.map((atom, idx) => (
-                <CommandInput atom={atom} key={idx} />
-            ))}
+        <div className="flex items-center justify-between">
+
+            <div className="flex items-center justify-items-start font-mono space-x-0.5">
+                <CommandName command={path.getType()} abs={false} />
+                {valuesAtoms.map((atom, idx) => (
+                    <CommandInput atom={atom} key={idx} />
+                ))}
+            </div>
+            
+            <button className="flex-0 px-1 mt-0.5 active:scale-[.97]">
+                <IconMenu className="w-4 h-4" />
+            </button>
         </div>
     </>);
 }
@@ -65,11 +72,11 @@ export function PathCommandEditor() {
                     <IconMenu className="w-4 h-4" />
                 </button>
             </div> */}
-            {svg.path.map((path, idx) => (
+            {/* {svg.path.map((path, idx) => (
                 <React.Fragment key={idx}>
                     <div className="">{path.asString()}</div>
                 </React.Fragment>
-            ))}
+            ))} */}
 
             {svg.path.map((path, idx) => (
                 <OneCommand path={path} key={idx} />
