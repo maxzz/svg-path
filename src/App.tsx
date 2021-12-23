@@ -4,8 +4,7 @@ import './App.css';
 import { IconChevronDown, IconMenu } from './components/UI/icons/Icons';
 import background from './assets/background-grid.svg';
 import { BgGrid } from './components/UI/icons/BgGrid';
-import { useMeasure } from 'react-use';
-import { a, config, useSpring } from '@react-spring/web';
+import { Accordion } from './components/UI/Accordion';
 
 function SectionPane({ children, open = true, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
     return (
@@ -14,24 +13,6 @@ function SectionPane({ children, open = true, ...rest }: { children?: ReactNode;
             <div className={`${open ? '' : 'rotate-180'}`}>
                 <IconChevronDown className="w-6 h-6" />
             </div>
-        </div>
-    );
-}
-
-function Accordion({ toggle, children }: { toggle: boolean, children: React.ReactNode; }) {
-    const [ref, { height, top }] = useMeasure<HTMLDivElement>();
-    const animation = useSpring({
-        overflow: "hidden",
-        height: toggle ? height + top : 0,
-        config: {mass: 0.2, tension: 392, clamp: true },
-    });
-    return (
-        <div>
-            <a.div style={animation}>
-                <div ref={ref}>
-                    {children}
-                </div>
-            </a.div>
         </div>
     );
 }
@@ -191,13 +172,11 @@ function PanelCommands() {
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
                 Path Commands
             </SectionPane>
-            {open &&
             <Accordion toggle={open}>
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     <PathCommand />
                 </div>
             </Accordion>
-            }
         </div>
     );
 }
