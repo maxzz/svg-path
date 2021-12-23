@@ -17,9 +17,13 @@ function SectionPane({ children, open = true, ...rest }: { children?: ReactNode;
     );
 }
 
+const pathAtom = atom('M 0 100 L 25 100 C 34 20 40 0 100 0');
+
 function PanelPath() {
     const [openAtom] = useState(atom(true));
     const [open, setOpen] = useAtom(openAtom);
+
+    const [path, setPath] = useAtom(pathAtom);
     return (
         <div className="">
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
@@ -37,7 +41,7 @@ function PanelPath() {
                     </div>
 
                     <label>
-                        <textarea className="w-full bg-slate-200" rows={5}></textarea>
+                        <textarea className="w-full bg-slate-200" rows={5} value={path} onChange={(event) => setPath(event.target.value)}></textarea>
                     </label>
                 </div>
             </Accordion>
