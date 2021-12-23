@@ -25,6 +25,7 @@ function PathEditor() {
         <textarea
             className="w-full bg-slate-200 font-mono text-xs"
             rows={5}
+            spellCheck={false}
             value={path}
             onChange={(event) => setPath(event.target.value)}
         />
