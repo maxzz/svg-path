@@ -3,6 +3,7 @@ import React, { HTMLAttributes, ReactNode, useState } from 'react';
 import './App.css';
 import { IconChevronDown, IconMenu } from './components/UI/icons/Icons';
 import background from './assets/background-grid.svg';
+import { BgGrid } from './components/UI/icons/BgGrid';
 
 function SectionPane({ children, open = true, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
     return (
@@ -193,15 +194,18 @@ function PathPane() {
 
 function PathViewer() {
     return (
-        <div className="flex-1">view</div>
+        <div className="flex-1">
+            <BgGrid className="w-full h-full" />
+            {/* view */}
+        </div>
     );
 }
 
 function App() {
     return (
-        <div className="h-screen flex" style={{backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cpattern id='sGrid' width='10' height='10' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 10 0 L 0 0 0 10' fill='none' stroke='%23fff' stroke-width='0.3' stroke-opacity='0.5' /%3E%3C/pattern%3E%3Cpattern id='mGrid' width='100' height='100' patternUnits='userSpaceOnUse'%3E%3Crect width='100' height='100' fill='url(%23sGrid)' /%3E%3Cpath d='M 100 0 L 0 0 0 100' fill='none' stroke='%23fff' stroke-width='2' stroke-opacity='0.2' /%3E%3C/pattern%3E%3Cpattern id='lGrid' width='200' height='200' patternUnits='userSpaceOnUse'%3E%3Crect width='200' height='200' fill='url(%23mGrid)' /%3E%3Cpath d='M 200 0 L 0 0 0 200' fill='none' stroke='%23fff' stroke-width='2' stroke-opacity='0.2' /%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='%230071b8' /%3E%3Crect width='100%25' height='100%25' fill='url(%23lGrid)' /%3E%3C/svg%3E")`}}>
-            {/* <PathPane />
-            <PathViewer /> */}
+        <div className="h-screen flex">
+            <PathPane />
+            <PathViewer />
         </div>
     );
 }
