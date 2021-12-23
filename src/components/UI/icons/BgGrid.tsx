@@ -33,7 +33,7 @@ export const BgGrid = (props: any) => (
                 />
             </pattern>
         </defs>
-        <rect width="100%" height="100%" fill="#0071b8" />
+        <rect width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
         <rect width="100%" height="100%" fill="url(#c)" />
     </svg>
 );

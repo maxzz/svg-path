@@ -194,9 +194,9 @@ function PathPane() {
 
 function PathViewer() {
     return (
-        <div className="flex-1">
-            <BgGrid className="w-full h-full" />
-            {/* view */}
+        <div className="flex-1 relative">
+            <BgGrid className="absolute w-full h-full -z-10" />
+            <div className="text-red-500/50 font-black p-2">Ground zero</div>
         </div>
     );
 }
