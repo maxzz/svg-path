@@ -230,13 +230,13 @@ function PanelCommands() {
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
                 Path Commands
             </SectionPane>
+            {open &&
             <Accordion toggle={open}>
-            {/* {open && */}
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     <PathCommand />
                 </div>
-            {/* } */}
             </Accordion>
+            }
         </div>
     );
 }
