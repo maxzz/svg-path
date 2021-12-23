@@ -14,11 +14,13 @@ function CommandName({ command, abs }: { command: string; abs: boolean; }) {
 }
 
 function CommandInput({ atom }: { atom: PrimitiveAtom<number>; }) {
+    const [value, setValue] = useAtom(atom);
     return (
         <label className={`flex-1 max-w-[2rem] rounded-tl-sm overflow-hidden bg-slate-200 focus-within:text-blue-500`}>
             <input
-                className="px-1 pb-[1px] w-full h-full text-xs text-center text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
-                defaultValue={"11"}
+                className="px-1 pb-[4px] w-full h-full text-xs text-center text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
+                value={value}
+                onChange={(event) => setValue(+event.target.value)}
             />
         </label>
     );
@@ -33,7 +35,7 @@ function OneCommand({ path }: { path: SvgItem; }) {
     }, [path]);
 
     return (<>
-        <div className="flex items-center justify-items-start space-x-0.5">
+        <div className="flex items-center justify-items-start font-mono space-x-0.5">
             <CommandName command={path.getType()} abs={false} />
             {valuesAtoms.map((atom, idx) => (
                 <CommandInput atom={atom} key={idx} />
