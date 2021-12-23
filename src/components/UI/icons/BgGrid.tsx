@@ -1,6 +1,6 @@
-import * as React from "react";
+import { SVGProps } from "react";
 
-export const BgGrid = (props: any) => (
+export const BgGrid = (props: SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" {...props}>
         <defs>
             <pattern id="a" width={10} height={10} patternUnits="userSpaceOnUse">
