@@ -4,6 +4,8 @@ import './App.css';
 import { IconChevronDown, IconMenu } from './components/UI/icons/Icons';
 import background from './assets/background-grid.svg';
 import { BgGrid } from './components/UI/icons/BgGrid';
+import { useMeasure } from 'react-use';
+import { a, config, useSpring } from '@react-spring/web';
 
 function SectionPane({ children, open = true, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
     return (
@@ -16,6 +18,35 @@ function SectionPane({ children, open = true, ...rest }: { children?: ReactNode;
     );
 }
 
+function Accordion({ toggle, children }: { toggle: boolean, children: React.ReactNode; }) {
+    const [ref, { height, top }] = useMeasure<HTMLDivElement>();
+    const animation = useSpring({
+        // from: {
+        //     height: 100
+        // },
+        overflow: "hidden",
+        // boxShadow: "0 7px 6px -2px rgba(0, 0, 0, 0.5)",
+        height: toggle ? height + top : 0,
+        config: {mass: 0.2, tension: 392, clamp: true },
+        // config: {
+        //     // duration: 100,
+        //     ...config.gentle
+        //     // ...config.wobbly
+        // }
+    });
+    console.log({ bind: ref, height, top });
+    
+    return (
+        <div>
+            <a.div style={animation}>
+                <div ref={ref}>
+                    {children}
+                </div>
+            </a.div>
+        </div>
+    );
+}
+
 function PanelPath() {
     const [openAtom] = useState(atom(true));
     const [open, setOpen] = useAtom(openAtom);
@@ -24,7 +55,7 @@ function PanelPath() {
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
                 Path
             </SectionPane>
-            {open &&
+            <Accordion toggle={open}>
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     <div className="flex justify-between">
                         <div className="text-xs tracking-tighter self-end">path</div>
@@ -39,10 +70,38 @@ function PanelPath() {
                         <textarea className="w-full bg-slate-200" rows={5}></textarea>
                     </label>
                 </div>
-            }
+            </Accordion>
         </div>
     );
 }
+
+// function PanelPath() {
+//     const [openAtom] = useState(atom(true));
+//     const [open, setOpen] = useAtom(openAtom);
+//     return (
+//         <div className="">
+//             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
+//                 Path
+//             </SectionPane>
+//             {open &&
+//                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
+//                     <div className="flex justify-between">
+//                         <div className="text-xs tracking-tighter self-end">path</div>
+//                         <div className="py-1 flex space-x-1">
+//                             <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Open</button>
+//                             <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Save</button>
+//                             <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Clear</button>
+//                         </div>
+//                     </div>
+
+//                     <label>
+//                         <textarea className="w-full bg-slate-200" rows={5}></textarea>
+//                     </label>
+//                 </div>
+//             }
+//         </div>
+//     );
+// }
 
 // function PanelOptions() {
 //     return (
@@ -171,11 +230,13 @@ function PanelCommands() {
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
                 Path Commands
             </SectionPane>
-            {open &&
+            <Accordion toggle={open}>
+            {/* {open && */}
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     <PathCommand />
                 </div>
-            }
+            {/* } */}
+            </Accordion>
         </div>
     );
 }
