@@ -70,7 +70,7 @@ function getViewPort(canvasWidth: number, canvasHeight: number, targetPoints: Sv
         viewPortHeight = ratio * viewPortWidth;
     }
 
-    let strokeWidth = viewPortWidth / canvasWidth;
+    let strokeWidth = 1.1 * viewPortWidth / canvasWidth;
 
     return {
         box: [x, y, viewPortWidth, viewPortHeight,] as const,
