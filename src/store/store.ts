@@ -1,12 +1,46 @@
-import { atom } from "jotai";
+import { atom, Getter } from "jotai";
+import atomWithCallback from "../hooks/atomsX";
 import { Svg } from "../svg/svg";
+import debounce from "../utils/debounce";
+
+
+namespace Storage {
+    const KEY = 'react-svg-expo-01';
+
+    type Store = {
+        path: string;
+    };
+
+    export let initialData: Store = {
+        path: 'M 0 100 L 25 100 C 34 20 40 0 100 0',
+    };
+
+    function load() {
+        const s = localStorage.getItem(KEY);
+        if (s) {
+            try {
+                let obj = JSON.parse(s) as Store;
+                initialData = obj;
+            } catch (error) {
+            }
+        }
+    }
+    load();
+
+    export const save = debounce(function _save(get: Getter) {
+        let newStore: Store = {
+            path: get(_pathUnsafeAtom),
+        };
+        localStorage.setItem(KEY, JSON.stringify(newStore));
+    }, 1000);
+}
 
 //export const pathAtom = atom('M 0 100 L 25 100 C 34 20 40 0 100 0');
 //export const pathSafeAtom = atom('M 0 100 L 25 100 C 34 20 40 0 100 0');
 
 // Input comes from the user and is unsafe
 
-const _pathUnsafeAtom = atom('M 0 100 L 25 100 C 34 20 40 0 100 0');
+const _pathUnsafeAtom = atomWithCallback(Storage.initialData.path, ({get}) => Storage.save(get));
 
 export const pathUnsafeAtom = atom(
     (get) => {
