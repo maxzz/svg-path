@@ -5,7 +5,7 @@ import { IconChevronDown } from './components/UI/icons/Icons';
 import background from './assets/background-grid.svg';
 import { BgGrid } from './components/UI/icons/BgGrid';
 import { Accordion } from './components/UI/Accordion';
-import { pathAtom } from './store/store';
+import { pathUnsafeAtom } from './store/store';
 import { PathCommandEditor } from './components/Panels/PathCommandEditor';
 
 function SectionPane({ children, open = true, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
@@ -20,7 +20,7 @@ function SectionPane({ children, open = true, ...rest }: { children?: ReactNode;
 }
 
 function PathEditor() {
-    const [path, setPath] = useAtom(pathAtom);
+    const [path, setPath] = useAtom(pathUnsafeAtom);
     return (
         <textarea
             className="w-full bg-slate-200 font-mono text-xs"
