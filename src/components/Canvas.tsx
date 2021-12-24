@@ -43,18 +43,17 @@ function GridPattern() {
 function Canvas() {
     const [svg] = useAtom(svgAtom);
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
-    console.log({ width, height });
+    //console.log({ width, height });
 
     const viewPort = getViewPort(width, height, svg.targetLocations());
-    console.log(viewPort.box);
-    
+    //console.log(viewPort.box);
 
     return (
         <div ref={ref} className="absolute w-full h-full -z-10">
             <svg viewBox={viewPort.box.join(" ")}>
                 <GridPattern />
-                <rect width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
-                <rect width="100%" height="100%" fill="url(#c)" />
+                <rect x={viewPort.box[0]} y={viewPort.box[1]} width="100%" height="100%" fill="#040d1c" /> #002846
+                <rect x={viewPort.box[0]} y={viewPort.box[1]} width="100%" height="100%" fill="url(#c)" />
                 <path d={svg.asString()} fill="white" stroke={"red"} strokeWidth={viewPort.strokeWidth} />
             </svg>
         </div>
