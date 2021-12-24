@@ -54,10 +54,12 @@ function getPointsBoundingBox(targetPoints: SvgPoint[]): { xmin: number; ymin: n
     return { xmin, ymin, xmax, ymax, };
 }
 
-function getViewPort(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[]): { x: number; y: number; w: number; h: number; } {
-
+function getViewPort(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[]): readonly [number, number, number, number] {
+//debugger
     const box = getPointsBoundingBox(targetPoints);
 
+    const x = box.xmin - 1;
+    const y = box.ymin - 1;
     let w = box.xmax - box.xmin + 2;
     let h = box.ymax - box.ymin + 2;
 
@@ -68,7 +70,7 @@ function getViewPort(canvasWidth: number, canvasHeight: number, targetPoints: Sv
         h = ratio * w;
     }
 
-    return { x: box.xmin - 1, y: box.ymin - 1, w, h, };
+    return [x, y, w, h,] as const;
 }
 
 function Canvas() {
@@ -76,11 +78,11 @@ function Canvas() {
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
     //console.log({ width, height });
 
-    //const viewPort = 
+    const viewPort = getViewPort(width, height, svg.targetLocations());
 
     return (
         <div ref={ref} className="absolute w-full h-full -z-10">
-            <svg viewBox="0 0 200 100">
+            <svg viewBox={viewPort.join(" ")}>
                 <GridPattern />
                 <rect width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
                 <rect width="100%" height="100%" fill="url(#c)" />
