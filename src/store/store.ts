@@ -3,6 +3,12 @@ import atomWithCallback from "../hooks/atomsX";
 import { Svg } from "../svg/svg";
 import debounce from "../utils/debounce";
 
+function getParsedSvg(path: string): Svg | undefined {
+    try {
+        return new Svg(path);
+    } catch (error) {
+    }
+}
 
 namespace Storage {
     const KEY = 'react-svg-expo-01';
@@ -49,17 +55,14 @@ export const pathUnsafeAtom = atom(
     (get, set, path: string) => {
         set(_pathUnsafeAtom, path);
 
-        try {
-            const newSvg = new Svg(path);
-            set(_svgAtom, newSvg);
-        } catch (error) {
-        }
+        const newSvg = getParsedSvg(path);
+        newSvg && set(_svgAtom, newSvg);
     }
 );
 
 // Input comes from the command editor and is safe (the editor must check the row numbers and quantity of required numbers)
 
-const _svgAtom = atom(new Svg(''));
+const _svgAtom = atom(getParsedSvg(Storage.initialData.path) || new Svg(''));
 
 export const svgAtom = atom(
     (get) => {
