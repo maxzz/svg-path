@@ -14,36 +14,12 @@ function getPointsBoundingBox(targetPoints: SvgPoint[]): { xmin: number; ymin: n
     return { xmin, ymin, xmax, ymax, };
 }
 
-type ViewBox = [number, number, number, number];
-
-function updateViewPort(canvasWidth: number, canvasHeight: number, x: number, y: number, w: number, h: number) {
-
-    if (w === null && h !==null) {
-      w = canvasWidth * h / canvasHeight;
-    }
-
-    if (h === null && w !==null) {
-      h = canvasHeight * w / canvasWidth;
-    }
-
-    if (!w || !h) {
-      return;
-    }
-
-    const box = [
-        parseFloat((1 * x).toPrecision(6)),
-        parseFloat((1 * y).toPrecision(6)),
-        parseFloat((1 * w).toPrecision(4)),
-        parseFloat((1 * h).toPrecision(4)),
-    ]
-
-    //this.strokeWidth = this.cfg.viewPortWidth / this.canvasWidth;
-  }
+type ViewBox = [x: number, y: number, w: number, h: number];
 
 export function getViewPort(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[]): { box: ViewBox; strokeWidth: number; } {
 
     if (!canvasWidth || !canvasHeight) {
-        return {box: [0,0,0,0], strokeWidth: 0};
+        return { box: [0, 0, 0, 0], strokeWidth: 0 };
     }
 
     const box = getPointsBoundingBox(targetPoints);
@@ -60,10 +36,17 @@ export function getViewPort(canvasWidth: number, canvasHeight: number, targetPoi
         viewPortHeight = ratio * viewPortWidth;
     }
 
-    let strokeWidth = 1.1 * viewPortWidth / canvasWidth;
+    const port: ViewBox = [
+        parseFloat((1 * x).toPrecision(6)),
+        parseFloat((1 * y).toPrecision(6)),
+        parseFloat((1 * viewPortWidth).toPrecision(4)),
+        parseFloat((1 * viewPortHeight).toPrecision(4)),
+    ];
+
+    let strokeWidth = 1.1 * port[2] / canvasWidth;
 
     return {
-        box: [x, y, viewPortWidth, viewPortHeight,],
+        box: port,
         strokeWidth,
     };
 }
