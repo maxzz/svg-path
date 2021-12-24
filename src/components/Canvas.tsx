@@ -54,23 +54,28 @@ function getPointsBoundingBox(targetPoints: SvgPoint[]): { xmin: number; ymin: n
     return { xmin, ymin, xmax, ymax, };
 }
 
-function getViewPort(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[]): readonly [number, number, number, number] {
-//debugger
+function getViewPort(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[]): { box: readonly [number, number, number, number]; strokeWidth: number; } {
+
     const box = getPointsBoundingBox(targetPoints);
 
     const x = box.xmin - 1;
     const y = box.ymin - 1;
-    let w = box.xmax - box.xmin + 2;
-    let h = box.ymax - box.ymin + 2;
+    let viewPortWidth = box.xmax - box.xmin + 2;
+    let viewPortHeight = box.ymax - box.ymin + 2;
 
     const ratio = canvasHeight / canvasWidth;
-    if (ratio < h / w) {
-        w = h / ratio;
+    if (ratio < viewPortHeight / viewPortWidth) {
+        viewPortWidth = viewPortHeight / ratio;
     } else {
-        h = ratio * w;
+        viewPortHeight = ratio * viewPortWidth;
     }
 
-    return [x, y, w, h,] as const;
+    let strokeWidth = viewPortWidth / canvasWidth;
+
+    return {
+        box: [x, y, viewPortWidth, viewPortHeight,] as const,
+        strokeWidth,
+    };
 }
 
 function Canvas() {
@@ -82,11 +87,11 @@ function Canvas() {
 
     return (
         <div ref={ref} className="absolute w-full h-full -z-10">
-            <svg viewBox={viewPort.join(" ")}>
+            <svg viewBox={viewPort.box.join(" ")}>
                 <GridPattern />
                 <rect width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
                 <rect width="100%" height="100%" fill="url(#c)" />
-                <path d={svg.asString()} fill="white" stroke={"red"} strokeWidth={2} />
+                <path d={svg.asString()} fill="white" stroke={"red"} strokeWidth={viewPort.strokeWidth} />
             </svg>
         </div>
     );
