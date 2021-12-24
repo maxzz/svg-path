@@ -11,7 +11,7 @@ namespace Storage {
     };
 
     export let initialData: Store = {
-        path: 'M 0 100 L 25 100 C 34 20 40 0 100 0',
+        path: 'M 10 89 L 25 103 Q 52 128 63 93 C -2 26 29 0 100 0 C 83 15 85 52 61 27',
     };
 
     function load() {
@@ -54,12 +54,11 @@ export const pathUnsafeAtom = atom(
     },
     (get, set, path: string) => {
         const current = get(_pathUnsafeAtom);
-        if (path !== current) {
-            set(_pathUnsafeAtom, path);
 
-            const newSvg = getParsedSvg(path);
-            newSvg && set(_svgAtom, newSvg);
-        }
+        set(_pathUnsafeAtom, path);
+
+        const newSvg = getParsedSvg(path);
+        newSvg && set(_svgAtom, newSvg);
     }
 );
 
