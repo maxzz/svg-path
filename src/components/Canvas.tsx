@@ -1,5 +1,6 @@
 import { useAtom } from 'jotai';
 import React, { SVGProps } from 'react';
+import { useMeasure } from 'react-use';
 import { svgAtom } from '../store/store';
 
 function GridPattern() {
@@ -40,8 +41,11 @@ function GridPattern() {
 
 function Canvas(props: SVGProps<SVGSVGElement>) {
     const [svg] = useAtom(svgAtom);
+    const [ref, { width, height }] =  useMeasure<SVGSVGElement>();
+    //console.log({ width, height });
+    
     return (
-        <svg {...props}>
+        <svg ref={ref} {...props}>
             <GridPattern />
             <rect width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
             <rect width="100%" height="100%" fill="url(#c)" />
