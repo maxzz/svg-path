@@ -43,9 +43,11 @@ function GridPattern() {
 function Canvas() {
     const [svg] = useAtom(svgAtom);
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
-    //console.log({ width, height });
+    console.log({ width, height });
 
     const viewPort = getViewPort(width, height, svg.targetLocations());
+    console.log(viewPort.box);
+    
 
     return (
         <div ref={ref} className="absolute w-full h-full -z-10">
