@@ -1,4 +1,6 @@
-import React from 'react';
+import { useAtom } from 'jotai';
+import React, { SVGProps } from 'react';
+import { svgAtom } from '../store/store';
 
 function GridPattern() {
     return (
@@ -36,16 +38,15 @@ function GridPattern() {
     );
 }
 
-function Canvas() {
+function Canvas(props: SVGProps<SVGSVGElement>) {
+    const [svg] = useAtom(svgAtom);
     return (
-        <div>
-            <svg>
-                <GridPattern />
-                <rect width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
-                <rect width="100%" height="100%" fill="url(#c)" />
-            </svg>
-
-        </div>
+        <svg {...props}>
+            <GridPattern />
+            <rect width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
+            <rect width="100%" height="100%" fill="url(#c)" />
+            <path d={svg.asString()} fill="white" stroke={"red"} strokeWidth={2} />
+        </svg>
     );
 }
 
