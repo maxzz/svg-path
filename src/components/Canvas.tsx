@@ -39,18 +39,20 @@ function GridPattern() {
     );
 }
 
-function Canvas(props: SVGProps<SVGSVGElement>) {
+function Canvas() {
     const [svg] = useAtom(svgAtom);
-    const [ref, { width, height }] =  useMeasure<SVGSVGElement>();
+    const [ref, { width, height }] =  useMeasure<HTMLDivElement>();
     //console.log({ width, height });
     
     return (
-        <svg ref={ref} {...props}>
-            <GridPattern />
-            <rect width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
-            <rect width="100%" height="100%" fill="url(#c)" />
-            <path d={svg.asString()} fill="white" stroke={"red"} strokeWidth={2} />
-        </svg>
+        <div ref={ref} className="absolute w-full h-full -z-10">
+        <svg viewBox="0 0 200 100">
+                <GridPattern />
+                <rect width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
+                <rect width="100%" height="100%" fill="url(#c)" />
+                <path d={svg.asString()} fill="white" stroke={"red"} strokeWidth={2} />
+            </svg>
+        </div>
     );
 }
 

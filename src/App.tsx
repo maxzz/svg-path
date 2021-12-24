@@ -150,7 +150,7 @@ function PathViewer() {
     return (
         <div className="flex-1 relative">
             {/* <BgGrid className="absolute w-full h-full -z-10" /> */}
-            <Canvas className="absolute w-full h-full -z-10" />
+                <Canvas />
             <div className="text-red-500/50 font-black p-2">Ground zero</div>
         </div>
     );
