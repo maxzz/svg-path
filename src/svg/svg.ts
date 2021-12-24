@@ -46,6 +46,7 @@ export abstract class SvgItem {
 
     public static Make(rawItem: string[]): SvgItem {
         let result: SvgItem | undefined = undefined;
+
         const relative = rawItem[0].toUpperCase() !== rawItem[0];
         const values = rawItem.slice(1).map(it => parseFloat(it));
 

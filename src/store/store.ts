@@ -3,13 +3,6 @@ import atomWithCallback from "../hooks/atomsX";
 import { Svg } from "../svg/svg";
 import debounce from "../utils/debounce";
 
-function getParsedSvg(path: string): Svg | undefined {
-    try {
-        return new Svg(path);
-    } catch (error) {
-    }
-}
-
 namespace Storage {
     const KEY = 'react-svg-expo-01';
 
@@ -44,19 +37,29 @@ namespace Storage {
 //export const pathAtom = atom('M 0 100 L 25 100 C 34 20 40 0 100 0');
 //export const pathSafeAtom = atom('M 0 100 L 25 100 C 34 20 40 0 100 0');
 
+function getParsedSvg(path: string): Svg | undefined {
+    try {
+        return new Svg(path);
+    } catch (error) {
+    }
+}
+
 // Input comes from the user and is unsafe
 
-const _pathUnsafeAtom = atomWithCallback(Storage.initialData.path, ({get}) => Storage.save(get));
+const _pathUnsafeAtom = atomWithCallback(Storage.initialData.path, ({ get }) => Storage.save(get));
 
 export const pathUnsafeAtom = atom(
     (get) => {
         return get(_pathUnsafeAtom);
     },
     (get, set, path: string) => {
-        set(_pathUnsafeAtom, path);
+        const current = get(_pathUnsafeAtom);
+        if (path !== current) {
+            set(_pathUnsafeAtom, path);
 
-        const newSvg = getParsedSvg(path);
-        newSvg && set(_svgAtom, newSvg);
+            const newSvg = getParsedSvg(path);
+            newSvg && set(_svgAtom, newSvg);
+        }
     }
 );
 
