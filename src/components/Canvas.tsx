@@ -73,7 +73,7 @@ function Canvas() {
     //console.log('ref2', ref2);
 
     const mouseWheel = useMouseWheelX(ref2.current);
-    //console.log(mouseWheel);
+    console.log(mouseWheel);
 
     return (
         <div ref={(el) => el && (ref(el), console.log('set', el.getBoundingClientRect())) } className="absolute w-full h-full -z-10">
