@@ -62,7 +62,8 @@ export function getViewPort(canvasWidth: number, canvasHeight: number, targetPoi
 export function eventToLocation(canvasSize: CanvasSize, canvasContainer: HTMLElement, event: MouseEvent | TouchEvent, idx = 0): { x: number, y: number; } {
     const rect = canvasContainer.getBoundingClientRect();
     const touch = event instanceof MouseEvent ? event : event.touches[idx];
-    const x = canvasSize.port[0] + (touch.clientX - rect.left) * canvasSize.stroke;
-    const y = canvasSize.port[1] + (touch.clientY - rect.top) * canvasSize.stroke;
+    let [x, y] = canvasSize.port;
+    x += (touch.clientX - rect.left) * canvasSize.stroke;
+    y += (touch.clientY - rect.top) * canvasSize.stroke;
     return { x, y };
 }
