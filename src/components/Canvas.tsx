@@ -72,11 +72,11 @@ function Canvas() {
     const ref2 = React.useRef<SVGSVGElement>(null);
     //console.log('ref2', ref2);
 
-    const mouseWheel2 = useMouseWheel();
+    const mouseWheel1 = useMouseWheel();
+    const mouseWheel2 = useMouseWheelX(); //ref2.current
     const mouseWheel3 = useMouseWheelY();
     const mouseWheel4 = useMouseWheelZ();
-    const mouseWheel = useMouseWheelX(); //ref2.current
-    console.log('canvas compare', mouseWheel, mouseWheel2, mouseWheel3, mouseWheel4);
+    console.log('canvas compare', `org: ${mouseWheel1}, X: ${mouseWheel2}, Y: ${mouseWheel3}, Z: ${mouseWheel4}`);
 
     return (
         <div ref={(el) => el && (ref(el), console.log('set', el.getBoundingClientRect()))} className="absolute w-full h-full -z-10">
