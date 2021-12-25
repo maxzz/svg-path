@@ -16,10 +16,15 @@ function getPointsBoundingBox(targetPoints: SvgPoint[]): { xmin: number; ymin: n
 
 type ViewBox = [x: number, y: number, w: number, h: number];
 
-export function getViewPort(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[]): { box: ViewBox; strokeWidth: number; } {
+type CanvasSize = {
+    box: ViewBox;
+    strokeWidth: number;
+};
+
+export function getViewPort(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[]): CanvasSize {
 
     if (!canvasWidth || !canvasHeight) {
-        return { box: [0, 0, 0, 0], strokeWidth: 0 };
+        return { box: [0, 0, 0, 0], strokeWidth: 0.001 };
     }
 
     const box = getPointsBoundingBox(targetPoints);
@@ -49,4 +54,12 @@ export function getViewPort(canvasWidth: number, canvasHeight: number, targetPoi
         box: port,
         strokeWidth,
     };
+}
+
+export function eventToLocation(canvasSize: CanvasSize, canvasContainer: HTMLElement, event: MouseEvent | TouchEvent, idx = 0): { x: number, y: number; } {
+    const rect = canvasContainer.getBoundingClientRect();
+    const touch = event instanceof MouseEvent ? event : event.touches[idx];
+    const x = canvasSize.box[0] + (touch.clientX - rect.left) * canvasSize.strokeWidth;
+    const y = canvasSize.box[1] + (touch.clientY - rect.top) * canvasSize.strokeWidth;
+    return { x, y };
 }
