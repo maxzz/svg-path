@@ -4,6 +4,7 @@ import { svgAtom } from '../store/store';
 import { useMeasure, useMouseWheel } from 'react-use';
 import { eventToLocation, getViewPort } from '../svg/svg-utils';
 import { useMouseWheelX, useMouseWheelY, useMouseWheelZ } from '../hooks/useMouseWheelX';
+import { useEventListener } from '../hooks/useEventListener';
 
 function GridPattern() {
     return (
@@ -71,6 +72,10 @@ function Canvas() {
 
     const ref2 = React.useRef<SVGSVGElement>(null);
     //console.log('ref2', ref2);
+
+    useEventListener<WheelEvent>('wheel', (event) => {
+
+    })
 
     const mouseWheel2 = useMouseWheelX(); //ref2.current
     const mouseWheel3 = useMouseWheelY();
