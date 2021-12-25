@@ -70,26 +70,28 @@ function Canvas() {
     const viewPort = getViewPort(width, height, svg.targetLocations());
     //console.log(viewPort.box);
 
-    const ref2 = React.useRef<SVGSVGElement>(null);
-    //console.log('ref2', ref2);
+    const ref2: any = React.useRef<SVGSVGElement>(null);
+    console.log('ref2', ref2);
 
-    useEventListener<WheelEvent>('wheel', (event) => {
+    useEventListener('wheel', (event: WheelEvent) => {
+        console.log('=========new wheel', event);
+    }, ref2, true);
 
-    })
-
-    const mouseWheel2 = useMouseWheelX(); //ref2.current
-    const mouseWheel3 = useMouseWheelY();
-    const mouseWheel1 = useMouseWheel();
-    const mouseWheel4 = useMouseWheelZ();
-    console.log('canvas compare', `org: ${mouseWheel1}, X: ${mouseWheel2}, Y: ${mouseWheel3}, Z: ${mouseWheel4}`);
+    // const mouseWheel2 = useMouseWheelX(); //ref2.current
+    // const mouseWheel3 = useMouseWheelY();
+    // const mouseWheel1 = useMouseWheel();
+    // const mouseWheel4 = useMouseWheelZ();
+    // console.log('canvas compare', `org: ${mouseWheel1}, X: ${mouseWheel2}, Y: ${mouseWheel3}, Z: ${mouseWheel4}`);
 
     return (
-        <div ref={(el) => el && (ref(el), console.log('set', el.getBoundingClientRect()))} className="absolute w-full h-full -z-10">
+        // <div ref={(el) => el && (ref(el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full -z-10">
+        <div ref={(el) => el && (ref(el), (ref2.current = el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full">
             {/* <div ref={ref} className="absolute w-full h-full -z-10"> */}
-            <svg ref={ref2} viewBox={viewPort.port.join(" ")}>
+            {/* <svg ref={ref2} viewBox={viewPort.port.join(" ")}> */}
+            <svg viewBox={viewPort.port.join(" ")}>
                 <GridPattern />
-                <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="#040d1c" /> #002846
-                <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="url(#grid-patt-c)" />
+                {/* <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="#040d1c" /> #002846
+                <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="url(#grid-patt-c)" /> */}
                 <path d={svg.asString()} fill="white" stroke={"red"} strokeWidth={viewPort.stroke} />
             </svg>
         </div>
