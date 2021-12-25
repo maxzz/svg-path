@@ -69,15 +69,16 @@ function Canvas() {
     const viewPort = getViewPort(width, height, svg.targetLocations());
     //console.log(viewPort.box);
 
-    const ref2 = React.useRef<HTMLElement>();
+    const ref2 = React.useRef<SVGSVGElement>(null);
+    console.log('ref2', ref2);
 
     const mouseWheel = useMouseWheelX(ref2.current);
-    console.log(mouseWheel);
+    //console.log(mouseWheel);
 
     return (
-        <div ref={(el) => el && (ref(el), ref2.current = el, console.log('set', el.getBoundingClientRect())) } className="absolute w-full h-full -z-10">
+        <div ref={(el) => el && (ref(el), console.log('set', el.getBoundingClientRect())) } className="absolute w-full h-full -z-10">
         {/* <div ref={ref} className="absolute w-full h-full -z-10"> */}
-            <svg viewBox={viewPort.port.join(" ")}>
+            <svg ref={ref2} viewBox={viewPort.port.join(" ")}>
                 <GridPattern />
                 <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="#040d1c" /> #002846
                 <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="url(#grid-patt-c)" />
