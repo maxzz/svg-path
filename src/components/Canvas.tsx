@@ -72,9 +72,9 @@ function Canvas() {
     const ref2 = React.useRef<SVGSVGElement>(null);
     //console.log('ref2', ref2);
 
-    const mouseWheel1 = useMouseWheel();
     const mouseWheel2 = useMouseWheelX(); //ref2.current
     const mouseWheel3 = useMouseWheelY();
+    const mouseWheel1 = useMouseWheel();
     const mouseWheel4 = useMouseWheelZ();
     console.log('canvas compare', `org: ${mouseWheel1}, X: ${mouseWheel2}, Y: ${mouseWheel3}, Z: ${mouseWheel4}`);
 
