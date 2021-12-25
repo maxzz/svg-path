@@ -96,6 +96,17 @@ function Canvas() {
     }, []);
     /**/
 
+    /* OK */
+    const [zoom, setZoom] = React.useState(0);
+
+    const onMouseWheel = React.useCallback((event: WheelEvent) => {
+        setZoom(p => {
+            console.log('=========new wheel', event.deltaY, p);
+            return p + event.deltaY;
+        });
+    }, []);
+    /**/
+
     /* NO * /
     const [zoom, setZoom] = React.useState(0);
 
@@ -129,7 +140,7 @@ function Canvas() {
     }, []);
     /**/
 
-    /* OK */
+    /* OK * /
     const [zoom, setZoom] = useAtom(zoomAtom);
 
     const onMouseWheel = React.useCallback((event: WheelEvent) => {
