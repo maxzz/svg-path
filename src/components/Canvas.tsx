@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import { svgAtom } from '../store/store';
 import { useMeasure, useMouseWheel } from 'react-use';
 import { eventToLocation, getViewPort } from '../svg/svg-utils';
-import { useMouseWheelX, useMouseWheelZ } from '../hooks/useMouseWheelX';
+import { useMouseWheelX, useMouseWheelY, useMouseWheelZ } from '../hooks/useMouseWheelX';
 
 function GridPattern() {
     return (
@@ -72,10 +72,11 @@ function Canvas() {
     const ref2 = React.useRef<SVGSVGElement>(null);
     //console.log('ref2', ref2);
 
-    const mouseWheel = useMouseWheelX(); //ref2.current
-    const mouseWheel3 = useMouseWheelZ();
     const mouseWheel2 = useMouseWheel();
-    console.log('canvas compare', mouseWheel, mouseWheel2, mouseWheel3);
+    const mouseWheel3 = useMouseWheelY();
+    const mouseWheel4 = useMouseWheelZ();
+    const mouseWheel = useMouseWheelX(); //ref2.current
+    console.log('canvas compare', mouseWheel, mouseWheel2, mouseWheel3, mouseWheel4);
 
     return (
         <div ref={(el) => el && (ref(el), console.log('set', el.getBoundingClientRect()))} className="absolute w-full h-full -z-10">

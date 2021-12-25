@@ -41,7 +41,7 @@ export function useMouseWheelX(target?: EventTarget | null) {
         // return () => off(target || window, 'wheel', updateScroll);
         return () => {
             console.log('target off', target);
-            off(target || window, 'wheel', updateScroll)
+            off(target || window, 'wheel', updateScroll);
         };
     }, [target]);
 
@@ -51,17 +51,29 @@ export function useMouseWheelX(target?: EventTarget | null) {
 }
 
 
+export function useMouseWheelY() {
+    const [mouseWheelScrolled, setMouseWheelScrolled] = useState(0);
+    useEffect(() => {
+        const updateScroll = (e: WheelEvent) => {
+            setMouseWheelScrolled(e.deltaY + mouseWheelScrolled);
+        };
+        on(window, 'wheel', updateScroll, false);
+        return () => off(window, 'wheel', updateScroll);
+    });
+    return mouseWheelScrolled;
+};
+
 export function useMouseWheelZ() {
     const [mouseWheelScrolled, setMouseWheelScrolled] = useState(0);
     useEffect(() => {
-      const updateScroll = (e: WheelEvent) => {
-        setMouseWheelScrolled(e.deltaY + mouseWheelScrolled);
-      };
-      on(window, 'wheel', updateScroll, false);
-      return () => off(window, 'wheel', updateScroll);
+        const updateScroll = (e: WheelEvent) => {
+            setMouseWheelScrolled(e.deltaY + mouseWheelScrolled);
+        };
+        on(window, 'wheel', updateScroll, false);
+        return () => off(window, 'wheel', updateScroll);
     });
     return mouseWheelScrolled;
-  };
+};
 
 // export default function useMouseWheelX(target?: EventTarget | null) {
 //     const [mouseWheelScrolled, setMouseWheelScrolled] = useState<{
