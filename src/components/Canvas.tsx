@@ -77,11 +77,11 @@ function Canvas() {
         console.log('=========new wheel', event);
     }, ref2, true);
 
-    // const mouseWheel2 = useMouseWheelX(); //ref2.current
-    // const mouseWheel3 = useMouseWheelY();
-    // const mouseWheel1 = useMouseWheel();
-    // const mouseWheel4 = useMouseWheelZ();
-    // console.log('canvas compare', `org: ${mouseWheel1}, X: ${mouseWheel2}, Y: ${mouseWheel3}, Z: ${mouseWheel4}`);
+    const mouseWheel2 = useMouseWheelX(); //ref2.current
+    const mouseWheel3 = useMouseWheelY();
+    const mouseWheel1 = useMouseWheel();
+    const mouseWheel4 = useMouseWheelZ();
+    console.log('canvas compare', `org: ${mouseWheel1}, X: ${mouseWheel2}, Y: ${mouseWheel3}, Z: ${mouseWheel4}`);
 
     return (
         // <div ref={(el) => el && (ref(el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full -z-10">
