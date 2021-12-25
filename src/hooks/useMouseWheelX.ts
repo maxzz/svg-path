@@ -1,5 +1,26 @@
 import { useEffect, useState } from 'react';
-import { off, on } from 'react-use/esm/misc/util';
+//import { off, on } from 'react-use/esm/misc/util';
+
+
+export const noop = () => {};
+
+export function on<T extends Window | Document | HTMLElement | EventTarget>(
+  obj: T | null,
+  ...args: Parameters<T['addEventListener']> | [string, Function | null, ...any]
+): void {
+  if (obj && obj.addEventListener) {
+    obj.addEventListener(...(args as Parameters<HTMLElement['addEventListener']>));
+  }
+}
+
+export function off<T extends Window | Document | HTMLElement | EventTarget>(
+  obj: T | null,
+  ...args: Parameters<T['removeEventListener']> | [string, Function | null, ...any]
+): void {
+  if (obj && obj.removeEventListener) {
+    obj.removeEventListener(...(args as Parameters<HTMLElement['removeEventListener']>));
+  }
+}
 
 export default function useMouseWheelX(target?: EventTarget | null) {
     const [mouseWheelScrolled, setMouseWheelScrolled] = useState(0);

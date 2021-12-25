@@ -72,8 +72,8 @@ function Canvas() {
     const ref2 = React.useRef<SVGSVGElement>(null);
     //console.log('ref2', ref2);
 
-    // const mouseWheel = useMouseWheelX(); //ref2.current
-    const mouseWheel = useMouseWheel(); //ref2.current
+    const mouseWheel = useMouseWheelX(); //ref2.current
+    // const mouseWheel = useMouseWheel();
     console.log(mouseWheel);
 
     return (
