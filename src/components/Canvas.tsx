@@ -98,6 +98,7 @@ function Canvas() {
 
     /* OK */
     const [zoom, setZoom] = React.useState(0);
+    console.log('zoom', zoom);
 
     const onMouseWheel = React.useCallback((event: WheelEvent) => {
         setZoom(p => {
