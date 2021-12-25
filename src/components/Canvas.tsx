@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import { svgAtom } from '../store/store';
 import { useMeasure, useMouseWheel } from 'react-use';
 import { eventToLocation, getViewPort } from '../svg/svg-utils';
-import useMouseWheelX from '../hooks/useMouseWheelX';
+import { useMouseWheelX, useMouseWheelZ } from '../hooks/useMouseWheelX';
 
 function GridPattern() {
     return (
@@ -73,12 +73,13 @@ function Canvas() {
     //console.log('ref2', ref2);
 
     const mouseWheel = useMouseWheelX(); //ref2.current
+    const mouseWheel3 = useMouseWheelZ();
     const mouseWheel2 = useMouseWheel();
-    console.log(mouseWheel, mouseWheel2);
+    console.log('canvas compare', mouseWheel, mouseWheel2, mouseWheel3);
 
     return (
-        <div ref={(el) => el && (ref(el), console.log('set', el.getBoundingClientRect())) } className="absolute w-full h-full -z-10">
-        {/* <div ref={ref} className="absolute w-full h-full -z-10"> */}
+        <div ref={(el) => el && (ref(el), console.log('set', el.getBoundingClientRect()))} className="absolute w-full h-full -z-10">
+            {/* <div ref={ref} className="absolute w-full h-full -z-10"> */}
             <svg ref={ref2} viewBox={viewPort.port.join(" ")}>
                 <GridPattern />
                 <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="#040d1c" /> #002846

@@ -1,7 +1,7 @@
-import React,{ useEffect, useState } from 'react';
-//import { off, on } from 'react-use/esm/misc/util';
+import React, { useEffect, useState } from 'react';
+import { off, on } from 'react-use/esm/misc/util';
 
-
+/*
 export const noop = () => {};
 
 export function on<T extends Window | Document | HTMLElement | EventTarget>(
@@ -21,8 +21,8 @@ export function off<T extends Window | Document | HTMLElement | EventTarget>(
     obj.removeEventListener(...(args as Parameters<HTMLElement['removeEventListener']>));
   }
 }
-
-export default function useMouseWheelX(target?: EventTarget | null) {
+*/
+export function useMouseWheelX(target?: EventTarget | null) {
     const [mouseWheelScrolled, setMouseWheelScrolled] = useState(0);
 
     useEffect(() => {
@@ -49,6 +49,20 @@ export default function useMouseWheelX(target?: EventTarget | null) {
 
     return mouseWheelScrolled;
 }
+
+
+export function useMouseWheelZ() {
+    const [mouseWheelScrolled, setMouseWheelScrolled] = useState(0);
+    useEffect(() => {
+      const updateScroll = (e: WheelEvent) => {
+        setMouseWheelScrolled(e.deltaY + mouseWheelScrolled);
+      };
+      on(window, 'wheel', updateScroll, false);
+      return () => off(window, 'wheel', updateScroll);
+    });
+    return mouseWheelScrolled;
+  };
+
 // export default function useMouseWheelX(target?: EventTarget | null) {
 //     const [mouseWheelScrolled, setMouseWheelScrolled] = useState<{
 //         delta: number,
@@ -85,29 +99,3 @@ export default function useMouseWheelX(target?: EventTarget | null) {
 
 //     return mouseWheelScrolled;
 // }
-
-export type Element = ((state: boolean) => React.ReactElement<any>) | React.ReactElement<any>;
-
-const useHover = (element: Element): [React.ReactElement<any>, boolean] => {
-  const [state, setState] = useState(false);
-
-  const onMouseEnter = (originalOnMouseEnter?: any) => (event: any) => {
-    (originalOnMouseEnter || noop)(event);
-    setState(true);
-  };
-  const onMouseLeave = (originalOnMouseLeave?: any) => (event: any) => {
-    (originalOnMouseLeave || noop)(event);
-    setState(false);
-  };
-
-  if (typeof element === 'function') {
-    element = element(state);
-  }
-
-  const el = React.cloneElement(element, {
-    onMouseEnter: onMouseEnter(element.props.onMouseEnter),
-    onMouseLeave: onMouseLeave(element.props.onMouseLeave),
-  });
-
-  return [el, state];
-};
