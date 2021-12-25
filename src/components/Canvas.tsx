@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAtom } from 'jotai';
 import { svgAtom } from '../store/store';
-import { useMeasure } from 'react-use';
+import { useMeasure, useMouseWheel } from 'react-use';
 import { eventToLocation, getViewPort } from '../svg/svg-utils';
 import useMouseWheelX from '../hooks/useMouseWheelX';
 
@@ -72,7 +72,8 @@ function Canvas() {
     const ref2 = React.useRef<SVGSVGElement>(null);
     //console.log('ref2', ref2);
 
-    const mouseWheel = useMouseWheelX(ref2.current);
+    // const mouseWheel = useMouseWheelX(); //ref2.current
+    const mouseWheel = useMouseWheel(); //ref2.current
     console.log(mouseWheel);
 
     return (

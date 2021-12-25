@@ -2,13 +2,7 @@ import { useEffect, useState } from 'react';
 import { off, on } from 'react-use/esm/misc/util';
 
 export default function useMouseWheelX(target?: EventTarget | null) {
-    const [mouseWheelScrolled, setMouseWheelScrolled] = useState<{
-        delta: number,
-        event: WheelEvent | null,
-    }>({
-        delta: 0,
-        event: null,
-    });
+    const [mouseWheelScrolled, setMouseWheelScrolled] = useState(0);
 
     useEffect(() => {
         const tt = target;
@@ -17,15 +11,12 @@ export default function useMouseWheelX(target?: EventTarget | null) {
         //debugger
 
         function updateScroll(e: WheelEvent) {
-            console.log('callback wheel', target, tt, mouseWheelScrolled.delta, e.deltaY);
+            console.log('callback wheel', target, tt, mouseWheelScrolled, e.deltaY);
 
-            setMouseWheelScrolled({
-                delta: mouseWheelScrolled.delta + e.deltaY,
-                event: e,
-            });
+            setMouseWheelScrolled(mouseWheelScrolled + e.deltaY);
         };
 
-        on(target || window, 'wheel', updateScroll, true);
+        on(target || window, 'wheel', updateScroll, false);
         // return () => off(target || window, 'wheel', updateScroll);
         return () => {
             console.log('target off', target);
@@ -37,3 +28,39 @@ export default function useMouseWheelX(target?: EventTarget | null) {
 
     return mouseWheelScrolled;
 }
+// export default function useMouseWheelX(target?: EventTarget | null) {
+//     const [mouseWheelScrolled, setMouseWheelScrolled] = useState<{
+//         delta: number,
+//         event: WheelEvent | null,
+//     }>({
+//         delta: 0,
+//         event: null,
+//     });
+
+//     useEffect(() => {
+//         const tt = target;
+
+//         console.log('target on', target);
+//         //debugger
+
+//         function updateScroll(e: WheelEvent) {
+//             console.log('callback wheel', target, tt, mouseWheelScrolled.delta, e.deltaY);
+
+//             setMouseWheelScrolled({
+//                 delta: mouseWheelScrolled.delta + e.deltaY,
+//                 event: e,
+//             });
+//         };
+
+//         on(target || window, 'wheel', updateScroll, false);
+//         // return () => off(target || window, 'wheel', updateScroll);
+//         return () => {
+//             console.log('target off', target);
+//             off(target || window, 'wheel', updateScroll)
+//         };
+//     }, [target]);
+
+//     console.log('target from hook', target);
+
+//     return mouseWheelScrolled;
+// }
