@@ -2,7 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { svgAtom } from '../store/store';
 import { useMeasure } from 'react-use';
-import { getViewPort } from '../svg/svg-utils';
+import { eventToLocation, getViewPort } from '../svg/svg-utils';
 import useMouseWheelX from '../hooks/useMouseWheelX';
 
 function GridPattern() {
@@ -41,6 +41,26 @@ function GridPattern() {
     );
 }
 
+// function mousewheel(event: { deltaY: number; event: WheelEvent, }) {
+//     const scale = Math.pow(1.005, event.deltaY);
+//     const pt = eventToLocation(event.event);
+
+//     this.zoomViewPort(scale, pt);
+// }
+
+// function zoomViewPort(scale: number, pt?: { x: number, y: number; }) {
+//     if (!pt) {
+//         pt = { x: this.viewPortX + 0.5 * this.viewPortWidth, y: this.viewPortY + 0.5 * this.viewPortHeight };
+//     }
+//     const w = scale * this.viewPortWidth;
+//     const h = scale * this.viewPortHeight;
+//     const x = this.viewPortX + ((pt.x - this.viewPortX) - scale * (pt.x - this.viewPortX));
+//     const y = this.viewPortY + ((pt.y - this.viewPortY) - scale * (pt.y - this.viewPortY));
+
+//     this.viewPort.emit({ x, y, w, h });
+// }
+
+
 function Canvas() {
     const [svg] = useAtom(svgAtom);
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
@@ -54,11 +74,11 @@ function Canvas() {
 
     return (
         <div ref={ref} className="absolute w-full h-full -z-10">
-            <svg viewBox={viewPort.box.join(" ")}>
+            <svg viewBox={viewPort.port.join(" ")}>
                 <GridPattern />
-                <rect x={viewPort.box[0]} y={viewPort.box[1]} width="100%" height="100%" fill="#040d1c" /> #002846
-                <rect x={viewPort.box[0]} y={viewPort.box[1]} width="100%" height="100%" fill="url(#grid-patt-c)" />
-                <path d={svg.asString()} fill="white" stroke={"red"} strokeWidth={viewPort.strokeWidth} />
+                <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="#040d1c" /> #002846
+                <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="url(#grid-patt-c)" />
+                <path d={svg.asString()} fill="white" stroke={"red"} strokeWidth={viewPort.stroke} />
             </svg>
         </div>
     );
