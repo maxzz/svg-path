@@ -1,5 +1,5 @@
 import React from 'react';
-import { atom, useAtom } from 'jotai';
+import { atom, SetStateAction, useAtom } from 'jotai';
 import { svgAtom } from '../store/store';
 import { useMeasure, useMouseWheel } from 'react-use';
 import { eventToLocation, getViewPort } from '../svg/svg-utils';
@@ -70,7 +70,7 @@ const zoomAtom = atom(
         console.log('>>>>get zoom', z);
         return z;
     },
-    (get, set, v: number) => {
+    (get, set, v: number | SetStateAction<number>) => {
         const z = get(_zoomAtom);
         console.log('<<<<---set zoom', v, z);
         set(_zoomAtom, v);
@@ -119,17 +119,27 @@ function Canvas() {
     }, []);
     /**/
 
-    /* NO */
+    /* NO * /
     const [zoom, setZoom] = useAtom(zoomAtom);
 
     const onMouseWheel = React.useCallback((event: WheelEvent) => {
         setZoom(zoom + event.deltaY);
-        //setZoom((prev) => prev + event.deltaY);
+        // setZoom((prev) => prev + event.deltaY);
         console.log('=========new wheel', event.deltaY, zoom);
     }, []);
     /**/
 
-    //useEventListener('wheel', onMouseWheel, ref2);
+    /* OK */
+    const [zoom, setZoom] = useAtom(zoomAtom);
+
+    const onMouseWheel = React.useCallback((event: WheelEvent) => {
+        // setZoom(zoom + event.deltaY);
+        setZoom((prev) => prev + event.deltaY);
+        console.log('=========new wheel', event.deltaY, zoom);
+    }, []);
+    /**/
+
+    useEventListener('wheel', onMouseWheel, ref2);
 
     // const mouseWheel2 = useMouseWheelX(); //ref2.current
     // const mouseWheel3 = useMouseWheelY();
@@ -139,7 +149,8 @@ function Canvas() {
 
     return (
         // <div ref={(el) => el && (ref(el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full -z-10">
-        <div ref={(el) => el && (ref(el), (ref2.current = el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full" onWheel={onMouseWheel}>
+        // <div ref={(el) => el && (ref(el), (ref2.current = el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full" onWheel={onMouseWheel}>
+        <div ref={(el) => el && (ref(el), (ref2.current = el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full">
             {/* <div ref={ref} className="absolute w-full h-full -z-10"> */}
             {/* <svg ref={ref2} viewBox={viewPort.port.join(" ")}> */}
             <svg viewBox={viewPort.port.join(" ")}>
