@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { off, on } from 'react-use/esm/misc/util';
+//import { off, on } from 'react-use/esm/misc/util';
 
-/*
+/**/
 export const noop = () => {};
 
 export function on<T extends Window | Document | HTMLElement | EventTarget>(
@@ -21,7 +21,7 @@ export function off<T extends Window | Document | HTMLElement | EventTarget>(
     obj.removeEventListener(...(args as Parameters<HTMLElement['removeEventListener']>));
   }
 }
-*/
+/**/
 export function useMouseWheelX(target?: EventTarget | null) {
     const [mouseWheelScrolled, setMouseWheelScrolled] = useState(0);
 
@@ -57,6 +57,8 @@ export function useMouseWheelY() {
         const updateScroll = (e: WheelEvent) => {
             setMouseWheelScrolled(e.deltaY + mouseWheelScrolled);
         };
+        console.log('---------hook Y', mouseWheelScrolled);
+        
         on(window, 'wheel', updateScroll, false);
         return () => off(window, 'wheel', updateScroll);
     });
@@ -69,6 +71,8 @@ export function useMouseWheelZ() {
         const updateScroll = (e: WheelEvent) => {
             setMouseWheelScrolled(e.deltaY + mouseWheelScrolled);
         };
+        console.log('---------hook Z', mouseWheelScrolled);
+
         on(window, 'wheel', updateScroll, false);
         return () => off(window, 'wheel', updateScroll);
     });
