@@ -64,13 +64,13 @@ function GridPattern() {
 function Canvas() {
     const [svg] = useAtom(svgAtom);
     const [ref, { x, y, left, top, width, height }] = useMeasure<HTMLDivElement>();
-    console.log('measure', { x, y, left, top, width, height });
+    //console.log('measure', { x, y, left, top, width, height });
 
     const viewPort = getViewPort(width, height, svg.targetLocations());
     //console.log(viewPort.box);
 
     const ref2 = React.useRef<SVGSVGElement>(null);
-    console.log('ref2', ref2);
+    //console.log('ref2', ref2);
 
     const mouseWheel = useMouseWheelX(ref2.current);
     //console.log(mouseWheel);

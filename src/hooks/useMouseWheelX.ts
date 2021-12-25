@@ -12,7 +12,7 @@ export default function useMouseWheelX(target?: EventTarget | null) {
 
     useEffect(() => {
         const updateScroll = (e: WheelEvent) => {
-            console.log('target', target);
+            console.log('callback wheel', target);
 
             setMouseWheelScrolled({
                 delta: mouseWheelScrolled.delta + e.deltaY,
@@ -20,9 +20,18 @@ export default function useMouseWheelX(target?: EventTarget | null) {
             });
         };
 
+        console.log('target on', target);
+        //debugger
+
         on(target || window, 'wheel', updateScroll, true);
-        return () => off(target || window, 'wheel', updateScroll);
+        // return () => off(target || window, 'wheel', updateScroll);
+        return () => {
+            console.log('target off', target);
+            off(target || window, 'wheel', updateScroll)
+        };
     }, [target]);
+
+    console.log('target from hook', target);
 
     return mouseWheelScrolled;
 }
