@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAtom } from 'jotai';
+import { atom, useAtom } from 'jotai';
 import { svgAtom } from '../store/store';
 import { useMeasure, useMouseWheel } from 'react-use';
 import { eventToLocation, getViewPort } from '../svg/svg-utils';
@@ -61,6 +61,20 @@ function GridPattern() {
 //     this.viewPort.emit({ x, y, w, h });
 // }
 
+//const zoomAtom = atom(0);
+
+const _zoomAtom = atom(0);
+const zoomAtom = atom(
+    (get) => {
+        const z = get(_zoomAtom);
+        console.log('>>>>get zoom', z);
+        return z;
+    },
+    (get, set, v: number) => {
+        const z = get(_zoomAtom);
+        console.log('<<<<---set zoom', v, z);
+        set(_zoomAtom, v);
+    });
 
 function Canvas() {
     const [svg] = useAtom(svgAtom);
@@ -73,20 +87,47 @@ function Canvas() {
     const ref2: any = React.useRef<SVGSVGElement>(null);
     //console.log('ref2', ref2);
 
-    /*
+    /* NO * /
     const [zoom, setZoom] = React.useState(0);
 
     const onMouseWheel = React.useCallback((event: WheelEvent) => {
         setZoom(p => p + event.deltaY);
         console.log('=========new wheel', event.deltaY, zoom);
     }, []);
-    */
+    /**/
+
+    /* NO */
+    const [zoom, setZoom] = React.useState(0);
+
+    const refValue = React.useRef(zoom);
+    React.useEffect(() => {
+        refValue.current = zoom;
+    }, [zoom]);
+
+    const onMouseWheel = React.useCallback((event: WheelEvent) => {
+        setZoom(p => refValue.current + event.deltaY);
+        console.log('=========new wheel', event.deltaY, zoom);
+    }, []);
+    /**/
+
+    /* OK * /
     const zoom = React.useRef(0);
 
     const onMouseWheel = React.useCallback((event: WheelEvent) => {
         zoom.current = zoom.current + event.deltaY;
         console.log('=========new wheel', event.deltaY, zoom);
     }, []);
+    /**/
+
+    /* NO * /
+    const [zoom, setZoom] = useAtom(zoomAtom);
+
+    const onMouseWheel = React.useCallback((event: WheelEvent) => {
+        setZoom(zoom + event.deltaY);
+        //setZoom((prev) => prev + event.deltaY);
+        console.log('=========new wheel', event.deltaY, zoom);
+    }, []);
+    /**/
 
     useEventListener('wheel', onMouseWheel, ref2);
 
