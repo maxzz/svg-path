@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAtom } from 'jotai';
 import { svgAtom } from '../store/store';
-import { useMeasure } from 'react-use';
+import { useMeasure, useMouseWheel } from 'react-use';
 import { getViewPort } from '../svg/svg-utils';
 
 function GridPattern() {
@@ -47,6 +47,9 @@ function Canvas() {
 
     const viewPort = getViewPort(width, height, svg.targetLocations());
     //console.log(viewPort.box);
+
+    const mouseWheel = useMouseWheel();
+    console.log(mouseWheel);
 
     return (
         <div ref={ref} className="absolute w-full h-full -z-10">
