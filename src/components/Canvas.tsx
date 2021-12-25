@@ -63,8 +63,8 @@ function GridPattern() {
 
 function Canvas() {
     const [svg] = useAtom(svgAtom);
-    const [ref, { width, height }] = useMeasure<HTMLDivElement>();
-    //console.log({ width, height });
+    const [ref, { x, y, left, top, width, height }] = useMeasure<HTMLDivElement>();
+    console.log('measure', { x, y, left, top, width, height });
 
     const viewPort = getViewPort(width, height, svg.targetLocations());
     //console.log(viewPort.box);
@@ -73,7 +73,8 @@ function Canvas() {
     console.log(mouseWheel);
 
     return (
-        <div ref={ref} className="absolute w-full h-full -z-10">
+        <div ref={(el) => el && (ref(el), console.log('set', el.getBoundingClientRect())) } className="absolute w-full h-full -z-10">
+        {/* <div ref={ref} className="absolute w-full h-full -z-10"> */}
             <svg viewBox={viewPort.port.join(" ")}>
                 <GridPattern />
                 <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="#040d1c" /> #002846
