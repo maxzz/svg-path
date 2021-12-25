@@ -96,7 +96,7 @@ function Canvas() {
     }, []);
     /**/
 
-    /* NO */
+    /* NO * /
     const [zoom, setZoom] = React.useState(0);
 
     const refValue = React.useRef(zoom);
@@ -119,7 +119,7 @@ function Canvas() {
     }, []);
     /**/
 
-    /* NO * /
+    /* NO */
     const [zoom, setZoom] = useAtom(zoomAtom);
 
     const onMouseWheel = React.useCallback((event: WheelEvent) => {
