@@ -71,13 +71,24 @@ function Canvas() {
     //console.log(viewPort.box);
 
     const ref2: any = React.useRef<SVGSVGElement>(null);
-    console.log('ref2', ref2);
+    //console.log('ref2', ref2);
+
+    /*
+    const [zoom, setZoom] = React.useState(0);
 
     const onMouseWheel = React.useCallback((event: WheelEvent) => {
-        console.log('=========new wheel', event);
-    }, [])
+        setZoom(p => p + event.deltaY);
+        console.log('=========new wheel', event.deltaY, zoom);
+    }, []);
+    */
+    const zoom = React.useRef(0);
 
-    useEventListener('wheel', onMouseWheel, ref2, true);
+    const onMouseWheel = React.useCallback((event: WheelEvent) => {
+        zoom.current = zoom.current + event.deltaY;
+        console.log('=========new wheel', event.deltaY, zoom);
+    }, []);
+
+    useEventListener('wheel', onMouseWheel, ref2);
 
     // const mouseWheel2 = useMouseWheelX(); //ref2.current
     // const mouseWheel3 = useMouseWheelY();
