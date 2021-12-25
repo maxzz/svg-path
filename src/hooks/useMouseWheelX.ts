@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { off, on } from 'react-use/esm/misc/util';
 
-export default () => {
+export default function useMouseWheelX(target?: HTMLElement | SVGElement) {
     const [mouseWheelScrolled, setMouseWheelScrolled] = useState<{
         delta: number,
         event: WheelEvent | null,
@@ -17,10 +17,11 @@ export default () => {
                 event: e,
             });
         };
+        console.log('target', target);
 
-        on(window, 'wheel', updateScroll, false);
-        return () => off(window, 'wheel', updateScroll);
+        on(target || window, 'wheel', updateScroll, false);
+        return () => off(target || window, 'wheel', updateScroll);
     });
 
     return mouseWheelScrolled;
-};
+}
