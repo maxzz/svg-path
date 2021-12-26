@@ -1,82 +1,51 @@
-
 /**
-  * 防抖
-  * （当持续触发事件时，
-  * 一定时间段内没有再触发事件，
-  * 事件处理函数才会执行一次，
-  * 如果设定的时间到来之前，
-  * 又一次触发了事件，
-  * 就重新开始延时）
-  * @param fn 函数
-  * @param wait 延时毫秒数
-  * @param immediate 是否立即执行
-  */
-/* istanbul ignore next */
-export function debounce<T extends Function>(fn: T, wait: number, immediate: boolean = false): (T & { cancle(): void; }) { // eslint-disable-line
-    let handle: number, ret = null;
+ * Throttle execution of a function. Especially useful for rate limiting
+ * execution of handlers on events like resize and scroll.
+ *
+ * @param  {Function}  fn             A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
+ *                                    to `callback` when the throttled-function is executed.
+ * @param  {Number}    delay          A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
+ *
+ * @return {Function}  A new, throttled, function.
+ * 
+ * https://github.com/antfu/vueuse/blob/master/packages/core/useThrottleFn/index.ts
+ */
+export default function throttle<T extends Function>(fn: T, delay = 200, trailing = true): T {
+    if (delay <= 0) {
+        return fn;
+    }
 
-    const debounced = function () {
-        clearTimeout(handle);
-        if (immediate === true) {
-            if (!handle) {
-                ret = fn(...arguments); // eslint-disable-line
-            }
-            handle = setTimeout(() => fn(...arguments), wait); // eslint-disable-line
-        } else {
-            handle = setTimeout(() => fn(...arguments), wait); // eslint-disable-line
+    let lastExec = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let lastThis: any;
+    let lastArgs: any[];
+
+    function clear() {
+        if (timer) {
+            clearTimeout(timer);
+            timer = undefined;
         }
-        return ret;
-    };
+    }
 
-    debounced.cancal = function () {
-        clearTimeout(handle);
-        handle = 0;
-    };
+    function timeoutCallback() {
+        clear();
+        fn.apply(lastThis, lastArgs);
+    }
 
-    return debounced as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-}
+    function wrapper(this: any, ...args: any[]) {
+        const elapsed = Date.now() - lastExec;
 
-/**
-  * 节流
-  * （当持续触发事件时，
-  * 保证一定时间段内只调用一次事件处理函数）
-  * @param fn 函数
-  * @param wait 间隔毫秒数
-  * @param options 配置项
-  */
-/* istanbul ignore next */
-export function throttle<T extends Function>(fn: T, wait: number, { // eslint-disable-line
-    leading = true,
-    trailing = true
-} = {}): (T & { cancle(): void; }) {
-    let handle: number, previous = 0;
+        clear();
 
-    const throttled = function () {
-        const now = Date.now();
-        if (!previous && !leading) {
-            previous = now;
+        if (elapsed > delay) {
+            lastExec = Date.now();
+            fn.apply(this, args);
+        } else if (trailing) {
+            lastArgs = args;
+            lastThis = this;
+            timer = setTimeout(timeoutCallback, delay);
         }
-        const remaining = wait - (now - previous);
-        if (remaining <= 0 || remaining > wait) {
-            if (handle) {
-                clearTimeout(handle);
-                handle = 0;
-            }
-            previous = now;
-            fn(...arguments); // eslint-disable-line
-        } else if (!handle && trailing) {
-            handle = setTimeout(() => {
-                previous = !leading ? 0 : Date.now();
-                handle = 0;
-                fn(...arguments); // eslint-disable-line
-            }, remaining);
-        }
-    };
-    
-    throttled.cancle = function () {
-        clearTimeout(handle);
-        previous = 0;
-        handle = 0;
-    };
-    return throttled as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    }
+
+    return (wrapper as any) as T;
 }

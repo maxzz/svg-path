@@ -4,6 +4,7 @@ import { atom, SetStateAction, useAtom } from 'jotai';
 import { svgAtom } from '../store/store';
 import { useMeasure } from 'react-use';
 import { CanvasSize, eventToLocation, getViewPort, nullCanvesSize, ViewBox, ViewPoint } from '../svg/svg-utils';
+import throttle from '../utils/throttle';
 
 function GridPattern() {
     return (
@@ -83,9 +84,14 @@ function Canvas() {
     const [zoom, setZoom] = useAtom(zoomAtom);
 
     React.useEffect(() => {
-        const newZoom = Math.pow(1.005, zoom);
-        const newPort = zoomViewPort(canvasSize.port, newZoom);
-        setCanvasSize((prev) => ({ ...prev, port: newPort, }));
+        console.log('zoom', zoom);
+        const fn = throttle(() => {
+            console.log('throttle', zoom);
+            const newZoom = Math.pow(1.005, zoom);
+            const newPort = zoomViewPort(canvasSize.port, newZoom);
+            setCanvasSize((prev) => ({ ...prev, port: newPort, }));
+        });
+        fn();
     }, [zoom]);
 
     //console.log('ini', zoom, canvasSize.port);
