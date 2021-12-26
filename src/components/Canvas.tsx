@@ -151,7 +151,8 @@ function Canvas() {
     }, []);
     /**/
 
-    useEventListener('wheel', onMouseWheel, ref2);
+    //useEventListener('wheel', onMouseWheel, ref2);
+    useEventListener(ref2.current, 'wheel', onMouseWheel);
 
     // const mouseWheel2 = useMouseWheelX(); //ref2.current
     // const mouseWheel3 = useMouseWheelY();
