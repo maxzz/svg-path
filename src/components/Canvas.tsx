@@ -42,27 +42,28 @@ function GridPattern() {
     );
 }
 
+function zoomViewPort(canvasSize: CanvasSize, scale: number, pt?: { x: number, y: number; }) {
+    const [viewPortX, viewPortY, viewPortWidth, viewPortHeight] = canvasSize.port;
+    
+    pt = pt || {
+        x: viewPortX + 0.5 * viewPortWidth,
+        y: viewPortY + 0.5 * viewPortHeight
+    };
+
+    const x = viewPortX + ((pt.x - viewPortX) - scale * (pt.x - viewPortX));
+    const y = viewPortY + ((pt.y - viewPortY) - scale * (pt.y - viewPortY));
+    const w = scale * viewPortWidth;
+    const h = scale * viewPortHeight;
+
+    return [x, y, w, h];
+}
+
 function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDeltaY: number, event: WheelEvent) {
     const scale = Math.pow(1.005, accDeltaY);
     const pt = eventToLocation(canvasSize, canvasContainer, event);
     console.log('scale', scale, 'pt', pt);
 
     return zoomViewPort(canvasSize, scale, pt);
-}
-
-function zoomViewPort(canvasSize: CanvasSize, scale: number, pt?: { x: number, y: number; }) {
-    const [viewPortX, viewPortY, viewPortWidth, viewPortHeight] = canvasSize.port;
-    pt = pt || {
-        x: viewPortX + 0.5 * viewPortWidth,
-        y: viewPortY + 0.5 * viewPortHeight
-    };
-
-    const w = scale * viewPortWidth;
-    const h = scale * viewPortHeight;
-    const x = viewPortX + ((pt.x - viewPortX) - scale * (pt.x - viewPortX));
-    const y = viewPortY + ((pt.y - viewPortY) - scale * (pt.y - viewPortY));
-
-    return [x, y, w, h];
 }
 
 const zoomAtom = atom(0);
@@ -78,20 +79,6 @@ function Canvas() {
 
     //console.log('ini', zoom, canvasSize.port);
 
-    /* OK * /
-    const cb = React.useCallback((event: WheelEvent) => {
-        setZoom((prev) => {
-            //mousewheel(canvasSize, )
-            console.log(canvasSize.port);
-
-            return prev + event.deltaY;
-        });
-    }, []);
-
-    useEventListener('wheel', cb, parentRef);
-    /**/
-
-    /* OK */
     const cb = React.useCallback((event: React.WheelEvent) => {
         if (parentRef.current) {
             setZoom((prev) => {
@@ -102,23 +89,9 @@ function Canvas() {
             });
         }
     }, [canvasSize, ref]);
-    /**/
-
-    /* OK * /
-    const cb = (event: React.WheelEvent) => {
-        setZoom((prev) => {
-            //mousewheel(canvasSize, )
-            console.log(canvasSize.port);
-
-            return prev + event.deltaY;
-        });
-    };
-    /**/
 
     return (
         // <div ref={parentRef} className="absolute w-full h-full -z-10">
-        // <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full">
-        // <div ref={ref} className="absolute w-full h-full" onWheel={cb}>
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full" onWheel={cb}>
             <svg viewBox={canvasSize.port.join(" ")}>
                 <GridPattern />
