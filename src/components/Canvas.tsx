@@ -74,6 +74,8 @@ function Canvas() {
 
     const parentRef = React.useRef<HTMLDivElement>();
     const [zoom, setZoom] = useAtom(zoomAtom);
+
+    /* OK * /
     const cb = React.useCallback((event: WheelEvent) => {
         setZoom((prev) => {
             //mousewheel(canvasSize, )
@@ -84,11 +86,34 @@ function Canvas() {
     }, []);
 
     useEventListener('wheel', cb, parentRef);
+    /**/
+
+    /* NO * /
+    const cb = React.useCallback((event: React.WheelEvent) => {
+        setZoom((prev) => {
+            //mousewheel(canvasSize, )
+            console.log(canvasSize.port);
+
+            return prev + event.deltaY;
+        });
+    }, []);
+    /**/
+
+    /* OK */
+    const cb = (event: React.WheelEvent) => {
+        setZoom((prev) => {
+            //mousewheel(canvasSize, )
+            console.log(canvasSize.port);
+
+            return prev + event.deltaY;
+        });
+    };
+    /**/
 
     return (
         // <div ref={parentRef} className="absolute w-full h-full -z-10">
-        // <div ref={parentRef} className="absolute w-full h-full" onWheel={onMouseWheel}>
-        <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full">
+        <div ref={ref} className="absolute w-full h-full" onWheel={cb}>
+            {/* <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full"> */}
             <svg viewBox={canvasSize.port.join(" ")}>
                 <GridPattern />
                 <rect x={canvasSize.port[0]} y={canvasSize.port[1]} width="100%" height="100%" fill="#040d1c" /> #002846
