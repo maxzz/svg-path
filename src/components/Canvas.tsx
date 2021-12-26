@@ -83,7 +83,8 @@ function Canvas() {
     const [zoom, setZoom] = useAtom(zoomAtom);
 
     React.useEffect(() => {
-        const newPort = zoomViewPort(canvasSize.port, zoom);
+        const newZoom = Math.pow(1.005, zoom);
+        const newPort = zoomViewPort(canvasSize.port, newZoom);
         setCanvasSize((prev) => ({
             ...prev,
             port: newPort,
