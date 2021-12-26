@@ -84,7 +84,7 @@ function Canvas() {
     const viewPort = getViewPort(width, height, svg.targetLocations());
     //console.log(viewPort.box);
 
-    const ref2: any = React.useRef<SVGSVGElement>(null);
+    const ref2 = React.useRef<SVGElement>(null);
     //console.log('ref2', ref2);
 
     /* NO * /
