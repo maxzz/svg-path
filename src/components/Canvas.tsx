@@ -83,15 +83,21 @@ function Canvas() {
     const parentRef = React.useRef<HTMLDivElement>();
     const [zoom, setZoom] = useAtom(zoomAtom);
 
+    const cbSetZoom = React.useCallback(throttle((newPort: ViewBox) => {
+        console.log('throttle', zoom);
+        setCanvasSize((prev) => ({ ...prev, port: newPort, }));
+    }), []);
+
     React.useEffect(() => {
+        // const newZoom = Math.pow(1.005, zoom);
+        // const newPort = zoomViewPort(canvasSize.port, newZoom);
+        // setCanvasSize((prev) => ({ ...prev, port: newPort, }));
+
+        const newZoom = Math.pow(1.005, zoom);
+        const newPort = zoomViewPort(canvasSize.port, newZoom);
+
         console.log('zoom', zoom);
-        const fn = throttle(() => {
-            console.log('throttle', zoom);
-            const newZoom = Math.pow(1.005, zoom);
-            const newPort = zoomViewPort(canvasSize.port, newZoom);
-            setCanvasSize((prev) => ({ ...prev, port: newPort, }));
-        });
-        fn();
+        cbSetZoom(newPort)
     }, [zoom]);
 
     //console.log('ini', zoom, canvasSize.port);
