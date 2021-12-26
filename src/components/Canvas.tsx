@@ -69,16 +69,15 @@ function Canvas() {
     const [svg] = useAtom(svgAtom);
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
 
-    const canvasSizeRef = useCommittedRef(getViewPort(width, height, svg.targetLocations()));
-    const canvasSize = canvasSizeRef.current;
-    console.log('ini', canvasSize);
+    const canvasSize = React.useMemo(() => getViewPort(width, height, svg.targetLocations()), [width, height, svg]);
+    console.log('ini', canvasSize.port);
 
     const parentRef = React.useRef<HTMLDivElement>();
     const [zoom, setZoom] = useAtom(zoomAtom);
     const cb = React.useCallback((event: WheelEvent) => {
         setZoom((prev) => {
             //mousewheel(canvasSize, )
-            console.log(canvasSizeRef.current.port);
+            console.log(canvasSize.port);
 
             return prev + event.deltaY;
         });
