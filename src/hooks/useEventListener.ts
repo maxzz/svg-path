@@ -1,6 +1,11 @@
 import { useEffect, useRef } from "react";
 
-type KeysMap = HTMLElementEventMap | SVGElementEventMap | DocumentAndElementEventHandlers;
+type KeysMap = DocumentEventMap;
+
+type EventHandler<T, K extends keyof DocumentEventMap> = (
+    this: T,
+    ev: DocumentEventMap[K],
+  ) => any
 
 // export function useEventListener<T extends SVGElement, K extends keyof SVGElementEventMap>(
 //     type: K,
@@ -16,9 +21,9 @@ type KeysMap = HTMLElementEventMap | SVGElementEventMap | DocumentAndElementEven
 //     options?: boolean | AddEventListenerOptions
 // ): void;
 
-export function useEventListener<T extends HTMLElement | SVGElement, K extends keyof KeysMap>(
+export function useEventListener<T extends Element | Document | Window, K extends keyof DocumentEventMap>(
     type: K,
-    listener: (this: HTMLElement | SVGElement, ev: KeysMap[K]) => any,
+    listener: EventHandler<T, K>,
     ref: React.RefObject<T | null>,
     options?: boolean | AddEventListenerOptions
 ): void {
