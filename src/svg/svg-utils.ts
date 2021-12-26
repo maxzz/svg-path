@@ -14,8 +14,9 @@ function getPointsBoundingBox(targetPoints: SvgPoint[]): { xmin: number; ymin: n
     return { xmin, ymin, xmax, ymax, };
 }
 
-type ViewSize = { w: number; h: number; };
-type ViewBox = [x: number, y: number, w: number, h: number];
+export type ViewPoint = { x: number; y: number; };
+export type ViewSize = { w: number; h: number; };
+export type ViewBox = [x: number, y: number, w: number, h: number];
 
 export type CanvasSize = {
     size: ViewSize; // canvas size

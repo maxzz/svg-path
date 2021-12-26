@@ -1,10 +1,9 @@
 import React from 'react';
+import { mergeRef } from '../hooks/utils';
 import { atom, SetStateAction, useAtom } from 'jotai';
 import { svgAtom } from '../store/store';
-import { useMeasure, useMouseWheel } from 'react-use';
-import { CanvasSize, eventToLocation, getViewPort } from '../svg/svg-utils';
-import { useCommittedRef, useEventListener } from '../hooks/useEventListener';
-import { mergeRef } from '../hooks/utils';
+import { useMeasure } from 'react-use';
+import { CanvasSize, eventToLocation, getViewPort, ViewBox, ViewPoint } from '../svg/svg-utils';
 
 function GridPattern() {
     return (
@@ -42,9 +41,9 @@ function GridPattern() {
     );
 }
 
-function zoomViewPort(canvasSize: CanvasSize, scale: number, pt?: { x: number, y: number; }) {
-    const [viewPortX, viewPortY, viewPortWidth, viewPortHeight] = canvasSize.port;
-    
+function zoomViewPort(viewBox: ViewBox, scale: number, pt?: ViewPoint) {
+    const [viewPortX, viewPortY, viewPortWidth, viewPortHeight] = viewBox;
+
     pt = pt || {
         x: viewPortX + 0.5 * viewPortWidth,
         y: viewPortY + 0.5 * viewPortHeight
@@ -63,7 +62,7 @@ function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDel
     const pt = eventToLocation(canvasSize, canvasContainer, event);
     console.log('scale', scale, 'pt', pt);
 
-    return zoomViewPort(canvasSize, scale, pt);
+    return zoomViewPort(canvasSize.port, scale, pt);
 }
 
 const zoomAtom = atom(0);
@@ -72,7 +71,10 @@ function Canvas() {
     const [svg] = useAtom(svgAtom);
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
 
-    const canvasSize = React.useMemo(() => getViewPort(width, height, svg.targetLocations()), [width, height, svg]);
+    const canvasSize = React.useMemo(() => {
+        const newCanvasSize = getViewPort(width, height, svg.targetLocations());
+        return newCanvasSize;
+    }, [width, height, svg]);
 
     const parentRef = React.useRef<HTMLDivElement>();
     const [zoom, setZoom] = useAtom(zoomAtom);
