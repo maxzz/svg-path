@@ -3,7 +3,6 @@ import { atom, SetStateAction, useAtom } from 'jotai';
 import { svgAtom } from '../store/store';
 import { useMeasure, useMouseWheel } from 'react-use';
 import { eventToLocation, getViewPort } from '../svg/svg-utils';
-import { useMouseWheelX, useMouseWheelY, useMouseWheelZ } from '../hooks/useMouseWheelX';
 import { useEventListener } from '../hooks/useEventListener';
 
 function GridPattern() {
