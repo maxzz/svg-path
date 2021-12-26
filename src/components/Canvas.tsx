@@ -85,10 +85,7 @@ function Canvas() {
     React.useEffect(() => {
         const newZoom = Math.pow(1.005, zoom);
         const newPort = zoomViewPort(canvasSize.port, newZoom);
-        setCanvasSize((prev) => ({
-            ...prev,
-            port: newPort,
-        }));
+        setCanvasSize((prev) => ({ ...prev, port: newPort, }));
     }, [zoom]);
 
     //console.log('ini', zoom, canvasSize.port);
@@ -96,8 +93,8 @@ function Canvas() {
     const cb = React.useCallback((event: React.WheelEvent) => {
         if (parentRef.current) {
             setZoom((prev) => {
-                const newPort = mousewheel(canvasSize, parentRef.current!, prev + event.deltaY, event.nativeEvent);
-                console.log('cb', prev + event.deltaY, canvasSize.port, newPort);
+                //const newPort = mousewheel(canvasSize, parentRef.current!, prev + event.deltaY, event.nativeEvent);
+                //console.log('cb', prev + event.deltaY, canvasSize.port, newPort);
 
                 return prev + event.deltaY;
             });
