@@ -39,6 +39,7 @@ export function useEventListener<K extends keyof WindowEventMap>(
 ): void {
     const savedListener = useRef<(evt: WindowEventMap[K]) => void>();
     useEffect(() => {
+        console.log('ev3333333333333');
         savedListener.current = listener;
     }, [listener]);
 
