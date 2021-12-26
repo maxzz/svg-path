@@ -69,16 +69,13 @@ function Canvas() {
     const viewPort = getViewPort(width, height, svg.targetLocations());
 
     const parentRef = React.useRef<HTMLDivElement>(null);
-    
+
     const [zoom, setZoom] = useAtom(zoomAtom);
-    console.log('zoom', zoom);
-    
 
     const cb = React.useCallback((event: WheelEvent) => {
-        // setZoom((prev) => prev + event.deltaY);
         setZoom((prev) => {
-            console.log('ev', prev + event.deltaY);
-            return prev + event.deltaY});
+            return prev + event.deltaY;
+        });
     }, []);
 
     useEventListener('wheel', cb);
