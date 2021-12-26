@@ -88,7 +88,7 @@ function Canvas() {
     useEventListener('wheel', cb, parentRef);
     /**/
 
-    /* NO * /
+    /* OK */
     const cb = React.useCallback((event: React.WheelEvent) => {
         setZoom((prev) => {
             //mousewheel(canvasSize, )
@@ -96,10 +96,10 @@ function Canvas() {
 
             return prev + event.deltaY;
         });
-    }, []);
+    }, [canvasSize]);
     /**/
 
-    /* OK */
+    /* OK * /
     const cb = (event: React.WheelEvent) => {
         setZoom((prev) => {
             //mousewheel(canvasSize, )
