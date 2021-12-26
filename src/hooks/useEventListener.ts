@@ -1,18 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { getRefElement, isSSR } from "./utils";
 
-//https://github.com/react-restart/hooks/blob/master/src/useEventListener.ts
-//https://tobbelindstrom.com/blog/useEventListener
-
-/**
- * Creates a `Ref` whose value is updated in an effect, ensuring the most recent
- * value is the one rendered with. Generally only required for Concurrent mode usage
- * where previous work in `render()` may be discarded before being used.
- *
- * This is safe to access in an event handler.
- *
- * @param value The `Ref` value
- */
 export function useCommittedRef<TValue>(value: TValue): React.MutableRefObject<TValue> {
     const ref = useRef(value);
     useEffect(() => {
@@ -39,7 +27,6 @@ export function useEventListener<K extends keyof WindowEventMap>(
 ): void {
     const savedListener = useRef<(evt: WindowEventMap[K]) => void>();
     useEffect(() => {
-        console.log('ev3333333333333');
         savedListener.current = listener;
     }, [listener]);
 
