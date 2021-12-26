@@ -73,22 +73,21 @@ function Canvas() {
     const [zoom, setZoom] = useAtom(zoomAtom);
 
     const cb = React.useCallback((event: WheelEvent) => {
-        console.log('ev', event.deltaY);
         setZoom((prev) => prev + event.deltaY);
     }, []);
 
     useEventListener('wheel', cb);
 
     return (
-        // <div ref={(el) => el && (ref(el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full -z-10">
-        // <div ref={(el) => el && (ref(el), (parentRef.current = el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full" onWheel={onMouseWheel}>
+        // <div ref={parentRef} className="absolute w-full h-full -z-10">
+        // <div ref={parentRef} className="absolute w-full h-full" onWheel={onMouseWheel}>
         <div ref={parentRef} className="absolute w-full h-full">
             {/* <div ref={ref} className="absolute w-full h-full -z-10"> */}
             {/* <svg ref={parentRef} viewBox={viewPort.port.join(" ")}> */}
             <svg viewBox={viewPort.port.join(" ")}>
                 <GridPattern />
-                {/* <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="#040d1c" /> #002846
-                <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="url(#grid-patt-c)" /> */}
+                <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="#040d1c" /> #002846
+                <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="url(#grid-patt-c)" />
                 <path d={svg.asString()} fill="white" stroke={"red"} strokeWidth={viewPort.stroke} />
             </svg>
         </div>
