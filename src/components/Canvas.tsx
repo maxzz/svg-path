@@ -78,81 +78,11 @@ const zoomAtom = atom(
 
 function Canvas() {
     const [svg] = useAtom(svgAtom);
-    const [ref, { x, y, left, top, width, height }] = useMeasure<HTMLDivElement>();
-    //console.log('measure', { x, y, left, top, width, height });
+    const [ref, { width, height }] = useMeasure<HTMLDivElement>();
 
     const viewPort = getViewPort(width, height, svg.targetLocations());
-    //console.log(viewPort.box);
 
-    const ref2 = React.useRef<SVGElement>(null);
-    //console.log('ref2', ref2);
-
-    /* NO * /
-    const [zoom, setZoom] = React.useState(0);
-
-    const onMouseWheel = React.useCallback((event: WheelEvent) => {
-        setZoom(p => p + event.deltaY);
-        console.log('=========new wheel', event.deltaY, zoom);
-    }, []);
-    /**/
-
-    /* OK * /
-    const [zoom, setZoom] = React.useState(0);
-    console.log('zoom', zoom);
-
-    const onMouseWheel = React.useCallback((event: WheelEvent) => {
-        setZoom(p => {
-            console.log('=========new wheel', event.deltaY, p);
-            return p + event.deltaY;
-        });
-    }, []);
-    /**/
-
-    /* NO * /
-    const [zoom, setZoom] = React.useState(0);
-
-    const refValue = React.useRef(zoom);
-    React.useEffect(() => {
-        refValue.current = zoom;
-    }, [zoom]);
-
-    const onMouseWheel = React.useCallback((event: WheelEvent) => {
-        setZoom(p => refValue.current + event.deltaY);
-        console.log('=========new wheel', event.deltaY, zoom);
-    }, []);
-    /**/
-
-    /* OK * /
-    const zoom = React.useRef(0);
-
-    const onMouseWheel = React.useCallback((event: WheelEvent) => {
-        zoom.current = zoom.current + event.deltaY;
-        console.log('=========new wheel', event.deltaY, zoom);
-    }, []);
-    /**/
-
-    /* NO * /
-    const [zoom, setZoom] = useAtom(zoomAtom);
-
-    const onMouseWheel = React.useCallback((event: WheelEvent) => {
-        setZoom(zoom + event.deltaY);
-        // setZoom((prev) => prev + event.deltaY);
-        console.log('=========new wheel', event.deltaY, zoom);
-    }, []);
-    /**/
-
-    /* OK * /
-    const [zoom, setZoom] = useAtom(zoomAtom);
-
-    const onMouseWheel = React.useCallback((event: WheelEvent) => {
-        // setZoom(zoom + event.deltaY);
-        setZoom((prev) => prev + event.deltaY);
-        console.log('=========new wheel', event.deltaY, zoom);
-    }, []);
-    /**/
-
-    //useEventListener('wheel', onMouseWheel, ref2);
-    //useEventListener(ref2.current, 'wheel', onMouseWheel);
+    const ref2 = React.useRef<HTMLDivElement>();
     
     const [zoom, setZoom] = useAtom(zoomAtom);
 
@@ -162,12 +92,6 @@ function Canvas() {
     }, []);
 
     useEventListener('wheel', cb);
-
-    // const mouseWheel2 = useMouseWheelX(); //ref2.current
-    // const mouseWheel3 = useMouseWheelY();
-    // const mouseWheel1 = useMouseWheel();
-    // const mouseWheel4 = useMouseWheelZ();
-    // console.log('canvas compare', `org: ${mouseWheel1}, X: ${mouseWheel2}, Y: ${mouseWheel3}, Z: ${mouseWheel4}`);
 
     return (
         // <div ref={(el) => el && (ref(el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full -z-10">
