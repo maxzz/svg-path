@@ -47,20 +47,23 @@ function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDel
     const pt = eventToLocation(canvasSize, canvasContainer, event);
     console.log('scale', scale, 'pt', pt);
 
-    //this.zoomViewPort(scale, pt);
+    return zoomViewPort(canvasSize, scale, pt);
 }
 
-// function zoomViewPort(scale: number, pt?: { x: number, y: number; }) {
-//     if (!pt) {
-//         pt = { x: this.viewPortX + 0.5 * this.viewPortWidth, y: this.viewPortY + 0.5 * this.viewPortHeight };
-//     }
-//     const w = scale * this.viewPortWidth;
-//     const h = scale * this.viewPortHeight;
-//     const x = this.viewPortX + ((pt.x - this.viewPortX) - scale * (pt.x - this.viewPortX));
-//     const y = this.viewPortY + ((pt.y - this.viewPortY) - scale * (pt.y - this.viewPortY));
+function zoomViewPort(canvasSize: CanvasSize, scale: number, pt?: { x: number, y: number; }) {
+    const [viewPortX, viewPortY, viewPortWidth, viewPortHeight] = canvasSize.port;
+    pt = pt || {
+        x: viewPortX + 0.5 * viewPortWidth,
+        y: viewPortY + 0.5 * viewPortHeight
+    };
 
-//     this.viewPort.emit({ x, y, w, h });
-// }
+    const w = scale * viewPortWidth;
+    const h = scale * viewPortHeight;
+    const x = viewPortX + ((pt.x - viewPortX) - scale * (pt.x - viewPortX));
+    const y = viewPortY + ((pt.y - viewPortY) - scale * (pt.y - viewPortY));
+
+    return [x, y, w, h];
+}
 
 const zoomAtom = atom(0);
 
@@ -92,12 +95,12 @@ function Canvas() {
     const cb = React.useCallback((event: React.WheelEvent) => {
         if (parentRef.current) {
             setZoom((prev) => {
-                mousewheel(canvasSize, parentRef.current!, prev + event.deltaY, event.nativeEvent);
-                console.log('cb', prev + event.deltaY, canvasSize.port);
-    
+                const newPort = mousewheel(canvasSize, parentRef.current!, prev + event.deltaY, event.nativeEvent);
+                console.log('cb', prev + event.deltaY, canvasSize.port, newPort);
+
                 return prev + event.deltaY;
             });
-            }
+        }
     }, [canvasSize, ref]);
     /**/
 
