@@ -17,7 +17,7 @@ function getPointsBoundingBox(targetPoints: SvgPoint[]): { xmin: number; ymin: n
 type ViewSize = { w: number; h: number; };
 type ViewBox = [x: number, y: number, w: number, h: number];
 
-type CanvasSize = {
+export type CanvasSize = {
     size: ViewSize; // canvas size
     port: ViewBox;  // SVG viewBox
     stroke: number; // SVG stroke scaled width
