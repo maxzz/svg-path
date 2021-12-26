@@ -45,8 +45,7 @@ function GridPattern() {
 function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDeltaY: number, event: WheelEvent) {
     const scale = Math.pow(1.005, accDeltaY);
     const pt = eventToLocation(canvasSize, canvasContainer, event);
-    console.log({ scale, pt });
-
+    console.log('scale', scale, 'pt', pt);
 
     //this.zoomViewPort(scale, pt);
 }
@@ -70,10 +69,11 @@ function Canvas() {
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
 
     const canvasSize = React.useMemo(() => getViewPort(width, height, svg.targetLocations()), [width, height, svg]);
-    console.log('ini', canvasSize.port);
 
     const parentRef = React.useRef<HTMLDivElement>();
     const [zoom, setZoom] = useAtom(zoomAtom);
+
+    //console.log('ini', zoom, canvasSize.port);
 
     /* OK * /
     const cb = React.useCallback((event: WheelEvent) => {
@@ -90,13 +90,15 @@ function Canvas() {
 
     /* OK */
     const cb = React.useCallback((event: React.WheelEvent) => {
-        setZoom((prev) => {
-            //mousewheel(canvasSize, )
-            console.log(canvasSize.port);
-
-            return prev + event.deltaY;
-        });
-    }, [canvasSize]);
+        if (parentRef.current) {
+            setZoom((prev) => {
+                mousewheel(canvasSize, parentRef.current!, prev + event.deltaY, event.nativeEvent);
+                console.log('cb', prev + event.deltaY, canvasSize.port);
+    
+                return prev + event.deltaY;
+            });
+            }
+    }, [canvasSize, ref]);
     /**/
 
     /* OK * /
@@ -112,8 +114,9 @@ function Canvas() {
 
     return (
         // <div ref={parentRef} className="absolute w-full h-full -z-10">
-        <div ref={ref} className="absolute w-full h-full" onWheel={cb}>
-            {/* <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full"> */}
+        // <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full">
+        // <div ref={ref} className="absolute w-full h-full" onWheel={cb}>
+        <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full" onWheel={cb}>
             <svg viewBox={canvasSize.port.join(" ")}>
                 <GridPattern />
                 <rect x={canvasSize.port[0]} y={canvasSize.port[1]} width="100%" height="100%" fill="#040d1c" /> #002846
