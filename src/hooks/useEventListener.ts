@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { getRefElement, isSSR } from "./utils";
 
 //https://github.com/react-restart/hooks/blob/master/src/useEventListener.ts
+//https://tobbelindstrom.com/blog/useEventListener
 
 /**
  * Creates a `Ref` whose value is updated in an effect, ensuring the most recent
@@ -12,7 +13,7 @@ import { getRefElement, isSSR } from "./utils";
  *
  * @param value The `Ref` value
  */
-function useCommittedRef<TValue>(value: TValue): React.MutableRefObject<TValue> {
+export function useCommittedRef<TValue>(value: TValue): React.MutableRefObject<TValue> {
     const ref = useRef(value);
     useEffect(() => {
         ref.current = value;
@@ -20,7 +21,7 @@ function useCommittedRef<TValue>(value: TValue): React.MutableRefObject<TValue> 
     return ref;
 }
 
-function useEventCallback<TCallback extends (...args: any[]) => any>(fn?: TCallback | null): TCallback {
+export function useEventCallback<TCallback extends (...args: any[]) => any>(fn?: TCallback | null): TCallback {
     const ref = useCommittedRef(fn);
     return useCallback(
         function (...args: any[]) {
@@ -30,8 +31,6 @@ function useEventCallback<TCallback extends (...args: any[]) => any>(fn?: TCallb
     ) as any;
 }
 
-//https://tobbelindstrom.com/blog/useEventListener
-
 interface UseEventListener {
     type: keyof WindowEventMap;
     listener: EventListener;
@@ -39,7 +38,7 @@ interface UseEventListener {
     options?: AddEventListenerOptions;
 }
 
-export const useEventListener = ({ type, listener, element = isSSR ? undefined : window, options}: UseEventListener): void => {
+export function useEventListener({ type, listener, element = isSSR ? undefined : window, options }: UseEventListener): void {
     const savedListener = useRef<EventListener>();
 
     useEffect(() => {
