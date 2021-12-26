@@ -68,7 +68,7 @@ function Canvas() {
 
     const viewPort = getViewPort(width, height, svg.targetLocations());
 
-    const ref2 = React.useRef<HTMLDivElement>();
+    const parentRef = React.useRef<HTMLDivElement>();
     
     const [zoom, setZoom] = useAtom(zoomAtom);
 
@@ -81,10 +81,10 @@ function Canvas() {
 
     return (
         // <div ref={(el) => el && (ref(el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full -z-10">
-        // <div ref={(el) => el && (ref(el), (ref2.current = el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full" onWheel={onMouseWheel}>
-        <div ref={(el) => el && (ref(el), (ref2.current = el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full">
+        // <div ref={(el) => el && (ref(el), (parentRef.current = el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full" onWheel={onMouseWheel}>
+        <div ref={(el) => el && (ref(el), (parentRef.current = el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full">
             {/* <div ref={ref} className="absolute w-full h-full -z-10"> */}
-            {/* <svg ref={ref2} viewBox={viewPort.port.join(" ")}> */}
+            {/* <svg ref={parentRef} viewBox={viewPort.port.join(" ")}> */}
             <svg viewBox={viewPort.port.join(" ")}>
                 <GridPattern />
                 {/* <rect x={viewPort.port[0]} y={viewPort.port[1]} width="100%" height="100%" fill="#040d1c" /> #002846
