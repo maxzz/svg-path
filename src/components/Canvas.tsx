@@ -83,7 +83,7 @@ function Canvas() {
     const parentRef = React.useRef<HTMLDivElement>();
     const [zoom, setZoom] = useAtom(zoomAtom);
 
-    const cbSetZoom = React.useCallback(throttle((newPort: ViewBox) => {
+    const cbSetCanvasSize = React.useCallback(throttle((newPort: ViewBox) => {
         console.log('throttle', zoom);
         setCanvasSize((prev) => ({ ...prev, port: newPort, }));
     }), []);
@@ -97,21 +97,34 @@ function Canvas() {
         const newPort = zoomViewPort(canvasSize.port, newZoom);
 
         console.log('zoom', zoom);
-        cbSetZoom(newPort)
+        cbSetCanvasSize(newPort)
     }, [zoom]);
 
     //console.log('ini', zoom, canvasSize.port);
 
+    const cbSetZoomDelta = React.useCallback(throttle((delta: number) => {
+        console.log('throttle delta', delta);
+        setZoom((prev) => {
+            return prev + delta;
+        });        
+    }), []);
+
     const cb = React.useCallback((event: React.WheelEvent) => {
         if (parentRef.current) {
-            setZoom((prev) => {
-                //const newPort = mousewheel(canvasSize, parentRef.current!, prev + event.deltaY, event.nativeEvent);
-                //console.log('cb', prev + event.deltaY, canvasSize.port, newPort);
-
-                return prev + event.deltaY;
-            });
+            cbSetZoomDelta(event.deltaY);
         }
     }, [canvasSize, ref]);
+
+    // const cb = React.useCallback((event: React.WheelEvent) => {
+    //     if (parentRef.current) {
+    //         setZoom((prev) => {
+    //             //const newPort = mousewheel(canvasSize, parentRef.current!, prev + event.deltaY, event.nativeEvent);
+    //             //console.log('cb', prev + event.deltaY, canvasSize.port, newPort);
+
+    //             return prev + event.deltaY;
+    //         });
+    //     }
+    // }, [canvasSize, ref]);
 
     return (
         // <div ref={parentRef} className="absolute w-full h-full -z-10">
