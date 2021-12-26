@@ -22,7 +22,7 @@ export function useEventCallback<TCallback extends (...args: any[]) => any>(fn?:
 export function useEventListener<K extends keyof WindowEventMap>(
     type: K,
     listener: (evt: WindowEventMap[K]) => void,
-    element: React.RefObject<Element> | Document | Window | null | undefined = isSSR ? undefined : window,
+    element: React.RefObject<Element | undefined> | Document | Window | null | undefined = isSSR ? undefined : window,
     options?: AddEventListenerOptions
 ): void {
     const savedListener = useRef<(evt: WindowEventMap[K]) => void>();

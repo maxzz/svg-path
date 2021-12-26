@@ -70,7 +70,7 @@ function Canvas() {
 
     const viewPort = getViewPort(width, height, svg.targetLocations());
 
-    const parentRef = React.useRef<HTMLDivElement>(null);
+    const parentRef = React.useRef<HTMLDivElement>();
 
     const [zoom, setZoom] = useAtom(zoomAtom);
 
