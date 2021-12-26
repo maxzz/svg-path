@@ -61,20 +61,7 @@ function GridPattern() {
 //     this.viewPort.emit({ x, y, w, h });
 // }
 
-//const zoomAtom = atom(0);
-
-const _zoomAtom = atom(0);
-const zoomAtom = atom(
-    (get) => {
-        const z = get(_zoomAtom);
-        console.log('>>>>get zoom', z);
-        return z;
-    },
-    (get, set, v: number | SetStateAction<number>) => {
-        const z = get(_zoomAtom);
-        console.log('<<<<---set zoom', v, z);
-        set(_zoomAtom, v);
-    });
+const zoomAtom = atom(0);
 
 function Canvas() {
     const [svg] = useAtom(svgAtom);
