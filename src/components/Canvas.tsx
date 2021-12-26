@@ -41,7 +41,7 @@ function GridPattern() {
     );
 }
 
-function zoomViewPort(viewBox: ViewBox, scale: number, pt?: ViewPoint) {
+function zoomViewPort(viewBox: ViewBox, scale: number, pt?: ViewPoint): ViewBox {
     const [viewPortX, viewPortY, viewPortWidth, viewPortHeight] = viewBox;
 
     pt = pt || {
@@ -75,16 +75,20 @@ function Canvas() {
 
     React.useEffect(() => {
         const newCanvasSize = getViewPort(width, height, svg.targetLocations());
+        newCanvasSize.port = zoomViewPort(newCanvasSize.port, 2);
         setCanvasSize(newCanvasSize);
-     }, [width, height, svg]);
-
-    // const canvasSize = React.useMemo(() => {
-    //     const newCanvasSize = getViewPort(width, height, svg.targetLocations());
-    //     return newCanvasSize;
-    // }, [width, height, svg]);
+    }, [width, height, svg]);
 
     const parentRef = React.useRef<HTMLDivElement>();
     const [zoom, setZoom] = useAtom(zoomAtom);
+
+    React.useEffect(() => {
+        const newPort = zoomViewPort(canvasSize.port, zoom);
+        setCanvasSize((prev) => ({
+            ...prev,
+            port: newPort,
+        }));
+    }, [zoom]);
 
     //console.log('ini', zoom, canvasSize.port);
 
