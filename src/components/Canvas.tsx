@@ -155,10 +155,10 @@ function Canvas() {
     //useEventListener(ref2.current, 'wheel', onMouseWheel);
     
     const [zoom, setZoom] = useAtom(zoomAtom);
-    useEventListener({type: 'wheel', listener: (event: WheelEvent) => {
+    useEventListener('wheel', (event: WheelEvent) => {
         console.log('ev', event.deltaY);
         setZoom((prev) => prev + event.deltaY);
-    }});
+    });
 
     // const mouseWheel2 = useMouseWheelX(); //ref2.current
     // const mouseWheel3 = useMouseWheelY();
