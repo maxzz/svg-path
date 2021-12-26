@@ -4,6 +4,7 @@ import { svgAtom } from '../store/store';
 import { useMeasure, useMouseWheel } from 'react-use';
 import { eventToLocation, getViewPort } from '../svg/svg-utils';
 import { useEventListener } from '../hooks/useEventListener';
+import { mergeRef } from '../hooks/utils';
 
 function GridPattern() {
     return (
@@ -85,7 +86,8 @@ function Canvas() {
     return (
         // <div ref={parentRef} className="absolute w-full h-full -z-10">
         // <div ref={parentRef} className="absolute w-full h-full" onWheel={onMouseWheel}>
-        <div ref={(el) => el && (ref(el), parentRef.current = el)} className="absolute w-full h-full">
+        // <div ref={(el) => el && (ref(el), parentRef.current = el)} className="absolute w-full h-full">
+        <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full">
             {/* <div ref={ref} className="absolute w-full h-full -z-10"> */}
             {/* <svg ref={parentRef} viewBox={viewPort.port.join(" ")}> */}
             <svg viewBox={viewPort.port.join(" ")}>
