@@ -155,10 +155,13 @@ function Canvas() {
     //useEventListener(ref2.current, 'wheel', onMouseWheel);
     
     const [zoom, setZoom] = useAtom(zoomAtom);
-    useEventListener('wheel', (event: WheelEvent) => {
+
+    const cb = React.useCallback((event: WheelEvent) => {
         console.log('ev', event.deltaY);
         setZoom((prev) => prev + event.deltaY);
-    });
+    }, []);
+
+    useEventListener('wheel', cb);
 
     // const mouseWheel2 = useMouseWheelX(); //ref2.current
     // const mouseWheel3 = useMouseWheelY();
