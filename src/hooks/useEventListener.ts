@@ -39,8 +39,8 @@ interface UseEventListener {
 }
 
 export function useEventListener({ type, listener, element = isSSR ? undefined : window, options }: UseEventListener): void {
-    const savedListener = useRef<EventListener>();
 
+    const savedListener = useRef<EventListener>();
     useEffect(() => {
         savedListener.current = listener;
     }, [listener]);
