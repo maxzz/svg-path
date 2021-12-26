@@ -24,10 +24,12 @@ export type CanvasSize = {
     stroke: number; // SVG stroke scaled width
 };
 
+export const nullCanvesSize: CanvasSize = { size: { w: 0, h: 0 }, port: [0, 0, 0, 0], stroke: 0.001 };
+
 export function getViewPort(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[]): CanvasSize {
 
     if (!canvasWidth || !canvasHeight) {
-        return { size: { w: 0, h: 0 }, port: [0, 0, 0, 0], stroke: 0.001 };
+        return nullCanvesSize;
     }
 
     const box = getPointsBoundingBox(targetPoints);

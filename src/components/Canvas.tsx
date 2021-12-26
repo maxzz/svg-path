@@ -3,7 +3,7 @@ import { mergeRef } from '../hooks/utils';
 import { atom, SetStateAction, useAtom } from 'jotai';
 import { svgAtom } from '../store/store';
 import { useMeasure } from 'react-use';
-import { CanvasSize, eventToLocation, getViewPort, ViewBox, ViewPoint } from '../svg/svg-utils';
+import { CanvasSize, eventToLocation, getViewPort, nullCanvesSize, ViewBox, ViewPoint } from '../svg/svg-utils';
 
 function GridPattern() {
     return (
@@ -71,10 +71,17 @@ function Canvas() {
     const [svg] = useAtom(svgAtom);
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
 
-    const canvasSize = React.useMemo(() => {
+    const [canvasSize, setCanvasSize] = React.useState(nullCanvesSize);
+
+    React.useEffect(() => {
         const newCanvasSize = getViewPort(width, height, svg.targetLocations());
-        return newCanvasSize;
-    }, [width, height, svg]);
+        setCanvasSize(newCanvasSize);
+     }, [width, height, svg]);
+
+    // const canvasSize = React.useMemo(() => {
+    //     const newCanvasSize = getViewPort(width, height, svg.targetLocations());
+    //     return newCanvasSize;
+    // }, [width, height, svg]);
 
     const parentRef = React.useRef<HTMLDivElement>();
     const [zoom, setZoom] = useAtom(zoomAtom);
