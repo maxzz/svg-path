@@ -11,7 +11,7 @@ namespace Storage {
     };
 
     export let initialData: Store = {
-        path: 'M 10 89 L 25 103 Q 52 128 63 93 C -2 26 29 0 100 0 C 83 15 85 52 61 27',
+        path: 'M 0 0 L 25 103 Q 52 128 63 93 C -2 26 29 0 100 0 C 83 15 85 52 61 27',
     };
 
     function load() {

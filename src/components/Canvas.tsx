@@ -115,3 +115,6 @@ function Canvas() {
 }
 
 export default Canvas;
+
+//TODO: throttle
+//zoom, move
