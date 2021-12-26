@@ -31,25 +31,25 @@ export function useEventCallback<TCallback extends (...args: any[]) => any>(fn?:
     ) as any;
 }
 
-export function useEventListener(
-    type: keyof WindowEventMap,
-    listener: EventListener,
+export function useEventListener<K extends keyof WindowEventMap>(
+    type: K,
+    listener: (evt: WindowEventMap[K]) => void,
     element: React.RefObject<Element> | Document | Window | null | undefined = isSSR ? undefined : window,
     options?: AddEventListenerOptions
 ): void {
-    const savedListener = useRef<EventListener>();
+    const savedListener = useRef<(evt: WindowEventMap[K]) => void>();
     useEffect(() => {
         savedListener.current = listener;
     }, [listener]);
 
-    const handleEventListener = useCallback((event: Event) => {
+    const handleEventListener = useCallback((event: WindowEventMap[K]) => {
         savedListener.current?.(event);
     }, []);
 
     useEffect(() => {
         const target = getRefElement(element);
 
-        target?.addEventListener(type, handleEventListener, options);
-        return () => target?.removeEventListener(type, handleEventListener);
+        target?.addEventListener(type, handleEventListener as EventListener, options);
+        return () => target?.removeEventListener(type, handleEventListener as EventListener);
     }, [type, element, options, handleEventListener]);
 }
