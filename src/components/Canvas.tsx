@@ -68,7 +68,7 @@ function Canvas() {
 
     const viewPort = getViewPort(width, height, svg.targetLocations());
 
-    const parentRef = React.useRef<HTMLDivElement>();
+    const parentRef = React.useRef<HTMLDivElement>(null);
     
     const [zoom, setZoom] = useAtom(zoomAtom);
 
@@ -82,7 +82,7 @@ function Canvas() {
     return (
         // <div ref={(el) => el && (ref(el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full -z-10">
         // <div ref={(el) => el && (ref(el), (parentRef.current = el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full" onWheel={onMouseWheel}>
-        <div ref={(el) => el && (ref(el), (parentRef.current = el)/*, console.log('set', el.getBoundingClientRect())*/)} className="absolute w-full h-full">
+        <div ref={parentRef} className="absolute w-full h-full">
             {/* <div ref={ref} className="absolute w-full h-full -z-10"> */}
             {/* <svg ref={parentRef} viewBox={viewPort.port.join(" ")}> */}
             <svg viewBox={viewPort.port.join(" ")}>
