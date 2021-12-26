@@ -13,6 +13,13 @@ export function useEventListener<T extends HTMLElement, K extends keyof HTMLElem
     listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any,
     ref: React.RefObject<T | null>,
     options?: boolean | AddEventListenerOptions
+): void;
+
+export function useEventListener<T extends HTMLElement | SVGElement, K extends keyof HTMLElementEventMap | SVGElementEventMap>(
+    type: K,
+    listener: (this: HTMLElement, ev: HTMLElementEventMap[K] | SVGElementEventMap[K]) => any,
+    ref: React.RefObject<T | null>,
+    options?: boolean | AddEventListenerOptions
 ): void {
     useEffect(() => {
         const element = ref.current;
@@ -23,3 +30,19 @@ export function useEventListener<T extends HTMLElement, K extends keyof HTMLElem
         return () => element.removeEventListener(type, listener);
     }, [type, listener, options, ref]);
 }
+
+// export function useEventListener<T extends HTMLElement, K extends keyof HTMLElementEventMap>(
+//     type: K,
+//     listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any,
+//     ref: React.RefObject<T | null>,
+//     options?: boolean | AddEventListenerOptions
+// ): void {
+//     useEffect(() => {
+//         const element = ref.current;
+//         if (!element) {
+//             return;
+//         }
+//         element.addEventListener(type, listener, options);
+//         return () => element.removeEventListener(type, listener);
+//     }, [type, listener, options, ref]);
+// }
