@@ -42,8 +42,8 @@ function GridPattern() {
     );
 }
 
-function formatviewBox(box: ViewBox) {
-    return box.map(pt => +pt.toFixed(0).padStart(3, ' ')).join(" ");
+function formatViewBox(box: ViewBox) {
+    return box.map(pt => pt.toFixed(0).padStart(3, ' ')).join(" ");
 }
 
 function zoomViewPort(viewBox: ViewBox, scale: number, pt?: ViewPoint): ViewBox {
@@ -59,7 +59,7 @@ function zoomViewPort(viewBox: ViewBox, scale: number, pt?: ViewPoint): ViewBox 
     const w = scale * viewPortWidth;
     const h = scale * viewPortHeight;
 
-    console.log('-------- zoomViewPort: scale', scale.toFixed(2), '----in----', viewBox.map(pt => pt.toFixed(0)).join(" "), '----out----', [x, y, w, h].map(pt => pt.toFixed(0)).join(" "));
+    console.log('--------- zoomViewPort: scale', scale.toFixed(2), '     ----in----', formatViewBox(viewBox), '----out----', formatViewBox([x, y, w, h]));
 
     return [x, y, w, h];
 }
@@ -108,7 +108,7 @@ function Canvas() {
             const scale = Math.pow(1.005, zoom);
             const newPort = zoomViewPort(prev.port, scale);
 
-            console.log('setCanvasSize zoom', zoom, 'scale', scale.toFixed(2), '----newPort----', newPort.map(pt => pt.toFixed(0)).join(" "));
+            console.log('setCanvasSize zoom', (''+zoom).padStart(4, ' '), 'scale', scale.toFixed(2), '----newPort----', formatViewBox(newPort));
     
             return { ...prev, port: newPort, }
         });
