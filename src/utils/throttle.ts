@@ -49,3 +49,5 @@ export default function throttle<T extends Function>(fn: T, delay = 200, trailin
 
     return (wrapper as any) as T;
 }
+
+//TODO: this will not clear timeout on unmount
