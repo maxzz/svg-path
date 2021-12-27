@@ -43,7 +43,7 @@ function GridPattern() {
 }
 
 function formatViewBox(box: ViewBox) {
-    return box.map(pt => pt.toFixed(0).padStart(3, ' ')).join(" ");
+    return box.map(pt => pt.toFixed(0).padStart(4, ' ')).join(" ");
 }
 
 function zoomViewPort(viewBox: ViewBox, scale: number, pt?: ViewPoint): ViewBox {
@@ -59,7 +59,7 @@ function zoomViewPort(viewBox: ViewBox, scale: number, pt?: ViewPoint): ViewBox 
     const w = scale * viewPortWidth;
     const h = scale * viewPortHeight;
 
-    console.log('--------- zoomViewPort: scale', scale.toFixed(2), '     ----in----', formatViewBox(viewBox), '----out----', formatViewBox([x, y, w, h]));
+    //console.log('---------- zoomViewPort: scale', scale.toFixed(2), '     ----in----', formatViewBox(viewBox), '----out----', formatViewBox([x, y, w, h]));
 
     return [x, y, w, h];
 }
@@ -82,7 +82,7 @@ function Canvas() {
 
     React.useEffect(() => {
         const newCanvasSize = getFitViewPort(width, height, svg.targetLocations());
-        newCanvasSize.port = zoomViewPort(newCanvasSize.port, 2);
+        //newCanvasSize.port = zoomViewPort(newCanvasSize.port, 2);
         setCanvasSize(newCanvasSize);
     }, [width, height, svg]);
 
@@ -103,12 +103,16 @@ function Canvas() {
     //     });
     // }, [zoom]);
 
-    const cbSetCanvasSize = React.useCallback(throttle((zoom: number) => {
+    const cbSetCanvasSize = React.useCallback(throttle((newZoom: number) => {
         setCanvasSize((prev) => {
-            const scale = Math.pow(1.005, zoom);
+            const scale = Math.pow(1.005, newZoom);
             const newPort = zoomViewPort(prev.port, scale);
 
-            console.log('setCanvasSize zoom', (''+zoom).padStart(4, ' '), 'scale', scale.toFixed(2), '----newPort----', formatViewBox(newPort));
+            //console.log(`setCanvasSize wheel=${(''+newZoom).padEnd(4, ' ')}`, 'scale', scale.toFixed(2));
+            // console.log(`setCanvasSize wheel=${(''+newZoom).padEnd(4, ' ')}`, 'scale', scale.toFixed(2), ' '.repeat(31), '----newPort----', formatViewBox(newPort));
+
+            console.log(`setCanvasSize wheel=${(''+newZoom).padEnd(4, ' ')}`, `scale=${scale.toFixed(2)}`,
+                '     ----in----', formatViewBox(prev.port), '----out----', formatViewBox(newPort));
     
             return { ...prev, port: newPort, }
         });
@@ -159,6 +163,7 @@ function Canvas() {
             //console.log('cb', prev + event.deltaY, canvasSize.port, newPort);
 
             //console.log('event delta', prev + event.deltaY);
+            // return event.deltaY;
             return prev + event.deltaY;
         });
     }, []);
