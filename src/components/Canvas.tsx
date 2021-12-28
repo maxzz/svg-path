@@ -59,10 +59,9 @@ function zoomViewPort(viewBox: ViewBox, scale: number, pt?: ViewPoint): ViewBox 
     const w = scale * viewPortWidth;
     const h = scale * viewPortHeight;
 
-    //console.log('---------- zoomViewPort: scale', scale.toFixed(2), '     ----in----', formatViewBox(viewBox), '----out----', formatViewBox([x, y, w, h]));
-
     return [x, y, w, h];
 }
+
 /*
 function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDeltaY: number, event: WheelEvent): ViewBox {
     const scale = Math.pow(1.005, accDeltaY);
@@ -72,6 +71,7 @@ function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDel
     return zoomViewPort(canvasSize.port, scale, pt);
 }
 */
+
 const zoomAtom = atom(0);
 
 function Canvas() {
@@ -87,34 +87,13 @@ function Canvas() {
     React.useEffect(() => {
         const newCanvasSize = getFitViewPort(width, height, svg.targetLocations());
         pointsViewBoxRef.current = newCanvasSize.port;
-        //newCanvasSize.port = zoomViewPort(newCanvasSize.port, 2);
-        console.log('change', width, height, svg);
-
         setCanvasSize(newCanvasSize);
     }, [width, height, svg]);
-
-    // const cbSetCanvasSize = React.useCallback(throttle((newPort: ViewBox) => {
-    //     console.log('throttle', zoom);
-    //     setCanvasSize((prev) => ({ ...prev, port: newPort, }));
-    // }), []);
-    //
-    // React.useEffect(() => {
-    //     setCanvasSize((prev) => {
-    //         const newZoom = Math.pow(1.005, zoom);
-    //         const newPort = zoomViewPort(prev.port, newZoom);
-    //         console.log('setCanvasSize zoom', zoom, 'newZoom', newZoom.toFixed(2), '----newPort----', newPort.map(pt => pt.toFixed(0)).join(" "));
-    //         return { ...prev, port: newPort, }
-    //     });
-    // }, [zoom]);
 
     const cbSetCanvasSize = React.useCallback(throttle((newZoom: number) => {
         setCanvasSize((prev) => {
             const scale = Math.pow(1.005, newZoom);
-            //const newPort = zoomViewPort(prev.port, scale);
             const newPort = zoomViewPort(pointsViewBoxRef.current, scale);
-
-            //console.log(`setCanvasSize wheel=${(''+newZoom).padEnd(4, ' ')}`, 'scale', scale.toFixed(2));
-            // console.log(`setCanvasSize wheel=${(''+newZoom).padEnd(4, ' ')}`, 'scale', scale.toFixed(2), ' '.repeat(31), '----newPort----', formatViewBox(newPort));
 
             console.log(`setCanvasSize wheel=${('' + newZoom).padEnd(4, ' ')}`, `scale=${scale.toFixed(2)}`,
                 '     ----in----', formatViewBox(prev.port), '----out----', formatViewBox(newPort));
@@ -127,71 +106,9 @@ function Canvas() {
         cbSetCanvasSize(zoom);
     }, [zoom]);
 
-    // React.useEffect(() => {
-    //     const newZoom = Math.pow(1.005, zoom);
-    //     const newPort = zoomViewPort(canvasSize.port, newZoom);
-
-    //     console.log('zoom change', zoom, 'newZoom', newZoom.toFixed(2));
-
-    //     setCanvasSize((prev) => ({ ...prev, port: newPort, }));
-
-    //     // const newZoom = Math.pow(1.005, zoom);
-    //     // const newPort = zoomViewPort(canvasSize.port, newZoom);
-
-    //     // console.log('zoom', zoom);
-    //     // cbSetCanvasSize(newPort)
-    // }, [zoom]);
-
-    //console.log('ini', zoom, canvasSize.port);
-
-    /** /
-    const cbSetZoomDelta = React.useCallback(throttle((delta: number) => {
-        //console.log('throttle delta', delta);
-        setZoom((prev) => {
-            //console.log('new delta', delta);
-            return delta;
-            // return prev + delta;
-        });
-    }), []);
-
-    const cb = React.useCallback((event: React.WheelEvent) => {
-        if (parentRef.current) {
-            console.log('event delta', event.deltaY);
-            cbSetZoomDelta(event.deltaY);
-        }
-    }, [canvasSize, ref]);
-    /**/
-
-    const onWheel = React.useCallback((event: React.WheelEvent) => {
-        setZoom((prev) => {
-            //const newPort = mousewheel(canvasSize, parentRef.current!, prev + event.deltaY, event.nativeEvent);
-            //console.log('cb', prev + event.deltaY, canvasSize.port, newPort);
-
-            //console.log('event delta', prev + event.deltaY);
-            // return event.deltaY;
-
-            let newZoom = Math.min(1000, Math.max(-450, prev + event.deltaY));
-
-            return newZoom;
-        });
-    }, []);
-
-    // const onWheel = React.useCallback((event: React.WheelEvent) => {
-    //     if (parentRef.current) {
-    //         setZoom((prev) => {
-    //             //const newPort = mousewheel(canvasSize, parentRef.current!, prev + event.deltaY, event.nativeEvent);
-    //             //console.log('cb', prev + event.deltaY, canvasSize.port, newPort);
-
-    //             //console.log('event delta', prev + event.deltaY);
-    //             return prev + event.deltaY;
-    //         });
-    //     }
-    // }, [canvasSize, ref]);
-
-    //console.log('SVG viewBox', canvasSize.port.map(pt => pt.toFixed(2)).join(" "), '          raw', canvasSize.port.join(" "));
+    const onWheel = React.useCallback((event: React.WheelEvent) => setZoom((prev) => Math.min(1000, Math.max(-450, prev + event.deltaY))), []);
 
     return (
-        // <div ref={parentRef} className="absolute w-full h-full -z-10">
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
             <svg viewBox={canvasSize.port.join(" ")}>
                 <GridPattern />
@@ -204,6 +121,3 @@ function Canvas() {
 }
 
 export default Canvas;
-
-//TODO: throttle
-//zoom, move
