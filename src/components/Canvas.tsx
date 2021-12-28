@@ -63,7 +63,7 @@ function zoomViewPort(viewBox: ViewBox, scale: number, pt?: ViewPoint): ViewBox 
 
     return [x, y, w, h];
 }
-
+/*
 function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDeltaY: number, event: WheelEvent): ViewBox {
     const scale = Math.pow(1.005, accDeltaY);
     const pt = eventToLocation(canvasSize, canvasContainer, event);
@@ -71,7 +71,7 @@ function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDel
 
     return zoomViewPort(canvasSize.port, scale, pt);
 }
-
+*/
 const zoomAtom = atom(0);
 
 function Canvas() {
@@ -79,15 +79,19 @@ function Canvas() {
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
 
     const [canvasSize, setCanvasSize] = React.useState(nullCanvesSize);
-
-    React.useEffect(() => {
-        const newCanvasSize = getFitViewPort(width, height, svg.targetLocations());
-        //newCanvasSize.port = zoomViewPort(newCanvasSize.port, 2);
-        setCanvasSize(newCanvasSize);
-    }, [width, height, svg]);
+    const pointsViewBoxRef = React.useRef<[number, number, number, number,]>([0, 0, 0, 0]);
 
     const parentRef = React.useRef<HTMLDivElement>();
     const [zoom, setZoom] = useAtom(zoomAtom);
+
+    React.useEffect(() => {
+        const newCanvasSize = getFitViewPort(width, height, svg.targetLocations());
+        pointsViewBoxRef.current = newCanvasSize.port;
+        //newCanvasSize.port = zoomViewPort(newCanvasSize.port, 2);
+        console.log('change', width, height, svg);
+        
+        setCanvasSize(newCanvasSize);
+    }, [width, height, svg]);
 
     // const cbSetCanvasSize = React.useCallback(throttle((newPort: ViewBox) => {
     //     console.log('throttle', zoom);
@@ -106,15 +110,16 @@ function Canvas() {
     const cbSetCanvasSize = React.useCallback(throttle((newZoom: number) => {
         setCanvasSize((prev) => {
             const scale = Math.pow(1.005, newZoom);
-            const newPort = zoomViewPort(prev.port, scale);
+            //const newPort = zoomViewPort(prev.port, scale);
+            const newPort = zoomViewPort(pointsViewBoxRef.current, scale);
 
             //console.log(`setCanvasSize wheel=${(''+newZoom).padEnd(4, ' ')}`, 'scale', scale.toFixed(2));
             // console.log(`setCanvasSize wheel=${(''+newZoom).padEnd(4, ' ')}`, 'scale', scale.toFixed(2), ' '.repeat(31), '----newPort----', formatViewBox(newPort));
 
-            console.log(`setCanvasSize wheel=${(''+newZoom).padEnd(4, ' ')}`, `scale=${scale.toFixed(2)}`,
+            console.log(`setCanvasSize wheel=${('' + newZoom).padEnd(4, ' ')}`, `scale=${scale.toFixed(2)}`,
                 '     ----in----', formatViewBox(prev.port), '----out----', formatViewBox(newPort));
-    
-            return { ...prev, port: newPort, }
+
+            return { ...prev, port: newPort, };
         });
     }), []);
 
