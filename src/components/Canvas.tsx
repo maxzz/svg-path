@@ -189,7 +189,7 @@ function Canvas() {
 
     return (
         // <div ref={parentRef} className="absolute w-full h-full -z-10">
-        <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full" onWheel={onWheel}>
+        <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
             <svg viewBox={canvasSize.port.join(" ")}>
                 <GridPattern />
                 <rect x={canvasSize.port[0]} y={canvasSize.port[1]} width="100%" height="100%" fill="#040d1c" /> #002846
