@@ -77,11 +77,9 @@ const zoomAtom = atom(0);
 const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
 const viewBoxStrokeAtom = atom(0);
 
-const setZoomAtom = atom(null, (get, set, { newZoom, unscaledViewBox }: { newZoom: number, unscaledViewBox: ViewBox; }) => {
-
+const updateZoomAtom = atom(null, (get, set, { newZoom, unscaledViewBox }: { newZoom: number, unscaledViewBox: ViewBox; }) => {
     const scale = Math.pow(1.005, newZoom);
     const newPort = zoomViewPort(unscaledViewBox, scale);
-    // const newPort = zoomViewPort(pointsViewBoxRef.current, scale);
     set(viewBoxAtom, newPort);
 });
 
@@ -92,12 +90,11 @@ function Canvas() {
 
     const [zoom, setZoom] = useAtom(zoomAtom);
 
-    const [canvasSize, setCanvasSize] = React.useState(nullCanvesSize);
     const pointsViewBoxRef = React.useRef<[number, number, number, number,]>([0, 0, 0, 0]);
 
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const [viewBoxStroke, setViewBoxStroke] = useAtom(viewBoxStrokeAtom);
-    const setZoom2 = useUpdateAtom(setZoomAtom);
+    const updateZoom = useUpdateAtom(updateZoomAtom);
 
     React.useEffect(() => {
         if (!parentRef.current) { return; }
@@ -108,23 +105,10 @@ function Canvas() {
 
         setViewBoxStroke(newCanvasSize.stroke);
         setViewBox(newCanvasSize.port);
-
-        //setCanvasSize(newCanvasSize);
     }, [parentRef, svg]);
 
     const cbSetCanvasSize = React.useCallback(throttle((newZoom: number) => {
-        /*
-        setCanvasSize((prev) => {
-            const scale = Math.pow(1.005, newZoom);
-            const newPort = zoomViewPort(pointsViewBoxRef.current, scale);
-
-            console.log(`setCanvasSize wheel=${('' + newZoom).padEnd(4, ' ')}`, `scale=${scale.toFixed(2)}`,
-                '     ----in----', formatViewBox(prev.port), '----out----', formatViewBox(newPort));
-
-            return { ...prev, port: newPort, };
-        });
-        */
-        setZoom2({ newZoom: newZoom, unscaledViewBox: pointsViewBoxRef.current });
+        updateZoom({ newZoom: newZoom, unscaledViewBox: pointsViewBoxRef.current });
     }), []);
 
     React.useEffect(() => {
