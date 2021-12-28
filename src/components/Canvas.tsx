@@ -105,7 +105,7 @@ const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: ZoomEvent) => {
     set(viewBoxAtom, newPort);
 });
 
-function Canvas() {
+function useContainerZoom() {
     const [svg] = useAtom(svgAtom);
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
     const parentRef = React.useRef<HTMLDivElement>();
@@ -140,6 +140,25 @@ function Canvas() {
             pt: { x: x - left, y: y - top }
         });
     }, [parentRef]);
+
+    return {
+        viewBox,
+        viewBoxStroke,
+        ref,
+        parentRef,
+        onWheel,
+    }
+}
+
+function Canvas() {
+    const [svg] = useAtom(svgAtom);
+    const {
+        viewBox,
+        viewBoxStroke,
+        ref,
+        parentRef,
+        onWheel,
+    } = useContainerZoom();
 
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
