@@ -89,7 +89,7 @@ function Canvas() {
         pointsViewBoxRef.current = newCanvasSize.port;
         //newCanvasSize.port = zoomViewPort(newCanvasSize.port, 2);
         console.log('change', width, height, svg);
-        
+
         setCanvasSize(newCanvasSize);
     }, [width, height, svg]);
 
@@ -169,7 +169,10 @@ function Canvas() {
 
             //console.log('event delta', prev + event.deltaY);
             // return event.deltaY;
-            return prev + event.deltaY;
+
+            let newZoom = Math.min(1000, Math.max(-450, prev + event.deltaY));
+
+            return newZoom;
         });
     }, []);
 
