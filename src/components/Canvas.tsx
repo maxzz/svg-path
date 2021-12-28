@@ -75,9 +75,11 @@ function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDel
 
 const zoomAtom = atom(0);
 const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
+const pathPointsBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
 const viewBoxStrokeAtom = atom(0);
 
-const updateZoomAtom = atom(null, (get, set, { newZoom, unscaledViewBox }: { newZoom: number, unscaledViewBox: ViewBox; }) => {
+const updateZoomAtom = atom(null, (get, set, newZoom: number) => {
+    const unscaledViewBox = get(pathPointsBoxAtom);
     const scale = Math.pow(1.005, newZoom);
     const newPort = zoomViewPort(unscaledViewBox, scale);
     set(viewBoxAtom, newPort);
@@ -89,26 +91,22 @@ function Canvas() {
     const parentRef = React.useRef<HTMLDivElement>();
 
     const [zoom, setZoom] = useAtom(zoomAtom);
-
-    const pointsViewBoxRef = React.useRef<[number, number, number, number,]>([0, 0, 0, 0]);
-
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const [viewBoxStroke, setViewBoxStroke] = useAtom(viewBoxStrokeAtom);
+    const setPathPointsBox = useUpdateAtom(pathPointsBoxAtom);
     const updateZoom = useUpdateAtom(updateZoomAtom);
 
     React.useEffect(() => {
         if (!parentRef.current) { return; }
         const { width, height } = parentRef.current.getBoundingClientRect();
-
-        const newCanvasSize = getFitViewPort(width, height, svg.targetLocations());
-        pointsViewBoxRef.current = newCanvasSize.port;
-
-        setViewBoxStroke(newCanvasSize.stroke);
-        setViewBox(newCanvasSize.port);
+        const port = getFitViewPort(width, height, svg.targetLocations());
+        setPathPointsBox(port.port);
+        setViewBoxStroke(port.stroke);
+        setViewBox(port.port);
     }, [parentRef, svg]);
 
     const cbSetCanvasSize = React.useCallback(throttle((newZoom: number) => {
-        updateZoom({ newZoom: newZoom, unscaledViewBox: pointsViewBoxRef.current });
+        updateZoom(newZoom);
     }), []);
 
     React.useEffect(() => {
