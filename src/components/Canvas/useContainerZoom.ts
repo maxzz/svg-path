@@ -47,7 +47,7 @@ function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDel
 
 type ZoomEvent = {
     deltaY: number;
-    pt: ViewPoint;
+    pt?: ViewPoint;
 };
 
 const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: ZoomEvent) => {
@@ -80,12 +80,13 @@ export function useContainerZoom() {
 
     React.useEffect(() => {
         if (!parentRef.current) { return; }
-        
+
         const { width, height } = parentRef.current.getBoundingClientRect();
         const port = getFitViewPort(width, height, svg.targetLocations());
         setPathPointsBox(port.port);
         setViewBoxStroke(port.stroke);
         setViewBox(port.port);
+        updateZoom({ deltaY: 0 });
     }, [parentRef, svg]);
 
     const setThrottledZoom = React.useCallback(throttle((zoomEvent: ZoomEvent) => {
@@ -110,5 +111,5 @@ export function useContainerZoom() {
         ref,
         parentRef,
         onWheel,
-    }
+    };
 }
