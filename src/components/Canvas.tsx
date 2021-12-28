@@ -85,10 +85,14 @@ function Canvas() {
     const [zoom, setZoom] = useAtom(zoomAtom);
 
     React.useEffect(() => {
+        if (!parentRef.current) { return; }
+        const { width, height } = parentRef.current.getBoundingClientRect();
+
         const newCanvasSize = getFitViewPort(width, height, svg.targetLocations());
         pointsViewBoxRef.current = newCanvasSize.port;
+
         setCanvasSize(newCanvasSize);
-    }, [width, height, svg]);
+    }, [parentRef, svg]);
 
     const cbSetCanvasSize = React.useCallback(throttle((newZoom: number) => {
         setCanvasSize((prev) => {
