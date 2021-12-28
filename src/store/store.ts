@@ -77,3 +77,12 @@ export const svgAtom = atom(
         set(_pathUnsafeAtom, path);
     }
 );
+
+// canvas
+
+export const zoomAtom = atom(1);
+export const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
+export const pathPointsBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
+export const viewBoxStrokeAtom = atom(0);
+
+//
