@@ -78,9 +78,24 @@ const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
 const pathPointsBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
 const viewBoxStrokeAtom = atom(0);
 
-const updateZoomAtom = atom(null, (get, set, newZoom: number) => {
+type ZoomEvent = {
+    deltaY: number;
+    pt: ViewPoint;
+};
+
+//const zoomEventAtom = atom<ZoomEvent>({ deltaY: 0, pt: { x: 0, y: 0 } });
+
+// const setZoomDeltaAtom = atom(null, (get, set, { deltaY, pt }: ZoomEvent) => {
+//     const zoom = get(zoomAtom);
+//     set(zoomEventAtom, { deltaY: zoom + deltaY, pt });
+// });
+
+const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: ZoomEvent) => {
+    let zoom = get(zoomAtom) + deltaY;
+    zoom = Math.min(1000, Math.max(-450, zoom));
+    set(zoomAtom, zoom);
     const unscaledViewBox = get(pathPointsBoxAtom);
-    const scale = Math.pow(1.005, newZoom);
+    const scale = Math.pow(1.005, zoom);
     const newPort = zoomViewPort(unscaledViewBox, scale);
     set(viewBoxAtom, newPort);
 });
@@ -90,11 +105,13 @@ function Canvas() {
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
     const parentRef = React.useRef<HTMLDivElement>();
 
-    const [zoom, setZoom] = useAtom(zoomAtom);
+    const [zoom] = useAtom(zoomAtom);
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const [viewBoxStroke, setViewBoxStroke] = useAtom(viewBoxStrokeAtom);
     const setPathPointsBox = useUpdateAtom(pathPointsBoxAtom);
     const updateZoom = useUpdateAtom(updateZoomAtom);
+    // const setZoomDelta = useUpdateAtom(setZoomDeltaAtom);
+    //const setZoomEvent = useUpdateAtom(zoomEventAtom);
 
     React.useEffect(() => {
         if (!parentRef.current) { return; }
@@ -105,15 +122,31 @@ function Canvas() {
         setViewBox(port.port);
     }, [parentRef, svg]);
 
-    const setThrottledZoom = React.useCallback(throttle((newZoom: number) => {
-        updateZoom(newZoom);
+    const setThrottledZoom = React.useCallback(throttle((zoomEvent: ZoomEvent) => {
+        updateZoom(zoomEvent);
     }), []);
 
-    React.useEffect(() => {
-        setThrottledZoom(zoom);
-    }, [zoom]);
+    // React.useEffect(() => {
+    //     setThrottledZoom(zoom);
+    // }, [zoom]);
 
-    const onWheel = React.useCallback((event: React.WheelEvent) => setZoom((prev) => Math.min(1000, Math.max(-450, prev + event.deltaY))), []);
+    const onWheel = React.useCallback((event: React.WheelEvent) => {
+        const { clientX: x, clientY: y } = event;
+        setThrottledZoom({
+            deltaY: event.deltaY,
+            pt: { x, y }
+        });
+
+        // setZoomDelta({
+        //     deltaY: event.deltaY,
+        //     pt: { x, y }
+        // });
+
+        // setZoom((prev) => return ({
+        //     zoom: Math.min(1000, Math.max(-450, prev.zoom + event.deltaY)),
+        //     pt: { x, y }
+        // }));
+    }, []);
 
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
