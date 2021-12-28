@@ -7,7 +7,7 @@ import { BgGrid } from './components/UI/icons/BgGrid';
 import { Accordion } from './components/UI/Accordion';
 import { pathUnsafeAtom } from './store/store';
 import { PathCommandEditor } from './components/Panels/PathCommandEditor';
-import Canvas from './components/Canvas';
+import Canvas from './components/Canvas/Canvas';
 
 function SectionPane({ children, open = true, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
     return (

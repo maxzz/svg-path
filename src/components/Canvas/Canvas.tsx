@@ -1,11 +1,11 @@
 import React from 'react';
-import { mergeRef } from '../hooks/utils';
+import { mergeRef } from '../../hooks/utils';
 import { atom, SetStateAction, useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { pathPointsBoxAtom, svgAtom, viewBoxAtom, viewBoxStrokeAtom, zoomAtom } from '../store/store';
+import { pathPointsBoxAtom, svgAtom, viewBoxAtom, viewBoxStrokeAtom, zoomAtom } from '../../store/store';
 import { useMeasure } from 'react-use';
-import { CanvasSize, eventToLocation, getFitViewPort, nullCanvesSize, ViewBox, ViewPoint } from '../svg/svg-utils';
-import throttle from '../utils/throttle';
+import { CanvasSize, eventToLocation, getFitViewPort, nullCanvesSize, ViewBox, ViewPoint } from '../../svg/svg-utils';
+import throttle from '../../utils/throttle';
 
 function GridPattern() {
     return (
