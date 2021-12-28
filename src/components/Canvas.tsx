@@ -1,6 +1,7 @@
 import React from 'react';
 import { mergeRef } from '../hooks/utils';
 import { atom, SetStateAction, useAtom } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
 import { svgAtom } from '../store/store';
 import { useMeasure } from 'react-use';
 import { CanvasSize, eventToLocation, getFitViewPort, nullCanvesSize, ViewBox, ViewPoint } from '../svg/svg-utils';
@@ -73,16 +74,30 @@ function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDel
 */
 
 const zoomAtom = atom(0);
+const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
+const viewBoxStrokeAtom = atom(0);
+
+const setZoomAtom = atom(null, (get, set, { newZoom, unscaledViewBox }: { newZoom: number, unscaledViewBox: ViewBox; }) => {
+
+    const scale = Math.pow(1.005, newZoom);
+    const newPort = zoomViewPort(unscaledViewBox, scale);
+    // const newPort = zoomViewPort(pointsViewBoxRef.current, scale);
+    set(viewBoxAtom, newPort);
+});
 
 function Canvas() {
     const [svg] = useAtom(svgAtom);
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
+    const parentRef = React.useRef<HTMLDivElement>();
+
+    const [zoom, setZoom] = useAtom(zoomAtom);
 
     const [canvasSize, setCanvasSize] = React.useState(nullCanvesSize);
     const pointsViewBoxRef = React.useRef<[number, number, number, number,]>([0, 0, 0, 0]);
 
-    const parentRef = React.useRef<HTMLDivElement>();
-    const [zoom, setZoom] = useAtom(zoomAtom);
+    const [viewBox, setViewBox] = useAtom(viewBoxAtom);
+    const [viewBoxStroke, setViewBoxStroke] = useAtom(viewBoxStrokeAtom);
+    const setZoom2 = useUpdateAtom(setZoomAtom);
 
     React.useEffect(() => {
         if (!parentRef.current) { return; }
@@ -91,10 +106,14 @@ function Canvas() {
         const newCanvasSize = getFitViewPort(width, height, svg.targetLocations());
         pointsViewBoxRef.current = newCanvasSize.port;
 
-        setCanvasSize(newCanvasSize);
+        setViewBoxStroke(newCanvasSize.stroke);
+        setViewBox(newCanvasSize.port);
+
+        //setCanvasSize(newCanvasSize);
     }, [parentRef, svg]);
 
     const cbSetCanvasSize = React.useCallback(throttle((newZoom: number) => {
+        /*
         setCanvasSize((prev) => {
             const scale = Math.pow(1.005, newZoom);
             const newPort = zoomViewPort(pointsViewBoxRef.current, scale);
@@ -104,6 +123,8 @@ function Canvas() {
 
             return { ...prev, port: newPort, };
         });
+        */
+        setZoom2({ newZoom: newZoom, unscaledViewBox: pointsViewBoxRef.current });
     }), []);
 
     React.useEffect(() => {
@@ -114,11 +135,11 @@ function Canvas() {
 
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
-            <svg viewBox={canvasSize.port.join(" ")}>
+            <svg viewBox={viewBox.join(" ")}>
                 <GridPattern />
-                <rect x={canvasSize.port[0]} y={canvasSize.port[1]} width="100%" height="100%" fill="#040d1c" /> #002846
-                <rect x={canvasSize.port[0]} y={canvasSize.port[1]} width="100%" height="100%" fill="url(#grid-patt-c)" />
-                <path d={svg.asString()} fill="white" stroke={"red"} strokeWidth={canvasSize.stroke} />
+                <rect x={viewBox[0]} y={viewBox[1]} width="100%" height="100%" fill="#040d1c" /> #002846
+                <rect x={viewBox[0]} y={viewBox[1]} width="100%" height="100%" fill="url(#grid-patt-c)" />
+                <path d={svg.asString()} fill="white" stroke={"red"} strokeWidth={viewBoxStroke} />
             </svg>
         </div>
     );
