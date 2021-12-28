@@ -73,7 +73,7 @@ function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDel
 }
 */
 
-const zoomAtom = atom(0);
+const zoomAtom = atom(1);
 const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
 const pathPointsBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
 const viewBoxStrokeAtom = atom(0);
