@@ -130,25 +130,16 @@ function Canvas() {
     }), []);
 
     const onWheel = React.useCallback((event: React.WheelEvent) => {
+        if (!parentRef.current) { return; }
+        const { left, top } = parentRef.current.getBoundingClientRect();
 
         const { clientX: x, clientY: y } = event;
+        //console.log('whell', 'client', { left, top }, 'mouse', { x, y }, 'calc', { x: x - left, y: y - top });
         setThrottledZoom({
             deltaY: event.deltaY,
-            pt: { x, y }
+            pt: { x: x - left, y: y - top }
         });
     }, [parentRef]);
-
-    // const onWheel = React.useCallback((event: React.WheelEvent) => {
-    //     if (!parentRef.current) { return; }
-    //     const { left, top } = parentRef.current.getBoundingClientRect();
-
-    //     const { clientX: x, clientY: y } = event;
-    //     console.log('whell', 'client', { left, top }, 'mouse', { x, y }, 'calc', { x: x - left, y: y - top });
-    //     setThrottledZoom({
-    //         deltaY: event.deltaY,
-    //         pt: { x: x - left, y: y - top }
-    //     });
-    // }, [parentRef]);
 
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
