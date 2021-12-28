@@ -83,17 +83,10 @@ type ZoomEvent = {
     pt: ViewPoint;
 };
 
-//const zoomEventAtom = atom<ZoomEvent>({ deltaY: 0, pt: { x: 0, y: 0 } });
-
-// const setZoomDeltaAtom = atom(null, (get, set, { deltaY, pt }: ZoomEvent) => {
-//     const zoom = get(zoomAtom);
-//     set(zoomEventAtom, { deltaY: zoom + deltaY, pt });
-// });
-
 const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: ZoomEvent) => {
-    let zoom = get(zoomAtom) + deltaY;
-    zoom = Math.min(1000, Math.max(-450, zoom));
+    let zoom = Math.min(1000, Math.max(-450, get(zoomAtom) + deltaY));
     set(zoomAtom, zoom);
+
     const unscaledViewBox = get(pathPointsBoxAtom);
     const scale = Math.pow(1.005, zoom);
     const newPort = zoomViewPort(unscaledViewBox, scale);
@@ -110,8 +103,6 @@ function Canvas() {
     const [viewBoxStroke, setViewBoxStroke] = useAtom(viewBoxStrokeAtom);
     const setPathPointsBox = useUpdateAtom(pathPointsBoxAtom);
     const updateZoom = useUpdateAtom(updateZoomAtom);
-    // const setZoomDelta = useUpdateAtom(setZoomDeltaAtom);
-    //const setZoomEvent = useUpdateAtom(zoomEventAtom);
 
     React.useEffect(() => {
         if (!parentRef.current) { return; }
@@ -126,26 +117,12 @@ function Canvas() {
         updateZoom(zoomEvent);
     }), []);
 
-    // React.useEffect(() => {
-    //     setThrottledZoom(zoom);
-    // }, [zoom]);
-
     const onWheel = React.useCallback((event: React.WheelEvent) => {
         const { clientX: x, clientY: y } = event;
         setThrottledZoom({
             deltaY: event.deltaY,
             pt: { x, y }
         });
-
-        // setZoomDelta({
-        //     deltaY: event.deltaY,
-        //     pt: { x, y }
-        // });
-
-        // setZoom((prev) => return ({
-        //     zoom: Math.min(1000, Math.max(-450, prev.zoom + event.deltaY)),
-        //     pt: { x, y }
-        // }));
     }, []);
 
     return (
