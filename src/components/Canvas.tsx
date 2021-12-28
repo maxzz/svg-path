@@ -63,6 +63,15 @@ function zoomViewPort(viewBox: ViewBox, scale: number, pt?: ViewPoint): ViewBox 
     return [x, y, w, h];
 }
 
+function eventToClient(canvasSize: CanvasSize, canvasContainer: HTMLElement, event: MouseEvent | TouchEvent, idx = 0): { x: number, y: number; } {
+    const rect = canvasContainer.getBoundingClientRect();
+    const touch = event instanceof MouseEvent ? event : event.touches[idx];
+    let [x, y] = canvasSize.port;
+    x += (touch.clientX - rect.left) * canvasSize.stroke;
+    y += (touch.clientY - rect.top) * canvasSize.stroke;
+    return { x, y };
+}
+
 /*
 function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDeltaY: number, event: WheelEvent): ViewBox {
     const scale = Math.pow(1.005, accDeltaY);
@@ -87,9 +96,14 @@ const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: ZoomEvent) => {
     let zoom = Math.min(1000, Math.max(-450, get(zoomAtom) + deltaY));
     set(zoomAtom, zoom);
 
+    let stroke = get(viewBoxStrokeAtom);
+    let [x, y] = get(viewBoxAtom);
+    x += pt.x * stroke;
+    y += pt.y * stroke;
+
     const unscaledViewBox = get(pathPointsBoxAtom);
     const scale = Math.pow(1.005, zoom);
-    const newPort = zoomViewPort(unscaledViewBox, scale);
+    const newPort = zoomViewPort(unscaledViewBox, scale, {x, y});
     set(viewBoxAtom, newPort);
 });
 
@@ -98,7 +112,6 @@ function Canvas() {
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
     const parentRef = React.useRef<HTMLDivElement>();
 
-    const [zoom] = useAtom(zoomAtom);
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const [viewBoxStroke, setViewBoxStroke] = useAtom(viewBoxStrokeAtom);
     const setPathPointsBox = useUpdateAtom(pathPointsBoxAtom);
@@ -118,12 +131,15 @@ function Canvas() {
     }), []);
 
     const onWheel = React.useCallback((event: React.WheelEvent) => {
+        if (!parentRef.current) { return; }
+        const { left, top } = parentRef.current.getBoundingClientRect();
+
         const { clientX: x, clientY: y } = event;
         setThrottledZoom({
             deltaY: event.deltaY,
-            pt: { x, y }
+            pt: { x: x - left, y: y - top }
         });
-    }, []);
+    }, [parentRef]);
 
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
