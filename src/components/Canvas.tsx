@@ -105,12 +105,12 @@ function Canvas() {
         setViewBox(port.port);
     }, [parentRef, svg]);
 
-    const cbSetCanvasSize = React.useCallback(throttle((newZoom: number) => {
+    const setThrottledZoom = React.useCallback(throttle((newZoom: number) => {
         updateZoom(newZoom);
     }), []);
 
     React.useEffect(() => {
-        cbSetCanvasSize(zoom);
+        setThrottledZoom(zoom);
     }, [zoom]);
 
     const onWheel = React.useCallback((event: React.WheelEvent) => setZoom((prev) => Math.min(1000, Math.max(-450, prev + event.deltaY))), []);
