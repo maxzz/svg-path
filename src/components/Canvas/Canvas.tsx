@@ -36,6 +36,8 @@ function TargetPoint({ pt, stroke, idx }: { pt: SvgPoint, stroke: number; idx: n
     );
 }
 
+//TODO: handle control points
+
 function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number; idx: number; }) {
     return (
         <>
