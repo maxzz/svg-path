@@ -63,11 +63,11 @@ function ControlPoint({ pt, stroke }: { pt: SvgControlPoint, stroke: number; }) 
 function BackgroundGrid({ x, y }: { x: number; y: number; }) {
     const [showGrid, setShowGrid] = useAtom(showGridAtom);
     return (
-        <>
+        <g className="grid">
             <GridPattern />
             <rect x={x} y={y} width="100%" height="100%" fill="#040d1c" /> #002846
             <rect x={x} y={y} width="100%" height="100%" fill="url(#grid-patt-c)" />
-        </>
+        </g>
     );
 }
 
@@ -91,12 +91,18 @@ function Canvas() {
                 <BackgroundGrid x={viewBox[0]} y={viewBox[1]} />
 
                 <path d={svg.asString()} fill="#7777" stroke="white" strokeWidth={viewBoxStroke} />
-                {pathPoints.map((pt, idx) => (
-                    <TargetPoint pt={pt} stroke={viewBoxStroke} key={idx} />
-                ))}
-                {cpPoints.map((pt, idx) => (
-                    <ControlPoint pt={pt} stroke={viewBoxStroke} key={idx} />
-                ))}
+
+                <g className="pathPts">
+                    {pathPoints.map((pt, idx) => (
+                        <TargetPoint pt={pt} stroke={viewBoxStroke} key={idx} />
+                    ))}
+                </g>
+
+                <g className="cpPts">
+                    {cpPoints.map((pt, idx) => (
+                        <ControlPoint pt={pt} stroke={viewBoxStroke} key={idx} />
+                    ))}
+                </g>
             </svg>
         </div>
     );
