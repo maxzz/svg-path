@@ -9,11 +9,13 @@ namespace Storage {
     type Store = {
         path: string;
         showGrid: boolean;
+        showTicks: boolean;
     };
 
     export let initialData: Store = {
         path: 'M 0 0 L 25 103 Q 52 128 63 93 C -2 26 29 0 100 0 C 83 15 85 52 61 27',
         showGrid: true,
+        showTicks: true,
     };
 
     function load() {
@@ -32,6 +34,7 @@ namespace Storage {
         let newStore: Store = {
             path: get(_pathUnsafeAtom),
             showGrid: get(showGridAtom),
+            showTicks: get(showTicksAtom),
         };
         localStorage.setItem(KEY, JSON.stringify(newStore));
     }, 1000);
@@ -91,5 +94,6 @@ export const viewBoxStrokeAtom = atom(0);
 // canvas controls
 
 export const showGridAtom = atomWithCallback(Storage.initialData.showGrid, ({ get }) => Storage.save(get));
+export const showTicksAtom = atomWithCallback(Storage.initialData.showTicks, ({ get }) => Storage.save(get));
 
 //
