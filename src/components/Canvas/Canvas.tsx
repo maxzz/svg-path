@@ -16,9 +16,10 @@ function TargetPoint({ pt, stroke, idx }: { pt: SvgPoint, stroke: number; idx: n
 
     const active = activePathPt === idx;
     const hover = hoverPathPt === idx;
+
+    //TODO: add point transparent border for ease mouse pointing
     return (
         <circle
-            // className={`${active ?'fill-[blue]':'fill-[white]'} ${hover ?'fill-[red]':'fill-[white]'}`}
             className={`${active ? 'fill-[blue]' : hover ? 'fill-[red]' : 'fill-[white]'}`}
             cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
             onMouseEnter={(event) => {
@@ -31,9 +32,6 @@ function TargetPoint({ pt, stroke, idx }: { pt: SvgPoint, stroke: number; idx: n
                 console.log('mouse leave');
                 setHoverPathPt(-1);
             }}
-            // onMouseOver={() => {
-
-            // }}
             onClick={() => {
                 console.log('click');
                 setActivePathPt(idx);
