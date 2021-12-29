@@ -1,6 +1,7 @@
 import React from "react";
 import { showGridAtom, showTicksAtom } from "../../store/store";
 import { useAtomValue } from "jotai/utils";
+import { a, Spring } from "@react-spring/web";
 
 function GridPattern({ x, y }: { x: number; y: number; }) {
     const showGrid = useAtomValue(showGridAtom);
@@ -31,11 +32,18 @@ function GridPattern({ x, y }: { x: number; y: number; }) {
 }
 
 export function BackgroundGrid({ x, y }: { x: number; y: number; }) {
+    const showGrid = useAtomValue(showGridAtom);
     return (
         <g className="grid">
             <rect x={x} y={y} width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
-            <GridPattern x={x} y={y} />
-        </g>
+            <Spring from={{ opacity: .2 }} to={{ opacity: .7 }} config={{ duration: 3000 }} >
+                {(props) => {
+                    return showGrid ? <a.g style={props}>
+                        <GridPattern x={x} y={y} />
+                    </a.g> : null
+                }}
+            </Spring>
+        </g >
     );
 }
 
