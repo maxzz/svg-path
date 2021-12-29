@@ -5,6 +5,7 @@ import { showGridAtom, svgAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { SvgControlPoint, SvgPoint } from '../../svg/svg';
 import { BackgroundGrid } from './BackgroundGrid';
+import CanvasControlsPanel from './CanvasControlsPanel';
 
 function TargetPoint({ pt, stroke }: { pt: SvgPoint, stroke: number; }) {
     return (
@@ -58,6 +59,7 @@ function Canvas() {
                     ))}
                 </g>
             </svg>
+            <CanvasControlsPanel />
         </div>
     );
 }
