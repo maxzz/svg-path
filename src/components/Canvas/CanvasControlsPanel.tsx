@@ -6,7 +6,7 @@ function Button({ label, atom }: { label: string; atom: WritableAtom<boolean, Se
     const [showGrid, setShowGrid] = useAtom(atom);
     return (
         <button
-            className={`px-1 py-0.5 text-sm text-slate-400 border-slate-500 border rounded active:scale-[.97] ${showGrid ? 'bg-slate-800' : 'bg-slate-600'}`}
+            className={`px-1 py-0.5 text-sm text-slate-400 border-slate-500 border rounded active:scale-[.97] ${showGrid ? 'bg-slate-800 shadow-sm shadow-slate-800' : 'bg-slate-600'}`}
             onClick={() => setShowGrid((prev) => !prev)}
         >
             {label}
