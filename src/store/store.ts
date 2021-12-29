@@ -8,10 +8,12 @@ namespace Storage {
 
     type Store = {
         path: string;
+        showGrid: boolean;
     };
 
     export let initialData: Store = {
         path: 'M 0 0 L 25 103 Q 52 128 63 93 C -2 26 29 0 100 0 C 83 15 85 52 61 27',
+        showGrid: true,
     };
 
     function load() {
@@ -29,6 +31,7 @@ namespace Storage {
     export const save = debounce(function _save(get: Getter) {
         let newStore: Store = {
             path: get(_pathUnsafeAtom),
+            showGrid: get(showGridAtom),
         };
         localStorage.setItem(KEY, JSON.stringify(newStore));
     }, 1000);
@@ -84,5 +87,9 @@ export const zoomAtom = atom(1);
 export const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
 export const pathPointsBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
 export const viewBoxStrokeAtom = atom(0);
+
+// canvas controls
+
+export const showGridAtom = atomWithCallback(Storage.initialData.showGrid, ({ get }) => Storage.save(get));
 
 //
