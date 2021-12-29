@@ -8,6 +8,18 @@ import { BackgroundGrid } from './BackgroundGrid';
 import CanvasControlsPanel from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils';
 
+function PointClassNames<K extends 'a'>(active: boolean, hover: boolean, key: K) {
+    const className = {
+        a: `${active
+                ? 'fill-[#009cff] cursor-pointer'
+                : hover
+                    ? 'fill-[#ff4343] cursor-pointer'
+                    : 'fill-[white]'
+            }`,
+    };
+    return className[key];
+}
+
 function TargetPoint({ pt, stroke, idx }: { pt: SvgPoint, stroke: number; idx: number; }) {
     const [activePathPt, setActivePathPt] = useAtom(activePathPointAtom);
     const [activeCpPt, setActiveCpPt] = useAtom(activeCpPointAtom);
@@ -17,15 +29,11 @@ function TargetPoint({ pt, stroke, idx }: { pt: SvgPoint, stroke: number; idx: n
     const active = activePathPt === idx;
     const hover = hoverPathPt === idx;
 
+
     //TODO: add point transparent border for ease mouse pointing
     return (
         <circle
-            className={`${active
-                ? 'fill-[#009cff] cursor-pointer'
-                : hover
-                    ? 'fill-[#ff4343] cursor-pointer'
-                    : 'fill-[white]'
-                }`}
+            className={PointClassNames(active, hover, 'a')}
             cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
             onMouseEnter={(event) => {
                 activePathPt !== idx && setHoverPathPt(idx);
@@ -53,12 +61,7 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
     return (
         <>
             <circle
-                className={`${active
-                    ? 'fill-[#009cff] cursor-pointer'
-                    : hover
-                        ? 'fill-[#ff4343] cursor-pointer'
-                        : 'fill-[white]'
-                    }`}
+                className={PointClassNames(active, hover, 'a')}
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
                 onMouseEnter={(event) => {
                     activeCpPt !== idx && setHoverCpPt(idx);

@@ -32,7 +32,6 @@ function GridPattern({ x, y }: { x: number; y: number; }) {
 }
 
 export function BackgroundGrid({ x, y }: { x: number; y: number; }) {
-    
     return (
         <g className="grid">
             <rect x={x} y={y} width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
