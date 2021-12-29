@@ -93,7 +93,7 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
     const cpPoints = svg.controlLocations();
     return (
         <svg viewBox={viewBox.join(" ")}>
-            {/* <BackgroundGrid x={viewBox[0]} y={viewBox[1]} /> */}
+            <BackgroundGrid x={viewBox[0]} y={viewBox[1]} />
 
             <path d={svg.asString()} fill="#94a3b830" stroke="white" strokeWidth={viewBoxStroke} />
 
@@ -118,9 +118,9 @@ export function PathCanvas() {
     const { viewBox, viewBoxStroke, ref, parentRef, onWheel, } = useContainerZoom();
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
-            <svg className="absolute -z-10 w-full h-full">
+            {/* <svg className="absolute -z-10 w-full h-full">
                 <BackgroundGrid x={viewBox[0]} y={viewBox[1]} />
-            </svg>
+            </svg> */}
             <SvgCanvas viewBox={viewBox} viewBoxStroke={viewBoxStroke} />
             <CanvasControlsPanelMemo />
         </div>
