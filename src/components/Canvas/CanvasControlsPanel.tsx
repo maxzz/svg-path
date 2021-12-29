@@ -16,7 +16,7 @@ function Button({ label, atom }: { label: string; atom: WritableAtom<boolean, Se
 
 function CanvasControlsPanel() {
     return (
-        <div className="absolute bottom-4 right-4 w-1/2 h-12 px-2 py-1 bg-slate-400/40 rounded flex items-center">
+        <div className="absolute bottom-4 right-4 px-2 py-2 bg-slate-400/40 rounded flex items-center space-x-2">
             <Button label="Grid" atom={showGridAtom} />
         </div>
     );
