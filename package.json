@@ -1,6 +1,8 @@
 {
   "name": "svg-path",
   "version": "0.0.0",
+  "license": "MIT",
+  "description": "SVG path exploration",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
