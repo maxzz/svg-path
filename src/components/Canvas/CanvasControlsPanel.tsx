@@ -5,7 +5,10 @@ import { showGridAtom } from '../../store/store';
 function Button({ label, atom }: { label: string; atom: WritableAtom<boolean, SetStateAction<boolean>, void>; }) {
     const [showGrid, setShowGrid] = useAtom(atom);
     return (
-        <button className="px-1 py-0.5 text-sm text-slate-400 bg-slate-800 border-slate-500 border rounded ">
+        <button
+            className={`px-1 py-0.5 text-sm text-slate-400 border-slate-500 border rounded ${showGrid ? 'bg-slate-600' : 'bg-slate-800'}`}
+            onClick={() => setShowGrid((prev) => !prev)}
+        >
             {label}
         </button>
     );
