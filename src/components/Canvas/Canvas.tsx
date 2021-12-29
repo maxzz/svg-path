@@ -1,7 +1,7 @@
 import React from 'react';
 import { mergeRef } from '../../hooks/utils';
 import { useAtom } from 'jotai';
-import { svgAtom } from '../../store/store';
+import { showGridAtom, svgAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { SvgControlPoint, SvgPoint } from '../../svg/svg';
 
@@ -53,15 +53,27 @@ function ControlPoint({ pt, stroke }: { pt: SvgControlPoint, stroke: number; }) 
             <circle className="fill-[white]" cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12} />
             {pt.relations.map((rel, idx) => (
                 <React.Fragment key={idx}>
-                    <line className="stroke-[white]" x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke} />
+                    <line className="stroke-[#fff7]" x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke} />
                 </React.Fragment>
             ))}
         </>
     );
 }
 
+function BackgroundGrid({ x, y }: { x: number; y: number; }) {
+    const [showGrid, setShowGrid] = useAtom(showGridAtom);
+    return (
+        <>
+            <GridPattern />
+            <rect x={x} y={y} width="100%" height="100%" fill="#040d1c" /> #002846
+            <rect x={x} y={y} width="100%" height="100%" fill="url(#grid-patt-c)" />
+        </>
+    );
+}
+
 function Canvas() {
     const [svg] = useAtom(svgAtom);
+
     const {
         viewBox,
         viewBoxStroke,
@@ -76,9 +88,8 @@ function Canvas() {
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
             <svg viewBox={viewBox.join(" ")}>
-                <GridPattern />
-                <rect x={viewBox[0]} y={viewBox[1]} width="100%" height="100%" fill="#040d1c" /> #002846
-                <rect x={viewBox[0]} y={viewBox[1]} width="100%" height="100%" fill="url(#grid-patt-c)" />
+                <BackgroundGrid x={viewBox[0]} y={viewBox[1]} />
+
                 <path d={svg.asString()} fill="#7777" stroke="white" strokeWidth={viewBoxStroke} />
                 {pathPoints.map((pt, idx) => (
                     <TargetPoint pt={pt} stroke={viewBoxStroke} key={idx} />
