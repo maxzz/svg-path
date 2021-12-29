@@ -50,13 +50,18 @@ function Canvas() {
         onWheel,
     } = useContainerZoom();
 
+    const pathPoints = svg.targetLocations();
+
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
             <svg viewBox={viewBox.join(" ")}>
                 <GridPattern />
                 <rect x={viewBox[0]} y={viewBox[1]} width="100%" height="100%" fill="#040d1c" /> #002846
                 <rect x={viewBox[0]} y={viewBox[1]} width="100%" height="100%" fill="url(#grid-patt-c)" />
-                <path d={svg.asString()} fill="white" stroke={"red"} strokeWidth={viewBoxStroke} />
+                <path d={svg.asString()} fill="none" stroke="white" strokeWidth={viewBoxStroke} />
+                {pathPoints.map((pt, idx) => (
+                    <circle className="fill-[white]" cx={pt.x} cy={pt.y} r={viewBoxStroke * 3} strokeWidth={viewBoxStroke * 12} key={idx} />
+                ))}
             </svg>
         </div>
     );
