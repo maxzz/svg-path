@@ -7,7 +7,7 @@ import { BgGrid } from './components/UI/icons/BgGrid';
 import { Accordion } from './components/UI/Accordion';
 import { pathUnsafeAtom } from './store/store';
 import { PathCommandEditor } from './components/Panels/PathCommandEditor';
-import Canvas from './components/Canvas/Canvas';
+import { PathCanvas } from './components/Canvas/Canvas';
 
 function SectionPane({ children, open = true, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
     return (
@@ -149,9 +149,8 @@ function PathPane() {
 function PathViewer() {
     return (
         <div className="flex-1 relative">
-            {/* <BgGrid className="absolute w-full h-full -z-10" /> */}
-                <Canvas />
-            <div className="text-red-500/50 font-black p-2">Ground zero</div>
+            <PathCanvas />
+            {/* <div className="absolute text-red-500/50 font-black p-2">Ground zero</div> */}
         </div>
     );
 }
