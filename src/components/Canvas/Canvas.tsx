@@ -20,7 +20,12 @@ function TargetPoint({ pt, stroke, idx }: { pt: SvgPoint, stroke: number; idx: n
     //TODO: add point transparent border for ease mouse pointing
     return (
         <circle
-            className={`${active ? 'fill-[blue] cursor-pointer' : hover ? 'fill-[red] cursor-pointer' : 'fill-[white]'}`}
+            className={`${active
+                ? 'fill-[#009cff] cursor-pointer'
+                : hover
+                    ? 'fill-[#ff4343] cursor-pointer'
+                    : 'fill-[white]'
+                }`}
             cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
             onMouseEnter={(event) => {
                 activePathPt !== idx && setHoverPathPt(idx);
@@ -48,7 +53,12 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
     return (
         <>
             <circle
-                className={`${active ? 'fill-[blue] cursor-pointer' : hover ? 'fill-[red] cursor-pointer' : 'fill-[white]'}`}
+                className={`${active
+                    ? 'fill-[#009cff] cursor-pointer'
+                    : hover
+                        ? 'fill-[#ff4343] cursor-pointer'
+                        : 'fill-[white]'
+                    }`}
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
                 onMouseEnter={(event) => {
                     activeCpPt !== idx && setHoverCpPt(idx);
@@ -60,10 +70,14 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
                 onClick={() => {
                     setActivePathPt(idx);
                 }}
-                />
+            />
+
             {pt.relations.map((rel, idx) => (
                 <React.Fragment key={idx}>
-                    <line className="stroke-[#fff7]" x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke} />
+                    <line
+                        className="stroke-[#fff7]"
+                        x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke}
+                    />
                 </React.Fragment>
             ))}
         </>
