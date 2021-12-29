@@ -20,11 +20,11 @@ function TargetPoint({ pt, stroke, idx }: { pt: SvgPoint, stroke: number; idx: n
     //TODO: add point transparent border for ease mouse pointing
     return (
         <circle
-            className={`${active ? 'fill-[blue]' : hover ? 'fill-[red]' : 'fill-[white]'}`}
+            className={`${active ? 'fill-[blue] cursor-pointer' : hover ? 'fill-[red] cursor-pointer' : 'fill-[white]'}`}
             cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
             onMouseEnter={(event) => {
                 activePathPt !== idx && setHoverPathPt(idx);
-                activePathPt !== -1 && setHoverCpPt(-1);
+                activeCpPt !== -1 && setHoverCpPt(-1);
             }}
             onMouseLeave={(event) => {
                 hoverPathPt !== -1 && setHoverPathPt(-1);
@@ -36,12 +36,31 @@ function TargetPoint({ pt, stroke, idx }: { pt: SvgPoint, stroke: number; idx: n
     );
 }
 
-//TODO: handle control points
-
 function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number; idx: number; }) {
+    const [activePathPt, setActivePathPt] = useAtom(activePathPointAtom);
+    const [activeCpPt, setActiveCpPt] = useAtom(activeCpPointAtom);
+    const [hoverPathPt, setHoverPathPt] = useAtom(hoverPathPointAtom);
+    const [hoverCpPt, setHoverCpPt] = useAtom(hoverCpPointAtom);
+
+    const active = activeCpPt === idx;
+    const hover = hoverCpPt === idx;
+
     return (
         <>
-            <circle className="fill-[white]" cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12} />
+            <circle
+                className={`${active ? 'fill-[blue] cursor-pointer' : hover ? 'fill-[red] cursor-pointer' : 'fill-[white]'}`}
+                cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
+                onMouseEnter={(event) => {
+                    activeCpPt !== idx && setHoverCpPt(idx);
+                    activePathPt !== -1 && setHoverPathPt(-1);
+                }}
+                onMouseLeave={(event) => {
+                    hoverCpPt !== -1 && setHoverCpPt(-1);
+                }}
+                onClick={() => {
+                    setActivePathPt(idx);
+                }}
+                />
             {pt.relations.map((rel, idx) => (
                 <React.Fragment key={idx}>
                     <line className="stroke-[#fff7]" x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke} />
