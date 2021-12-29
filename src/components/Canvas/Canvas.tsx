@@ -45,7 +45,7 @@ function Canvas() {
             <svg viewBox={viewBox.join(" ")}>
                 <BackgroundGrid x={viewBox[0]} y={viewBox[1]} />
 
-                <path d={svg.asString()} fill="#7777" stroke="white" strokeWidth={viewBoxStroke} />
+                <path d={svg.asString()} fill="#94a3b830" stroke="white" strokeWidth={viewBoxStroke} />
 
                 <g className="pathPts">
                     {pathPoints.map((pt, idx) => (
