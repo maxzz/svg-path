@@ -23,7 +23,7 @@ namespace Storage {
         if (s) {
             try {
                 let obj = JSON.parse(s) as Store;
-                initialData = obj;
+                initialData = {...initialData, ...obj};
             } catch (error) {
             }
         }
