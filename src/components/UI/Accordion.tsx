@@ -21,3 +21,23 @@ export function Accordion({ toggle, children }: { toggle: boolean, children: Rea
         </div>
     );
 }
+
+export function AccordionHorizontal({ toggle, children }: { toggle: boolean, children: React.ReactNode; }) {
+    const [ref, { width, left }] = useMeasure<HTMLDivElement>();
+    const [firstRun, setFirstRun] = React.useState(true);
+    const animation = useSpring({
+        overflow: "hidden",
+        width: toggle ? width + left : '300px',
+        config: firstRun ? { duration: 0 } : { mass: 0.2, tension: 392, clamp: true, duration: 3000 },
+        onRest: () => firstRun && setFirstRun(false),
+    });
+    return (
+        <div>
+            <a.div style={animation}>
+                <div ref={ref}>
+                    {children}
+                </div>
+            </a.div>
+        </div>
+    );
+}

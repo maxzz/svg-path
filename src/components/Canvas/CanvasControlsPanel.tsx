@@ -1,6 +1,7 @@
 import React from 'react';
 import { SetStateAction, useAtom, WritableAtom } from 'jotai';
 import { showGridAtom, showTicksAtom } from '../../store/store';
+import { AccordionHorizontal } from '../UI/Accordion';
 
 function Button({ label, atom }: { label: string; atom: WritableAtom<boolean, SetStateAction<boolean>, void>; }) {
     const [showGrid, setShowGrid] = useAtom(atom);
@@ -18,8 +19,12 @@ function CanvasControlsPanel() {
     const [showGrid] = useAtom(showGridAtom);
     return (
         <div className="absolute bottom-4 right-4 px-2 py-2 bg-slate-400/40 rounded flex items-center space-x-2">
-            <Button label="Grid" atom={showGridAtom} />
-            {showGrid && <Button label="Ticks" atom={showTicksAtom} />}
+            <AccordionHorizontal toggle={showGrid}>
+                <div className="">
+                    {showGrid && <Button label="Ticks" atom={showTicksAtom} />}
+                    <Button label="Grid" atom={showGridAtom} />
+                </div>
+            </AccordionHorizontal>
         </div>
     );
 }
