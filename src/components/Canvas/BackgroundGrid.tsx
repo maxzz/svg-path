@@ -1,11 +1,10 @@
 import React from "react";
-import { useAtom } from "jotai";
 import { showGridAtom, showTicksAtom } from "../../store/store";
+import { useAtomValue } from "jotai/utils";
 
 function GridPattern({ x, y }: { x: number; y: number; }) {
-    const [showGrid, setShowGrid] = useAtom(showGridAtom);
-    const [showTicks, setShowTicks] = useAtom(showTicksAtom);
-    const fillName = showTicks ? 'url(#grid-patt-c)' : 'url(#grid-patt-a)';
+    const showGrid = useAtomValue(showGridAtom);
+    const showTicks = useAtomValue(showTicksAtom);
     return (<>
         {showGrid && (<>
             <defs>
@@ -28,7 +27,7 @@ function GridPattern({ x, y }: { x: number; y: number; }) {
                     </>
                 }
             </defs>
-            <rect x={x} y={y} width="100%" height="100%" fill="url(#grid-patt-c)" />
+            <rect x={x} y={y} width="100%" height="100%" fill={`url(#grid-patt-${showTicks ? 'c':'a'})`} />
         </>)}
     </>);
 }
