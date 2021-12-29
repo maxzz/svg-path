@@ -53,7 +53,7 @@ function OneCommand({ path }: { path: SvgItem; }) {
 
 export function PathCommandEditor() {
     const [svg] = useAtom(svgAtom);
-    console.log('svg', [...svg.path]);
+    //console.log('svg', [...svg.path]);
 
     return (
         <div className="my-1 space-y-0.5">

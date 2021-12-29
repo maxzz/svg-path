@@ -91,10 +91,13 @@ export const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0])
 export const pathPointsBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
 export const viewBoxStrokeAtom = atom(0);
 
-// canvas current point index on path (TODO: it must be atom)
+// canvas the active and hover point index on the path (TODO: it must be atom)
 
 export const activePathPointAtom = atom(0);
 export const activeCpPointAtom = atom(0);
+
+export const hoverPathPointAtom = atom(0);
+export const hoverCpPointAtom = atom(0);
 
 // canvas controls
 
