@@ -63,11 +63,17 @@ function ControlPoint({ pt, stroke }: { pt: SvgControlPoint, stroke: number; }) 
 function BackgroundGrid({ x, y }: { x: number; y: number; }) {
     const [showGrid, setShowGrid] = useAtom(showGridAtom);
     return (
-        <g className="grid">
-            <GridPattern />
-            <rect x={x} y={y} width="100%" height="100%" fill="#040d1c" /> #002846
-            <rect x={x} y={y} width="100%" height="100%" fill="url(#grid-patt-c)" />
-        </g>
+        <>
+            {!showGrid ?
+                <g className="grid">
+                    <GridPattern />
+                    <rect x={x} y={y} width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
+                    <rect x={x} y={y} width="100%" height="100%" fill="url(#grid-patt-c)" />
+                </g>
+                :
+                <rect x={x} y={y} width="100%" height="100%" fill="#040d1c" />
+            }
+        </>
     );
 }
 
