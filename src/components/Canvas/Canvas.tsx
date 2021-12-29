@@ -3,6 +3,7 @@ import { mergeRef } from '../../hooks/utils';
 import { useAtom } from 'jotai';
 import { svgAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
+import { SvgPoint } from '../../svg/svg';
 
 function GridPattern() {
     return (
@@ -40,6 +41,12 @@ function GridPattern() {
     );
 }
 
+function TargetPoint({pt, stroke}: {pt: SvgPoint, stroke: number}) {
+    return (
+        <circle className="fill-[white]" cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12} />
+    )
+}
+
 function Canvas() {
     const [svg] = useAtom(svgAtom);
     const {
@@ -60,7 +67,7 @@ function Canvas() {
                 <rect x={viewBox[0]} y={viewBox[1]} width="100%" height="100%" fill="url(#grid-patt-c)" />
                 <path d={svg.asString()} fill="none" stroke="white" strokeWidth={viewBoxStroke} />
                 {pathPoints.map((pt, idx) => (
-                    <circle className="fill-[white]" cx={pt.x} cy={pt.y} r={viewBoxStroke * 3} strokeWidth={viewBoxStroke * 12} key={idx} />
+                    <TargetPoint pt={pt} stroke={viewBoxStroke} key={idx} />
                 ))}
             </svg>
         </div>
