@@ -6,6 +6,7 @@ import { useContainerZoom } from './useContainerZoom';
 import { SvgControlPoint, SvgPoint } from '../../svg/svg';
 import { BackgroundGrid } from './BackgroundGrid';
 import CanvasControlsPanel from './CanvasControlsPanel';
+import { ViewBox } from '../../svg/svg-utils';
 
 function TargetPoint({ pt, stroke }: { pt: SvgPoint, stroke: number; }) {
     return (
@@ -26,32 +27,39 @@ function ControlPoint({ pt, stroke }: { pt: SvgControlPoint, stroke: number; }) 
     );
 }
 
-function Canvas() {
-    const { viewBox, viewBoxStroke, ref, parentRef, onWheel, } = useContainerZoom();
+function SvgCanvas({viewBox, viewBoxStroke}: {viewBox: ViewBox; viewBoxStroke: number}) {
     const [svg] = useAtom(svgAtom);
     const pathPoints = svg.targetLocations();
     const cpPoints = svg.controlLocations();
+    return (
+        <svg viewBox={viewBox.join(" ")}>
+        <BackgroundGrid x={viewBox[0]} y={viewBox[1]} />
 
+        <path d={svg.asString()} fill="#94a3b830" stroke="white" strokeWidth={viewBoxStroke} />
+
+        <g className="pathPts">
+            {pathPoints.map((pt, idx) => (
+                <TargetPoint pt={pt} stroke={viewBoxStroke} key={idx} />
+            ))}
+        </g>
+
+        <g className="cpPts">
+            {cpPoints.map((pt, idx) => (
+                <ControlPoint pt={pt} stroke={viewBoxStroke} key={idx} />
+            ))}
+        </g>
+    </svg>
+    );
+}
+
+const CanvasControlsPanelMemo = React.memo(CanvasControlsPanel);
+
+function Canvas() {
+    const { viewBox, viewBoxStroke, ref, parentRef, onWheel, } = useContainerZoom();
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
-            <svg viewBox={viewBox.join(" ")}>
-                <BackgroundGrid x={viewBox[0]} y={viewBox[1]} />
-
-                <path d={svg.asString()} fill="#94a3b830" stroke="white" strokeWidth={viewBoxStroke} />
-
-                <g className="pathPts">
-                    {pathPoints.map((pt, idx) => (
-                        <TargetPoint pt={pt} stroke={viewBoxStroke} key={idx} />
-                    ))}
-                </g>
-
-                <g className="cpPts">
-                    {cpPoints.map((pt, idx) => (
-                        <ControlPoint pt={pt} stroke={viewBoxStroke} key={idx} />
-                    ))}
-                </g>
-            </svg>
-            <CanvasControlsPanel />
+            <SvgCanvas viewBox={viewBox} viewBoxStroke={viewBoxStroke} />
+            <CanvasControlsPanelMemo />
         </div>
     );
 }
