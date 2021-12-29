@@ -18,11 +18,12 @@ function TargetPoint({ pt, stroke, idx }: { pt: SvgPoint, stroke: number; idx: n
     const hover = hoverPathPt === idx;
     return (
         <circle
-            className={`${active ?'fill-[blue]':'fill-[white]'} ${hover ?'fill-[red]':'fill-[white]'}`}
+            // className={`${active ?'fill-[blue]':'fill-[white]'} ${hover ?'fill-[red]':'fill-[white]'}`}
+            className={`${active ? 'fill-[blue]' : hover ? 'fill-[red]' : 'fill-[white]'}`}
             cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
             onMouseEnter={(event) => {
                 console.log('mouse enter');
-                
+
                 setHoverPathPt(idx);
                 setHoverCpPt(-1);
             }}
@@ -30,9 +31,12 @@ function TargetPoint({ pt, stroke, idx }: { pt: SvgPoint, stroke: number; idx: n
                 console.log('mouse leave');
                 setHoverPathPt(-1);
             }}
+            // onMouseOver={() => {
+
+            // }}
             onClick={() => {
                 console.log('click');
-                setActivePathPt(idx)
+                setActivePathPt(idx);
             }}
         />
     );
