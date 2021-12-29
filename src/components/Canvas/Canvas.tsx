@@ -27,16 +27,8 @@ function ControlPoint({ pt, stroke }: { pt: SvgControlPoint, stroke: number; }) 
 }
 
 function Canvas() {
+    const { viewBox, viewBoxStroke, ref, parentRef, onWheel, } = useContainerZoom();
     const [svg] = useAtom(svgAtom);
-
-    const {
-        viewBox,
-        viewBoxStroke,
-        ref,
-        parentRef,
-        onWheel,
-    } = useContainerZoom();
-
     const pathPoints = svg.targetLocations();
     const cpPoints = svg.controlLocations();
 
