@@ -84,12 +84,17 @@ export const svgAtom = atom(
     }
 );
 
-// canvas
+// canvas zoom
 
 export const zoomAtom = atom(1);
 export const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
 export const pathPointsBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
 export const viewBoxStrokeAtom = atom(0);
+
+// canvas current point index on path (TODO: it must be atom)
+
+export const activePathPointAtom = atom(0);
+export const activeCpPointAtom = atom(0);
 
 // canvas controls
 
