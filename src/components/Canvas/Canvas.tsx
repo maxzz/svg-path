@@ -3,7 +3,7 @@ import { mergeRef } from '../../hooks/utils';
 import { useAtom } from 'jotai';
 import { activeCpPointAtom, activePathPointAtom, hoverCpPointAtom, hoverPathPointAtom, showGridAtom, svgAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
-import { SvgControlPoint, SvgPoint } from '../../svg/svg';
+import { SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 import { BackgroundGrid } from './BackgroundGrid';
 import CanvasControlsPanel from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils';
@@ -11,16 +11,16 @@ import { ViewBox } from '../../svg/svg-utils';
 function PointClassNames<K extends 'circle'>(active: boolean, hover: boolean, key: K) {
     const className = {
         circle: `${active
-                ? 'fill-[#009cff] cursor-pointer'
-                : hover
-                    ? 'fill-[#ff4343] cursor-pointer'
-                    : 'fill-[white]'
+            ? 'fill-[#009cff] cursor-pointer'
+            : hover
+                ? 'fill-[#ff4343] cursor-pointer'
+                : 'fill-[white]'
             }`,
     };
     return className[key];
 }
 
-function TargetPoint({ pt, stroke, idx }: { pt: SvgPoint, stroke: number; idx: number; }) {
+function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPoint, stroke: number; idx: number; }) {
     const [activePathPt, setActivePathPt] = useAtom(activePathPointAtom);
     const [activeCpPt, setActiveCpPt] = useAtom(activeCpPointAtom);
     const [hoverPathPt, setHoverPathPt] = useAtom(hoverPathPointAtom);
@@ -30,26 +30,32 @@ function TargetPoint({ pt, stroke, idx }: { pt: SvgPoint, stroke: number; idx: n
     const hover = hoverPathPt === idx;
 
     return (
-        <circle
-            className={PointClassNames(active, hover, 'circle')}
-            cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
-            onMouseEnter={(event) => {
-                activePathPt !== idx && setHoverPathPt(idx);
-                activeCpPt !== -1 && setHoverCpPt(-1);
-            }}
-            onMouseLeave={(event) => {
-                hoverPathPt !== -1 && setHoverPathPt(-1);
-            }}
-            onClick={() => {
-                setActivePathPt(idx);
-            }}
-        />
+        <>
+            <circle
+                className={PointClassNames(active, hover, 'circle')}
+                style={{stroke: 'transparent'}}
+                cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
+                onMouseEnter={(event) => {
+                    activePathPt !== idx && setHoverPathPt(idx);
+                    activeCpPt !== -1 && setHoverCpPt(-1);
+                }}
+                onMouseLeave={(event) => {
+                    hoverPathPt !== -1 && setHoverPathPt(-1);
+                }}
+                onClick={() => {
+                    setActivePathPt(idx);
+                }}
+            />
+            {(active || hover) && 
+                <path className="stroke-[red] fill-[none]" strokeWidth={stroke} d={svgItem.asStandaloneString()} />
+            }
+        </>
     );
 }
 
 //TODO: add point transparent border for ease mouse pointing
 
-function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number; idx: number; }) {
+function ControlPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgControlPoint, stroke: number; idx: number; }) {
     const [activePathPt, setActivePathPt] = useAtom(activePathPointAtom);
     const [activeCpPt, setActiveCpPt] = useAtom(activeCpPointAtom);
     const [hoverPathPt, setHoverPathPt] = useAtom(hoverPathPointAtom);
@@ -62,6 +68,7 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
         <>
             <circle
                 className={PointClassNames(active, hover, 'circle')}
+                style={{stroke: 'transparent'}}
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
                 onMouseEnter={(event) => {
                     activeCpPt !== idx && setHoverCpPt(idx);
@@ -99,13 +106,13 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
 
             <g className="pathPts">
                 {pathPoints.map((pt, idx) => (
-                    <TargetPoint pt={pt} stroke={viewBoxStroke} idx={idx} key={idx} />
+                    <TargetPoint svgItem={svg.path[idx]} pt={pt} stroke={viewBoxStroke} idx={idx} key={idx} />
                 ))}
             </g>
 
             <g className="cpPts">
                 {cpPoints.map((pt, idx) => (
-                    <ControlPoint pt={pt} stroke={viewBoxStroke} idx={idx} key={idx} />
+                    <ControlPoint svgItem={svg.path[idx]} pt={pt} stroke={viewBoxStroke} idx={idx} key={idx} />
                 ))}
             </g>
         </svg>
