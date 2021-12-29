@@ -23,17 +23,13 @@ function TargetPoint({ pt, stroke, idx }: { pt: SvgPoint, stroke: number; idx: n
             className={`${active ? 'fill-[blue]' : hover ? 'fill-[red]' : 'fill-[white]'}`}
             cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
             onMouseEnter={(event) => {
-                console.log('mouse enter');
-
-                setHoverPathPt(idx);
-                setHoverCpPt(-1);
+                activePathPt !== idx && setHoverPathPt(idx);
+                activePathPt !== -1 && setHoverCpPt(-1);
             }}
             onMouseLeave={(event) => {
-                console.log('mouse leave');
-                setHoverPathPt(-1);
+                hoverPathPt !== -1 && setHoverPathPt(-1);
             }}
             onClick={() => {
-                console.log('click');
                 setActivePathPt(idx);
             }}
         />
