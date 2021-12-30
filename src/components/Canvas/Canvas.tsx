@@ -69,7 +69,23 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
                     x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke} key={idx}
                 />
             ))}
-            <circle
+            <rect
+                className={ptClassNames(active, hover, 'circle')}
+                style={{ stroke: 'transparent' }}
+                x={pt.x - 3 * stroke} y={pt.y - 3 * stroke} width={stroke * 6} height={stroke * 6} strokeWidth={stroke * 12}
+
+                onMouseEnter={(event) => {
+                    event.stopPropagation();
+                    setHoverPt(idx);
+                }}
+                onMouseLeave={(event) => {
+                    setHoverPt(-1);
+                }}
+                onClick={() => {
+                    setActivePt(idx);
+                }}
+            />
+            {/* <circle
                 className={ptClassNames(active, hover, 'circle')}
                 style={{ stroke: 'transparent' }}
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
@@ -83,7 +99,7 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
                 onClick={() => {
                     setActivePt(idx);
                 }}
-            />
+            /> */}
         </>
     );
 }
