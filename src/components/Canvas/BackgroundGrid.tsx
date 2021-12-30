@@ -31,12 +31,9 @@ function GridPattern({ x, y }: { x: number; y: number; }) {
     </>);
 }
 
-export function BackgroundGrid({ x, y }: { x: number; y: number; }) {
+export function BackgroundGrid({ x, y, onClick = () => {} }: { x: number; y: number; onClick?: () => void }) {
     return (
-        <g className="grid" onClick={() => {
-            console.log('done');
-            
-        }}>
+        <g className="grid" onClick={onClick}>
             <rect x={x} y={y} width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
             <GridPattern x={x} y={y} />
         </g >
