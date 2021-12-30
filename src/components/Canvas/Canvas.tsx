@@ -14,14 +14,6 @@ function ptClassNames<K extends 'circle' | 'color'>(active: boolean, hover: bool
         color: active ? '#009cff' : hover ? '#ff4343' : 'white',
         circle: `fill-[${active ? '#009cff' : hover ? '#ff4343' : 'white'}] cursor-pointer`,
     };
-    // const className = {
-    //     circle: `${active
-    //         ? 'fill-[#009cff] cursor-pointer'
-    //         : hover
-    //             ? 'fill-[#ff4343] cursor-pointer'
-    //             : 'fill-[white]'
-    //         }`,
-    // };
     return className[key];
 }
 
@@ -30,26 +22,24 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
     const active = activePt === idx;
     const hover = hoverPt === idx;
-    return (
-        <>
-            {(active || hover) &&
-                <path style={{ stroke: ptClassNames(active, hover, 'color'), fill: 'none' }} strokeWidth={stroke} d={svgItem.asStandaloneString()} />
-            }
-            <circle
-                className={ptClassNames(active, hover, 'circle')}
-                style={{ stroke: 'transparent' }}
-                cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
-                
-                onMouseEnter={(event) => { event.stopPropagation(); setHoverPt(idx); }}
-                onMouseLeave={() => setHoverPt(-1)}
-                onMouseDown={() => {
-                    setActivePt(idx);
-                }}
-            >
-                <title>{pt.x},{pt.y}</title>
-            </circle>
-        </>
-    );
+    return (<>
+        {(active || hover) &&
+            <path style={{ stroke: ptClassNames(active, hover, 'color'), fill: 'none' }} strokeWidth={stroke} d={svgItem.asStandaloneString()} />
+        }
+        <circle
+            className={ptClassNames(active, hover, 'circle')}
+            style={{ stroke: 'transparent' }}
+            cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
+
+            onMouseEnter={(event) => { event.stopPropagation(); setHoverPt(idx); }}
+            onMouseLeave={() => setHoverPt(-1)}
+            onMouseDown={() => {
+                setActivePt(idx);
+            }}
+        >
+            <title>{pt.x},{pt.y}</title>
+        </circle>
+    </>);
 }
 
 function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number; idx: number; }) {
@@ -57,29 +47,27 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
     const active = activePt === idx;
     const hover = hoverPt === idx;
-    return (
-        <>
-            {pt.relations.map((rel, idx) => (
-                <line
-                    className="stroke-[#fff7]"
-                    x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke} key={idx}
-                />
-            ))}
-            <rect
-                className={ptClassNames(active, hover, 'circle')}
-                style={{ stroke: 'transparent' }}
-                x={pt.x - 3 * stroke} y={pt.y - 3 * stroke} width={stroke * 6} height={stroke * 6} strokeWidth={stroke * 12}
+    return (<>
+        {pt.relations.map((rel, idx) => (
+            <line
+                className="stroke-[#fff7]"
+                x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke} key={idx}
+            />
+        ))}
+        <rect
+            className={ptClassNames(active, hover, 'circle')}
+            style={{ stroke: 'transparent' }}
+            x={pt.x - 3 * stroke} y={pt.y - 3 * stroke} width={stroke * 6} height={stroke * 6} strokeWidth={stroke * 12}
 
-                onMouseEnter={(event) => { event.stopPropagation(); setHoverPt(idx); }}
-                onMouseLeave={() => setHoverPt(-1)}
-                onMouseDown={() => {
-                    setActivePt(idx);
-                }}
-            >
-                <title>{pt.x},{pt.y}</title>
-            </rect>
-        </>
-    );
+            onMouseEnter={(event) => { event.stopPropagation(); setHoverPt(idx); }}
+            onMouseLeave={() => setHoverPt(-1)}
+            onMouseDown={() => {
+                setActivePt(idx);
+            }}
+        >
+            <title>{pt.x},{pt.y}</title>
+        </rect>
+    </>);
 }
 
 const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocations.findIndex((pt) => pt.itemReference === ref);
