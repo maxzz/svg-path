@@ -7,6 +7,7 @@ import { SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 import { BackgroundGrid } from './BackgroundGrid';
 import CanvasControlsPanel from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils';
+import { useUpdateAtom } from 'jotai/utils';
 
 function PointClassNames<K extends 'circle'>(active: boolean, hover: boolean, key: K) {
     const className = {
@@ -99,11 +100,13 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
     const [svg] = useAtom(svgAtom);
     const pathPoints = svg.targetLocations();
     const cpPoints = svg.controlLocations();
+
+    const setActivePathPt = useUpdateAtom(activePathPointAtom);
+    const setActiveCpPt = useUpdateAtom(activeCpPointAtom);
+
     return (
         <svg viewBox={viewBox.join(" ")}>
-            <BackgroundGrid x={viewBox[0]} y={viewBox[1]} onClick={() => {
-            console.log('done');
-        }}/>
+            <BackgroundGrid x={viewBox[0]} y={viewBox[1]} onClick={() => { setActivePathPt(-1); setActiveCpPt(-1); }} />
 
             <path d={svg.asString()} fill="#94a3b830" stroke="white" strokeWidth={viewBoxStroke} />
 
