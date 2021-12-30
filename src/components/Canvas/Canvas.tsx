@@ -88,7 +88,7 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
     );
 }
 
-const cpIdx = (pts: SvgPoint[], ref: SvgItem) => pts.findIndex((pt) => pt.itemReference === ref);
+const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocations.findIndex((pt) => pt.itemReference === ref);
 
 function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke: number; }) {
     const [svg] = useAtom(svgAtom);
@@ -103,7 +103,7 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
 
             <g className="cpPts">
                 {cpPoints.map((pt, idx) => (
-                    <ControlPoint pt={pt} stroke={viewBoxStroke} idx={cpIdx(pathPoints, pt.itemReference)} key={idx} />
+                    <ControlPoint pt={pt} stroke={viewBoxStroke} idx={cpToTargetIdx(pathPoints, pt.itemReference)} key={idx} />
                 ))}
             </g>
 
