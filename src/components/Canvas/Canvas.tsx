@@ -1,7 +1,7 @@
 import React from 'react';
 import { mergeRef } from '../../hooks/utils';
 import { useAtom } from 'jotai';
-import { activeCpPointAtom, activePathPointAtom, hoverCpPointAtom, hoverPathPointAtom, showGridAtom, svgAtom } from '../../store/store';
+import { activePointAtom, hoverPointAtom, showGridAtom, svgAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 import { BackgroundGrid } from './BackgroundGrid';
@@ -22,13 +22,11 @@ function PointClassNames<K extends 'circle'>(active: boolean, hover: boolean, ke
 }
 
 function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPoint, stroke: number; idx: number; }) {
-    const [activePathPt, setActivePathPt] = useAtom(activePathPointAtom);
-    const [activeCpPt, setActiveCpPt] = useAtom(activeCpPointAtom);
-    const [hoverPathPt, setHoverPathPt] = useAtom(hoverPathPointAtom);
-    const [hoverCpPt, setHoverCpPt] = useAtom(hoverCpPointAtom);
+    const [activePt, setActivePt] = useAtom(activePointAtom);
+    const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
 
-    const active = activePathPt === idx;
-    const hover = hoverPathPt === idx;
+    const active = activePt === idx;
+    const hover = hoverPt === idx;
 
     return (
         <>
@@ -41,14 +39,13 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
                 onMouseEnter={(event) => {
                     event.stopPropagation();
-                    setHoverPathPt(idx);
-                    setHoverCpPt(-1);
+                    setHoverPt(idx);
                 }}
                 onMouseLeave={(event) => {
-                    setHoverPathPt(-1);
+                    setHoverPt(-1);
                 }}
                 onClick={() => {
-                    setActivePathPt(idx);
+                    setActivePt(idx);
                 }}
             />
         </>
@@ -58,13 +55,11 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
 //TODO: add point transparent border for ease mouse pointing
 
 function ControlPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgControlPoint, stroke: number; idx: number; }) {
-    const [activePathPt, setActivePathPt] = useAtom(activePathPointAtom);
-    const [activeCpPt, setActiveCpPt] = useAtom(activeCpPointAtom);
-    const [hoverPathPt, setHoverPathPt] = useAtom(hoverPathPointAtom);
-    const [hoverCpPt, setHoverCpPt] = useAtom(hoverCpPointAtom);
+    const [activePt, setActivePt] = useAtom(activePointAtom);
+    const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
 
-    const active = activeCpPt === idx;
-    const hover = hoverCpPt === idx;
+    const active = activePt === idx;
+    const hover = hoverPt === idx;
 
     return (
         <>
@@ -82,14 +77,13 @@ function ControlPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgC
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
                 onMouseEnter={(event) => {
                     event.stopPropagation();
-                    setHoverCpPt(idx);
-                    setHoverPathPt(-1);
+                    setHoverPt(idx);
                 }}
                 onMouseLeave={(event) => {
-                    setHoverCpPt(-1);
+                    setHoverPt(-1);
                 }}
                 onClick={() => {
-                    setActivePathPt(idx);
+                    setActivePt(idx);
                 }}
             />
         </>
@@ -101,12 +95,11 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
     const pathPoints = svg.targetLocations();
     const cpPoints = svg.controlLocations();
 
-    const setActivePathPt = useUpdateAtom(activePathPointAtom);
-    const setActiveCpPt = useUpdateAtom(activeCpPointAtom);
+    const setActivePt = useUpdateAtom(activePointAtom);
 
     return (
         <svg viewBox={viewBox.join(" ")}>
-            <BackgroundGrid x={viewBox[0]} y={viewBox[1]} onClick={() => { setActivePathPt(-1); setActiveCpPt(-1); }} />
+            <BackgroundGrid x={viewBox[0]} y={viewBox[1]} onClick={() => setActivePt(-1)} />
 
             <path d={svg.asString()} fill="#94a3b830" stroke="white" strokeWidth={viewBoxStroke} />
 
