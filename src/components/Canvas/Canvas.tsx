@@ -44,7 +44,7 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
                 onMouseLeave={(event) => {
                     setHoverPt(-1);
                 }}
-                onClick={() => {
+                onMouseDown={() => {
                     setActivePt(idx);
                 }}
             >
@@ -81,7 +81,7 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
                 onMouseLeave={(event) => {
                     setHoverPt(-1);
                 }}
-                onClick={() => {
+                onMouseDown={() => {
                     setActivePt(idx);
                 }}
             >
