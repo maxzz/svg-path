@@ -41,11 +41,11 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
                 onMouseEnter={(event) => {
                     event.stopPropagation();
-                    activePathPt !== idx && setHoverPathPt(idx);
-                    activeCpPt !== -1 && setHoverCpPt(-1);
+                    setHoverPathPt(idx);
+                    setHoverCpPt(-1);
                 }}
                 onMouseLeave={(event) => {
-                    hoverPathPt !== -1 && setHoverPathPt(-1);
+                    setHoverPathPt(-1);
                 }}
                 onClick={() => {
                     setActivePathPt(idx);
@@ -82,11 +82,11 @@ function ControlPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgC
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
                 onMouseEnter={(event) => {
                     event.stopPropagation();
-                    activeCpPt !== idx && setHoverCpPt(idx);
-                    activePathPt !== -1 && setHoverPathPt(-1);
+                    setHoverCpPt(idx);
+                    setHoverPathPt(-1);
                 }}
                 onMouseLeave={(event) => {
-                    hoverCpPt !== -1 && setHoverCpPt(-1);
+                    setHoverCpPt(-1);
                 }}
                 onClick={() => {
                     setActivePathPt(idx);
