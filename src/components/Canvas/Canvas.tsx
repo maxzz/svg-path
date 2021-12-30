@@ -10,14 +10,23 @@ import { ViewBox } from '../../svg/svg-utils';
 import { useUpdateAtom } from 'jotai/utils';
 
 function ptClassNames<K extends 'circle'>(active: boolean, hover: boolean, key: K) {
+    const color = active ? '#009cff' : hover ? '#ff4343' : 'white';
     const className = {
         circle: `${active
-            ? 'fill-[#009cff] cursor-pointer'
+            ? `fill-[${color}] cursor-pointer`
             : hover
-                ? 'fill-[#ff4343] cursor-pointer'
-                : 'fill-[white]'
+                ? `fill-[${color}] cursor-pointer`
+                : `fill-[${color}]`
             }`,
     };
+    // const className = {
+    //     circle: `${active
+    //         ? 'fill-[#009cff] cursor-pointer'
+    //         : hover
+    //             ? 'fill-[#ff4343] cursor-pointer'
+    //             : 'fill-[white]'
+    //         }`,
+    // };
     return className[key];
 }
 
