@@ -54,7 +54,7 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
 
 //TODO: add point transparent border for ease mouse pointing
 
-function ControlPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgControlPoint, stroke: number; idx: number; }) {
+function ControlPoint({ svgItem, pathPoints, pt, stroke, idx }: { svgItem: SvgItem; pathPoints: SvgPoint[]; pt: SvgControlPoint, stroke: number; idx: number; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
 
@@ -93,6 +93,7 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
     const pathPoints = svg.targetLocations();
     const cpPoints = svg.controlLocations();
     const setActivePt = useUpdateAtom(activePointAtom);
+    //debugger
     return (
         <svg viewBox={viewBox.join(" ")}>
             <BackgroundGrid x={viewBox[0]} y={viewBox[1]} onClick={() => setActivePt(-1)} />
@@ -101,7 +102,7 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
 
             <g className="cpPts">
                 {cpPoints.map((pt, idx) => (
-                    <ControlPoint svgItem={svg.path[idx]} pt={pt} stroke={viewBoxStroke} idx={idx} key={idx} />
+                    <ControlPoint svgItem={svg.path[idx]} pathPoints={pathPoints} pt={pt} stroke={viewBoxStroke} idx={idx} key={idx} />
                 ))}
             </g>
 
