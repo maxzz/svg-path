@@ -9,15 +9,11 @@ import CanvasControlsPanel from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils';
 import { useUpdateAtom } from 'jotai/utils';
 
-function ptClassNames<K extends 'circle'>(active: boolean, hover: boolean, key: K) {
+function ptClassNames<K extends 'circle' | 'color'>(active: boolean, hover: boolean, key: K) {
     const color = active ? '#009cff' : hover ? '#ff4343' : 'white';
     const className = {
-        circle: `${active
-            ? `fill-[${color}] cursor-pointer`
-            : hover
-                ? `fill-[${color}] cursor-pointer`
-                : `fill-[${color}]`
-            }`,
+        color,
+        circle: `fill-[${color}] cursor-pointer`,
     };
     // const className = {
     //     circle: `${active
@@ -40,7 +36,7 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
     return (
         <>
             {(active || hover) &&
-                <path className="stroke-[red] fill-[none]" strokeWidth={stroke} d={svgItem.asStandaloneString()} />
+                <path className={`stroke-[${ptClassNames(active, hover, 'color')}] fill-[none]`} strokeWidth={stroke} d={svgItem.asStandaloneString()} />
             }
             <circle
                 className={ptClassNames(active, hover, 'circle')}
