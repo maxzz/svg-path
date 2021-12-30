@@ -1,6 +1,6 @@
 import { atom, PrimitiveAtom, useAtom } from "jotai";
 import React, { useEffect } from "react";
-import { svgAtom } from "../../store/store";
+import { activePointAtom, svgAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
 import { IconMenu } from "../UI/icons/Icons";
 
@@ -26,7 +26,7 @@ function CommandInput({ atom }: { atom: PrimitiveAtom<number>; }) {
     );
 }
 
-function OneCommand({ path }: { path: SvgItem; }) {
+function OneCommand({ path, idx }: { path: SvgItem; idx: number; }) {
     const createAtoms = () => path.values.map((value) => atom(value));
 
     const [valuesAtoms, setValuesAtoms] = React.useState(createAtoms());
@@ -34,8 +34,11 @@ function OneCommand({ path }: { path: SvgItem; }) {
         setValuesAtoms(createAtoms());
     }, [path]);
 
+    const [activePoint] = useAtom(activePointAtom);
+    const active = activePoint === idx;
+
     return (<>
-        <div className="flex items-center justify-between">
+        <div className={`flex items-center justify-between ${active ? 'bg-red-400':''}`}>
 
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
                 <CommandName command={path.getType()} abs={false} />
@@ -43,7 +46,7 @@ function OneCommand({ path }: { path: SvgItem; }) {
                     <CommandInput atom={atom} key={idx} />
                 ))}
             </div>
-            
+
             <button className="flex-0 px-1 mt-0.5 active:scale-[.97]">
                 <IconMenu className="w-4 h-4" />
             </button>
@@ -79,7 +82,7 @@ export function PathCommandEditor() {
             ))} */}
 
             {svg.path.map((path, idx) => (
-                <OneCommand path={path} key={idx} />
+                <OneCommand path={path} idx={idx} key={idx} />
             ))}
         </div >
     );

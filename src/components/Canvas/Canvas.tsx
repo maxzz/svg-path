@@ -9,7 +9,7 @@ import CanvasControlsPanel from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils';
 import { useUpdateAtom } from 'jotai/utils';
 
-function PointClassNames<K extends 'circle'>(active: boolean, hover: boolean, key: K) {
+function ptClassNames<K extends 'circle'>(active: boolean, hover: boolean, key: K) {
     const className = {
         circle: `${active
             ? 'fill-[#009cff] cursor-pointer'
@@ -34,7 +34,7 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
                 <path className="stroke-[red] fill-[none]" strokeWidth={stroke} d={svgItem.asStandaloneString()} />
             }
             <circle
-                className={PointClassNames(active, hover, 'circle')}
+                className={ptClassNames(active, hover, 'circle')}
                 style={{ stroke: 'transparent' }}
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
                 onMouseEnter={(event) => {
@@ -64,15 +64,13 @@ function ControlPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgC
     return (
         <>
             {pt.relations.map((rel, idx) => (
-                <React.Fragment key={idx}>
-                    <line
-                        className="stroke-[#fff7]"
-                        x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke}
-                    />
-                </React.Fragment>
+                <line
+                    className="stroke-[#fff7]"
+                    x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke} key={idx}
+                />
             ))}
             <circle
-                className={PointClassNames(active, hover, 'circle')}
+                className={ptClassNames(active, hover, 'circle')}
                 style={{ stroke: 'transparent' }}
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
                 onMouseEnter={(event) => {
@@ -94,9 +92,7 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
     const [svg] = useAtom(svgAtom);
     const pathPoints = svg.targetLocations();
     const cpPoints = svg.controlLocations();
-
     const setActivePt = useUpdateAtom(activePointAtom);
-
     return (
         <svg viewBox={viewBox.join(" ")}>
             <BackgroundGrid x={viewBox[0]} y={viewBox[1]} onClick={() => setActivePt(-1)} />
