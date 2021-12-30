@@ -29,26 +29,20 @@ function ptClassNames<K extends 'circle' | 'color'>(active: boolean, hover: bool
 function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPoint, stroke: number; idx: number; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
-
     const active = activePt === idx;
     const hover = hoverPt === idx;
-
     return (
         <>
             {(active || hover) &&
-                <path className={`stroke-[${ptClassNames(active, hover, 'color')}] fill-[none]`} strokeWidth={stroke} d={svgItem.asStandaloneString()} />
+                <path style={{ stroke: ptClassNames(active, hover, 'color'), fill: 'none' }} strokeWidth={stroke} d={svgItem.asStandaloneString()} />
             }
             <circle
                 className={ptClassNames(active, hover, 'circle')}
                 style={{ stroke: 'transparent' }}
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
-                onMouseEnter={(event) => {
-                    event.stopPropagation();
-                    setHoverPt(idx);
-                }}
-                onMouseLeave={(event) => {
-                    setHoverPt(-1);
-                }}
+                
+                onMouseEnter={(event) => { event.stopPropagation(); setHoverPt(idx); }}
+                onMouseLeave={() => setHoverPt(-1)}
                 onMouseDown={() => {
                     setActivePt(idx);
                 }}
@@ -62,10 +56,8 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
 function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number; idx: number; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
-
     const active = activePt === idx;
     const hover = hoverPt === idx;
-
     return (
         <>
             {pt.relations.map((rel, idx) => (
@@ -79,13 +71,8 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
                 style={{ stroke: 'transparent' }}
                 x={pt.x - 3 * stroke} y={pt.y - 3 * stroke} width={stroke * 6} height={stroke * 6} strokeWidth={stroke * 12}
 
-                onMouseEnter={(event) => {
-                    event.stopPropagation();
-                    setHoverPt(idx);
-                }}
-                onMouseLeave={(event) => {
-                    setHoverPt(-1);
-                }}
+                onMouseEnter={(event) => { event.stopPropagation(); setHoverPt(idx); }}
+                onMouseLeave={() => setHoverPt(-1)}
                 onMouseDown={() => {
                     setActivePt(idx);
                 }}
