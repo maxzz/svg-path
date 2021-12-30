@@ -31,14 +31,15 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
 
     return (
         <>
-            {(active || hover) && 
+            {/* {(active || hover) && 
                 <path className="stroke-[red] fill-[none]" strokeWidth={stroke} d={svgItem.asStandaloneString()} />
-            }
+            } */}
             <circle
                 className={PointClassNames(active, hover, 'circle')}
                 style={{stroke: 'transparent'}}
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
                 onMouseEnter={(event) => {
+                    event.stopPropagation();
                     activePathPt !== idx && setHoverPathPt(idx);
                     activeCpPt !== -1 && setHoverCpPt(-1);
                 }}
@@ -79,6 +80,7 @@ function ControlPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgC
                 style={{stroke: 'transparent'}}
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
                 onMouseEnter={(event) => {
+                    event.stopPropagation();
                     activeCpPt !== idx && setHoverCpPt(idx);
                     activePathPt !== -1 && setHoverPathPt(-1);
                 }}
