@@ -54,12 +54,9 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
 
 //TODO: add point transparent border for ease mouse pointing
 
-function ControlPoint({ svgItem, pathPoints, pt, stroke, idx }: { svgItem: SvgItem; pathPoints: SvgPoint[]; pt: SvgControlPoint, stroke: number; idx: number; }) {
+function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number; idx: number; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
-
-    const thisIdx = pathPoints.findIndex((pt) => pt.itemReference === svgItem);
-    //console.log('thisIdx', thisIdx, pt.itemReference);
 
     const active = activePt === idx;
     const hover = hoverPt === idx;
@@ -96,6 +93,9 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
     const pathPoints = svg.targetLocations();
     const cpPoints = svg.controlLocations();
     const setActivePt = useUpdateAtom(activePointAtom);
+
+    const cpIdx = (ref: SvgItem) => pathPoints.findIndex((pt) => pt.itemReference === ref);
+
     //debugger
     return (
         <svg viewBox={viewBox.join(" ")}>
@@ -105,7 +105,7 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
 
             <g className="cpPts">
                 {cpPoints.map((pt, idx) => (
-                    <ControlPoint svgItem={svg.path[idx]} pathPoints={pathPoints} pt={pt} stroke={viewBoxStroke} idx={idx} key={idx} />
+                    <ControlPoint pt={pt} stroke={viewBoxStroke} idx={cpIdx(pt.itemReference)} key={idx} />
                 ))}
             </g>
 
