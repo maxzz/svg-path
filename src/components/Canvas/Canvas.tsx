@@ -58,7 +58,8 @@ function ControlPoint({ svgItem, pathPoints, pt, stroke, idx }: { svgItem: SvgIt
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
 
-    const thisIdx = pathPoints.findIndex((pt) => pt === svgItem.itemReference);
+    const thisIdx = pathPoints.findIndex((pt) => pt.itemReference === svgItem);
+    //console.log('thisIdx', thisIdx, pt.itemReference);
 
     const active = activePt === idx;
     const hover = hoverPt === idx;
