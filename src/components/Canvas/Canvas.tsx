@@ -10,10 +10,9 @@ import { ViewBox } from '../../svg/svg-utils';
 import { useUpdateAtom } from 'jotai/utils';
 
 function ptClassNames<K extends 'circle' | 'color'>(active: boolean, hover: boolean, key: K) {
-    const color = active ? '#009cff' : hover ? '#ff4343' : 'white';
     const className = {
-        color,
-        circle: `fill-[${color}] cursor-pointer`,
+        color: active ? '#009cff' : hover ? '#ff4343' : 'white',
+        circle: `fill-[${active ? '#009cff' : hover ? '#ff4343' : 'white'}] cursor-pointer`,
     };
     // const className = {
     //     circle: `${active
