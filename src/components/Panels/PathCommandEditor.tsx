@@ -38,7 +38,7 @@ function OneCommand({ path, idx }: { path: SvgItem; idx: number; }) {
     const active = activePoint === idx;
 
     return (<>
-        <div className={`flex items-center justify-between ${active ? 'bg-red-400':''}`}>
+        <div className={`flex items-center justify-between ${active ? 'bg-blue-300':''}`}>
 
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
                 <CommandName command={path.getType()} abs={false} />
