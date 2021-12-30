@@ -85,21 +85,6 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
                     setActivePt(idx);
                 }}
             />
-            {/* <circle
-                className={ptClassNames(active, hover, 'circle')}
-                style={{ stroke: 'transparent' }}
-                cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
-                onMouseEnter={(event) => {
-                    event.stopPropagation();
-                    setHoverPt(idx);
-                }}
-                onMouseLeave={(event) => {
-                    setHoverPt(-1);
-                }}
-                onClick={() => {
-                    setActivePt(idx);
-                }}
-            /> */}
         </>
     );
 }
