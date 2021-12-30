@@ -100,10 +100,10 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
     const pathPoints = svg.targetLocations();
     const cpPoints = svg.controlLocations();
     return (
-        <svg viewBox={viewBox.join(" ")} onClick={() => {
+        <svg viewBox={viewBox.join(" ")}>
+            <BackgroundGrid x={viewBox[0]} y={viewBox[1]} onClick={() => {
             console.log('done');
-        }}>
-            <BackgroundGrid x={viewBox[0]} y={viewBox[1]} />
+        }}/>
 
             <path d={svg.asString()} fill="#94a3b830" stroke="white" strokeWidth={viewBoxStroke} />
 
