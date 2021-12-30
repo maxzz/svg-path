@@ -31,6 +31,9 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
 
     return (
         <>
+            {(active || hover) && 
+                <path className="stroke-[red] fill-[none]" strokeWidth={stroke} d={svgItem.asStandaloneString()} />
+            }
             <circle
                 className={PointClassNames(active, hover, 'circle')}
                 style={{stroke: 'transparent'}}
@@ -46,9 +49,6 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
                     setActivePathPt(idx);
                 }}
             />
-            {(active || hover) && 
-                <path className="stroke-[red] fill-[none]" strokeWidth={stroke} d={svgItem.asStandaloneString()} />
-            }
         </>
     );
 }
@@ -66,6 +66,14 @@ function ControlPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgC
 
     return (
         <>
+            {pt.relations.map((rel, idx) => (
+                <React.Fragment key={idx}>
+                    <line
+                        className="stroke-[#fff7]"
+                        x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke}
+                    />
+                </React.Fragment>
+            ))}
             <circle
                 className={PointClassNames(active, hover, 'circle')}
                 style={{stroke: 'transparent'}}
@@ -81,15 +89,6 @@ function ControlPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgC
                     setActivePathPt(idx);
                 }}
             />
-
-            {pt.relations.map((rel, idx) => (
-                <React.Fragment key={idx}>
-                    <line
-                        className="stroke-[#fff7]"
-                        x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke}
-                    />
-                </React.Fragment>
-            ))}
         </>
     );
 }
