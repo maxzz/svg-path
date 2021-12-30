@@ -31,12 +31,12 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
 
     return (
         <>
-            {/* {(active || hover) && 
+            {(active || hover) && 
                 <path className="stroke-[red] fill-[none]" strokeWidth={stroke} d={svgItem.asStandaloneString()} />
-            } */}
+            }
             <circle
                 className={PointClassNames(active, hover, 'circle')}
-                style={{stroke: 'transparent'}}
+                style={{ stroke: 'transparent' }}
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
                 onMouseEnter={(event) => {
                     event.stopPropagation();
@@ -77,7 +77,7 @@ function ControlPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgC
             ))}
             <circle
                 className={PointClassNames(active, hover, 'circle')}
-                style={{stroke: 'transparent'}}
+                style={{ stroke: 'transparent' }}
                 cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
                 onMouseEnter={(event) => {
                     event.stopPropagation();
@@ -105,15 +105,15 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
 
             <path d={svg.asString()} fill="#94a3b830" stroke="white" strokeWidth={viewBoxStroke} />
 
-            <g className="pathPts">
-                {pathPoints.map((pt, idx) => (
-                    <TargetPoint svgItem={svg.path[idx]} pt={pt} stroke={viewBoxStroke} idx={idx} key={idx} />
-                ))}
-            </g>
-
             <g className="cpPts">
                 {cpPoints.map((pt, idx) => (
                     <ControlPoint svgItem={svg.path[idx]} pt={pt} stroke={viewBoxStroke} idx={idx} key={idx} />
+                ))}
+            </g>
+
+            <g className="pathPts">
+                {pathPoints.map((pt, idx) => (
+                    <TargetPoint svgItem={svg.path[idx]} pt={pt} stroke={viewBoxStroke} idx={idx} key={idx} />
                 ))}
             </g>
         </svg>
