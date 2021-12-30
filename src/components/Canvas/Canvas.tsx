@@ -47,12 +47,12 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
                 onClick={() => {
                     setActivePt(idx);
                 }}
-            />
+            >
+                <title>{pt.x},{pt.y}</title>
+            </circle>
         </>
     );
 }
-
-//TODO: add point transparent border for ease mouse pointing
 
 function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number; idx: number; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
@@ -84,7 +84,9 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
                 onClick={() => {
                     setActivePt(idx);
                 }}
-            />
+            >
+                <title>{pt.x},{pt.y}</title>
+            </rect>
         </>
     );
 }
