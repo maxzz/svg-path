@@ -1,19 +1,24 @@
 import { atom, PrimitiveAtom, useAtom } from "jotai";
+import { useUpdateAtom } from "jotai/utils";
 import React, { useEffect } from "react";
 import { activePointAtom, svgAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
 import { IconMenu } from "../UI/icons/Icons";
 
-function PointName({ command, abs }: { command: string; abs: boolean; }) {
+function PointName({ idx, command, abs }: { idx: number; command: string; abs: boolean; }) {
+    const setActivePoint = useUpdateAtom(activePointAtom);
     return (
-        <label className={`flex-0 px-1 w-6 leading-3 text-xs rounded-l-[0.2rem] text-center text-slate-900 bg-slate-500 focus-within:text-blue-500 overflow-hidden`}>
+        <label
+            className={`flex-0 px-1 w-6 leading-3 text-xs rounded-l-[0.2rem] text-center text-slate-900 bg-slate-500 focus-within:text-blue-500 overflow-hidden`}
+            onBlur={() => setActivePoint(idx)}
+        >
             {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
             <button className="py-1">{command}</button>
         </label>
     );
 }
 
-function PointValue({ atom }: { atom: PrimitiveAtom<number>; }) {
+function PointValue({ idx, atom }: { idx: number; atom: PrimitiveAtom<number>; }) {
     const [value, setValue] = useAtom(atom);
     return (
         <label className={`flex-1 max-w-[2rem] rounded-tl-sm overflow-hidden bg-slate-200 focus-within:text-blue-500`}>
@@ -39,12 +44,12 @@ function CommandRow({ path, idx }: { path: SvgItem; idx: number; }) {
 
     return (<>
         <div className={`flex items-center justify-between ${active ? 'bg-blue-300' : ''}`}>
-            
+
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
-                <PointName command={path.getType()} abs={false} />
+                <PointName idx={idx} command={path.getType()} abs={false} />
                 {valuesAtoms.map((atom, idx) => (
-                    <PointValue atom={atom} key={idx} />
+                    <PointValue idx={idx} atom={atom} key={idx} />
                 ))}
             </div>
 
