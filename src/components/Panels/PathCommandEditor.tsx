@@ -38,7 +38,7 @@ function OneCommand({ path, idx }: { path: SvgItem; idx: number; }) {
     const active = activePoint === idx;
 
     return (<>
-        <div className={`flex items-center justify-between ${active ? 'bg-blue-300':''}`}>
+        <div className={`flex items-center justify-between ${active ? 'bg-blue-300' : ''}`}>
 
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
                 <CommandName command={path.getType()} abs={false} />
@@ -56,31 +56,8 @@ function OneCommand({ path, idx }: { path: SvgItem; idx: number; }) {
 
 export function PathCommandEditor() {
     const [svg] = useAtom(svgAtom);
-    //console.log('svg', [...svg.path]);
-
     return (
         <div className="my-1 space-y-0.5">
-            {/* Row */}
-            {/* <div className="flex items-center justify-between">
-                <div className="flex items-center justify-items-start space-x-0.5">
-                    <CommandName command="m" abs={true} />
-                    <CommandInput />
-                    <CommandInput />
-                    <CommandInput />
-                    <CommandInput />
-                    <CommandInput />
-                    <CommandInput />
-                </div>
-                <button className="flex-0 px-1 mt-0.5 active:scale-[.97]">
-                    <IconMenu className="w-4 h-4" />
-                </button>
-            </div> */}
-            {/* {svg.path.map((path, idx) => (
-                <React.Fragment key={idx}>
-                    <div className="">{path.asString()}</div>
-                </React.Fragment>
-            ))} */}
-
             {svg.path.map((path, idx) => (
                 <OneCommand path={path} idx={idx} key={idx} />
             ))}
