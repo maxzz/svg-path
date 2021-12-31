@@ -9,7 +9,7 @@ function PointName({ pathIdx, command, abs }: { pathIdx: number; command: string
     const setActivePoint = useUpdateAtom(activePointAtom);
     return (
         <label
-            className={`flex-0 px-1 w-6 leading-3 text-xs rounded-l-[0.2rem] text-center text-slate-800 bg-slate-500/40 focus-within:text-blue-500 overflow-hidden`}
+            className={`flex-0 px-1 w-6 leading-3 text-xs rounded-l-[0.2rem] text-center text-slate-900 bg-slate-400 focus-within:text-blue-500 overflow-hidden`}
             onFocus={() => setActivePoint(pathIdx)}
         >
             {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
@@ -48,10 +48,9 @@ function CommandRow({ path, pathIdx }: { path: SvgItem; pathIdx: number; }) {
 
     return (<>
         <div
-            className={`flex items-center justify-between focus-within:bg-red-500 ${active ? 'bg-blue-300' : ''}`}
+            className={`flex items-center justify-between ${active ? 'bg-blue-300' : ''}`}
             onClick={() => setActivePoint(pathIdx)}
         >
-
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
                 <PointName pathIdx={pathIdx} command={path.getType()} abs={false} />
