@@ -9,7 +9,7 @@ function PointName({ pathIdx, command, abs }: { pathIdx: number; command: string
     const setActivePoint = useUpdateAtom(activePointAtom);
     return (
         <label
-            className={`flex-0 px-1 w-6 leading-3 text-xs rounded-l-[0.2rem] text-center text-slate-900 bg-slate-500 focus-within:text-blue-500 overflow-hidden`}
+            className={`flex-0 px-1 w-6 leading-3 text-xs rounded-l-[0.2rem] text-center text-slate-200 bg-slate-500 focus-within:text-blue-500 overflow-hidden`}
             onFocus={() => setActivePoint(pathIdx)}
         >
             {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
@@ -20,8 +20,12 @@ function PointName({ pathIdx, command, abs }: { pathIdx: number; command: string
 
 function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<number>; }) {
     const [value, setValue] = useAtom(atom);
+    const setActivePoint = useUpdateAtom(activePointAtom);
     return (
-        <label className={`flex-1 max-w-[2rem] rounded-tl-sm overflow-hidden bg-slate-200 focus-within:text-blue-500`}>
+        <label
+            className={`flex-1 max-w-[2rem] rounded-tl-sm overflow-hidden bg-slate-200 focus-within:text-blue-500`}
+            onFocus={() => setActivePoint(pathIdx)}
+        >
             <input
                 className="px-1 pb-[4px] w-full h-full text-xs text-center text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
                 value={value}
