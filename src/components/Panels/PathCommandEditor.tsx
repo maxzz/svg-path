@@ -23,11 +23,11 @@ function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<nu
     const setActivePoint = useUpdateAtom(activePointAtom);
     return (
         <label
-            className={`flex-1 max-w-[2rem] rounded-tl-sm overflow-hidden bg-slate-200 focus-within:text-blue-500`}
+            className={`flex-1 max-w-[3rem] rounded-tl-sm overflow-hidden bg-slate-200 focus-within:text-blue-500`}
             // onFocus={() => setActivePoint(pathIdx)}
         >
             <input
-                className="px-1 pb-[4px] w-full h-full text-xs text-center text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
+                className="px-px pb-[4px] w-full h-full text-[10px] text-center tracking-tighter text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
                 value={value}
                 onChange={(event) => setValue(+event.target.value)}
             />
@@ -62,7 +62,7 @@ function CommandRow({ path, pathIdx }: { path: SvgItem; pathIdx: number; }) {
             </div>
 
             {/* Menu */}
-            <button className="flex-0 px-1 mt-0.5 active:scale-[.97]">
+            <button className="flex-0 mt-0.5 pl-4 active:scale-[.97]">
                 <IconMenu className="w-4 h-4" />
             </button>
         </div>
