@@ -27,12 +27,23 @@ function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<nu
     }, [value]);
 
     function convertToNumber(s: string) {
+        s = s.replace(/[\u066B,]/g, '.').replace(/[^\-0-9.eE]/g, ''); //disable type illegal chars. \u066B unicode-arabic-decimal-separator
         const v = +s;
         setLocal(s);
         if (!isNaN(v)) {
             setValue(v);
         }
     }
+    function resetInvalid() {
+        console.log('value', value, 'local', local);
+        value != +local && (
+            console.log('value2', value, 'local2', local),
+            setLocal(''+value)
+        );
+    }
+
+    //console.log('value', value);
+    
 
     //const setActivePoint = useUpdateAtom(activePointAtom);
     return (
@@ -44,6 +55,7 @@ function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<nu
                 className="px-px pb-[4px] w-full h-full text-[10px] text-center tracking-tighter text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
                 value={local}
                 onChange={(event) => convertToNumber(event.target.value)}
+                onBlur={resetInvalid}
             />
         </label>
     );
@@ -89,7 +101,7 @@ function CommandRow({ path, pathIdx }: { path: SvgItem; pathIdx: number; }) {
         <div
             className={`flex items-center justify-between ${active ? 'bg-blue-300' : ''}`}
             onClick={() => setActivePoint(pathIdx)}
-            onFocus={() => console.log('child')}
+            // onFocus={() => console.log('child')}
         >
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
