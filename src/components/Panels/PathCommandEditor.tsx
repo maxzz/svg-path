@@ -1,5 +1,6 @@
 import { atom, PrimitiveAtom, useAtom } from "jotai";
 import React, { useEffect } from "react";
+import atomWithCallback from "../../hooks/atomsX";
 import { activePointAtom, svgAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
 import { IconMenu } from "../UI/icons/Icons";
@@ -45,16 +46,19 @@ function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<nu
 
 //TODO: switch to grid (first row problem)
 
-const createRowAtoms = (values: number[]) => values.map((value) => atom(value));
+const createRowAtoms = (values: number[], monitor: () => void) => {
+    return values.map((value) => atomWithCallback(value, monitor));
+}
 
 function CommandRow({ path, pathIdx }: { path: SvgItem; pathIdx: number; }) {
 
-    // const onAtomChange = React.useCallback(() => {
-    // }, []); 
+    const onAtomChange = React.useCallback(() => {
+        console.log('changed');
+    }, []); 
 
-    const [valuesAtoms, setValuesAtoms] = React.useState(createRowAtoms(path.values));
+    const [valuesAtoms, setValuesAtoms] = React.useState(createRowAtoms(path.values, onAtomChange));
     useEffect(() => {
-        setValuesAtoms(createRowAtoms(path.values));
+        setValuesAtoms(createRowAtoms(path.values, onAtomChange));
     }, [path]);
 
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
