@@ -61,56 +61,8 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
         console.log('onAtomChange aa', aa.map(a => a.toString()), 'val', aa.map(a => get(a)));
     }, []);
 
-    useEffect(() => {
-        const atoms = createRowAtoms(svgItem.values, onAtomChange);
-        setMaster(atoms);
-    }, [svgItem]);
+    useEffect(() => setMaster(createRowAtoms(svgItem.values, onAtomChange)), [svgItem]);
 
-    /*
-        console.log('render', svgItem.asString());
-        useEffect(() => {
-            console.log('effect', svgItem.asString());
-        }, [svgItem]);
-    */
-
-    /*
-        // const onAtomChange = React.useCallback<OnValueChange<number>>(({ get, set }) => {
-        //     console.log('valueAtoms', valueAtoms.map(a => a.toString()));
-    
-        //     const res = valueAtoms.map((valueAtom) => get(valueAtom)).join(',');
-        //     console.log('changed', res);
-        // }, []);
-    
-        const onAtomChange = React.useCallback<OnValueChange<number>>(({ get, set }) => {
-            const aa = getAtoms();
-            console.log('valueAtoms', aa.map(a => a.toString()));
-    
-            const res = aa.map((valueAtom) => get(valueAtom)).join(',');
-            console.log('changed', res);
-        }, []);
-    
-        function getAtoms() {
-            return valueAtoms;
-        }
-    
-        // const onAtomChange: OnValueChange<number> = ({ get, set }) => {
-        //     console.log('valueAtoms', valueAtoms.map(a => a.toString()));
-    
-        //     const res = valueAtoms.map((valueAtom) => get(valueAtom)).join(',');
-        //     console.log('changed', res);
-        // };
-    
-        // const [valueAtoms, setValuesAtoms] = React.useState(createRowAtoms(svgItem.values, onAtomChange));
-        const [valueAtoms, setValuesAtoms] = React.useState<WritableAtom<number, SetStateAction<number>>[]>([]);
-        useEffect(() => {
-            const a = createRowAtoms(svgItem.values, onAtomChange);
-            console.log('update atoms', a.map(a => a.toString()));
-    
-            setValuesAtoms(a);
-        }, [svgItem]);
-    
-        console.log('main valueAtoms', valueAtoms.map(a => a.toString()), svgItem.asString());
-    */
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
     const active = activePoint === svgItemIdx;
 
@@ -126,9 +78,6 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
                 {master.map((atom, idx) => (
                     <PointValue pathIdx={svgItemIdx} atom={atom} key={idx} />
                 ))}
-                {/* {valueAtoms.map((atom, idx) => (
-                    <PointValue pathIdx={svgItemIdx} atom={atom} key={idx} />
-                ))} */}
             </div>
 
             {/* Menu */}
@@ -146,9 +95,6 @@ export function PathCommandEditor() {
     const [svg] = useAtom(svgAtom);
     return (
         <div className="my-1 space-y-0.5">
-            {/* {
-                <CommandRow svgItem={svg.path[0]} svgItemIdx={0} key={0} />
-            } */}
             {svg.path.map((svgItem, idx) => (
                 <CommandRow svgItem={svgItem} svgItemIdx={idx} key={idx} />
             ))}
