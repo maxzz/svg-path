@@ -59,12 +59,24 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     //     console.log('changed', res);
     // }, []);
 
-    const onAtomChange: OnValueChange<number> = ({ get, set }) => {
-        console.log('valueAtoms', valueAtoms.map(a => a.toString()));
+    const onAtomChange = React.useCallback<OnValueChange<number>>(({ get, set }) => {
+        const aa = getAtoms();
+        console.log('valueAtoms', aa.map(a => a.toString()));
 
-        const res = valueAtoms.map((valueAtom) => get(valueAtom)).join(',');
+        const res = aa.map((valueAtom) => get(valueAtom)).join(',');
         console.log('changed', res);
-    };
+    }, []);
+
+    function getAtoms() {
+        return valueAtoms;
+    }
+
+    // const onAtomChange: OnValueChange<number> = ({ get, set }) => {
+    //     console.log('valueAtoms', valueAtoms.map(a => a.toString()));
+
+    //     const res = valueAtoms.map((valueAtom) => get(valueAtom)).join(',');
+    //     console.log('changed', res);
+    // };
 
     // const [valueAtoms, setValuesAtoms] = React.useState(createRowAtoms(svgItem.values, onAtomChange));
     const [valueAtoms, setValuesAtoms] = React.useState<WritableAtom<number, SetStateAction<number>>[]>([]);
