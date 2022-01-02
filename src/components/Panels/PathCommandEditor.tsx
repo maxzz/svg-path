@@ -1,4 +1,4 @@
-import { atom, Getter, PrimitiveAtom, Setter, useAtom } from "jotai";
+import { PrimitiveAtom, useAtom } from "jotai";
 import React, { useEffect } from "react";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
 import { activePointAtom, svgAtom } from "../../store/store";
@@ -50,7 +50,7 @@ const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => {
     return values.map((value) => atomWithCallback(value, monitor));
 };
 
-function CommandRow({ path, pathIdx }: { path: SvgItem; pathIdx: number; }) {
+function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: number; }) {
 
     const onAtomChange = React.useCallback<OnValueChange<number>>(({ get, set }) => {
         console.log('valueAtoms', valueAtoms, valueAtoms.map(a => a.toString()));
@@ -59,30 +59,30 @@ function CommandRow({ path, pathIdx }: { path: SvgItem; pathIdx: number; }) {
         console.log('changed', res);
     }, []);
 
-    const [valueAtoms, setValuesAtoms] = React.useState(createRowAtoms(path.values, onAtomChange));
+    const [valueAtoms, setValuesAtoms] = React.useState(createRowAtoms(svgItem.values, onAtomChange));
     useEffect(() => {
-        const a = createRowAtoms(path.values, onAtomChange);
+        const a = createRowAtoms(svgItem.values, onAtomChange);
         console.log('update atoms', a, a.map(a => a.toString()));
 
         setValuesAtoms(a);
-    }, [path]);
+    }, [svgItem]);
 
     console.log('main valueAtoms', valueAtoms, valueAtoms.map(a => a.toString()));
 
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
-    const active = activePoint === pathIdx;
+    const active = activePoint === svgItemIdx;
 
     return (<>
         <div
             className={`flex items-center justify-between ${active ? 'bg-blue-300' : ''}`}
-            onClick={() => setActivePoint(pathIdx)}
+            onClick={() => setActivePoint(svgItemIdx)}
         >
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
-                <PointName pathIdx={pathIdx} command={path.getType()} abs={false} />
+                <PointName pathIdx={svgItemIdx} command={svgItem.getType()} abs={false} />
 
                 {valueAtoms.map((atom, idx) => (
-                    <PointValue pathIdx={pathIdx} atom={atom} key={idx} />
+                    <PointValue pathIdx={svgItemIdx} atom={atom} key={idx} />
                 ))}
             </div>
 
@@ -98,8 +98,8 @@ export function PathCommandEditor() {
     const [svg] = useAtom(svgAtom);
     return (
         <div className="my-1 space-y-0.5">
-            {svg.path.map((path, idx) => (
-                <CommandRow path={path} pathIdx={idx} key={idx} />
+            {svg.path.map((svgItem, idx) => (
+                <CommandRow svgItem={svgItem} svgItemIdx={idx} key={idx} />
             ))}
         </div >
     );
