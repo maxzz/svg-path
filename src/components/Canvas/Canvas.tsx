@@ -27,8 +27,8 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
             <path style={{ stroke: ptClassNames(active, hover, 'color'), fill: 'none' }} strokeWidth={stroke} d={svgItem.asStandaloneString()} />
         }
         <circle
-            className={ptClassNames(active, hover, 'circle')}
-            style={{ stroke: 'transparent' }}
+            className={`cursor-pointer`}
+            style={{ stroke: 'transparent', fill: ptClassNames(active, hover, 'color') }}
             cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
 
             onMouseEnter={(event) => { event.stopPropagation(); setHoverPt(idx); }}
