@@ -9,9 +9,7 @@ import CanvasControlsPanel from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils';
 import { useUpdateAtom } from 'jotai/utils';
 
-function ptClassNames(active: boolean, hover: boolean) {
-    return active ? '#009cff' : hover ? '#ff4343' : 'white';
-}
+const ptColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
 
 function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPoint, stroke: number; idx: number; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
@@ -20,11 +18,11 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
     const hover = hoverPt === idx;
     return (<>
         {(active || hover) &&
-            <path style={{ stroke: ptClassNames(active, hover), fill: 'none' }} strokeWidth={stroke} d={svgItem.asStandaloneString()} />
+            <path style={{ stroke: ptColor(active, hover), fill: 'none' }} strokeWidth={stroke} d={svgItem.asStandaloneString()} />
         }
         <circle
             className="cursor-pointer"
-            style={{ stroke: 'transparent', fill: ptClassNames(active, hover) }}
+            style={{ stroke: 'transparent', fill: ptColor(active, hover) }}
             cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
 
             onMouseEnter={(event) => { event.stopPropagation(); setHoverPt(idx); }}
@@ -52,7 +50,7 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
         ))}
         <rect
             className="cursor-pointer"
-            style={{ stroke: 'transparent', fill: ptClassNames(active, hover) }}
+            style={{ stroke: 'transparent', fill: ptColor(active, hover) }}
             x={pt.x - 3 * stroke} y={pt.y - 3 * stroke} width={stroke * 6} height={stroke * 6} strokeWidth={stroke * 12}
 
             onMouseEnter={(event) => { event.stopPropagation(); setHoverPt(idx); }}
