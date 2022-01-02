@@ -3,7 +3,7 @@ import { mergeRef } from '../../hooks/utils';
 import { useAtom } from 'jotai';
 import { activePointAtom, hoverPointAtom, showGridAtom, svgAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
-import { SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
+import { formatNumber, SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 import { BackgroundGrid } from './BackgroundGrid';
 import CanvasControlsPanel from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils';
@@ -37,7 +37,7 @@ function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPo
                 setActivePt(idx);
             }}
         >
-            <title>{pt.x},{pt.y}</title>
+            <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
         </circle>
     </>);
 }
@@ -65,7 +65,7 @@ function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number
                 setActivePt(idx);
             }}
         >
-            <title>{pt.x},{pt.y}</title>
+            <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
         </rect>
     </>);
 }
