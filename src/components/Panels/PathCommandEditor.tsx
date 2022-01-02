@@ -1,4 +1,4 @@
-import { PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from "jotai";
+import { atom, PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from "jotai";
 import React, { useEffect } from "react";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
 import { activePointAtom, svgAtom } from "../../store/store";
@@ -52,6 +52,17 @@ const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => {
 
 function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: number; }) {
 
+    const [masterAtom, setMasterAtom] = React.useState(atom([]));
+    const [master, setmaster] = useAtom(masterAtom);
+
+    console.log('render', svgItem.asString());
+    
+
+    useEffect(() => {
+        console.log('effect', svgItem.asString());
+    }, [svgItem]);
+
+/*
     // const onAtomChange = React.useCallback<OnValueChange<number>>(({ get, set }) => {
     //     console.log('valueAtoms', valueAtoms.map(a => a.toString()));
 
@@ -88,7 +99,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     }, [svgItem]);
 
     console.log('main valueAtoms', valueAtoms.map(a => a.toString()), svgItem.asString());
-
+*/
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
     const active = activePoint === svgItemIdx;
 
@@ -101,9 +112,9 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
                 <PointName pathIdx={svgItemIdx} command={svgItem.getType()} abs={false} />
 
-                {valueAtoms.map((atom, idx) => (
+                {/* {valueAtoms.map((atom, idx) => (
                     <PointValue pathIdx={svgItemIdx} atom={atom} key={idx} />
-                ))}
+                ))} */}
             </div>
 
             {/* Menu */}
@@ -114,10 +125,15 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     </>);
 }
 
+//M61.27.5c45.13.16 68.384 25.592 96.354 57.072 27.98 31.47 41.564 54.925 75.536 54.478 33.972-.447 50.78-22.13 50.78-50.78 0-28.65-14.587-51.595-50.78-50.77-36.193.825-60.4 17.052-88.2 47.072-27.8 30.01-40.15 64.308-83.68 64.478C17.74 122.21.5 89.93.5 61.28.5 32.63 16.14.34 61.27.5z
+
 export function PathCommandEditor() {
     const [svg] = useAtom(svgAtom);
     return (
         <div className="my-1 space-y-0.5">
+            {/* {
+                <CommandRow svgItem={svg.path[0]} svgItemIdx={0} key={0} />
+            } */}
             {svg.path.map((svgItem, idx) => (
                 <CommandRow svgItem={svgItem} svgItemIdx={idx} key={idx} />
             ))}
