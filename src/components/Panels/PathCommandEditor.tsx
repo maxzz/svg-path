@@ -53,11 +53,11 @@ const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => {
 
 function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: number; }) {
 
-    const [masterAtom, setMasterAtom] = React.useState(atom<WritableAtom<number, SetStateAction<number>>[]>([]));
-    const [master, setMaster] = useAtom(masterAtom);
+    const masterAtom = React.useRef(atom<WritableAtom<number, SetStateAction<number>>[]>([]));
+    const [master, setMaster] = useAtom(masterAtom.current);
 
     const onAtomChange = React.useCallback<OnValueChange<number>>(({ get, set }) => {
-        const aa = get(masterAtom);
+        const aa = get(masterAtom.current);
         console.log('onAtomChange aa', aa.map(a => a.toString()), 'val', aa.map(a => get(a)));
     }, []);
 
