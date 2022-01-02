@@ -30,19 +30,13 @@ function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<nu
         s = s.replace(/[\u066B,]/g, '.').replace(/[^\-0-9.eE]/g, ''); //disable type illegal chars. \u066B unicode-arabic-decimal-separator
         const v = +s;
         setLocal(s);
-        if (s && !isNaN(v)) {
-            setValue(v);
-        }
+        s && !isNaN(v) && setValue(v);
     }
     function resetInvalid() {
-        console.log('value', value, 'local', local);
-        !local && (
-            console.log('value2', value, 'local2', local),
-            setLocal(''+value)
-        );
+        (!local || isNaN(+local)) && setLocal(''+value);
     }
 
-    //console.log('value', value);
+    console.log('value', value);
     
 
     //const setActivePoint = useUpdateAtom(activePointAtom);
