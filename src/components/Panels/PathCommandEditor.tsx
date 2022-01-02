@@ -1,4 +1,4 @@
-import { PrimitiveAtom, useAtom } from "jotai";
+import { PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from "jotai";
 import React, { useEffect } from "react";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
 import { activePointAtom, svgAtom } from "../../store/store";
@@ -53,21 +53,22 @@ const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => {
 function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: number; }) {
 
     const onAtomChange = React.useCallback<OnValueChange<number>>(({ get, set }) => {
-        console.log('valueAtoms', valueAtoms, valueAtoms.map(a => a.toString()));
+        console.log('valueAtoms', valueAtoms.map(a => a.toString()));
 
         const res = valueAtoms.map((valueAtom) => get(valueAtom)).join(',');
         console.log('changed', res);
     }, []);
 
-    const [valueAtoms, setValuesAtoms] = React.useState(createRowAtoms(svgItem.values, onAtomChange));
+    // const [valueAtoms, setValuesAtoms] = React.useState(createRowAtoms(svgItem.values, onAtomChange));
+    const [valueAtoms, setValuesAtoms] = React.useState<WritableAtom<number, SetStateAction<number>>[]>([]);
     useEffect(() => {
         const a = createRowAtoms(svgItem.values, onAtomChange);
-        console.log('update atoms', a, a.map(a => a.toString()));
+        console.log('update atoms', a.map(a => a.toString()));
 
         setValuesAtoms(a);
     }, [svgItem]);
 
-    console.log('main valueAtoms', valueAtoms, valueAtoms.map(a => a.toString()));
+    console.log('main valueAtoms', valueAtoms.map(a => a.toString()), svgItem.asString());
 
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
     const active = activePoint === svgItemIdx;
