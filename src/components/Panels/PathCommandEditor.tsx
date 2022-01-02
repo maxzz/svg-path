@@ -10,7 +10,7 @@ function PointName({ pathIdx, command, abs }: { pathIdx: number; command: string
     return (
         <label
             className={`flex-0 px-1 w-6 leading-3 text-xs rounded-l-[0.2rem] text-center text-slate-900 bg-slate-400 focus-within:text-blue-500 overflow-hidden`}
-            // onFocus={() => setActivePoint(pathIdx)}
+        // onFocus={() => setActivePoint(pathIdx)}
         >
             {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
             <button className="py-1">{command}</button>
@@ -20,26 +20,57 @@ function PointName({ pathIdx, command, abs }: { pathIdx: number; command: string
 
 function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<number>; }) {
     const [value, setValue] = useAtom(atom);
-    const setActivePoint = useUpdateAtom(activePointAtom);
+
+    const [local, setLocal] = React.useState(''+value);
+    React.useEffect(() => {
+        setLocal(''+value);
+    }, [value]);
+
     function convertToNumber(s: string) {
         const v = +s;
+        setLocal(s);
         if (!isNaN(v)) {
-            setValue(+s);
+            setValue(v);
         }
     }
+
+    //const setActivePoint = useUpdateAtom(activePointAtom);
     return (
         <label
             className={`flex-1 max-w-[3rem] rounded-tl-sm overflow-hidden bg-slate-200 focus-within:text-blue-500`}
-            // onFocus={() => setActivePoint(pathIdx)}
+        // onFocus={() => setActivePoint(pathIdx)}
         >
             <input
                 className="px-px pb-[4px] w-full h-full text-[10px] text-center tracking-tighter text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
-                value={value}
+                value={local}
                 onChange={(event) => convertToNumber(event.target.value)}
             />
         </label>
     );
 }
+
+// function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<number>; }) {
+//     const [value, setValue] = useAtom(atom);
+//     const setActivePoint = useUpdateAtom(activePointAtom);
+//     function convertToNumber(s: string) {
+//         const v = +s;
+//         if (!isNaN(v)) {
+//             setValue(+s);
+//         }
+//     }
+//     return (
+//         <label
+//             className={`flex-1 max-w-[3rem] rounded-tl-sm overflow-hidden bg-slate-200 focus-within:text-blue-500`}
+//             // onFocus={() => setActivePoint(pathIdx)}
+//         >
+//             <input
+//                 className="px-px pb-[4px] w-full h-full text-[10px] text-center tracking-tighter text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
+//                 value={value}
+//                 onChange={(event) => convertToNumber(event.target.value)}
+//             />
+//         </label>
+//     );
+// }
 
 //TODO: switch to grid (first row problem)
 
@@ -58,7 +89,7 @@ function CommandRow({ path, pathIdx }: { path: SvgItem; pathIdx: number; }) {
         <div
             className={`flex items-center justify-between ${active ? 'bg-blue-300' : ''}`}
             onClick={() => setActivePoint(pathIdx)}
-            onFocus={()=> console.log('child')}
+            onFocus={() => console.log('child')}
         >
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
