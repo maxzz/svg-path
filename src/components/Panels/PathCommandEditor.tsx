@@ -21,6 +21,12 @@ function PointName({ pathIdx, command, abs }: { pathIdx: number; command: string
 function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<number>; }) {
     const [value, setValue] = useAtom(atom);
     const setActivePoint = useUpdateAtom(activePointAtom);
+    function convertToNumber(s: string) {
+        const v = +s;
+        if (!isNaN(v)) {
+            setValue(+s);
+        }
+    }
     return (
         <label
             className={`flex-1 max-w-[3rem] rounded-tl-sm overflow-hidden bg-slate-200 focus-within:text-blue-500`}
@@ -29,11 +35,13 @@ function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<nu
             <input
                 className="px-px pb-[4px] w-full h-full text-[10px] text-center tracking-tighter text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
                 value={value}
-                onChange={(event) => setValue(+event.target.value)}
+                onChange={(event) => convertToNumber(event.target.value)}
             />
         </label>
     );
 }
+
+//TODO: switch to grid (first row problem)
 
 function CommandRow({ path, pathIdx }: { path: SvgItem; pathIdx: number; }) {
     const createAtoms = () => path.values.map((value) => atom(value));
