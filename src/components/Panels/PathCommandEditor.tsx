@@ -45,12 +45,16 @@ function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<nu
 
 //TODO: switch to grid (first row problem)
 
-function CommandRow({ path, pathIdx }: { path: SvgItem; pathIdx: number; }) {
-    const createAtoms = () => path.values.map((value) => atom(value));
+const createRowAtoms = (values: number[]) => values.map((value) => atom(value));
 
-    const [valuesAtoms, setValuesAtoms] = React.useState(createAtoms());
+function CommandRow({ path, pathIdx }: { path: SvgItem; pathIdx: number; }) {
+
+    // const onAtomChange = React.useCallback(() => {
+    // }, []); 
+
+    const [valuesAtoms, setValuesAtoms] = React.useState(createRowAtoms(path.values));
     useEffect(() => {
-        setValuesAtoms(createAtoms());
+        setValuesAtoms(createRowAtoms(path.values));
     }, [path]);
 
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
