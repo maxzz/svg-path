@@ -1,6 +1,6 @@
-import { atom, PrimitiveAtom, useAtom } from "jotai";
+import { atom, Getter, PrimitiveAtom, Setter, useAtom } from "jotai";
 import React, { useEffect } from "react";
-import atomWithCallback from "../../hooks/atomsX";
+import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
 import { activePointAtom, svgAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
 import { IconMenu } from "../UI/icons/Icons";
@@ -46,20 +46,28 @@ function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<nu
 
 //TODO: switch to grid (first row problem)
 
-const createRowAtoms = (values: number[], monitor: () => void) => {
+const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => {
     return values.map((value) => atomWithCallback(value, monitor));
-}
+};
 
 function CommandRow({ path, pathIdx }: { path: SvgItem; pathIdx: number; }) {
 
-    const onAtomChange = React.useCallback(() => {
-        console.log('changed');
-    }, []); 
+    const onAtomChange = React.useCallback<OnValueChange<number>>(({ get, set }) => {
+        console.log('valueAtoms', valueAtoms, valueAtoms.map(a => a.toString()));
 
-    const [valuesAtoms, setValuesAtoms] = React.useState(createRowAtoms(path.values, onAtomChange));
+        const res = valueAtoms.map((valueAtom) => get(valueAtom)).join(',');
+        console.log('changed', res);
+    }, []);
+
+    const [valueAtoms, setValuesAtoms] = React.useState(createRowAtoms(path.values, onAtomChange));
     useEffect(() => {
-        setValuesAtoms(createRowAtoms(path.values, onAtomChange));
+        const a = createRowAtoms(path.values, onAtomChange);
+        console.log('update atoms', a, a.map(a => a.toString()));
+
+        setValuesAtoms(a);
     }, [path]);
+
+    console.log('main valueAtoms', valueAtoms, valueAtoms.map(a => a.toString()));
 
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
     const active = activePoint === pathIdx;
@@ -73,7 +81,7 @@ function CommandRow({ path, pathIdx }: { path: SvgItem; pathIdx: number; }) {
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
                 <PointName pathIdx={pathIdx} command={path.getType()} abs={false} />
 
-                {valuesAtoms.map((atom, idx) => (
+                {valueAtoms.map((atom, idx) => (
                     <PointValue pathIdx={pathIdx} atom={atom} key={idx} />
                 ))}
             </div>
