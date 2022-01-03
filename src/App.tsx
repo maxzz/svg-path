@@ -1,40 +1,12 @@
 import { atom, useAtom } from 'jotai';
-import React, { HTMLAttributes, ReactNode, useState } from 'react';
+import React, { useState } from 'react';
 import { Accordion } from './components/UI/Accordion';
 import { motion, useAnimation, Variants } from 'framer-motion';
 import { pathUnsafeAtom } from './store/store';
 import { PathCommandEditor } from './components/Panels/PathCommandEditor';
 import { PathCanvas } from './components/Canvas/Canvas';
 import './App.css';
-
-const variants: Variants = {
-    open: { d: ["M 20,65 50,35 80,65", "M 20,35 50,65 80,35"], },
-    closed: { d: ["M 20,35 50,65 80,35", "M 20,65 50,35 80,65"], },
-};
-
-function SectionPane({ children, open = true, onClick, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
-    const api = useAnimation();
-    const click = (event: React.MouseEvent<HTMLDivElement>) => onClick && (api.start(open ? "closed" : "open"), onClick(event));
-    return (
-        <div
-            className="px-2 py-1 bg-slate-500 text-stone-100 uppercase flex items-center justify-between select-none cursor-pointer font-ui"
-            onClick={click}
-            {...rest}
-        >
-            <div className="pr-1 pt-1">{children}</div>
-            <div className="">
-                <svg className="w-6 h-6 p-1 stroke-current stroke-[.6rem] fill-none" viewBox="0 0 100 100">
-                    <motion.path
-                        d="M 20,35 50,65 80,35"
-                        animate={api}
-                        variants={variants}
-                        transition={{ ease: "easeInOut", duration: .2, }}
-                    />
-                </svg>
-            </div>
-        </div>
-    );
-}
+import { SectionPane } from './components/UI/SectionPane';
 
 function PathEditor() {
     const [path, setPath] = useAtom(pathUnsafeAtom);
@@ -62,9 +34,9 @@ function PanelPath() {
                     <div className="flex justify-between">
                         <div className="text-xs tracking-tighter self-end">path</div>
                         <div className="py-1 flex space-x-1">
-                            <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Open</button>
-                            <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Save</button>
-                            <button className="px-1.5 pb-0.5 border rounded border-slate-400 active:scale-[.97]">Clear</button>
+                            <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Open</button>
+                            <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Save</button>
+                            <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Clear</button>
                         </div>
                     </div>
 
@@ -86,7 +58,9 @@ function PanelOptions() {
                 Options
             </SectionPane>
             <Accordion toggle={open}>
-                configuration
+                <div className="text-sm bg-slate-300 overflow-hidden">
+                    Configuration. Ground zero
+                </div>
             </Accordion>
         </div>
     );
@@ -150,40 +124,10 @@ function PanelCommands() {
     );
 }
 
-function Dropdown({ text, variants }: { text: string, variants: Variants; }) {
-    const [open, setOpen] = useState(false);
-    const api = useAnimation();
-
+function PanelAllEditors() {
     return (
-        <button onClick={() => { api.start(open ? "open" : "closed"); setOpen(!open); }}>
-            <div className="Dropdown-text">{text}</div>
-
-            <svg className="fill-none stroke-slate-400 stroke-[.8rem] w-4 h-4" viewBox="0 0 100 100">
-                <motion.path
-                    d="M 20,35 50,65 80,35"
-                    animate={api}
-                    variants={variants}
-                    transition={{ ease: "easeInOut", duration: .2, }}
-                />
-            </svg>
-
-        </button>
-    );
-}
-
-function PathPane() {
-    return (
-        <div className="w-[300px] max-w-[300px] flex flex-col space-y-1 bg-slate-100 border">
-            <p className='text-red-700 font-black'>Ground zero</p>
-
-            <Dropdown
-                text="Invert"
-                variants={{
-                    open: { d: ["M 20,65 50,35 80,65", "M 20,35 50,65 80,35"], },
-                    closed: { d: ["M 20,35 50,65 80,35", "M 20,65 50,35 80,65"], },
-                }}
-            />
-
+        <div className="py-1 w-[300px] max-w-[300px] flex flex-col space-y-1 bg-slate-600 border border-slate-900">
+            {/* <p className='text-red-700 font-black'>Ground zero</p> */}
             <PanelPath />
             <PanelCommands />
             <PanelOperations />
@@ -204,7 +148,7 @@ function PathViewer() {
 function App() {
     return (
         <div className="h-screen flex">
-            <PathPane />
+            <PanelAllEditors />
             <PathViewer />
         </div>
     );
