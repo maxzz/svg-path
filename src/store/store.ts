@@ -1,6 +1,6 @@
 import { atom, Getter } from "jotai";
 import atomWithCallback from "../hooks/atomsX";
-import { Svg } from "../svg/svg";
+import { Svg, SvgItem } from "../svg/svg";
 import debounce from "../utils/debounce";
 
 namespace Storage {
@@ -23,7 +23,7 @@ namespace Storage {
         if (s) {
             try {
                 let obj = JSON.parse(s) as Store;
-                initialData = {...initialData, ...obj};
+                initialData = { ...initialData, ...obj };
             } catch (error) {
             }
         }
@@ -83,6 +83,16 @@ export const svgAtom = atom(
         set(_pathUnsafeAtom, path);
     }
 );
+
+export const updateValuesAtom = atom(null, (get, set, { item, values }: { item: SvgItem, values: number[]; }) => {
+    const svg = get(_svgAtom);
+    item.values = values;
+    svg.refreshAbsolutePositions();
+
+    const newSvg = new Svg();
+    newSvg.path = svg.path;
+    set(svgAtom, newSvg);
+});
 
 // canvas zoom
 

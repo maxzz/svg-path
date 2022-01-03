@@ -1,7 +1,8 @@
 import { atom, PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from "jotai";
+import { useUpdateAtom } from "jotai/utils";
 import React, { useEffect } from "react";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
-import { activePointAtom, svgAtom } from "../../store/store";
+import { activePointAtom, svgAtom, updateValuesAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
 import { IconMenu } from "../UI/icons/Icons";
 
@@ -47,18 +48,23 @@ function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<nu
 //TODO: switch to grid (first row problem)
 //TODO: check scale when only one 'm' command
 
-const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => {
-    return values.map((value) => atomWithCallback(value, monitor));
-};
+const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => values.map((value) => atomWithCallback(value, monitor));
 
 function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: number; }) {
 
     const masterAtom = React.useRef(atom<WritableAtom<number, SetStateAction<number>>[]>([]));
     const [master, setMaster] = useAtom(masterAtom.current);
 
+    const updateValues = useUpdateAtom(updateValuesAtom);
+
     const onAtomChange = React.useCallback<OnValueChange<number>>(({ get, set }) => {
         const aa = get(masterAtom.current);
-        console.log('onAtomChange aa', aa.map(a => a.toString()), 'val', aa.map(a => get(a)));
+        const newValues = aa.map(a => get(a));
+
+        updateValues({ item: svgItem, values: newValues });
+        //svgItem.values = newValues;
+
+        console.log('onAtomChange aa', aa.map(a => a.toString()), 'val', newValues);
     }, []);
 
     useEffect(() => setMaster(createRowAtoms(svgItem.values, onAtomChange)), [svgItem]);
