@@ -21,6 +21,34 @@ function SectionPane({ children, open = true, ...rest }: { children?: ReactNode;
     );
 }
 
+function SectionPane2({ children, open = true, onClick, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
+    const api = useAnimation();
+    const variants = {
+        open: { d: ["M 20,65 50,35 80,65", "M 20,35 50,65 80,35"], },
+        closed: { d: ["M 20,35 50,65 80,35", "M 20,65 50,35 80,65"], },
+    }
+    function click(event: React.MouseEvent<HTMLDivElement>) {
+        api.start(open ? "closed" : "open");
+        onClick && onClick(event);
+    }
+    return (
+        <div className="px-2 py-1 bg-slate-500 text-stone-100 uppercase flex items-center justify-between select-none font-ui" onClick={(e) => click(e)} {...rest}>
+            <div className="pr-1 pt-1">{children}</div>
+
+            <div className="">
+                <svg className="w-6 h-6 p-0.5 stroke-current stroke-[.6rem] fill-none" viewBox="0 0 100 100">
+                    <motion.path
+                        d="M 20,35 50,65 80,35"
+                        animate={api}
+                        variants={variants}
+                        transition={{ ease: "easeInOut", duration: .2, }}
+                    />
+                </svg>
+            </div>
+        </div>
+    );
+}
+
 function PathEditor() {
     const [path, setPath] = useAtom(pathUnsafeAtom);
     return (
@@ -123,9 +151,9 @@ function PanelCommands() {
     const [open, setOpen] = useAtom(openAtom);
     return (
         <div className="">
-            <SectionPane open={open} onClick={() => setOpen(v => !v)}>
+            <SectionPane2 open={open} onClick={() => setOpen(v => !v)}>
                 Path Commands
-            </SectionPane>
+            </SectionPane2>
             <Accordion toggle={open}>
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     <PathCommandEditor />
@@ -143,19 +171,7 @@ function Dropdown({ text, variants }: { text: string, variants: Variants; }) {
         <button onClick={() => { api.start(open ? "open" : "closed"); setOpen(!open); }}>
             <div className="Dropdown-text">{text}</div>
 
-            <svg
-                className="fill-none stroke-slate-400 stroke-[.8rem] w-4 h-4"
-                viewBox="0 0 100 100"
-                // width="16px"
-                // height="16px"
-                // style={{
-                //     fill: 'none',
-                //     stroke: '#282828',
-                //     strokeWidth: '18px',
-                //     strokeLinecap: 'round',
-                //     strokeLinejoin: 'round',
-                // }}
-            >
+            <svg className="fill-none stroke-slate-400 stroke-[.8rem] w-4 h-4" viewBox="0 0 100 100">
                 <motion.path
                     d="M 20,35 50,65 80,35"
                     animate={api}
