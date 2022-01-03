@@ -84,10 +84,21 @@ export const svgAtom = atom(
     }
 );
 
-export const updateValuesAtom = atom(null, (get, set, { item, values }: { item: SvgItem, values: number[]; }) => {
+// Upates from command editor
+
+export const updateRowValuesAtom = atom(null, (get, set, { item, values }: { item: SvgItem, values: number[]; }) => {
     const svg = get(_svgAtom);
     item.values = values;
     svg.refreshAbsolutePositions();
+
+    const newSvg = new Svg();
+    newSvg.path = svg.path;
+    set(svgAtom, newSvg);
+});
+
+export const updateRowTypeAtom = atom(null, (get, set, { item, isRelative }: { item: SvgItem, isRelative: boolean; }) => {
+    const svg = get(_svgAtom);
+    item.setRelative(isRelative);
 
     const newSvg = new Svg();
     newSvg.path = svg.path;

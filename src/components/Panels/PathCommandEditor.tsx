@@ -2,14 +2,15 @@ import { atom, PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from "jota
 import { useUpdateAtom } from "jotai/utils";
 import React, { useEffect } from "react";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
-import { activePointAtom, svgAtom, updateValuesAtom } from "../../store/store";
+import { activePointAtom, svgAtom, updateRowTypeAtom, updateRowValuesAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
 import { IconMenu } from "../UI/icons/Icons";
 
-function PointName({ pathIdx, command, abs }: { pathIdx: number; command: string; abs: boolean; }) {
+function PointName({ command, onClick }: { command: string; onClick: () => void; }) {
     return (
         <label
             className={`flex-0 px-1 w-6 leading-3 text-xs rounded-l-[0.2rem] text-center text-slate-900 bg-slate-400 focus-within:text-blue-500 overflow-hidden`}
+            onClick={onClick}
         >
             {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
             <button className="py-1">{command}</button>
@@ -55,12 +56,17 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     const rowAtomRef = React.useRef(atom<WritableAtom<number, SetStateAction<number>>[]>([]));
     const [rowAtoms, setRowAtoms] = useAtom(rowAtomRef.current);
 
-    const updateValues = useUpdateAtom(updateValuesAtom);
+    const updateRowValues = useUpdateAtom(updateRowValuesAtom);
     const onAtomChange = React.useCallback<OnValueChange<number>>(({ get }) => {
-        updateValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
+        updateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
     }, []);
 
     useEffect(() => setRowAtoms(createRowAtoms(svgItem.values, onAtomChange)), [svgItem]);
+
+    const updateRowType = useUpdateAtom(updateRowTypeAtom);
+    function onCommandNameClick() {
+        updateRowType({ item: svgItem, isRelative: !svgItem.relative });
+    }
 
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
     const active = activePoint === svgItemIdx;
@@ -72,7 +78,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
         >
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
-                <PointName pathIdx={svgItemIdx} command={svgItem.getType()} abs={false} />
+                <PointName command={svgItem.getType()} onClick={onCommandNameClick} />
 
                 {rowAtoms.map((atom, idx) => (
                     <PointValue atom={atom} key={idx} />
