@@ -52,22 +52,15 @@ const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => val
 
 function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: number; }) {
 
-    const masterAtom = React.useRef(atom<WritableAtom<number, SetStateAction<number>>[]>([]));
-    const [master, setMaster] = useAtom(masterAtom.current);
+    const rowAtomRef = React.useRef(atom<WritableAtom<number, SetStateAction<number>>[]>([]));
+    const [rowAtoms, setRowAtoms] = useAtom(rowAtomRef.current);
 
     const updateValues = useUpdateAtom(updateValuesAtom);
-
-    const onAtomChange = React.useCallback<OnValueChange<number>>(({ get, set }) => {
-        const aa = get(masterAtom.current);
-        const newValues = aa.map(a => get(a));
-
-        updateValues({ item: svgItem, values: newValues });
-        //svgItem.values = newValues;
-
-        console.log('onAtomChange aa', aa.map(a => a.toString()), 'val', newValues);
+    const onAtomChange = React.useCallback<OnValueChange<number>>(({ get }) => {
+        updateValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
     }, []);
 
-    useEffect(() => setMaster(createRowAtoms(svgItem.values, onAtomChange)), [svgItem]);
+    useEffect(() => setRowAtoms(createRowAtoms(svgItem.values, onAtomChange)), [svgItem]);
 
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
     const active = activePoint === svgItemIdx;
@@ -81,7 +74,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
                 <PointName pathIdx={svgItemIdx} command={svgItem.getType()} abs={false} />
 
-                {master.map((atom, idx) => (
+                {rowAtoms.map((atom, idx) => (
                     <PointValue pathIdx={svgItemIdx} atom={atom} key={idx} />
                 ))}
             </div>
