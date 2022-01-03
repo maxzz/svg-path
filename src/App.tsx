@@ -135,7 +135,7 @@ function PanelCommands() {
     );
 }
 
-function Dropdown({ text, variants }: { text: string, variants: Variants }) {
+function Dropdown({ text, variants }: { text: string, variants: Variants; }) {
     const [open, setOpen] = useState(false);
     const api = useAnimation();
 
@@ -144,17 +144,17 @@ function Dropdown({ text, variants }: { text: string, variants: Variants }) {
             <div className="Dropdown-text">{text}</div>
 
             <svg
-                className=""
+                className="fill-none stroke-slate-400 stroke-[.8rem] w-4 h-4"
                 viewBox="0 0 100 100"
-                width="16px"
-                height="16px"
-                style={{
-                    fill: 'none',
-                    stroke: '#282828',
-                    strokeWidth: '18px',
-                    strokeLinecap: 'round',
-                    strokeLinejoin: 'round',
-                  }}
+                // width="16px"
+                // height="16px"
+                // style={{
+                //     fill: 'none',
+                //     stroke: '#282828',
+                //     strokeWidth: '18px',
+                //     strokeLinecap: 'round',
+                //     strokeLinejoin: 'round',
+                // }}
             >
                 <motion.path
                     d="M 20,35 50,65 80,35"
@@ -176,12 +176,8 @@ function PathPane() {
             <Dropdown
                 text="Invert"
                 variants={{
-                    open: {
-                        d: ["M 20,65 50,35 80,65", "M 20,35 50,65 80,35"],
-                    },
-                    closed: {
-                        d: ["M 20,35 50,65 80,35", "M 20,65 50,35 80,65"],
-                    },
+                    open: { d: ["M 20,65 50,35 80,65", "M 20,35 50,65 80,35"], },
+                    closed: { d: ["M 20,35 50,65 80,35", "M 20,65 50,35 80,65"], },
                 }}
             />
 
