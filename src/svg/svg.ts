@@ -491,8 +491,8 @@ class EllipticalArcTo extends SvgItem {
 export class Svg {
     path: SvgItem[];
 
-    constructor(path: string) {
-        const rawPath = SvgParser.parse(path);
+    constructor(path?: string) {
+        const rawPath = path ? SvgParser.parse(path) : [];
         this.path = rawPath.map(it => SvgItem.Make(it));
         this.refreshAbsolutePositions();
     }
