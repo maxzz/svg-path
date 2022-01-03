@@ -8,7 +8,7 @@ import { Accordion } from './components/UI/Accordion';
 import { pathUnsafeAtom } from './store/store';
 import { PathCommandEditor } from './components/Panels/PathCommandEditor';
 import { PathCanvas } from './components/Canvas/Canvas';
-import { motion, useAnimation } from 'framer-motion';
+import { motion, useAnimation, Variants } from 'framer-motion';
 
 function SectionPane({ children, open = true, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
     return (
@@ -135,21 +135,19 @@ function PanelCommands() {
     );
 }
 
-function Dropdown({ text, variants }: any) {
+function Dropdown({ text, variants }: { text: string, variants: Variants }) {
     const [open, setOpen] = useState(false);
-    const controls = useAnimation();
+    const api = useAnimation();
 
     return (
-        <button
-            className="Dropdown"
-            onClick={() => {
-                controls.start(open ? "open" : "closed");
-                setOpen(!open);
-            }}
-        >
+        <button onClick={() => { api.start(open ? "open" : "closed"); setOpen(!open); }}>
             <div className="Dropdown-text">{text}</div>
+
             <svg
-                className="Dropdown-icon"
+                className=""
+                viewBox="0 0 100 100"
+                width="16px"
+                height="16px"
                 style={{
                     fill: 'none',
                     stroke: '#282828',
@@ -157,21 +155,15 @@ function Dropdown({ text, variants }: any) {
                     strokeLinecap: 'round',
                     strokeLinejoin: 'round',
                   }}
-                viewBox="0 0 100 100"
-                width="16px"
-                height="16px"
             >
                 <motion.path
-                    className="arrow"
                     d="M 20,35 50,65 80,35"
-                    animate={controls}
+                    animate={api}
                     variants={variants}
-                    transition={{
-                        ease: "easeInOut",
-                        duration: 0.4,
-                    }}
+                    transition={{ ease: "easeInOut", duration: .2, }}
                 />
             </svg>
+
         </button>
     );
 }
