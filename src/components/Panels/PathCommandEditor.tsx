@@ -17,15 +17,15 @@ function PointName({ pathIdx, command, abs }: { pathIdx: number; command: string
     );
 }
 
-function PointValue({ pathIdx, atom }: { pathIdx: number; atom: PrimitiveAtom<number>; }) {
+function PointValue({ atom }: { atom: PrimitiveAtom<number>; }) {
     const [value, setValue] = useAtom(atom);
     const [local, setLocal] = React.useState('' + value);
     React.useEffect(() => setLocal('' + value), [value]);
 
     function convertToNumber(s: string) {
-        s = s.replace(/[\u066B,]/g, '.').replace(/[^\-0-9.eE]/g, ''); //disable type illegal chars. \u066B unicode-arabic-decimal-separator
-        const v = +s;
+        s = s.replace(/[\u066B,]/g, '.').replace(/[^\-0-9.eE]/g, ''); //replace unicode-arabic-decimal-separator and remove non-float chars.
         setLocal(s);
+        const v = +s;
         s && !isNaN(v) && setValue(v);
     }
 
@@ -75,7 +75,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
                 <PointName pathIdx={svgItemIdx} command={svgItem.getType()} abs={false} />
 
                 {rowAtoms.map((atom, idx) => (
-                    <PointValue pathIdx={svgItemIdx} atom={atom} key={idx} />
+                    <PointValue atom={atom} key={idx} />
                 ))}
             </div>
 
