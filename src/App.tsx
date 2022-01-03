@@ -1,42 +1,29 @@
 import { atom, useAtom } from 'jotai';
 import React, { HTMLAttributes, ReactNode, useState } from 'react';
-import './App.css';
-import { IconChevronDown } from './components/UI/icons/Icons';
-import background from './assets/background-grid.svg';
-import { BgGrid } from './components/UI/icons/BgGrid';
 import { Accordion } from './components/UI/Accordion';
+import { motion, useAnimation, Variants } from 'framer-motion';
 import { pathUnsafeAtom } from './store/store';
 import { PathCommandEditor } from './components/Panels/PathCommandEditor';
 import { PathCanvas } from './components/Canvas/Canvas';
-import { motion, useAnimation, Variants } from 'framer-motion';
+import './App.css';
 
-function SectionPane({ children, open = true, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
-    return (
-        <div className="px-2 py-1 bg-slate-500 text-stone-100 uppercase flex items-center justify-between select-none font-ui" {...rest}>
-            <div className="pr-1 pt-1">{children}</div>
-            <div className={`${open ? '' : 'rotate-180'}`}>
-                <IconChevronDown className="w-6 h-6" />
-            </div>
-        </div>
-    );
-}
+const variants: Variants = {
+    open: { d: ["M 20,65 50,35 80,65", "M 20,35 50,65 80,35"], },
+    closed: { d: ["M 20,35 50,65 80,35", "M 20,65 50,35 80,65"], },
+};
 
-function SectionPane2({ children, open = true, onClick, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
+function SectionPane({ children, open = true, onClick, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
     const api = useAnimation();
-    const variants = {
-        open: { d: ["M 20,65 50,35 80,65", "M 20,35 50,65 80,35"], },
-        closed: { d: ["M 20,35 50,65 80,35", "M 20,65 50,35 80,65"], },
-    }
-    function click(event: React.MouseEvent<HTMLDivElement>) {
-        api.start(open ? "closed" : "open");
-        onClick && onClick(event);
-    }
+    const click = (event: React.MouseEvent<HTMLDivElement>) => onClick && (api.start(open ? "closed" : "open"), onClick(event));
     return (
-        <div className="px-2 py-1 bg-slate-500 text-stone-100 uppercase flex items-center justify-between select-none font-ui" onClick={(e) => click(e)} {...rest}>
+        <div
+            className="px-2 py-1 bg-slate-500 text-stone-100 uppercase flex items-center justify-between select-none cursor-pointer font-ui"
+            onClick={click}
+            {...rest}
+        >
             <div className="pr-1 pt-1">{children}</div>
-
             <div className="">
-                <svg className="w-6 h-6 p-0.5 stroke-current stroke-[.6rem] fill-none" viewBox="0 0 100 100">
+                <svg className="w-6 h-6 p-1 stroke-current stroke-[.6rem] fill-none" viewBox="0 0 100 100">
                     <motion.path
                         d="M 20,35 50,65 80,35"
                         animate={api}
@@ -151,9 +138,9 @@ function PanelCommands() {
     const [open, setOpen] = useAtom(openAtom);
     return (
         <div className="">
-            <SectionPane2 open={open} onClick={() => setOpen(v => !v)}>
+            <SectionPane open={open} onClick={() => setOpen(v => !v)}>
                 Path Commands
-            </SectionPane2>
+            </SectionPane>
             <Accordion toggle={open}>
                 <div className="px-1 text-sm bg-slate-300 overflow-hidden">
                     <PathCommandEditor />
