@@ -8,6 +8,7 @@ import { Accordion } from './components/UI/Accordion';
 import { pathUnsafeAtom } from './store/store';
 import { PathCommandEditor } from './components/Panels/PathCommandEditor';
 import { PathCanvas } from './components/Canvas/Canvas';
+import { motion, useAnimation } from 'framer-motion';
 
 function SectionPane({ children, open = true, ...rest }: { children?: ReactNode; open?: boolean; } & HTMLAttributes<HTMLDivElement>) {
     return (
@@ -134,10 +135,64 @@ function PanelCommands() {
     );
 }
 
+function Dropdown({ text, variants }: any) {
+    const [open, setOpen] = useState(false);
+    const controls = useAnimation();
+
+    return (
+        <button
+            className="Dropdown"
+            onClick={() => {
+                controls.start(open ? "open" : "closed");
+                setOpen(!open);
+            }}
+        >
+            <div className="Dropdown-text">{text}</div>
+            <svg
+                className="Dropdown-icon"
+                style={{
+                    fill: 'none',
+                    stroke: '#282828',
+                    strokeWidth: '18px',
+                    strokeLinecap: 'round',
+                    strokeLinejoin: 'round',
+                  }}
+                viewBox="0 0 100 100"
+                width="16px"
+                height="16px"
+            >
+                <motion.path
+                    className="arrow"
+                    d="M 20,35 50,65 80,35"
+                    animate={controls}
+                    variants={variants}
+                    transition={{
+                        ease: "easeInOut",
+                        duration: 0.4,
+                    }}
+                />
+            </svg>
+        </button>
+    );
+}
+
 function PathPane() {
     return (
         <div className="w-[300px] max-w-[300px] flex flex-col space-y-1 bg-slate-100 border">
             <p className='text-red-700 font-black'>Ground zero</p>
+
+            <Dropdown
+                text="Invert"
+                variants={{
+                    open: {
+                        d: ["M 20,65 50,35 80,65", "M 20,35 50,65 80,35"],
+                    },
+                    closed: {
+                        d: ["M 20,35 50,65 80,35", "M 20,65 50,35 80,65"],
+                    },
+                }}
+            />
+
             <PanelPath />
             <PanelCommands />
             <PanelOperations />
