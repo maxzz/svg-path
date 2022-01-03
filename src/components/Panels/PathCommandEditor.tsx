@@ -46,9 +46,6 @@ function PointValue({ atom }: { atom: PrimitiveAtom<number>; }) {
     );
 }
 
-//TODO: switch to grid (first row problem)
-//TODO: check scale when only one 'm' command
-
 const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => values.map((value) => atomWithCallback(value, monitor));
 
 function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: number; }) {
@@ -106,3 +103,12 @@ export function PathCommandEditor() {
         </div >
     );
 }
+
+//TODO: switch to grid (first row width problem)
+//TODO: check scale when only one 'm' command
+//TODO: minify output
+//TODO: path operations: make the path abs/rel
+//TODO: path operations: translate, scale, round
+//TODO: grid: preview
+//TODO: unde/redo
+//TODO: zoom buttons: -/+/fit
