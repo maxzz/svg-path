@@ -18,7 +18,7 @@ function PointName({ command, onClick }: { command: string; onClick: () => void;
     );
 }
 
-function PointValue({ atom }: { atom: PrimitiveAtom<number>; }) {
+function PointValue({ atom, current }: { atom: PrimitiveAtom<number>; current: boolean }) {
     const [value, setValue] = useAtom(atom);
     const [local, setLocal] = React.useState('' + value);
     React.useEffect(() => setLocal('' + value), [value]);
@@ -35,9 +35,9 @@ function PointValue({ atom }: { atom: PrimitiveAtom<number>; }) {
     }
 
     return (
-        <label className={`flex-1 max-w-[3rem] rounded-tl-sm overflow-hidden bg-slate-200 focus-within:text-blue-500`}>
+        <label className={`flex-1 w-[2.4rem] rounded-tl-sm overflow-hidden bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${current ? 'bg-blue-300':''}`}>
             <input
-                className="px-px pb-[4px] w-full h-full text-[10px] text-center tracking-tighter text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
+                className={`px-px pt-1 w-full h-full text-[10px] text-center tracking-tighter ${current ? 'text-blue-900 bg-blue-300 border-blue-300':''} border-b-2 focus:border-blue-500 bg-slate-200 focus:outline-none`}
                 value={local}
                 onChange={(event) => convertToNumber(event.target.value)}
                 onBlur={resetInvalid}
@@ -78,7 +78,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
                 <PointName command={svgItem.getType()} onClick={onCommandNameClick} />
 
                 {rowAtoms.map((atom, idx) => (
-                    <PointValue atom={atom} key={idx} />
+                    <PointValue atom={atom} current={active} key={idx} />
                 ))}
             </div>
 
