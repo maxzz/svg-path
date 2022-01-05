@@ -37,7 +37,7 @@ function PointValue({ atom, current }: { atom: PrimitiveAtom<number>; current: b
     return (
         <label className={`flex-1 w-[2.4rem] rounded-tl-sm overflow-hidden bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${current ? 'bg-blue-300':''}`}>
             <input
-                className={`px-px pt-1 w-full h-full text-[10px] text-center tracking-tighter ${current ? 'text-blue-900 bg-blue-300 border-blue-300':''} border-b-2 focus:border-blue-500 bg-slate-200 focus:outline-none`}
+                className={`px-px pt-1 w-full h-full text-[10px] text-center tracking-tighter ${current ? 'text-blue-900 bg-[#fff5] border-blue-300':''} border-b-2 focus:border-blue-500 bg-slate-200 focus:outline-none`}
                 value={local}
                 onChange={(event) => convertToNumber(event.target.value)}
                 onBlur={resetInvalid}
