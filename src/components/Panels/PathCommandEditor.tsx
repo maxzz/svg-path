@@ -9,16 +9,16 @@ import { IconMenu } from "../UI/icons/Icons";
 function PointName({ command, onClick }: { command: string; onClick: () => void; }) {
     return (
         <label
-            className={`flex-0 px-1 w-6 leading-3 text-xs rounded-l-[0.2rem] text-center text-slate-900 bg-slate-400 focus-within:text-blue-500 overflow-hidden`}
+            className={`flex-0 px-1 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 bg-slate-400 focus-within:text-blue-500 overflow-hidden`}
             onClick={onClick}
         >
             {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
-            <button className="py-1">{command}</button>
+            <button className="">{command}</button>
         </label>
     );
 }
 
-function PointValue({ atom, current }: { atom: PrimitiveAtom<number>; current: boolean }) {
+function PointValue({ atom, current }: { atom: PrimitiveAtom<number>; current: boolean; }) {
     const [value, setValue] = useAtom(atom);
     const [local, setLocal] = React.useState('' + value);
     React.useEffect(() => setLocal('' + value), [value]);
@@ -35,9 +35,13 @@ function PointValue({ atom, current }: { atom: PrimitiveAtom<number>; current: b
     }
 
     return (
-        <label className={`flex-1 w-[2.4rem] rounded-tl-sm overflow-hidden bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${current ? 'bg-blue-300':''}`}>
+        <label className={`flex-1 w-[2.4rem] h-5 h-full rounded-tl-sm overflow-hidden bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${current ? 'bg-blue-300' : ''}`}>
             <input
-                className={`px-px pt-1 w-full h-full text-[10px] text-center tracking-tighter ${current ? 'text-blue-900 bg-[#fff5] border-blue-300':''} border-b-2 focus:border-blue-500 bg-slate-200 focus:outline-none`}
+                className={
+                    `px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none
+                    ${current ? 'text-blue-900 bg-[#fff5] border-blue-300' : ''} 
+                    border-b-2 focus:border-blue-500 bg-slate-200`
+                }
                 value={local}
                 onChange={(event) => convertToNumber(event.target.value)}
                 onBlur={resetInvalid}
