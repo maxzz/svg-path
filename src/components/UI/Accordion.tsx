@@ -8,7 +8,7 @@ export function Accordion({ toggle, children }: { toggle: boolean, children: Rea
     const animation = useSpring({
         overflow: "hidden",
         height: toggle ? height + top : 0,
-        config: firstRun ? { duration: 0 } : { mass: 0.2, tension: 392, clamp: true },
+        config: firstRun ? { duration: 0 } : { mass: 0.2, tension: 492, clamp: true },
         onRest: () => firstRun && setFirstRun(false),
     });
     return (
