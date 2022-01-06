@@ -6,11 +6,11 @@ import { activePointAtom, svgAtom, updateRowTypeAtom, updateRowValuesAtom } from
 import { SvgItem } from "../../svg/svg";
 import { IconMenu } from "../UI/icons/Icons";
 
-function PointName({ command, onClick }: { command: string; onClick: () => void; }) {
+function PointName({ command, abs, onClick }: { command: string; abs: boolean; onClick: () => void; }) {
     return (
         <label
-            className={`flex-0 px-1 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 bg-slate-400 focus-within:text-blue-500 overflow-hidden`}
-            onClick={onClick}
+            className={`flex-0 px-1 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 ${abs?'bg-slate-500':'bg-slate-400'} overflow-hidden`}
+            onClick={onClick}//#747d8b
         >
             {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
             <button className="">{command}</button>
@@ -79,7 +79,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
         >
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
-                <PointName command={svgItem.getType()} onClick={onCommandNameClick} />
+                <PointName command={svgItem.getType()} abs={!svgItem.relative} onClick={onCommandNameClick} />
 
                 {rowAtoms.map((atom, idx) => (
                     <PointValue atom={atom} current={active} key={idx} />
