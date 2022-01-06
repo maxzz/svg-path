@@ -11,11 +11,11 @@ import { IconMenu } from "../UI/icons/Icons";
 function PointName({ command, abs, onClick }: { command: string; abs: boolean; onClick: () => void; }) {
     return (
         <label
-            className={`flex-0 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 ${abs ? 'bg-slate-500' : 'bg-slate-400'} overflow-hidden`}
-            onClick={onClick}//#747d8b
+            className={`flex-0 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 ${abs ? 'bg-slate-500' : 'bg-slate-400'} cursor-pointer select-none`}
+            onClick={onClick}
         >
             {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
-            <button className="">{command}</button>
+            <div className="">{command}</div>
         </label>
     );
 }
@@ -44,6 +44,7 @@ function PointValue({ atom, tooltip, first, current }: { atom: PrimitiveAtom<num
             className={`relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${current ? 'bg-blue-300' : ''}`}
             ref={rowContainerRef}
         >
+            {/* value */}
             <input
                 className={
                     `px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none
@@ -55,16 +56,15 @@ function PointValue({ atom, tooltip, first, current }: { atom: PrimitiveAtom<num
                 value={local}
                 onChange={(event) => convertToNumber(event.target.value)}
                 onBlur={resetInvalid}
-
             />
 
+            {/* tooltip */}
             {isHovering &&
                 <div className={`mini-tooltip ${first ? 'tooltip-up' : 'tooltip-down'} absolute min-w-[1.75rem] py-0.5 left-1/2 -translate-x-1/2
                 ${first ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} text-xs text-center text-slate-100 bg-slate-400 rounded z-10
                 `
                 }>{tooltip}</div>
             }
-
         </label>
     );
 }
@@ -85,6 +85,8 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
     const updateRowType = useUpdateAtom(updateRowTypeAtom);
     function onCommandNameClick() {
+        console.log('clk');
+
         updateRowType({ item: svgItem, isRelative: !svgItem.relative });
     }
 
