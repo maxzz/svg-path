@@ -22,6 +22,10 @@
 	/* margin:0 auto; * /
 	/* overflow:hidden; */
 
+.mini-tooltip {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
 .tooltip-down::after {
     content: " ";
     position: absolute;
@@ -31,6 +35,7 @@
     border-width: 4px;
     border-style: solid;
     border-color: #94a3b8 transparent transparent transparent;
+    /* box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); */
 }
 
 .tooltip-up::after {
@@ -42,6 +47,7 @@
     border-width: 4px;
     border-style: solid;
     border-color: transparent transparent #94a3b8 transparent;
+    /* box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); */
 }
 
 /*before:absolute before:left-1/2 before:top-full before:border-4 before:border-slate-900*/
