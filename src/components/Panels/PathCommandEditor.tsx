@@ -35,7 +35,7 @@ function PointValue({ atom, current }: { atom: PrimitiveAtom<number>; current: b
     }
 
     return (
-        <label className={`flex-1 w-[2.4rem] h-5 h-full rounded-tl-sm overflow-hidden bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${current ? 'bg-blue-300' : ''}`}>
+        <label className={`flex-1 w-[2.4rem] h-5 rounded-tl-sm overflow-hidden bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${current ? 'bg-blue-300' : ''}`}>
             <input
                 className={
                     `px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none
@@ -74,7 +74,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
     return (<>
         <div
-            className={`flex items-center justify-between ${active ? 'bg-blue-300' : ''}`}
+            className={`px-1 flex items-center justify-between ${active ? 'bg-blue-300' : ''}`}
             onClick={() => setActivePoint(svgItemIdx)}
         >
             {/* Values */}
@@ -87,7 +87,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
             </div>
 
             {/* Menu */}
-            <button className="flex-0 mt-0.5 pl-4 active:scale-[.97]">
+            <button className="flex-0 mt-0.5 active:scale-[.97]">
                 <IconMenu className="w-4 h-4" />
             </button>
         </div>

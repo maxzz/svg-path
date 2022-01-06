@@ -37,7 +37,7 @@ function PanelCommands() {
                 Path Commands
             </SectionPane>
             <Accordion toggle={open}>
-                <div className="px-1 text-sm bg-slate-300 overflow-hidden">
+                <div className="text-sm bg-slate-300 overflow-hidden">
                     <PathCommandEditor />
                 </div>
             </Accordion>
