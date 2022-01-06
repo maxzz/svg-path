@@ -41,7 +41,9 @@ function PointValue({ atom, current }: { atom: PrimitiveAtom<number>; current: b
                 className={
                     `px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none
                     ${current ? 'text-blue-900 bg-[#fff5] border-blue-300' : ''} 
-                    border-b-2 focus:border-blue-500 bg-slate-200`
+                    border-b-2 focus:border-blue-500 bg-slate-200
+                    cursor-default focus:cursor-text
+                    `
                 }
                 value={local}
                 onChange={(event) => convertToNumber(event.target.value)}
