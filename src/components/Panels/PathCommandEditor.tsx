@@ -5,6 +5,7 @@ import { useHoverDirty } from "react-use";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
 import { activePointAtom, hoverPointAtom, svgAtom, updateRowTypeAtom, updateRowValuesAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
+import { getTooltip } from "../../svg/svg-utils";
 import { IconMenu } from "../UI/icons/Icons";
 
 function PointName({ command, abs, onClick }: { command: string; abs: boolean; onClick: () => void; }) {
@@ -19,7 +20,7 @@ function PointName({ command, abs, onClick }: { command: string; abs: boolean; o
     );
 }
 
-function PointValue({ atom, current }: { atom: PrimitiveAtom<number>; current: boolean; }) {
+function PointValue({ atom, tooltip, last, current }: { atom: PrimitiveAtom<number>; tooltip: string; last: boolean; current: boolean; }) {
     const [value, setValue] = useAtom(atom);
     const [local, setLocal] = React.useState('' + value);
     React.useEffect(() => setLocal('' + value), [value]);
@@ -35,8 +36,14 @@ function PointValue({ atom, current }: { atom: PrimitiveAtom<number>; current: b
         (!local || isNaN(+local)) && setLocal('' + value);
     }
 
+    const rowContainerRef = React.useRef(null);
+    const isHovering = useHoverDirty(rowContainerRef);
+
     return (
-        <label className={`flex-1 w-[2.4rem] h-5 rounded-tl-sm overflow-hidden bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${current ? 'bg-blue-300' : ''}`}>
+        <label
+            className={`relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${current ? 'bg-blue-300' : ''}`}
+            ref={rowContainerRef}
+        >
             <input
                 className={
                     `px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none
@@ -48,14 +55,17 @@ function PointValue({ atom, current }: { atom: PrimitiveAtom<number>; current: b
                 value={local}
                 onChange={(event) => convertToNumber(event.target.value)}
                 onBlur={resetInvalid}
+
             />
+            {/* {isHovering && <div className="absolute left-0 top-full text-xs bg-slate-500 rounded">{tooltip}</div>} */}
+            {isHovering && <div className={`absolute px-2 py-0.5 left-1/2 -translate-x-1/2 ${last ? '-top-full' : 'top-full'} min-w-[2rem] text-xs text-center text-slate-100 bg-slate-400 rounded z-10`}>{tooltip}</div>}
         </label>
     );
 }
 
 const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => values.map((value) => atomWithCallback(value, monitor));
 
-function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: number; }) {
+function CommandRow({ svgItem, svgItemIdx, nSvgItems }: { svgItem: SvgItem; svgItemIdx: number; nSvgItems: number; }) {
 
     const rowAtomRef = React.useRef(atom<WritableAtom<number, SetStateAction<number>>[]>([]));
     const [rowAtoms, setRowAtoms] = useAtom(rowAtomRef.current);
@@ -79,7 +89,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     const isHovering = useHoverDirty(rowContainerRef);
 
     const setHoverPoint = useUpdateAtom(hoverPointAtom);
-    React.useEffect(() => { setHoverPoint(isHovering ? svgItemIdx : -1) }, [isHovering]);
+    React.useEffect(() => { setHoverPoint(isHovering ? svgItemIdx : -1); }, [isHovering]);
 
     return (<>
         <div
@@ -92,7 +102,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
                 <PointName command={svgItem.getType()} abs={!svgItem.relative} onClick={onCommandNameClick} />
 
                 {rowAtoms.map((atom, idx) => (
-                    <PointValue atom={atom} current={active} key={idx} />
+                    <PointValue atom={atom} tooltip={getTooltip(svgItem.getType(), idx)} last={nSvgItems - 1 === svgItemIdx} current={active} key={idx} />
                 ))}
             </div>
 
@@ -112,7 +122,7 @@ export function PathCommandEditor() {
     return (
         <div className="my-1 space-y-0.5">
             {svg.path.map((svgItem, idx) => (
-                <CommandRow svgItem={svgItem} svgItemIdx={idx} key={idx} />
+                <CommandRow svgItem={svgItem} svgItemIdx={idx} nSvgItems={svg.path.length} key={idx} />
             ))}
         </div >
     );
