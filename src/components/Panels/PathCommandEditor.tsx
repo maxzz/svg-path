@@ -11,7 +11,7 @@ import { IconMenu } from "../UI/icons/Icons";
 function PointName({ command, abs, onClick }: { command: string; abs: boolean; onClick: () => void; }) {
     return (
         <label
-            className={`flex-0 px-1 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 ${abs ? 'bg-slate-500' : 'bg-slate-400'} overflow-hidden`}
+            className={`flex-0 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 ${abs ? 'bg-slate-500' : 'bg-slate-400'} overflow-hidden`}
             onClick={onClick}//#747d8b
         >
             {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
@@ -57,13 +57,14 @@ function PointValue({ atom, tooltip, first, current }: { atom: PrimitiveAtom<num
                 onBlur={resetInvalid}
 
             />
-            {/* {isHovering && <div className="absolute left-0 top-full text-xs bg-slate-500 rounded">{tooltip}</div>} */}
-            {/* {isHovering &&  */}
-            <div className={`mini-tooltip ${first ?'tooltip-up':'tooltip-down'} absolute px-2 py-0.5 left-1/2 -translate-x-1/2
-                ${first ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} min-w-[2rem] text-xs text-center text-slate-100 bg-slate-400 rounded z-10
+
+            {isHovering &&
+                <div className={`mini-tooltip ${first ? 'tooltip-up' : 'tooltip-down'} absolute min-w-[1.75rem] py-0.5 left-1/2 -translate-x-1/2
+                ${first ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} text-xs text-center text-slate-100 bg-slate-400 rounded z-10
                 `
-            }>{tooltip}</div>
-            
+                }>{tooltip}</div>
+            }
+
         </label>
     );
 }
