@@ -1,15 +1,16 @@
 import { atom, PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import React, { useEffect } from "react";
+import { useHoverDirty } from "react-use";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
-import { activePointAtom, svgAtom, updateRowTypeAtom, updateRowValuesAtom } from "../../store/store";
+import { activePointAtom, hoverPointAtom, svgAtom, updateRowTypeAtom, updateRowValuesAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
 import { IconMenu } from "../UI/icons/Icons";
 
 function PointName({ command, abs, onClick }: { command: string; abs: boolean; onClick: () => void; }) {
     return (
         <label
-            className={`flex-0 px-1 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 ${abs?'bg-slate-500':'bg-slate-400'} overflow-hidden`}
+            className={`flex-0 px-1 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 ${abs ? 'bg-slate-500' : 'bg-slate-400'} overflow-hidden`}
             onClick={onClick}//#747d8b
         >
             {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
@@ -72,8 +73,15 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
     const active = activePoint === svgItemIdx;
 
+    const rowContainerRef = React.useRef(null);
+    const isHovering = useHoverDirty(rowContainerRef);
+
+    const setHoverPoint = useUpdateAtom(hoverPointAtom);
+    React.useEffect(() => { setHoverPoint(isHovering ? svgItemIdx : -1) }, [isHovering]);
+
     return (<>
         <div
+            ref={rowContainerRef}
             className={`px-1 flex items-center justify-between ${active ? 'bg-blue-300' : ''}`}
             onClick={() => setActivePoint(svgItemIdx)}
         >
