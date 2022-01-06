@@ -6,7 +6,7 @@ import { useContainerZoom } from './useContainerZoom';
 import { formatNumber, SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 import { BackgroundGrid } from './BackgroundGrid';
 import CanvasControlsPanel from './CanvasControlsPanel';
-import { ViewBox } from '../../svg/svg-utils';
+import { ViewBox } from '../../svg/svg-utils-viewport';
 import { useUpdateAtom } from 'jotai/utils';
 
 const ptColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';

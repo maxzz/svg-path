@@ -3,7 +3,7 @@ import { useUpdateAtom } from 'jotai/utils';
 import React from 'react';
 import { useMeasure } from 'react-use';
 import { pathPointsBoxAtom, svgAtom, viewBoxAtom, viewBoxStrokeAtom, zoomAtom } from '../../store/store';
-import { CanvasSize, getFitViewPort, ViewBox, ViewPoint } from '../../svg/svg-utils';
+import { CanvasSize, getFitViewPort, ViewBox, ViewPoint } from '../../svg/svg-utils-viewport';
 import throttle from '../../utils/throttle';
 
 function formatViewBox(box: ViewBox) {
