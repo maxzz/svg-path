@@ -20,7 +20,7 @@ function PointName({ command, abs, onClick }: { command: string; abs: boolean; o
     );
 }
 
-function PointValue({ atom, tooltip, last, current }: { atom: PrimitiveAtom<number>; tooltip: string; last: boolean; current: boolean; }) {
+function PointValue({ atom, tooltip, first, current }: { atom: PrimitiveAtom<number>; tooltip: string; first: boolean; current: boolean; }) {
     const [value, setValue] = useAtom(atom);
     const [local, setLocal] = React.useState('' + value);
     React.useEffect(() => setLocal('' + value), [value]);
@@ -58,14 +58,14 @@ function PointValue({ atom, tooltip, last, current }: { atom: PrimitiveAtom<numb
 
             />
             {/* {isHovering && <div className="absolute left-0 top-full text-xs bg-slate-500 rounded">{tooltip}</div>} */}
-            {isHovering && <div className={`absolute px-2 py-0.5 left-1/2 -translate-x-1/2 ${last ? '-top-full' : 'top-full'} min-w-[2rem] text-xs text-center text-slate-100 bg-slate-400 rounded z-10`}>{tooltip}</div>}
+            {isHovering && <div className={`absolute px-2 py-0.5 left-1/2 -translate-x-1/2 ${first ? 'top-full' : '-top-full'} min-w-[2rem] text-xs text-center text-slate-100 bg-slate-400 rounded z-10`}>{tooltip}</div>}
         </label>
     );
 }
 
 const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => values.map((value) => atomWithCallback(value, monitor));
 
-function CommandRow({ svgItem, svgItemIdx, nSvgItems }: { svgItem: SvgItem; svgItemIdx: number; nSvgItems: number; }) {
+function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: number; }) {
 
     const rowAtomRef = React.useRef(atom<WritableAtom<number, SetStateAction<number>>[]>([]));
     const [rowAtoms, setRowAtoms] = useAtom(rowAtomRef.current);
@@ -102,7 +102,7 @@ function CommandRow({ svgItem, svgItemIdx, nSvgItems }: { svgItem: SvgItem; svgI
                 <PointName command={svgItem.getType()} abs={!svgItem.relative} onClick={onCommandNameClick} />
 
                 {rowAtoms.map((atom, idx) => (
-                    <PointValue atom={atom} tooltip={getTooltip(svgItem.getType(), idx)} last={nSvgItems - 1 === svgItemIdx} current={active} key={idx} />
+                    <PointValue atom={atom} tooltip={getTooltip(svgItem.getType(), idx)} first={svgItemIdx === 0} current={active} key={idx} />
                 ))}
             </div>
 
@@ -122,7 +122,7 @@ export function PathCommandEditor() {
     return (
         <div className="my-1 space-y-0.5">
             {svg.path.map((svgItem, idx) => (
-                <CommandRow svgItem={svgItem} svgItemIdx={idx} nSvgItems={svg.path.length} key={idx} />
+                <CommandRow svgItem={svgItem} svgItemIdx={idx} key={idx} />
             ))}
         </div >
     );
