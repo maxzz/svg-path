@@ -58,10 +58,10 @@ function PointValue({ atom, tooltip, first, current }: { atom: PrimitiveAtom<num
 
             />
             {/* {isHovering && <div className="absolute left-0 top-full text-xs bg-slate-500 rounded">{tooltip}</div>} */}
-            <div className={`absolute px-2 py-0.5 left-1/2 -translate-x-1/2 
-                ${first ? 'top-full' : '-top-full'} min-w-[2rem] text-xs text-center text-slate-100 bg-slate-400 rounded z-10
-                before:absolute before:left-1/2 before:top-full before:border-4 before:border-slate-900`
-            }>{tooltip}</div>
+            {isHovering && <div className={`${first ?'tooltip-up':'tooltip-down'} absolute px-2 py-0.5 left-1/2 -translate-x-1/2 
+                ${first ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} min-w-[2rem] text-xs text-center text-slate-100 bg-slate-400 rounded z-10
+                `
+            }>{tooltip}</div>}
         </label>
     );
 }
