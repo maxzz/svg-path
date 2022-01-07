@@ -20,7 +20,7 @@ function PointName({ command, abs, onClick }: { command: string; abs: boolean; o
     );
 }
 
-function PointValue({ atom, tooltip, first, current }: { atom: PrimitiveAtom<number>; tooltip: string; first: boolean; current: boolean; }) {
+function PointValue({ atom, tooltip, first, isActivePt, isHoverPt }: { atom: PrimitiveAtom<number>; tooltip: string; first: boolean; isActivePt: boolean; isHoverPt: boolean; }) {
     const [value, setValue] = useAtom(atom);
     const [local, setLocal] = React.useState('' + value);
     React.useEffect(() => setLocal('' + value), [value]);
@@ -41,14 +41,14 @@ function PointValue({ atom, tooltip, first, current }: { atom: PrimitiveAtom<num
 
     return (
         <label
-            className={`relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${current ? 'bg-blue-300' : ''}`}
+            className={`relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${isActivePt ? 'bg-blue-300' : ''}`}
             ref={rowContainerRef}
         >
             {/* value */}
             <input
                 className={
                     `px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none
-                    ${current ? 'text-blue-900 bg-[#fff5] border-blue-300' : ''} 
+                    ${isActivePt ? 'text-blue-900 bg-[#fff5] border-blue-300' : ''} 
                     border-b-2 focus:border-blue-500 bg-slate-200
                     cursor-default focus:cursor-text
                     `
@@ -84,25 +84,22 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     useEffect(() => setRowAtoms(createRowAtoms(svgItem.values, onAtomChange)), [svgItem]);
 
     const updateRowType = useUpdateAtom(updateRowTypeAtom);
-    function onCommandNameClick() {
-        console.log('clk');
-
-        updateRowType({ item: svgItem, isRelative: !svgItem.relative });
-    }
+    const onCommandNameClick = () => updateRowType({ item: svgItem, isRelative: !svgItem.relative });
 
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
-    const active = activePoint === svgItemIdx;
+    const isActivePt = activePoint === svgItemIdx;
 
     const rowContainerRef = React.useRef(null);
     const isHovering = useHoverDirty(rowContainerRef);
 
-    const setHoverPoint = useUpdateAtom(hoverPointAtom);
+    const [hoverPoint, setHoverPoint] = useAtom(hoverPointAtom);
+    const isHoverPt = hoverPoint === svgItemIdx;
     React.useEffect(() => { setHoverPoint(isHovering ? svgItemIdx : -1); }, [isHovering]);
 
     return (<>
         <div
             ref={rowContainerRef}
-            className={`px-1 flex items-center justify-between ${active ? 'bg-blue-300' : ''}`}
+            className={`px-1 flex items-center justify-between ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-blue-400/20' : ''}`}
             onClick={() => setActivePoint(svgItemIdx)}
         >
             {/* Values */}
@@ -110,7 +107,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
                 <PointName command={svgItem.getType()} abs={!svgItem.relative} onClick={onCommandNameClick} />
 
                 {rowAtoms.map((atom, idx) => (
-                    <PointValue atom={atom} tooltip={getTooltip(svgItem.getType(), idx)} first={svgItemIdx === 0} current={active} key={idx} />
+                    <PointValue atom={atom} tooltip={getTooltip(svgItem.getType(), idx)} first={svgItemIdx === 0} isActivePt={isActivePt} isHoverPt={isHoverPt} key={idx} />
                 ))}
             </div>
 
