@@ -20,5 +20,5 @@ const commandAttrs: { [key: string]: string[]; } = {
 };
 
 export function getTooltip(command: string, idx: number): string {
-    return commandAttrs[command][idx];
+    return commandAttrs[command]?.[idx] || '';
 }
