@@ -41,15 +41,17 @@ function PointValue({ atom, tooltip, first, isActivePt, isHoverPt }: { atom: Pri
 
     return (
         <label
-            className={`relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${isActivePt ? 'bg-blue-300' : ''}`}
+            className={`relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex 
+                ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`
+            }
             ref={rowContainerRef}
         >
             {/* value */}
             <input
                 className={
                     `px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none
-                    ${isActivePt ? 'text-blue-900 bg-[#fff5] border-blue-300' : ''} 
-                    border-b-2 focus:border-blue-500 bg-slate-200
+                    ${isActivePt ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverPt ? 'bg-slate-200 border-slate-400/40' : ''} 
+                    border-b-2 focus:border-blue-500 
                     cursor-default focus:cursor-text
                     `
                 }
@@ -99,7 +101,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     return (<>
         <div
             ref={rowContainerRef}
-            className={`px-1 flex items-center justify-between ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-blue-400/20' : ''}`}
+            className={`px-1 flex items-center justify-between ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`}
             onClick={() => setActivePoint(svgItemIdx)}
         >
             {/* Values */}
