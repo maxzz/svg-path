@@ -61,7 +61,7 @@ function PointValue({ atom, tooltip, first, isActivePt, isHoverPt }: { atom: Pri
             />
 
             {/* tooltip */}
-            {isHovering &&
+            {isActivePt && isHovering &&
                 <div className={`mini-tooltip ${first ? 'tooltip-up' : 'tooltip-down'} absolute min-w-[1.75rem] py-0.5 left-1/2 -translate-x-1/2
                 ${first ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} text-xs text-center text-slate-100 bg-slate-400 rounded z-10
                 `
