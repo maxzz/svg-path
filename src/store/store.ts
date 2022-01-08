@@ -145,12 +145,27 @@ export const historyUndoAtom = atom(null, (get, set, v: string) => {
     let history = get(historyAtom);
     let historyPtr = get(historyPtrAtom);
 
-    if (history.length) {
+    if (historyPtr > 0 && history.length) {
         historyPtr--;
         set(historyPtrAtom, historyPtr);
+
         let newCurrent = history[historyPtr];
         set(pathUnsafeAtom, newCurrent);
     }
 });
+
+export const historyRedoAtom = atom(null, (get, set, v: string) => {
+    let history = get(historyAtom);
+    let historyPtr = get(historyPtrAtom);
+
+    if (historyPtr < history.length - 1 && history.length) {
+        historyPtr++;
+        set(historyPtrAtom, historyPtr);
+
+        let newCurrent = history[historyPtr];
+        set(pathUnsafeAtom, newCurrent);
+    }
+});
+
 
 //
