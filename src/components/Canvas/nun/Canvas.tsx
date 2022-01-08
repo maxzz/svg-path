@@ -1,14 +1,14 @@
 import React from 'react';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, svgAtom } from '../../store/store';
-import { useContainerZoom } from './useContainerZoom';
-import { SvgItem, SvgPoint } from '../../svg/svg';
-import { BackgroundGrid } from './BackgroundGrid';
-import CanvasControlsPanel from './CanvasControlsPanel';
-import { ViewBox } from '../../svg/svg-utils-viewport';
-import { ControlPoint, TargetPoint } from './CanvasPoints';
+import { mergeRef } from '../../../hooks/utils';
+import { activePointAtom, svgAtom } from '../../../store/store';
+import { useContainerZoom } from './../useContainerZoom';
+import { SvgItem, SvgPoint } from '../../../svg/svg';
+import { BackgroundGrid } from './../BackgroundGrid';
+import CanvasControlsPanel from './../CanvasControlsPanel';
+import { ViewBox } from '../../../svg/svg-utils-viewport';
+import { ControlPoint, TargetPoint } from './../CanvasPoints';
 
 const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocations.findIndex((pt) => pt.itemReference === ref);
 
