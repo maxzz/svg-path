@@ -156,6 +156,10 @@ export const historyUndoAtom = atom(null, (get, set, v: string) => {
     }
 });
 
+//TODO: redo has no params
+//TODO: add command: add to history
+//TODO: add command should use histPtr (not always at the end)
+
 export const historyRedoAtom = atom(null, (get, set, v: string) => {
     let hist = get(historyAtom);
     let histPtr = get(historyPtrAtom);
