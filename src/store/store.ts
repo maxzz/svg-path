@@ -141,14 +141,14 @@ export const historyAddAtom = atom(null, (get, set, v: string) => {
     set(historyPtrAtom, historyPtr++);
 });
 
-const canUndo = (histoty: string[], historyPtr: number): boolean => historyPtr > 0 && !!history.length;
-const canRedo = (histoty: string[], historyPtr: number): boolean => historyPtr < history.length - 1 && !!history.length;
+const canUndo = (histoty: string[], historyPtr: number): boolean => !!history.length && historyPtr > 0;
+const canRedo = (histoty: string[], historyPtr: number): boolean => !!history.length && historyPtr < history.length - 1;
 
 export const historyUndoAtom = atom(null, (get, set, v: string) => {
     let history = get(historyAtom);
     let historyPtr = get(historyPtrAtom);
 
-    if (historyPtr > 0 && history.length) {
+    if (canUndo(history, historyPtr)) {
         historyPtr--;
         set(historyPtrAtom, historyPtr);
 
@@ -161,7 +161,7 @@ export const historyRedoAtom = atom(null, (get, set, v: string) => {
     let history = get(historyAtom);
     let historyPtr = get(historyPtrAtom);
 
-    if (historyPtr < history.length - 1 && history.length) {
+    if (canRedo(history, historyPtr)) {
         historyPtr++;
         set(historyPtrAtom, historyPtr);
 
