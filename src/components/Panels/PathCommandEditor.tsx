@@ -98,7 +98,6 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
     const [hoverPoint, setHoverPoint] = useAtom(hoverPointAtom);
     const isHoverPt = hoverPoint === svgItemIdx;
-    //React.useEffect(() => { setHoverPoint(isHovering ? svgItemIdx : -1); }, [isHovering]);
     React.useEffect(() => { setHoverPoint(isHovering ? svgItemIdx : -1); }, [isHoveringDebounced]);
 
     return (<>
