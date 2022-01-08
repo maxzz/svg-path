@@ -141,6 +141,9 @@ export const historyAddAtom = atom(null, (get, set, v: string) => {
     set(historyPtrAtom, historyPtr++);
 });
 
+const canUndo = (histoty: string[], historyPtr: number): boolean => historyPtr > 0 && !!history.length;
+const canRedo = (histoty: string[], historyPtr: number): boolean => historyPtr < history.length - 1 && !!history.length;
+
 export const historyUndoAtom = atom(null, (get, set, v: string) => {
     let history = get(historyAtom);
     let historyPtr = get(historyPtrAtom);
@@ -166,6 +169,7 @@ export const historyRedoAtom = atom(null, (get, set, v: string) => {
         set(pathUnsafeAtom, newCurrent);
     }
 });
+
 
 //TODO: can undo
 //TODO: can redo
