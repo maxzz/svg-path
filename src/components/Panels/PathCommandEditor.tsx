@@ -94,10 +94,11 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     const rowContainerRef = React.useRef(null);
     const isHovering = useHoverDirty(rowContainerRef);
     const [isHoveringDebounced, setIsHoveringDebounced] = React.useState(false);
-    useDebounce(() => { setIsHoveringDebounced(isHovering); }, 100, [isHovering]);
+    useDebounce(() => { setIsHoveringDebounced(isHovering); }, 60, [isHovering]);
 
     const [hoverPoint, setHoverPoint] = useAtom(hoverPointAtom);
     const isHoverPt = hoverPoint === svgItemIdx;
+    //React.useEffect(() => { setHoverPoint(isHovering ? svgItemIdx : -1); }, [isHovering]);
     React.useEffect(() => { setHoverPoint(isHovering ? svgItemIdx : -1); }, [isHoveringDebounced]);
 
     return (<>
