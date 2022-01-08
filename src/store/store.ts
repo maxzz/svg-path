@@ -125,8 +125,9 @@ export const showTicksAtom = atomWithCallback(Storage.initialData.showTicks, ({ 
 // history
 
 const HISTORY_MAX = 40;
-export const historyAtom = atom<string[]>([]);
-export const historyPtrAtom = atom(0);
+const historyDisabledAtom = atom(true);
+const historyAtom = atom<string[]>([]);
+const historyPtrAtom = atom(0);
 
 export const historyAddAtom = atom(null, (get, set, v: string) => {
     let history = get(historyAtom);
@@ -141,35 +142,36 @@ export const historyAddAtom = atom(null, (get, set, v: string) => {
     set(historyPtrAtom, historyPtr++);
 });
 
-const canUndo = (histoty: string[], historyPtr: number): boolean => !!history.length && historyPtr > 0;
-const canRedo = (histoty: string[], historyPtr: number): boolean => !!history.length && historyPtr < history.length - 1;
+const canUndo = (hist: string[], histPtr: number): boolean => !!hist.length && histPtr > 0;
+const canRedo = (hist: string[], histPtr: number): boolean => !!hist.length && histPtr < hist.length - 1;
 
 export const historyUndoAtom = atom(null, (get, set, v: string) => {
-    let history = get(historyAtom);
-    let historyPtr = get(historyPtrAtom);
+    let hist = get(historyAtom);
+    let histPtr = get(historyPtrAtom);
 
-    if (canUndo(history, historyPtr)) {
-        historyPtr--;
-        set(historyPtrAtom, historyPtr);
-
-        let newCurrent = history[historyPtr];
-        set(pathUnsafeAtom, newCurrent);
+    if (canUndo(hist, histPtr)) {
+        histPtr--;
+        set(historyPtrAtom, histPtr);
+        set(pathUnsafeAtom, hist[histPtr]);
     }
 });
 
 export const historyRedoAtom = atom(null, (get, set, v: string) => {
-    let history = get(historyAtom);
-    let historyPtr = get(historyPtrAtom);
+    let hist = get(historyAtom);
+    let histPtr = get(historyPtrAtom);
 
-    if (canRedo(history, historyPtr)) {
-        historyPtr++;
-        set(historyPtrAtom, historyPtr);
-
-        let newCurrent = history[historyPtr];
-        set(pathUnsafeAtom, newCurrent);
+    if (canRedo(hist, histPtr)) {
+        histPtr++;
+        set(historyPtrAtom, histPtr);
+        set(pathUnsafeAtom, hist[histPtr]);
     }
 });
 
+export const disableHistoryAtom = atom(null, // During point drag operation on canvas.
+    (get, set, disabled: boolean) => {
+        set(historyDisabledAtom, disabled);
+    }
+)
 
 //TODO: can undo
 //TODO: can redo
