@@ -124,23 +124,32 @@ export const showTicksAtom = atomWithCallback(Storage.initialData.showTicks, ({ 
 
 // history
 
+const HISTORY_MAX = 40;
 export const historyAtom = atom<string[]>([]);
 export const historyPtrAtom = atom(0);
 
 export const historyAddAtom = atom(null, (get, set, v: string) => {
     let history = get(historyAtom);
     let historyPtr = get(historyPtrAtom);
+
+    if (history.length >= HISTORY_MAX) {
+        history.shift();
+        historyPtr--;
+    }
+
     set(historyAtom, [...history, v]);
     set(historyPtrAtom, historyPtr++);
 });
 
-export const historyDelAtom = atom(null, (get, set, v: string) => {
+export const historyUndoAtom = atom(null, (get, set, v: string) => {
     let history = get(historyAtom);
     let historyPtr = get(historyPtrAtom);
+
     if (history.length) {
-        history.pop();
-        set(historyAtom, [...history, v]);
-        set(historyPtrAtom, historyPtr--);
+        historyPtr--;
+        set(historyPtrAtom, historyPtr);
+        let newCurrent = history[historyPtr];
+        set(pathUnsafeAtom, newCurrent);
     }
 });
 
