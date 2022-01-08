@@ -1,7 +1,7 @@
 import { atom, PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import React, { useEffect } from "react";
-import { useHoverDirty } from "react-use";
+import { useDebounce, useHoverDirty } from "react-use";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
 import { activePointAtom, hoverPointAtom, svgAtom, updateRowTypeAtom, updateRowValuesAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
@@ -93,10 +93,12 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
     const rowContainerRef = React.useRef(null);
     const isHovering = useHoverDirty(rowContainerRef);
+    const [isHoveringDebounced, setIsHoveringDebounced] = React.useState(false);
+    useDebounce(() => { setIsHoveringDebounced(isHovering); }, 100, [isHovering]);
 
     const [hoverPoint, setHoverPoint] = useAtom(hoverPointAtom);
     const isHoverPt = hoverPoint === svgItemIdx;
-    React.useEffect(() => { setHoverPoint(isHovering ? svgItemIdx : -1); }, [isHovering]);
+    React.useEffect(() => { setHoverPoint(isHovering ? svgItemIdx : -1); }, [isHoveringDebounced]);
 
     return (<>
         <div
