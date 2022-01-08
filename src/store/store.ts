@@ -122,4 +122,26 @@ export const hoverPointAtom = atom(-1);
 export const showGridAtom = atomWithCallback(Storage.initialData.showGrid, ({ get }) => Storage.save(get));
 export const showTicksAtom = atomWithCallback(Storage.initialData.showTicks, ({ get }) => Storage.save(get));
 
+// history
+
+export const historyAtom = atom<string[]>([]);
+export const historyPtrAtom = atom(0);
+
+export const historyAddAtom = atom(null, (get, set, v: string) => {
+    let history = get(historyAtom);
+    let historyPtr = get(historyPtrAtom);
+    set(historyAtom, [...history, v]);
+    set(historyPtrAtom, historyPtr++);
+});
+
+export const historyDelAtom = atom(null, (get, set, v: string) => {
+    let history = get(historyAtom);
+    let historyPtr = get(historyPtrAtom);
+    if (history.length) {
+        history.pop();
+        set(historyAtom, [...history, v]);
+        set(historyPtrAtom, historyPtr--);
+    }
+});
+
 //
