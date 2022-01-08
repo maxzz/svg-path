@@ -167,5 +167,19 @@ export const historyRedoAtom = atom(null, (get, set, v: string) => {
     }
 });
 
+//TODO: can undo
+//TODO: can redo
+//TODO: setHistoryDisabled <- for point drag operation on canvas
+
+// export const historyDeleteAtom = atom(null, (get, set, v: string) => {
+//     let history = get(historyAtom);
+//     let historyPtr = get(historyPtrAtom);
+
+//     if (history.length) {
+//         history.pop();
+//         set(historyAtom, [...history, v]);
+//         set(historyPtrAtom, historyPtr--);
+//     }
+// });
 
 //
