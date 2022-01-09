@@ -114,7 +114,16 @@ export const viewBoxStrokeAtom = atom(0);
 
 // new canvas
 
-export const canvasSizeAtom = atom({ w: 0, h: 0 });
+const _canvasSizeAtom = atom({ w: 0, h: 0 });
+export const canvasSizeAtom = atom(
+    (get) => get(_canvasSizeAtom),
+    (get, set, size: { w: number; h: number; }) => {
+        const current = get(_canvasSizeAtom);
+        if (size.w !== current.w || size.h !== current.h) {
+            set(_canvasSizeAtom, size);
+        }
+    }
+);
 
 // canvas the active and hover point indices on the path (TODO: it must be atom). -1 if no index effective
 
@@ -179,7 +188,7 @@ export const disableHistoryAtom = atom(null, // During point drag operation on c
     (get, set, disabled: boolean) => {
         set(historyDisabledAtom, disabled);
     }
-)
+);;
 
 //TODO: can undo
 //TODO: can redo
