@@ -1,8 +1,8 @@
 import React from 'react';
 import { atom, useAtom } from 'jotai';
-import { useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, canvasSizeAtom, svgAtom, tickIntevalAtom, viewBoxAtom, viewBoxStrokeAtom } from '../../store/store';
+import { activePointAtom, canvasSizeAtom, showGridAtom, showTicksAtom, svgAtom, tickIntevalAtom, viewBoxAtom, viewBoxStrokeAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { SvgItem, SvgPoint } from '../../svg/svg';
 import { CanvasControlsPanel } from './CanvasControlsPanel';
@@ -25,6 +25,12 @@ function BackgroundGrid({ onClick }: { onClick?: () => void; }) {
     const [canvasSize] = useAtom(canvasSizeAtom);
     const [viewBoxStroke] = useAtom(viewBoxStrokeAtom);
     const [tickInteval] = useAtom(tickIntevalAtom);
+    const showGrid = useAtomValue(showGridAtom);
+    const showTicks = useAtomValue(showTicksAtom);
+
+    if (!showGrid) {
+        return null;
+    }
 
     const grid = calcGrid(viewBox, canvasSize.w);
 
@@ -44,28 +50,31 @@ function BackgroundGrid({ onClick }: { onClick?: () => void; }) {
                     style={{ strokeWidth: viewBoxStroke }}
                 />
             )}
-            {grid.xGrid.map((v) => <React.Fragment key={v}>
-                {v % tickInteval === 0 &&
-                    <text className="fill-[#744]"
-                        y={-5 * viewBoxStroke}
-                        x={v - 5 * viewBoxStroke}
-                        style={{ fontSize: viewBoxStroke * 10 + 'px', stroke:"white", strokeWidth: viewBoxStroke*.2 }}
-                    >
-                        {v}
-                    </text>
-                }
-            </React.Fragment>)}
-            {grid.yGrid.map((v) => <React.Fragment key={v}>
-                {v % tickInteval === 0 &&
-                    <text className="fill-[#744]"
-                        x={-5 * viewBoxStroke}
-                        y={v - 5 * viewBoxStroke}
-                        style={{ fontSize: viewBoxStroke * 10 + 'px', stroke:"white", strokeWidth: viewBoxStroke*.2 }}
-                    >
-                        {v}
-                    </text>
-                }
-            </React.Fragment>)}
+
+            {showTicks && <>
+                {grid.xGrid.map((v) => <React.Fragment key={v}>
+                    {v % tickInteval === 0 &&
+                        <text className="fill-[#744]"
+                            y={-5 * viewBoxStroke}
+                            x={v - 5 * viewBoxStroke}
+                            style={{ fontSize: viewBoxStroke * 10 + 'px', stroke: "white", strokeWidth: viewBoxStroke * .2 }}
+                        >
+                            {v}
+                        </text>
+                    }
+                </React.Fragment>)}
+                {grid.yGrid.map((v) => <React.Fragment key={v}>
+                    {v % tickInteval === 0 &&
+                        <text className="fill-[#744]"
+                            x={-5 * viewBoxStroke}
+                            y={v - 5 * viewBoxStroke}
+                            style={{ fontSize: viewBoxStroke * 10 + 'px', stroke: "white", strokeWidth: viewBoxStroke * .2 }}
+                        >
+                            {v}
+                        </text>
+                    }
+                </React.Fragment>)}
+            </>}
         </g>
     );
 }
