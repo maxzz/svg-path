@@ -10,12 +10,14 @@ namespace Storage {
         path: string;
         showGrid: boolean;
         showTicks: boolean;
+        ticks: number;      // tick every n lines
     };
 
     export let initialData: Store = {
         path: 'M 0 0 L 25 103 Q 52 128 63 93 C -2 26 29 0 100 0 C 83 15 85 52 61 27',
         showGrid: true,
         showTicks: true,
+        ticks: 5,
     };
 
     function load() {
@@ -35,6 +37,7 @@ namespace Storage {
             path: get(_pathUnsafeAtom),
             showGrid: get(showGridAtom),
             showTicks: get(showTicksAtom),
+            ticks: get(tickIntevalAtom),
         };
         localStorage.setItem(KEY, JSON.stringify(newStore));
     }, 1000);
@@ -114,7 +117,7 @@ export const viewBoxStrokeAtom = atom(0);
 
 // new canvas
 
-export const tickIntevalAtom = atom(5); // don't show ticks if zero or less then zero.
+export const tickIntevalAtom = atomWithCallback(Storage.initialData.ticks, ({ get }) => Storage.save(get)); // don't show ticks if zero or less then zero.
 
 const _canvasSizeAtom = atom({ w: 0, h: 0 });
 export const canvasSizeAtom = atom(

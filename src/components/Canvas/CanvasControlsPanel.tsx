@@ -38,7 +38,7 @@ export function AppCommands() {
             {showGrid &&
                 <div className="flex items-center ">
                     <input
-                        className="w-6 h-6 text-sm text-center rounded-l border border-slate-500  text-slate-400 bg-slate-700 shadow-sm shadow-slate-800"
+                        className="w-6 h-6 text-sm text-center rounded-l border border-slate-500  text-slate-400 bg-slate-700 shadow-sm shadow-slate-800 focus:outline-none"
                         value={tickInteval}
                         onChange={(event) => setTickInteval(+event.target.value)}
                     />
