@@ -114,6 +114,8 @@ export const viewBoxStrokeAtom = atom(0);
 
 // new canvas
 
+export const tickIntevalAtom = atom(5); // don't show ticks if zero or less then zero.
+
 const _canvasSizeAtom = atom({ w: 0, h: 0 });
 export const canvasSizeAtom = atom(
     (get) => get(_canvasSizeAtom),
