@@ -2,7 +2,7 @@ import { atom, useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import React from 'react';
 import { useMeasure } from 'react-use';
-import { pathPointsBoxAtom, svgAtom, viewBoxAtom, viewBoxStrokeAtom, zoomAtom } from '../../store/store';
+import { canvasSizeAtom, pathPointsBoxAtom, svgAtom, viewBoxAtom, viewBoxStrokeAtom, zoomAtom } from '../../store/store';
 import { CanvasSize, getFitViewPort, ViewBox, ViewPoint } from '../../svg/svg-utils-viewport';
 import throttle from '../../utils/throttle';
 
@@ -77,12 +77,15 @@ export function useContainerZoom() {
     const [viewBoxStroke, setViewBoxStroke] = useAtom(viewBoxStrokeAtom);
     const setPathPointsBox = useUpdateAtom(pathPointsBoxAtom);
     const updateZoom = useUpdateAtom(updateZoomAtom);
+    const setCanvasSize = useUpdateAtom(canvasSizeAtom);
 
     React.useEffect(() => {
         if (!parentRef.current) { return; }
 
         const { width, height } = parentRef.current.getBoundingClientRect();
         const port = getFitViewPort(width, height, svg.targetLocations());
+
+        setCanvasSize({w: width, h: height});
         setPathPointsBox(port.port);
         setViewBoxStroke(port.stroke);
         setViewBox(port.port);

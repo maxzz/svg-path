@@ -112,6 +112,10 @@ export const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0])
 export const pathPointsBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
 export const viewBoxStrokeAtom = atom(0);
 
+// new canvas
+
+export const canvasSizeAtom = atom({ w: 0, h: 0 });
+
 // canvas the active and hover point indices on the path (TODO: it must be atom). -1 if no index effective
 
 export const activePointAtom = atom(-1);
