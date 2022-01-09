@@ -1,16 +1,38 @@
 import React from 'react';
-import { useAtom } from 'jotai';
+import { atom, useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, svgAtom } from '../../store/store';
+import { activePointAtom, canvasSizeAtom, svgAtom, viewBoxAtom, viewBoxStrokeAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { SvgItem, SvgPoint } from '../../svg/svg';
-import { BackgroundGrid } from './BackgroundGrid';
 import CanvasControlsPanel from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils-viewport';
 import { ControlPoint, TargetPoint } from './CanvasPoints';
 
 const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocations.findIndex((pt) => pt.itemReference === ref);
+
+function calcGrid(viewBox: ViewBox, canvasWidth: number) {
+    const doGrid = 5 * viewBox[2] <= canvasWidth;
+    return {
+        xGrid: doGrid ? Array(Math.ceil(viewBox[2]) + 1).fill(null).map((_, i) => Math.floor(viewBox[0]) + i) : [],
+        yGrid: doGrid ? Array(Math.ceil(viewBox[3]) + 1).fill(null).map((_, i) => Math.floor(viewBox[1]) + i) : [],
+    };
+}
+
+function BackgroundGrid({ onClick }: { onClick?: () => void; }) {
+
+    const [viewBox] = useAtom(viewBoxAtom);
+    const [canvasSize] = useAtom(canvasSizeAtom);
+    const [viewBoxStroke] = useAtom(viewBoxStrokeAtom);
+
+    const grid = calcGrid(viewBox, canvasSize.w);
+
+    return (
+        <g className="">
+            {grid.xGrid.map((v) => <line className="stroke-[blue] stroke-[width-5]" x1={v} x2={v + viewBoxStroke} y1={viewBox[1]} y2={viewBox[1] + viewBox[3]} key={`x${v}`} />)}
+        </g>
+    );
+}
 
 function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke: number; }) {
     const [svg] = useAtom(svgAtom);
@@ -19,7 +41,7 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
     const setActivePt = useUpdateAtom(activePointAtom);
     return (
         <svg viewBox={viewBox.join(" ")}>
-            <BackgroundGrid x={viewBox[0]} y={viewBox[1]} onClick={() => setActivePt(-1)} />
+            <BackgroundGrid onClick={() => setActivePt(-1)} />
 
             <path d={svg.asString()} fill="#94a3b830" stroke="white" strokeWidth={viewBoxStroke} />
 
@@ -44,9 +66,6 @@ export function PathCanvas() {
     const { viewBox, viewBoxStroke, ref, parentRef, onWheel, } = useContainerZoom();
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
-            {/* <svg className="absolute -z-10 w-full h-full">
-                <BackgroundGrid x={viewBox[0]} y={viewBox[1]} />
-            </svg> */}
             <SvgCanvas viewBox={viewBox} viewBoxStroke={viewBoxStroke} />
             <CanvasControlsPanelMemo />
         </div>
