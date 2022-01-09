@@ -39,13 +39,13 @@ export function AppCommands() {
 
             {showGrid &&
                 <div className="flex items-center ">
-                    <input
-                        className={`w-6 h-6 text-sm text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none ${showTicks ? 'shadow-sm shadow-slate-800' : 'opacity-60'}`}
+                    {showTicks && <input
+                        className={`w-6 h-6 text-sm text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
                         value={tickInteval}
                         onChange={(event) => setTickInteval(+event.target.value)}
-                    />
+                    />}
 
-                    <Button label="Ticks" atom={showTicksAtom} leftBorder={false} />
+                    <Button label="Ticks" atom={showTicksAtom} leftBorder={!showTicks} />
                 </div>
             }
             <Button label="Grid" atom={showGridAtom} />
