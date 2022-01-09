@@ -44,6 +44,28 @@ function BackgroundGrid({ onClick }: { onClick?: () => void; }) {
                     style={{ strokeWidth: viewBoxStroke }}
                 />
             )}
+            {grid.xGrid.map((v) => <React.Fragment key={v}>
+                {v % tickInteval === 0 &&
+                    <text className="fill-[#744]"
+                        y={-5 * viewBoxStroke}
+                        x={v - 5 * viewBoxStroke}
+                        style={{ fontSize: viewBoxStroke * 10 + 'px', stroke:"white", strokeWidth: viewBoxStroke*.2 }}
+                    >
+                        {v}
+                    </text>
+                }
+            </React.Fragment>)}
+            {grid.yGrid.map((v) => <React.Fragment key={v}>
+                {v % tickInteval === 0 &&
+                    <text className="fill-[#744]"
+                        x={-5 * viewBoxStroke}
+                        y={v - 5 * viewBoxStroke}
+                        style={{ fontSize: viewBoxStroke * 10 + 'px', stroke:"white", strokeWidth: viewBoxStroke*.2 }}
+                    >
+                        {v}
+                    </text>
+                }
+            </React.Fragment>)}
         </g>
     );
 }
