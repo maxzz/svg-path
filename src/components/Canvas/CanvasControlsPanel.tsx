@@ -3,23 +3,11 @@ import { SetStateAction, useAtom, WritableAtom } from 'jotai';
 import { showGridAtom, showTicksAtom, tickIntevalAtom } from '../../store/store';
 //import { AccordionHorizontal } from '../UI/Accordion';
 
-function Button({ label, atom }: { label: string; atom: WritableAtom<boolean, SetStateAction<boolean>, void>; }) {
+function Button({ label, atom, leftBorder = true }: { label: string; atom: WritableAtom<boolean, SetStateAction<boolean>, void>; leftBorder?: boolean; }) {
     const [showGrid, setShowGrid] = useAtom(atom);
     return (
         <button
-            className={`px-1 h-6 text-sm text-slate-400 border-slate-500 border rounded active:scale-[.97] ${showGrid ? 'bg-slate-800 shadow-sm shadow-slate-800' : 'bg-slate-600'}`}
-            onClick={() => setShowGrid((prev) => !prev)}
-        >
-            {label}
-        </button>
-    );
-}
-
-function ButtonWoLeft({ label, atom }: { label: string; atom: WritableAtom<boolean, SetStateAction<boolean>, void>; }) {
-    const [showGrid, setShowGrid] = useAtom(atom);
-    return (
-        <button
-            className={`px-1 h-6 text-sm text-slate-400 border-slate-500 border rounded-r active:scale-[.97] ${showGrid ? 'bg-slate-800 shadow-sm shadow-slate-800' : 'bg-slate-600'}`}
+            className={`px-1 h-6 text-sm text-slate-400 border-slate-500 border ${leftBorder ? 'rounded' : 'rounded-r'} active:scale-[.97] ${showGrid ? 'bg-slate-800 shadow-sm shadow-slate-800' : 'bg-slate-600'}`}
             onClick={() => setShowGrid((prev) => !prev)}
         >
             {label}
@@ -55,7 +43,7 @@ export function AppCommands() {
                         onChange={(event) => setTickInteval(+event.target.value)}
                     />
 
-                    <ButtonWoLeft label="Ticks" atom={showTicksAtom} />
+                    <Button label="Ticks" atom={showTicksAtom} leftBorder={false} />
                 </div>
             }
             <Button label="Grid" atom={showGridAtom} />
