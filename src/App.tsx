@@ -7,6 +7,7 @@ import './App.css';
 import { SectionPane } from './components/UI/SectionPane';
 import { PanelOperations } from './components/Panels/PanelOperations';
 import { PanelPath } from './components/Panels/PanelPath';
+import { AppCommands } from './components/Canvas/CanvasControlsPanel';
 
 function PanelOptions() {
     const [openAtom] = useState(atom(true));
@@ -18,10 +19,10 @@ function PanelOptions() {
             </SectionPane>
             <Accordion toggle={open}>
                 <div className="text-sm bg-slate-300 overflow-hidden">
-                    <br/>
+                    <br />
                     Configuration. Ground zero
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                 </div>
             </Accordion>
         </div>
@@ -49,10 +50,15 @@ function PanelAllEditors() {
     return (
         <div className="py-1 w-[300px] max-w-[300px] flex flex-col space-y-1 bg-slate-600 border border-slate-900">
             {/* <p className='text-red-700 font-black'>Ground zero</p> */}
-            <PanelPath />
-            <PanelCommands />
-            <PanelOperations />
-            <PanelOptions />
+            <div className="flex-1">
+                <PanelPath />
+                <PanelCommands />
+                <PanelOperations />
+                <PanelOptions />
+            </div>
+            <div className="relative h-24">
+                <AppCommands />
+            </div>
         </div>
     );
 }

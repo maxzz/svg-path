@@ -15,7 +15,7 @@ function Button({ label, atom }: { label: string; atom: WritableAtom<boolean, Se
     );
 }
 
-function CanvasControlsPanel() {
+export function CanvasControlsPanel() {
     const [showGrid] = useAtom(showGridAtom);
     return (
         <div className="absolute bottom-4 right-4 px-2 py-2 bg-slate-400/40 rounded flex items-center space-x-2">
@@ -29,4 +29,10 @@ function CanvasControlsPanel() {
     );
 }
 
-export default CanvasControlsPanel;
+export function AppCommands() {
+    return (
+        <div className="">
+            <CanvasControlsPanel />
+        </div>
+    );
+}
