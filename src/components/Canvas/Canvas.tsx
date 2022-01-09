@@ -33,9 +33,9 @@ function BackgroundGrid({ onClick }: { onClick?: () => void; }) {
     }
 
     const grid = calcGrid(viewBox, canvasSize.w);
-
+    
     return (
-        <g className="bg-red-400" onClick={onClick}>
+        <g className="bg-red-400 font-numbers" onClick={onClick}> {/* TODO: font-mono allows align by number of chars */}
             {grid.xGrid.map((v) =>
                 <line
                     x1={v} x2={v} y1={viewBox[1]} y2={viewBox[1] + viewBox[3]} key={`x${v}`}

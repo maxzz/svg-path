@@ -4,6 +4,7 @@ module.exports = {
         extend: {
             fontFamily: {
                 'ui': 'Yanone',
+                'numbers': 'RobotoThin',
             },
             fill: {
                 'none': 'none',

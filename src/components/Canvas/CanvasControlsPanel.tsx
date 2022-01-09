@@ -33,10 +33,9 @@ export function CanvasControlsPanel() {
 export function AppCommands() {
     const showGrid = useAtomValue(showGridAtom);
     const showTicks = useAtomValue(showTicksAtom);
-    const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom);
+    const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom); //TODO: validate input
     return (
         <div className="absolute bottom-4 right-4 px-2 py-2 bg-slate-400/40 rounded flex items-center space-x-2">
-
             {showGrid &&
                 <div className="flex items-center ">
                     {showTicks && <input

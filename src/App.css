@@ -5,6 +5,12 @@
     font-weight: 200 700;
 }
 
+@font-face {
+    font-family: "RobotoThin";
+    src: url("./assets/fonts/RobotoMono-Thin.ttf");
+    font-weight: 400;
+}
+
 /* https://divriots.com/blog/vite-in-the-browser */
 /*
 @font-face {
