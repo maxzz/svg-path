@@ -90,7 +90,7 @@ export function useContainerZoom() {
         setViewBoxStroke(port.stroke);
         setViewBox(port.port);
         updateZoom({ deltaY: 0 });
-    }, [parentRef, svg]);
+    }, [parentRef, width, height, svg]);
 
     const setThrottledZoom = React.useCallback(throttle((zoomEvent: ZoomEvent) => {
         updateZoom(zoomEvent);
