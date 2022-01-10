@@ -39,14 +39,14 @@ function BackgroundGrid({ onClick }: { onClick?: () => void; }) {
             {grid.xGrid.map((v) =>
                 <line
                     x1={v} x2={v} y1={viewBox[1]} y2={viewBox[1] + viewBox[3]} key={`x${v}`}
-                    className={`${v % tickInteval === 0 ? 'stroke-[#8888]' : 'stroke-[#8884]'}`}
+                    className={`${v ===0 ? 'stroke-[#f005]' : v % tickInteval === 0 ? 'stroke-[#8888]' : 'stroke-[#8884]'}`}
                     style={{ strokeWidth: viewBoxStroke }}
                 />
             )}
             {grid.yGrid.map((v) =>
                 <line
                     y1={v} y2={v} x1={viewBox[0]} x2={viewBox[0] + viewBox[2]} key={`y${v}`}
-                    className={`${v % tickInteval === 0 ? 'stroke-[#8888]' : 'stroke-[#8884]'}`}
+                    className={`${v ===0 ? 'stroke-[#f005]' : v % tickInteval === 0 ? 'stroke-[#8888]' : 'stroke-[#8884]'}`}
                     style={{ strokeWidth: viewBoxStroke }}
                 />
             )}
