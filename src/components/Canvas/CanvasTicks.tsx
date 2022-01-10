@@ -1,6 +1,6 @@
 import React from 'react';
-import { atom, useAtom } from 'jotai';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai/utils';
 import { ViewBox } from '../../svg/svg-utils-viewport';
 import { canvasSizeAtom, showGridAtom, showTicksAtom, tickIntevalAtom, viewBoxAtom, canvasStrokeAtom } from '../../store/store';
 
@@ -13,7 +13,6 @@ function calcGrid(viewBox: ViewBox, canvasWidth: number) {
 }
 
 export function CanvasTicks({ onClick }: { onClick?: () => void; }) {
-
     const [viewBox] = useAtom(viewBoxAtom);
     const [canvasSize] = useAtom(canvasSizeAtom);
     const [canvasStroke] = useAtom(canvasStrokeAtom);

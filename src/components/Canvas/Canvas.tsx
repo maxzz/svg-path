@@ -2,7 +2,7 @@ import React from 'react';
 import { atom, useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, svgAtom } from '../../store/store';
+import { activePointAtom, canvasStrokeAtom, svgAtom, viewBoxAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { SvgItem, SvgPoint } from '../../svg/svg';
 import { CanvasControlsPanel } from './CanvasControlsPanel';
@@ -12,10 +12,15 @@ import { CanvasTicks } from './CanvasTicks';
 
 const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocations.findIndex((pt) => pt.itemReference === ref);
 
-function SvgCanvas({ viewBox, canvasStroke }: { viewBox: ViewBox; canvasStroke: number; }) {
+function SvgCanvas() {
+
+    const [viewBox] = useAtom(viewBoxAtom);
+    const [canvasStroke] = useAtom(canvasStrokeAtom);
+
     const [svg] = useAtom(svgAtom);
     const pathPoints = svg.targetLocations();
     const cpPoints = svg.controlLocations();
+
     const setActivePt = useUpdateAtom(activePointAtom);
 
     const mouseDownEv = React.useRef<MouseEvent | null>(null);
@@ -64,10 +69,10 @@ function SvgCanvas({ viewBox, canvasStroke }: { viewBox: ViewBox; canvasStroke: 
 const CanvasControlsPanelMemo = React.memo(CanvasControlsPanel);
 
 export function PathCanvas() {
-    const { viewBox, canvasStroke, ref, parentRef, onWheel, } = useContainerZoom();
+    const { ref, parentRef, onWheel, } = useContainerZoom();
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
-            <SvgCanvas viewBox={viewBox} canvasStroke={canvasStroke} />
+            <SvgCanvas />
             <CanvasControlsPanelMemo />
         </div>
     );

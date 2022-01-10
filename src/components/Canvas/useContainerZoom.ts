@@ -51,6 +51,7 @@ type ZoomEvent = {
 };
 
 const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: ZoomEvent) => {
+    
     let zoom = Math.min(1000, Math.max(-450, get(zoomAtom) + deltaY));
     set(zoomAtom, zoom);
 
@@ -61,6 +62,7 @@ const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: ZoomEvent) => {
     // console.log('update', { x, y });
 
     const unscaledPathBoundingBox = get(unscaledPathBoundingBoxAtom);
+    
     const scale = Math.pow(1.005, zoom);
     const newPort = zoomViewPort(unscaledPathBoundingBox, scale);
     // const newPort = zoomViewPort(unscaledPathBoundingBox, scale, pt);
@@ -73,22 +75,24 @@ export function useContainerZoom() {
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
     const parentRef = React.useRef<HTMLDivElement>();
 
-    const [viewBox, setViewBox] = useAtom(viewBoxAtom);
-    const [canvasStroke, setCanvasStroke] = useAtom(canvasStrokeAtom);
-    const setPathBoundingBox = useUpdateAtom(unscaledPathBoundingBoxAtom);
+    const setViewBox = useUpdateAtom(viewBoxAtom);
+    const setCanvasStroke = useUpdateAtom(canvasStrokeAtom);
+    const setUnscaledPathBoundingBox = useUpdateAtom(unscaledPathBoundingBoxAtom);
     const setCanvasSize = useUpdateAtom(canvasSizeAtom);
+
     const updateZoom = useUpdateAtom(updateZoomAtom);
 
     React.useEffect(() => {
         if (!parentRef.current) { return; }
 
-        const { width, height } = parentRef.current.getBoundingClientRect();
-        const port = getFitViewPort(width, height, svg.targetLocations());
+        const { width: w, height: h } = parentRef.current.getBoundingClientRect();
+        const port = getFitViewPort(w, h, svg.targetLocations());
 
-        setCanvasSize({w: width, h: height});
-        setPathBoundingBox(port.port);
+        setCanvasSize({w, h});
         setCanvasStroke(port.stroke);
+        setUnscaledPathBoundingBox(port.port);
         setViewBox(port.port);
+
         updateZoom({ deltaY: 0 });
     }, [parentRef, width, height, svg]);
 
@@ -109,8 +113,6 @@ export function useContainerZoom() {
     }, [parentRef]);
 
     return {
-        viewBox,
-        canvasStroke,
         ref,
         parentRef,
         onWheel,
