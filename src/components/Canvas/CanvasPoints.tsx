@@ -18,10 +18,14 @@ export function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt
             style={{ stroke: 'transparent', fill: ptColor(active, hover) }}
             cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
 
-            onMouseEnter={(event) => { event.stopPropagation(); setHoverPt(idx); }}
+            onMouseEnter={(event) => { setHoverPt(idx); }}
             onMouseLeave={() => setHoverPt(-1)}
-            onMouseDown={() => {
+            onMouseDown={(event) => {
+                event.stopPropagation();
                 setActivePt(idx);
+            }}
+            onMouseUp={(event) => {
+                event.stopPropagation();
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
@@ -48,8 +52,12 @@ export function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke:
 
             onMouseEnter={(event) => { event.stopPropagation(); setHoverPt(idx); }}
             onMouseLeave={() => setHoverPt(-1)}
-            onMouseDown={() => {
+            onMouseDown={(event) => {
+                event.stopPropagation();
                 setActivePt(idx);
+            }}
+            onMouseUp={(event) => {
+                event.stopPropagation();
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>

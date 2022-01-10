@@ -17,9 +17,32 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
     const pathPoints = svg.targetLocations();
     const cpPoints = svg.controlLocations();
     const setActivePt = useUpdateAtom(activePointAtom);
+
+    const mouseDownEv = React.useRef<MouseEvent | null>(null);
+
+    function onMouseDown(event: React.MouseEvent) {
+        mouseDownEv.current = event.nativeEvent;
+        setActivePt(-1);
+        console.log('onMouseDown', event.target);
+    }
+
+    function onMouseMove(event: React.MouseEvent) {
+        if (mouseDownEv.current) {
+            console.log('onMouseMove', event.target);
+        }
+    }
+
+    function onMouseUp(event: React.MouseEvent) {
+        mouseDownEv.current = null;
+        console.log('onMouseUp', event.target);
+    }
+
     return (
-        <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c]">
-            <CanvasTicks onClick={() => setActivePt(-1)} />
+        <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c] select-none"
+            onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
+        // onClick={() => setActivePt(-1)}
+        >
+            <CanvasTicks />
 
             <path d={svg.asString()} fill="#94a3b830" stroke="white" strokeWidth={viewBoxStroke} />
 
