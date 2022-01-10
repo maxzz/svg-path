@@ -12,7 +12,7 @@ import { CanvasTicks } from './CanvasTicks';
 
 const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocations.findIndex((pt) => pt.itemReference === ref);
 
-function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke: number; }) {
+function SvgCanvas({ viewBox, canvasStroke }: { viewBox: ViewBox; canvasStroke: number; }) {
     const [svg] = useAtom(svgAtom);
     const pathPoints = svg.targetLocations();
     const cpPoints = svg.controlLocations();
@@ -44,17 +44,17 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
         >
             <CanvasTicks />
 
-            <path d={svg.asString()} fill="#94a3b830" stroke="white" strokeWidth={viewBoxStroke} />
+            <path d={svg.asString()} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} />
 
             <g className="cpPts">
                 {cpPoints.map((pt, idx) => (
-                    <ControlPoint pt={pt} stroke={viewBoxStroke} idx={cpToTargetIdx(pathPoints, pt.itemReference)} key={idx} />
+                    <ControlPoint pt={pt} stroke={canvasStroke} idx={cpToTargetIdx(pathPoints, pt.itemReference)} key={idx} />
                 ))}
             </g>
 
             <g className="pathPts">
                 {pathPoints.map((pt, idx) => (
-                    <TargetPoint svgItem={svg.path[idx]} pt={pt} stroke={viewBoxStroke} idx={idx} key={idx} />
+                    <TargetPoint svgItem={svg.path[idx]} pt={pt} stroke={canvasStroke} idx={idx} key={idx} />
                 ))}
             </g>
         </svg>
@@ -64,10 +64,10 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
 const CanvasControlsPanelMemo = React.memo(CanvasControlsPanel);
 
 export function PathCanvas() {
-    const { viewBox, viewBoxStroke, ref, parentRef, onWheel, } = useContainerZoom();
+    const { viewBox, canvasStroke, ref, parentRef, onWheel, } = useContainerZoom();
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
-            <SvgCanvas viewBox={viewBox} viewBoxStroke={viewBoxStroke} />
+            <SvgCanvas viewBox={viewBox} canvasStroke={canvasStroke} />
             <CanvasControlsPanelMemo />
         </div>
     );

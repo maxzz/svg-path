@@ -2,7 +2,7 @@ import { atom, useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import React from 'react';
 import { useMeasure } from 'react-use';
-import { canvasSizeAtom, pathPointsBoxAtom, svgAtom, viewBoxAtom, viewBoxStrokeAtom, zoomAtom } from '../../store/store';
+import { canvasSizeAtom, unscaledPathBoundingBoxAtom, svgAtom, viewBoxAtom, canvasStrokeAtom, zoomAtom } from '../../store/store';
 import { CanvasSize, getFitViewPort, ViewBox, ViewPoint } from '../../svg/svg-utils-viewport';
 import throttle from '../../utils/throttle';
 
@@ -60,11 +60,11 @@ const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: ZoomEvent) => {
     // y += pt.y;
     // console.log('update', { x, y });
 
-    const unscaledViewBox = get(pathPointsBoxAtom);
+    const unscaledPathBoundingBox = get(unscaledPathBoundingBoxAtom);
     const scale = Math.pow(1.005, zoom);
-    const newPort = zoomViewPort(unscaledViewBox, scale);
-    // const newPort = zoomViewPort(unscaledViewBox, scale, pt);
-    // const newPort = zoomViewPort(unscaledViewBox, scale, { x, y });
+    const newPort = zoomViewPort(unscaledPathBoundingBox, scale);
+    // const newPort = zoomViewPort(unscaledPathBoundingBox, scale, pt);
+    // const newPort = zoomViewPort(unscaledPathBoundingBox, scale, { x, y });
     set(viewBoxAtom, newPort);
 });
 
@@ -74,10 +74,10 @@ export function useContainerZoom() {
     const parentRef = React.useRef<HTMLDivElement>();
 
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
-    const [viewBoxStroke, setViewBoxStroke] = useAtom(viewBoxStrokeAtom);
-    const setPathPointsBox = useUpdateAtom(pathPointsBoxAtom);
-    const updateZoom = useUpdateAtom(updateZoomAtom);
+    const [canvasStroke, setCanvasStroke] = useAtom(canvasStrokeAtom);
+    const setPathBoundingBox = useUpdateAtom(unscaledPathBoundingBoxAtom);
     const setCanvasSize = useUpdateAtom(canvasSizeAtom);
+    const updateZoom = useUpdateAtom(updateZoomAtom);
 
     React.useEffect(() => {
         if (!parentRef.current) { return; }
@@ -86,8 +86,8 @@ export function useContainerZoom() {
         const port = getFitViewPort(width, height, svg.targetLocations());
 
         setCanvasSize({w: width, h: height});
-        setPathPointsBox(port.port);
-        setViewBoxStroke(port.stroke);
+        setPathBoundingBox(port.port);
+        setCanvasStroke(port.stroke);
         setViewBox(port.port);
         updateZoom({ deltaY: 0 });
     }, [parentRef, width, height, svg]);
@@ -110,7 +110,7 @@ export function useContainerZoom() {
 
     return {
         viewBox,
-        viewBoxStroke,
+        canvasStroke,
         ref,
         parentRef,
         onWheel,

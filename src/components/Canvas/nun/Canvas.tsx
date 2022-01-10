@@ -41,7 +41,7 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
 const CanvasControlsPanelMemo = React.memo(CanvasControlsPanel);
 
 export function PathCanvas() {
-    const { viewBox, viewBoxStroke, ref, parentRef, onWheel, } = useContainerZoom();
+    const { viewBox, canvasStroke: viewBoxStroke, ref, parentRef, onWheel, } = useContainerZoom();
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
             {/* <svg className="absolute -z-10 w-full h-full">

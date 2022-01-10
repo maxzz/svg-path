@@ -112,8 +112,8 @@ export const updateRowTypeAtom = atom(null, (get, set, { item, isRelative }: { i
 
 export const zoomAtom = atom(1);
 export const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
-export const pathPointsBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
-export const viewBoxStrokeAtom = atom(0);
+export const unscaledPathBoundingBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
+export const canvasStrokeAtom = atom(0);
 
 // new canvas
 
@@ -139,6 +139,8 @@ export const hoverPointAtom = atom(-1);
 
 export const showGridAtom = atomWithCallback(Storage.initialData.showGrid, ({ get }) => Storage.save(get));
 export const showTicksAtom = atomWithCallback(Storage.initialData.showTicks, ({ get }) => Storage.save(get));
+
+//#region History
 
 // history
 
@@ -211,3 +213,5 @@ export const disableHistoryAtom = atom(null, // During point drag operation on c
 // });
 
 //
+
+//#endregion History
