@@ -2,7 +2,7 @@ import React from 'react';
 import { atom, useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, canvasStrokeAtom, containerRefAtom, svgAtom, viewBoxAtom } from '../../store/store';
+import { activePointAtom, canvasStrokeAtom, containerRefAtom, pathUnsafeAtom, svgAtom, viewBoxAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 import { CanvasControlsPanel } from './CanvasControlsPanel';
@@ -37,6 +37,8 @@ function SvgCanvas() {
         console.log('onMouseUp', svgPointMouseDown.current);
     }
 
+    const setPathUnsafe = useUpdateAtom(pathUnsafeAtom);
+
     function onMouseMove(event: React.MouseEvent) {
         if (svgPointMouseDown.current && containerRef) {
             //console.log('onMouseMove', event.target);
@@ -46,9 +48,11 @@ function SvgCanvas() {
 
             svg.setLocation((svgPointMouseDown.current.pt || svgPointMouseDown.current.cpt) as SvgPoint, pt);
 
-            const newSvg = new Svg();
-            newSvg.path = svg.path;
-            setSvg(newSvg);
+            // const newSvg = new Svg();
+            // newSvg.path = svg.path;
+            // setSvg(newSvg);
+
+            setPathUnsafe(svg.asString());
         }
     }
 
