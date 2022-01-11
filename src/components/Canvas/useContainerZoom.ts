@@ -33,7 +33,7 @@ function eventClientXY(event: MouseEvent | TouchEvent, idx = 0) {
         clientY: touch.clientY,
     };
 }
-
+/*
 function eventToClient(canvasSize: CanvasSize, canvasContainer: HTMLElement, event: MouseEvent | TouchEvent, idx = 0): { x: number, y: number; } {
     const rect = canvasContainer.getBoundingClientRect();
     const touch = event instanceof MouseEvent ? event : event.touches[idx];
@@ -42,7 +42,7 @@ function eventToClient(canvasSize: CanvasSize, canvasContainer: HTMLElement, eve
     y += (touch.clientY - rect.top) * canvasSize.stroke;
     return { x, y };
 }
-
+*/
 /*
 function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDeltaY: number, event: WheelEvent): ViewBox {
     const scale = Math.pow(1.005, accDeltaY);
@@ -93,7 +93,6 @@ export function useContainerZoom() {
 
     React.useEffect(() => {
         setContainerRef(parentRef.current);
-
         if (!parentRef.current) { return; }
 
         const { width: w, height: h } = parentRef.current.getBoundingClientRect();

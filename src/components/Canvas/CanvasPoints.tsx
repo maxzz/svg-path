@@ -1,6 +1,6 @@
 import { atom, useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
-import { activePointAtom, hoverPointAtom } from "../../store/store";
+import { activePointAtom, canvasStrokeAtom, containerRefAtom, hoverPointAtom, viewBoxAtom } from "../../store/store";
 import { formatNumber, SvgControlPoint, SvgItem, SvgPoint } from "../../svg/svg";
 import { ViewPoint } from "../../svg/svg-utils-viewport";
 
@@ -18,10 +18,29 @@ class DragPoint {
     }
 }
 
+// function eventToClient(canvasSize: CanvasSize, canvasContainer: HTMLElement, event: MouseEvent | TouchEvent, idx = 0): { x: number, y: number; } {
+//     const rect = canvasContainer.getBoundingClientRect();
+//     const touch = event instanceof MouseEvent ? event : event.touches[idx];
+//     let [x, y] = canvasSize.port;
+//     x += (touch.clientX - rect.left) * canvasSize.stroke;
+//     y += (touch.clientY - rect.top) * canvasSize.stroke;
+//     return { x, y };
+// }
+
 const _DragPointAtom = atom<DragPoint | null>(null);
 const DragPointEventAtom = atom(null, (get, set, { event, start, end }: { event: MouseEvent, start?: SvgItem, end?: boolean; }) => {
+    const canvasRef = get(containerRefAtom);
+    if (!canvasRef) { return; }
+
     if (start) {
-        set(_DragPointAtom, new DragPoint(start, { x: event.clientX, y: event.clientY }));
+        const canvasRect = canvasRef.getBoundingClientRect();
+        const viewBox = get(viewBoxAtom);
+        const canvasStroke = get(canvasStrokeAtom);
+        let [viewBoxX, viewBoxY] = viewBox;
+        const x = viewBoxX + (event.clientX - canvasRect.x) * canvasStroke;
+        const y = viewBoxY + (event.clientY - canvasRect.y) * canvasStroke;
+
+        set(_DragPointAtom, new DragPoint(start, { x, y }));
     } else {
         const dp = get(_DragPointAtom);
         if (!dp) { return; }
@@ -55,14 +74,14 @@ export function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt
             onMouseDown={(event) => {
                 event.stopPropagation();
                 setActivePt(idx);
-                setDragPointEvent({event: event.nativeEvent, start: svgItem});
+                setDragPointEvent({ event: event.nativeEvent, start: svgItem });
             }}
             onMouseMove={(event) => {
-                setDragPointEvent({event: event.nativeEvent});
+                setDragPointEvent({ event: event.nativeEvent });
             }}
             onMouseUp={(event) => {
                 event.stopPropagation();
-                setDragPointEvent({event: event.nativeEvent, end: true});
+                setDragPointEvent({ event: event.nativeEvent, end: true });
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
