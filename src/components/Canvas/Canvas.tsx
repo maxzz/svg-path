@@ -2,9 +2,9 @@ import React from 'react';
 import { atom, useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, canvasStrokeAtom, svgAtom, viewBoxAtom } from '../../store/store';
+import { activePointAtom, canvasStrokeAtom, containerRefAtom, svgAtom, viewBoxAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
-import { SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
+import { Svg, SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 import { CanvasControlsPanel } from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils-viewport';
 import { ControlPoint, SvgPointMouseDown, TargetPoint } from './CanvasPoints';
@@ -17,7 +17,7 @@ function SvgCanvas() {
     const [viewBox] = useAtom(viewBoxAtom);
     const [canvasStroke] = useAtom(canvasStrokeAtom);
 
-    const [svg] = useAtom(svgAtom);
+    const [svg, setSvg] = useAtom(svgAtom);
     const pathPoints = svg.targetLocations();
     const cpPoints = svg.controlLocations();
 
@@ -31,20 +31,38 @@ function SvgCanvas() {
         console.log('onMouseDown', event.target);
     }
 
-    function onMouseMove(event: React.MouseEvent) {
-        if (mouseDownEv.current) {
-            //console.log('onMouseMove', event.target);
-            console.log('onMouseMove', svgPointMouseDown.current);
-        }
-    }
-
     function onMouseUp(event: React.MouseEvent) {
-        mouseDownEv.current = null;
+        svgPointMouseDown.current = null;
         //console.log('onMouseUp', event.target);
         console.log('onMouseUp', svgPointMouseDown.current);
     }
 
+    function onMouseMove(event: React.MouseEvent) {
+        if (svgPointMouseDown.current && containerRef) {
+            //console.log('onMouseMove', event.target);
+            console.log('onMouseMove', svgPointMouseDown.current);
+
+            const pt = getEventPt(containerRef, event.clientX, event.clientY);
+
+            svg.setLocation((svgPointMouseDown.current.pt || svgPointMouseDown.current.cpt) as SvgPoint, pt);
+
+            const newSvg = new Svg();
+            newSvg.path = svg.path;
+            setSvg(newSvg);
+        }
+    }
+
     const svgPointMouseDown = React.useRef<SvgPointMouseDown | null>(null);
+
+    const [containerRef] = useAtom(containerRefAtom);
+
+    function getEventPt(containerRef: HTMLElement, eventClientX: number, eventClientY: number) {
+        const canvasRect = containerRef.getBoundingClientRect();
+        let [viewBoxX, viewBoxY] = viewBox;
+        const x = viewBoxX + (eventClientX - canvasRect.x) * canvasStroke;
+        const y = viewBoxY + (eventClientY - canvasRect.y) * canvasStroke;
+        return { x, y };
+    }
 
     function onPointClick(ev: SvgPointMouseDown) {
         svgPointMouseDown.current = ev;
