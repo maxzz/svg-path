@@ -8,13 +8,13 @@ const ptColor = (active: boolean, hover: boolean): string => active ? '#009cff' 
 
 class DragPoint {
     constructor(public dragPt: SvgPoint, public startPt: ViewPoint) {
-        console.log('onMouseDown', startPt);
+        //console.log('onMouseDown', startPt);
     }
     onDrag(event: MouseEvent, pt: ViewPoint) {
         //console.log('onMouseMove', this.startPt, pt);
     }
     onDragEnd(event: MouseEvent) {
-        console.log('onMouseEnd', this.startPt);
+        //console.log('onMouseEnd', this.startPt);
     }
 }
 

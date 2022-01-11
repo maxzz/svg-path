@@ -28,7 +28,7 @@ function SvgCanvas() {
     function onMouseDown(event: React.MouseEvent) {
         mouseDownEv.current = event.nativeEvent;
         setActivePt(-1);
-        //console.log('onMouseDown', event.target);
+        console.log('onMouseDown', event.target);
     }
 
     function onMouseMove(event: React.MouseEvent) {
@@ -39,7 +39,7 @@ function SvgCanvas() {
 
     function onMouseUp(event: React.MouseEvent) {
         mouseDownEv.current = null;
-        //console.log('onMouseUp', event.target);
+        console.log('onMouseUp', event.target);
     }
 
     return (
