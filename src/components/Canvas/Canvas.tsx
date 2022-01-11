@@ -38,6 +38,10 @@ function SvgCanvas() {
     }
 
     const setPathUnsafe = useUpdateAtom(pathUnsafeAtom);
+    const svgPrevRef = React.useRef<Svg>();
+    React.useEffect(() => {
+        svgPrevRef.current = svg;
+    }, [svg]);
 
     function onMouseMove(event: React.MouseEvent) {
         if (svgPointMouseDown.current && containerRef) {
@@ -45,14 +49,19 @@ function SvgCanvas() {
             console.log('onMouseMove', svgPointMouseDown.current);
 
             const pt = getEventPt(containerRef, event.clientX, event.clientY);
+            console.log('move', pt.x, pt.y);
 
-            svg.setLocation((svgPointMouseDown.current.pt || svgPointMouseDown.current.cpt) as SvgPoint, pt);
 
-            // const newSvg = new Svg();
-            // newSvg.path = svg.path;
-            // setSvg(newSvg);
+            if (svgPrevRef.current) {
+                svgPrevRef.current.setLocation((svgPointMouseDown.current.pt || svgPointMouseDown.current.cpt) as SvgPoint, pt);
+                // svg.setLocation((svgPointMouseDown.current.pt || svgPointMouseDown.current.cpt) as SvgPoint, pt);
 
-            setPathUnsafe(svg.asString());
+                // const newSvg = new Svg();
+                // newSvg.path = svg.path;
+                // setSvg(newSvg);
+
+                setPathUnsafe(svgPrevRef.current.asString());
+            }
         }
     }
 
