@@ -57,7 +57,13 @@ const DragPointEventAtom = atom(null, (get, set, { event, start, end }: { event:
     }
 });
 
-export type OnSvgPointMouseDown = ({ event, pt, cpt }: { event: React.MouseEvent; pt?: SvgPoint; cpt?: SvgControlPoint; }) => void;
+export type SvgPointMouseDown = {
+    event: React.MouseEvent;
+    pt?: SvgPoint;
+    cpt?: SvgControlPoint;
+};
+
+export type OnSvgPointMouseDown = ({ event, pt, cpt }: SvgPointMouseDown) => void;
 
 export function TargetPoint({ svgItem, pt, stroke, idx, clk }: { svgItem: SvgItem; pt: SvgPoint, stroke: number; idx: number; clk: OnSvgPointMouseDown; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);

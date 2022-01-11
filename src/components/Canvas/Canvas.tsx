@@ -7,7 +7,7 @@ import { useContainerZoom } from './useContainerZoom';
 import { SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 import { CanvasControlsPanel } from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils-viewport';
-import { ControlPoint, TargetPoint } from './CanvasPoints';
+import { ControlPoint, SvgPointMouseDown, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
 
 const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocations.findIndex((pt) => pt.itemReference === ref);
@@ -33,17 +33,22 @@ function SvgCanvas() {
 
     function onMouseMove(event: React.MouseEvent) {
         if (mouseDownEv.current) {
-            console.log('onMouseMove', event.target);
+            //console.log('onMouseMove', event.target);
+            console.log('onMouseMove', svgPointMouseDown.current);
         }
     }
 
     function onMouseUp(event: React.MouseEvent) {
         mouseDownEv.current = null;
-        console.log('onMouseUp', event.target);
+        //console.log('onMouseUp', event.target);
+        console.log('onMouseUp', svgPointMouseDown.current);
     }
 
-    function onPointClick({event, pt, cpt}: {event: React.MouseEvent; pt?: SvgPoint; cpt?: SvgControlPoint}) {
-        console.log({event, pt, cpt});
+    const svgPointMouseDown = React.useRef<SvgPointMouseDown | null>(null);
+
+    function onPointClick(ev: SvgPointMouseDown) {
+        svgPointMouseDown.current = ev;
+        console.log(ev);
     }
 
     return (
