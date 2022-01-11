@@ -130,6 +130,8 @@ export const canvasSizeAtom = atom(
     }
 );
 
+export const containerRefAtom = atom<HTMLElement | null | undefined>(undefined);
+
 // canvas the active and hover point indices on the path (TODO: it must be atom). -1 if no index effective
 
 export const activePointAtom = atom(-1);
