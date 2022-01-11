@@ -87,6 +87,23 @@ export const svgAtom = atom(
     }
 );
 
+const _svgCanvasAtom = atom(getParsedSvg(Storage.initialData.path) || new Svg(''));
+
+export const svgCanvasAtom = atom(
+    (get) => {
+        return get(_svgCanvasAtom);
+    },
+    (get, set, svg: Svg) => {
+        set(_svgCanvasAtom, svg);
+
+        // set(_svgAtom, svg);
+
+        // const path = svg.asString();
+        // set(_pathUnsafeAtom, path);
+    }
+);
+
+
 // Upates from command editor
 
 export const updateRowValuesAtom = atom(null, (get, set, { item, values }: { item: SvgItem, values: number[]; }) => {
