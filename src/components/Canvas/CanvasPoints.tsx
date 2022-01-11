@@ -1,34 +1,27 @@
 import { atom, useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
-import { activePointAtom, canvasStrokeAtom, containerRefAtom, hoverPointAtom, viewBoxAtom } from "../../store/store";
-import { formatNumber, SvgControlPoint, SvgItem, SvgPoint } from "../../svg/svg";
+import { activePointAtom, canvasStrokeAtom, containerRefAtom, hoverPointAtom, svgAtom, viewBoxAtom } from "../../store/store";
+import { formatNumber, Svg, SvgControlPoint, SvgItem, SvgPoint } from "../../svg/svg";
 import { ViewPoint } from "../../svg/svg-utils-viewport";
 
 const ptColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
 
 class DragPoint {
-    constructor(public dragItem: SvgItem, public startPt: ViewPoint) {
+    constructor(public dragPt: SvgPoint, public startPt: ViewPoint) {
         console.log('onMouseDown', startPt);
     }
     onDrag(event: MouseEvent, pt: ViewPoint) {
-        console.log('onMouseMove', this.startPt, pt);
+        //console.log('onMouseMove', this.startPt, pt);
     }
     onDragEnd(event: MouseEvent) {
         console.log('onMouseEnd', this.startPt);
     }
 }
 
-// function eventToClient(canvasSize: CanvasSize, canvasContainer: HTMLElement, event: MouseEvent | TouchEvent, idx = 0): { x: number, y: number; } {
-//     const rect = canvasContainer.getBoundingClientRect();
-//     const touch = event instanceof MouseEvent ? event : event.touches[idx];
-//     let [x, y] = canvasSize.port;
-//     x += (touch.clientX - rect.left) * canvasSize.stroke;
-//     y += (touch.clientY - rect.top) * canvasSize.stroke;
-//     return { x, y };
-// }
+//console.log({x: canvasRect.x, y: canvasRect.y, box: JSON.stringify(viewBox.map(_ => _.toFixed(2)))});
 
 const _DragPointAtom = atom<DragPoint | null>(null);
-const DragPointEventAtom = atom(null, (get, set, { event, start, end }: { event: MouseEvent, start?: SvgItem, end?: boolean; }) => {
+const DragPointEventAtom = atom(null, (get, set, { event, start, end }: { event: MouseEvent, start?: SvgPoint, end?: boolean; }) => {
     const canvasRef = get(containerRefAtom);
     if (!canvasRef) { return; }
 
@@ -53,6 +46,13 @@ const DragPointEventAtom = atom(null, (get, set, { event, start, end }: { event:
         } else {
             const pt = getEventPt();
             dp.onDrag(event, pt);
+
+            const svg = get(svgAtom);
+            svg.setLocation(dp.dragPt, pt);
+
+            const newSvg = new Svg();
+            newSvg.path = svg.path;
+            set(svgAtom, newSvg);
         }
     }
 });
@@ -78,7 +78,7 @@ export function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt
             onMouseDown={(event) => {
                 event.stopPropagation();
                 setActivePt(idx);
-                setDragPointEvent({ event: event.nativeEvent, start: svgItem });
+                setDragPointEvent({ event: event.nativeEvent, start: pt });
             }}
             onMouseMove={(event) => {
                 setDragPointEvent({ event: event.nativeEvent });
