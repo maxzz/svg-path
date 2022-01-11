@@ -57,13 +57,15 @@ const DragPointEventAtom = atom(null, (get, set, { event, start, end }: { event:
     }
 });
 
-export function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt: SvgPoint, stroke: number; idx: number; }) {
+export type OnSvgPointMouseDown = ({ event, pt, cpt }: { event: React.MouseEvent; pt?: SvgPoint; cpt?: SvgControlPoint; }) => void;
+
+export function TargetPoint({ svgItem, pt, stroke, idx, clk }: { svgItem: SvgItem; pt: SvgPoint, stroke: number; idx: number; clk: OnSvgPointMouseDown; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
     const active = activePt === idx;
     const hover = hoverPt === idx;
 
-    const setDragPointEvent = useUpdateAtom(DragPointEventAtom);
+    //const setDragPointEvent = useUpdateAtom(DragPointEventAtom);
     return (<>
         {(active || hover) &&
             <path style={{ stroke: ptColor(active, hover), fill: 'none' }} strokeWidth={stroke} d={svgItem.asStandaloneString()} />
@@ -76,16 +78,17 @@ export function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt
             onMouseEnter={(event) => { setHoverPt(idx); }}
             onMouseLeave={() => setHoverPt(-1)}
             onMouseDown={(event) => {
-                event.stopPropagation();
+                //event.stopPropagation();
                 setActivePt(idx);
-                setDragPointEvent({ event: event.nativeEvent, start: pt });
+                //setDragPointEvent({ event: event.nativeEvent, start: pt });
+                clk({ event, pt, });
             }}
             onMouseMove={(event) => {
-                setDragPointEvent({ event: event.nativeEvent });
+                //setDragPointEvent({ event: event.nativeEvent });
             }}
             onMouseUp={(event) => {
-                event.stopPropagation();
-                setDragPointEvent({ event: event.nativeEvent, end: true });
+                //event.stopPropagation();
+                //setDragPointEvent({ event: event.nativeEvent, end: true });
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
@@ -93,7 +96,7 @@ export function TargetPoint({ svgItem, pt, stroke, idx }: { svgItem: SvgItem; pt
     </>);
 }
 
-export function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke: number; idx: number; }) {
+export function ControlPoint({ pt, stroke, idx, clk }: { pt: SvgControlPoint, stroke: number; idx: number; clk: OnSvgPointMouseDown; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
     const active = activePt === idx;
@@ -113,11 +116,12 @@ export function ControlPoint({ pt, stroke, idx }: { pt: SvgControlPoint, stroke:
             onMouseEnter={(event) => { event.stopPropagation(); setHoverPt(idx); }}
             onMouseLeave={() => setHoverPt(-1)}
             onMouseDown={(event) => {
-                event.stopPropagation();
+                //event.stopPropagation();
                 setActivePt(idx);
+                clk({ event, cpt: pt });
             }}
             onMouseUp={(event) => {
-                event.stopPropagation();
+                //event.stopPropagation();
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>

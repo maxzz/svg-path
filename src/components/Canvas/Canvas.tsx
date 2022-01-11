@@ -4,7 +4,7 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
 import { activePointAtom, canvasStrokeAtom, svgAtom, viewBoxAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
-import { SvgItem, SvgPoint } from '../../svg/svg';
+import { SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 import { CanvasControlsPanel } from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils-viewport';
 import { ControlPoint, TargetPoint } from './CanvasPoints';
@@ -33,13 +33,17 @@ function SvgCanvas() {
 
     function onMouseMove(event: React.MouseEvent) {
         if (mouseDownEv.current) {
-            //console.log('onMouseMove', event.target);
+            console.log('onMouseMove', event.target);
         }
     }
 
     function onMouseUp(event: React.MouseEvent) {
         mouseDownEv.current = null;
         console.log('onMouseUp', event.target);
+    }
+
+    function onPointClick({event, pt, cpt}: {event: React.MouseEvent; pt?: SvgPoint; cpt?: SvgControlPoint}) {
+        console.log({event, pt, cpt});
     }
 
     return (
@@ -53,13 +57,13 @@ function SvgCanvas() {
 
             <g className="cpPts">
                 {cpPoints.map((pt, idx) => (
-                    <ControlPoint pt={pt} stroke={canvasStroke} idx={cpToTargetIdx(pathPoints, pt.itemReference)} key={idx} />
+                    <ControlPoint pt={pt} stroke={canvasStroke} idx={cpToTargetIdx(pathPoints, pt.itemReference)} clk={onPointClick} key={idx} />
                 ))}
             </g>
 
             <g className="pathPts">
                 {pathPoints.map((pt, idx) => (
-                    <TargetPoint svgItem={svg.path[idx]} pt={pt} stroke={canvasStroke} idx={idx} key={idx} />
+                    <TargetPoint svgItem={svg.path[idx]} pt={pt} stroke={canvasStroke} idx={idx} clk={onPointClick} key={idx} />
                 ))}
             </g>
         </svg>
