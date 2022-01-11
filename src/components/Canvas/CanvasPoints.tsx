@@ -7,14 +7,14 @@ import { ViewPoint } from "../../svg/svg-utils-viewport";
 const ptColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
 
 class DragPoint {
-    constructor(public dragItem: SvgItem, startPt: ViewPoint) {
-        console.log('onMouseDown', this.dragItem);
+    constructor(public dragItem: SvgItem, public startPt: ViewPoint) {
+        console.log('onMouseDown', startPt);
     }
-    onDrag(event: MouseEvent) {
-        console.log('onMouseDown', this.dragItem, event.target);
+    onDrag(event: MouseEvent, pt: ViewPoint) {
+        console.log('onMouseMove', this.startPt, pt);
     }
     onDragEnd(event: MouseEvent) {
-        console.log('onMouseDown', this.dragItem, event.target);
+        console.log('onMouseEnd', this.startPt);
     }
 }
 
@@ -32,15 +32,18 @@ const DragPointEventAtom = atom(null, (get, set, { event, start, end }: { event:
     const canvasRef = get(containerRefAtom);
     if (!canvasRef) { return; }
 
-    if (start) {
-        const canvasRect = canvasRef.getBoundingClientRect();
+    function getEventPt() {
+        const canvasRect = canvasRef!.getBoundingClientRect();
         const viewBox = get(viewBoxAtom);
         const canvasStroke = get(canvasStrokeAtom);
         let [viewBoxX, viewBoxY] = viewBox;
         const x = viewBoxX + (event.clientX - canvasRect.x) * canvasStroke;
         const y = viewBoxY + (event.clientY - canvasRect.y) * canvasStroke;
+        return { x, y };
+    }
 
-        set(_DragPointAtom, new DragPoint(start, { x, y }));
+    if (start) {
+        set(_DragPointAtom, new DragPoint(start, getEventPt()));
     } else {
         const dp = get(_DragPointAtom);
         if (!dp) { return; }
@@ -48,7 +51,8 @@ const DragPointEventAtom = atom(null, (get, set, { event, start, end }: { event:
             dp.onDragEnd(event);
             set(_DragPointAtom, null);
         } else {
-            dp.onDrag(event);
+            const pt = getEventPt();
+            dp.onDrag(event, pt);
         }
     }
 });
