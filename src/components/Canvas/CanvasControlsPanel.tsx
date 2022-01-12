@@ -78,34 +78,38 @@ export function AppCommands() {
                     <ViewboxInput label="h" tooltip="view box" idx={3} />
                 </div>
 
-                <div className="mt-4 space-y-1.5">
-                    <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
-                    <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
-                    <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
-                    <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
-                    <label className="flex items-center text-xs space-x-2 select-none">
-                        <div className="">Precision</div>
-                        <input
-                            className={`w-6 h-6 text-sm text-center rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
-                            value={precision}
-                            onChange={(event) => setPrecision(+event.target.value)}
-                        />
-                    </label>
-                </div>
-
-                <div className="self-end flex">
-                    {showGrid &&
-                        <div className="flex items-center ">
-                            {showTicks &&
-                                <input
-                                    className={`w-6 h-6 text-sm text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
-                                    value={tickInteval}
-                                    onChange={(event) => setTickInteval(+event.target.value)}
-                                />}
-                            <Button label="Ticks" atom={showTicksAtom} leftBorder={!showTicks} />
+                <div className="flex justify-between">
+                    <div className="mt-4">
+                        <div className="space-y-1.5">
+                            <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
+                            <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
+                            <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
+                            <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
                         </div>
-                    }
-                    <Button label="Grid" atom={showGridAtom} />
+                        
+                        <label className="mt-3 flex items-center text-sm space-x-1 select-none">
+                            <div className="">Precision</div>
+                            <input
+                                className={`w-6 h-6 text-sm text-center rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                                value={precision}
+                                onChange={(event) => setPrecision(+event.target.value)}
+                            />
+                        </label>
+                    </div>
+                    <div className="self-end flex">
+                        {showGrid &&
+                            <div className="flex items-center ">
+                                {showTicks &&
+                                    <input
+                                        className={`w-6 h-6 text-sm text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                                        value={tickInteval}
+                                        onChange={(event) => setTickInteval(+event.target.value)}
+                                    />}
+                                <Button label="Ticks" atom={showTicksAtom} leftBorder={!showTicks} />
+                            </div>
+                        }
+                        <Button label="Grid" atom={showGridAtom} />
+                    </div>
                 </div>
             </div>
         </div>
