@@ -13,6 +13,9 @@ namespace Storage {
         ticks: number;          // tick every n lines. don't show ticks if zero or less then zero.
         precision: number;      // drag operations precision for new points
         snapToGrid: boolean;    // drag operations shap to grid
+        fillPath: boolean;
+        preview: boolean;
+        minifyOutput: boolean;
     };
 
     export let initialData: Store = {
@@ -22,6 +25,9 @@ namespace Storage {
         ticks: 5,
         precision: 3,
         snapToGrid: false,
+        fillPath: true,
+        preview: false,
+        minifyOutput: false,
     };
 
     function load() {
@@ -44,6 +50,9 @@ namespace Storage {
             ticks: get(tickIntevalAtom),
             precision: get(precisionAtom),
             snapToGrid: get(snapToGridAtom),
+            fillPath: get(fillPathAtom),
+            preview: get(previewAtom),
+            minifyOutput: get(minifyOutputAtom),
         };
         localStorage.setItem(KEY, JSON.stringify(newStore));
     }, 1000);
@@ -147,6 +156,9 @@ export const canvasStrokeAtom = atom(0);
 export const tickIntevalAtom = atomWithCallback(Storage.initialData.ticks, ({ get }) => Storage.save(get));
 export const precisionAtom = atomWithCallback(Storage.initialData.precision, ({ get }) => Storage.save(get));
 export const snapToGridAtom = atomWithCallback(Storage.initialData.snapToGrid, ({ get }) => Storage.save(get));
+export const fillPathAtom = atomWithCallback(Storage.initialData.fillPath, ({ get }) => Storage.save(get));
+export const previewAtom = atomWithCallback(Storage.initialData.preview, ({ get }) => Storage.save(get));
+export const minifyOutputAtom = atomWithCallback(Storage.initialData.minifyOutput, ({ get }) => Storage.save(get));
 
 const _canvasSizeAtom = atom({ w: 0, h: 0 });
 export const canvasSizeAtom = atom(
