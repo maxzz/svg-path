@@ -84,7 +84,7 @@ export function TargetPoint({ svgItem, pt, stroke, idx, clk }: { svgItem: SvgIte
             onMouseEnter={(event) => { setHoverPt(idx); }}
             onMouseLeave={() => setHoverPt(-1)}
             onMouseDown={(event) => {
-                //event.stopPropagation();
+                event.stopPropagation();
                 setActivePt(idx);
                 //setDragPointEvent({ event: event.nativeEvent, start: pt });
                 clk({ event, pt, });

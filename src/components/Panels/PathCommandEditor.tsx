@@ -25,8 +25,6 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt }: { atom: 
     const [local, setLocal] = React.useState('' + value);
     React.useEffect(() => setLocal('' + value), [value]);
 
-    //console.log('value', value, 'local', local);
-
     function convertToNumber(s: string) {
         s = s.replace(/[\u066B,]/g, '.').replace(/[^\-0-9.eE]/g, ''); //replace unicode-arabic-decimal-separator and remove non-float chars.
         setLocal(s);
@@ -76,9 +74,6 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt }: { atom: 
 const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => values.map((value) => atomWithCallback(value, monitor));
 
 function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: number; }) {
-
-    console.log('svgItem update', svgItem.asString());
-
     const rowAtomRef = React.useRef(atom<WritableAtom<number, SetStateAction<number>>[]>([]));
     const [rowAtoms, setRowAtoms] = useAtom(rowAtomRef.current);
 
@@ -87,12 +82,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
         updateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
     }, []);
 
-    // useEffect(() => setRowAtoms(createRowAtoms(svgItem.values, onAtomChange)), [svgItem]);
-    useEffect(() => {
-        console.log('-----------RECREATE');
-        
-        setRowAtoms(createRowAtoms(svgItem.values, onAtomChange))
-    }, [...svgItem.values]);
+    useEffect(() => setRowAtoms(createRowAtoms(svgItem.values, onAtomChange)), [...svgItem.values]);
 
     const updateRowType = useUpdateAtom(updateRowTypeAtom);
     const onCommandNameClick = () => updateRowType({ item: svgItem, isRelative: !svgItem.relative });
@@ -145,7 +135,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
 export function PathCommandEditor() {
     const [svg] = useAtom(svgAtom);
-    console.log('svg update', svg.asString());
+    //console.log('svg update', svg.asString());
 
     return (
         <div className="my-1 space-y-0.5">

@@ -28,13 +28,13 @@ function SvgCanvas() {
     function onMouseDown(event: React.MouseEvent) {
         mouseDownEv.current = event.nativeEvent;
         setActivePt(-1);
-        console.log('onMouseDown', event.target);
+        //console.log('onMouseDown', event.target);
     }
 
     function onMouseUp(event: React.MouseEvent) {
         svgPointMouseDown.current = null;
         //console.log('onMouseUp', event.target);
-        console.log('onMouseUp', svgPointMouseDown.current);
+        //console.log('onMouseUp', svgPointMouseDown.current);
     }
 
     const setPathUnsafe = useUpdateAtom(pathUnsafeAtom);
@@ -46,21 +46,23 @@ function SvgCanvas() {
     function onMouseMove(event: React.MouseEvent) {
         if (svgPointMouseDown.current && containerRef) {
             //console.log('onMouseMove', event.target);
-            console.log('onMouseMove', svgPointMouseDown.current);
+            //console.log('onMouseMove', svgPointMouseDown.current);
 
             const pt = getEventPt(containerRef, event.clientX, event.clientY);
-            console.log('move', pt.x, pt.y);
-
+            //console.log('move', pt.x, pt.y);
 
             if (svgPrevRef.current) {
-                svgPrevRef.current.setLocation((svgPointMouseDown.current.pt || svgPointMouseDown.current.cpt) as SvgPoint, pt);
-                // svg.setLocation((svgPointMouseDown.current.pt || svgPointMouseDown.current.cpt) as SvgPoint, pt);
-
+                // svgPrevRef.current.setLocation((svgPointMouseDown.current.pt || svgPointMouseDown.current.cpt) as SvgPoint, pt);
                 // const newSvg = new Svg();
-                // newSvg.path = svg.path;
+                // newSvg.path = svgPrevRef.current.path;
                 // setSvg(newSvg);
 
-                setPathUnsafe(svgPrevRef.current.asString());
+                svg.setLocation((svgPointMouseDown.current.pt || svgPointMouseDown.current.cpt) as SvgPoint, pt);
+                const newSvg = new Svg();
+                newSvg.path = svg.path;
+                setSvg(newSvg);
+
+                // setPathUnsafe(svgPrevRef.current.asString());
             }
         }
     }

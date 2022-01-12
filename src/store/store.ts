@@ -84,6 +84,8 @@ export const svgAtom = atom(
 
         const path = svg.asString();
         set(_pathUnsafeAtom, path);
+
+        //console.log('svgAtom update');
     }
 );
 
@@ -107,6 +109,8 @@ export const svgCanvasAtom = atom(
 // Upates from command editor
 
 export const updateRowValuesAtom = atom(null, (get, set, { item, values }: { item: SvgItem, values: number[]; }) => {
+    //console.log('----------------------updateRowValuesAtom', JSON.stringify(values));
+
     const svg = get(_svgAtom);
     item.values = values;
     svg.refreshAbsolutePositions();
