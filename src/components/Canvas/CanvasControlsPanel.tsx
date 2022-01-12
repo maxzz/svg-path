@@ -1,6 +1,6 @@
 import React from 'react';
 import { PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from 'jotai';
-import { showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom } from '../../store/store';
+import { fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom } from '../../store/store';
 import { useAtomValue } from 'jotai/utils';
 //import { AccordionHorizontal } from '../UI/Accordion';
 
@@ -48,24 +48,41 @@ export function AppCommands() {
     const showGrid = useAtomValue(showGridAtom);
     const showTicks = useAtomValue(showTicksAtom);
     const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom); //TODO: validate input
+    const [precision, setPrecision] = useAtom(precisionAtom); //TODO: validate input
 
     return (
         <div className="absolute bottom-4 right-4 px-2 py-2 bg-slate-400/40 rounded flex items-center space-x-2">
 
-            <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
+            <div className="space-y-1">
+                <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
+                <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
+                <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
+                <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
 
-            {showGrid &&
-                <div className="flex items-center ">
-                    {showTicks && <input
-                        className={`w-6 h-6 text-sm text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
-                        value={tickInteval}
-                        onChange={(event) => setTickInteval(+event.target.value)}
-                    />}
+                <label className="flex items-center text-xs space-x-2 select-none">
+                    <div className="">Precision</div>
+                    <input
+                        className={`w-6 h-6 text-sm text-center rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                        value={precision}
+                        onChange={(event) => setPrecision(+event.target.value)}
+                    />
+                </label>
+            </div>
 
-                    <Button label="Ticks" atom={showTicksAtom} leftBorder={!showTicks} />
-                </div>
-            }
-            <Button label="Grid" atom={showGridAtom} />
+            <div className="self-end flex">
+                {showGrid &&
+                    <div className="flex items-center ">
+                        {showTicks &&
+                            <input
+                                className={`w-6 h-6 text-sm text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                                value={tickInteval}
+                                onChange={(event) => setTickInteval(+event.target.value)}
+                            />}
+                        <Button label="Ticks" atom={showTicksAtom} leftBorder={!showTicks} />
+                    </div>
+                }
+                <Button label="Grid" atom={showGridAtom} />
+            </div>
         </div>
     );
 }
