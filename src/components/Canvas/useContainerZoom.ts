@@ -1,20 +1,16 @@
-import { atom, useAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import React from 'react';
 import { useMeasure } from 'react-use';
-import { canvasSizeAtom, svgAtom, viewBoxAtom, canvasStrokeAtom, zoomAtom, containerRefAtom, updateZoomAtom, UpdateZoomEvent } from '../../store/store';
-import { CanvasSize, getFitViewPort, ViewBox, ViewPoint } from '../../svg/svg-utils-viewport';
+import { canvasSizeAtom, svgAtom, viewBoxAtom, canvasStrokeAtom, containerRefAtom, updateZoomAtom, UpdateZoomEvent } from '../../store/store';
+import { getFitViewPort, ViewPoint } from '../../svg/svg-utils-viewport';
 import throttle from '../../utils/throttle';
 
-function formatViewBox(box: ViewBox) {
-    return box.map(pt => pt.toFixed(0).padStart(4, ' ')).join(" ");
-}
-
-function eventClientXY(event: MouseEvent | TouchEvent, idx = 0) {
+function eventClientPoint(event: MouseEvent | TouchEvent, idx = 0): ViewPoint {
     const touch = event instanceof MouseEvent ? event : event.touches[idx];
     return {
-        clientX: touch.clientX,
-        clientY: touch.clientY,
+        x: touch.clientX,
+        y: touch.clientY,
     };
 }
 /*
@@ -26,8 +22,7 @@ function eventToClient(canvasSize: CanvasSize, canvasContainer: HTMLElement, eve
     y += (touch.clientY - rect.top) * canvasSize.stroke;
     return { x, y };
 }
-*/
-/*
+
 function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDeltaY: number, event: WheelEvent): ViewBox {
     const scale = Math.pow(1.005, accDeltaY);
     const pt = eventToLocation(canvasSize, canvasContainer, event);
@@ -71,14 +66,12 @@ export function useContainerZoom() {
 
     const onWheel = React.useCallback((event: React.WheelEvent) => {
         if (!parentRef.current) { return; }
-        const { left, top } = parentRef.current.getBoundingClientRect();
 
+        const { left, top } = parentRef.current.getBoundingClientRect();
         const { clientX: x, clientY: y } = event;
         //console.log('whell', 'client', { left, top }, 'mouse', { x, y }, 'calc', { x: x - left, y: y - top });
-        setThrottledZoom({
-            deltaY: event.deltaY,
-            pt: { x: x - left, y: y - top }
-        });
+
+        setThrottledZoom({ deltaY: event.deltaY, pt: { x: x - left, y: y - top } });
     }, [parentRef]);
 
     return {

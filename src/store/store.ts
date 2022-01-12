@@ -151,14 +151,14 @@ export const canvasStrokeAtom = atom(0);
 
 // canvas zoom
 
-export const zoomAtom = atom(1);
+const zoomAtom = atom(1);
 
 export type UpdateZoomEvent = {
     deltaY: number;
     pt?: ViewPoint;
 };
 
-function zoomViewPort(viewBox: ViewBox, scale: number, pt?: ViewPoint): ViewBox {
+function scaleViewBox(viewBox: ViewBox, scale: number, pt?: ViewPoint): ViewBox {
     const [viewPortX, viewPortY, viewPortWidth, viewPortHeight] = viewBox;
 
     pt = pt || {
@@ -198,9 +198,9 @@ export const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEv
     const viewBox = get(viewBoxAtom);
 
     const scale = Math.pow(1.005, zoom);
-    const newPort = zoomViewPort(viewBox, scale);
+    const newViewBox = scaleViewBox(viewBox, scale);
 
-    set(viewBoxAtom, newPort);
+    set(viewBoxAtom, newViewBox);
 });
 
 // new canvas
