@@ -52,7 +52,7 @@ function SvgCanvas() {
             //console.log('onMouseMove', svgPointMouseDown.current);
 
             const pt = getEventPt(containerRef, event.clientX, event.clientY);
-            const decimals = precision;
+            const decimals = event.ctrlKey ? precision ? 0 : 3 : precision;
             pt.x = parseFloat(pt.x.toFixed(decimals));
             pt.y = parseFloat(pt.y.toFixed(decimals));
             //console.log('move', pt.x, pt.y);
