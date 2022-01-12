@@ -44,6 +44,56 @@ function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; at
     );
 }
 
+// function PointValue({ atom }: { atom: PrimitiveAtom<number>; }) {
+//     const [value, setValue] = useAtom(atom);
+//     const [local, setLocal] = React.useState('' + value);
+//     React.useEffect(() => setLocal('' + value), [value]);
+
+//     function convertToNumber(s: string) {
+//         s = s.replace(/[\u066B,]/g, '.').replace(/[^\-0-9.eE]/g, ''); //replace unicode-arabic-decimal-separator and remove non-float chars.
+//         setLocal(s);
+//         const v = +s;
+//         s && !isNaN(v) && setValue(v);
+//     }
+
+//     function resetInvalid() {
+//         (!local || isNaN(+local)) && setLocal('' + value);
+//     }
+
+//     return (
+//         <input
+//             className=""
+//             value={local}
+//             onChange={(event) => convertToNumber(event.target.value)}
+//             onBlur={resetInvalid}
+//         />
+
+//     );
+// }
+
+function useNumberInput(value: number, setValue: (v: number) => void) {
+    const [local, setLocal] = React.useState('' + value);
+    React.useEffect(() => setLocal('' + value), [value]);
+
+    function convertToNumber(s: string) {
+        s = s.replace(/[\u066B,]/g, '.').replace(/[^\-0-9.eE]/g, ''); //replace unicode-arabic-decimal-separator and remove non-float chars.
+        setLocal(s);
+        const v = +s;
+        s && !isNaN(v) && setValue(v);
+    }
+
+    function resetInvalid() {
+        (!local || isNaN(+local)) && setLocal('' + value);
+    }
+
+    return {
+        value: local,
+        onChange: (event: React.ChangeEvent<HTMLInputElement>) => convertToNumber(event.target.value),
+        onBlur: resetInvalid
+    };
+}
+
+
 function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string; idx: number; }) {
     const [value, setValue] = useAtom(viewBoxAtom);
     function setViewBoxValue(v: string) {
@@ -51,6 +101,9 @@ function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string;
             return (prev[idx] = +v), [...prev];
         });
     }
+
+    const [precision, setPrecision] = useAtom(precisionAtom); //TODO: validate input
+    const bind = useNumberInput(precision, setPrecision);
     return (
         <label className="flex items-center text-xs space-x-0.5 select-none" title={tooltip}>
             <div className="">{label}</div>
@@ -58,6 +111,11 @@ function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string;
                 className={`px-1 w-12 h-6 text-[.65rem] rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
                 value={value[idx]}
                 onChange={(event) => setViewBoxValue(event.target.value)}
+            />
+
+            <input
+                className={`px-1 w-12 h-6 text-[.65rem] rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                {...bind}
             />
         </label>
     );
