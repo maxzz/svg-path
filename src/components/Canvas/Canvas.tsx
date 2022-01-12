@@ -65,13 +65,15 @@ function SvgCanvas() {
             const startPt = getEventPt(containerRef, startDragEventRef.current.event.clientX, startDragEventRef.current.event.clientY);
             const pt = getEventPt(containerRef, event.clientX, event.clientY);
 
-            const newViewBox: ViewBox = [
-                viewBox[0] + startPt.x - pt.x,
-                viewBox[1] + startPt.y - pt.y,
-                viewBox[2],
-                viewBox[3],
-            ];
-            setViewBox(newViewBox);
+            setViewBox((prev) => {
+                const newViewBox: ViewBox = [
+                    prev[0] + startPt.x - pt.x,
+                    prev[1] + startPt.y - pt.y,
+                    prev[2],
+                    prev[3],
+                ];
+                return newViewBox;
+            });
         }
     }
 
