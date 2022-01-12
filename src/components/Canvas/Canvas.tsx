@@ -7,7 +7,7 @@ import { useContainerZoom } from './useContainerZoom';
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 import { CanvasControlsPanel } from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils-viewport';
-import { ControlPoint, SvgPointMouseDown, TargetPoint } from './CanvasPoints';
+import { ControlPoint, StartDragEvent, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
 
 const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocations.findIndex((pt) => pt.itemReference === ref);
@@ -23,18 +23,12 @@ function SvgCanvas() {
 
     const setActivePt = useUpdateAtom(activePointAtom);
 
-    const mouseDownEv = React.useRef<MouseEvent | null>(null);
-
     function onMouseDown(event: React.MouseEvent) {
-        mouseDownEv.current = event.nativeEvent;
         setActivePt(-1);
-        //console.log('onMouseDown', event.target);
     }
 
     function onMouseUp(event: React.MouseEvent) {
-        svgPointMouseDown.current = null;
-        //console.log('onMouseUp', event.target);
-        //console.log('onMouseUp', svgPointMouseDown.current);
+        startDragEventRef.current = null;
     }
 
     const setPathUnsafe = useUpdateAtom(pathUnsafeAtom);
@@ -43,14 +37,24 @@ function SvgCanvas() {
         svgPrevRef.current = svg;
     }, [svg]);
 
+    const [containerRef] = useAtom(containerRefAtom);
+    function getEventPt(containerRef: HTMLElement, eventClientX: number, eventClientY: number) {
+        const canvasRect = containerRef.getBoundingClientRect();
+        let [viewBoxX, viewBoxY] = viewBox;
+        const x = viewBoxX + (eventClientX - canvasRect.x) * canvasStroke;
+        const y = viewBoxY + (eventClientY - canvasRect.y) * canvasStroke;
+        return { x, y };
+    }
+
+    const startDragEventRef = React.useRef<StartDragEvent | null>(null);
+
     const [precision] = useAtom(precisionAtom);
     const [snapToGrid] = useAtom(snapToGridAtom);
 
     function onMouseMove(event: React.MouseEvent) {
-        if (svgPointMouseDown.current && containerRef) {
-            //console.log('onMouseMove', event.target);
-            //console.log('onMouseMove', svgPointMouseDown.current);
+        if (!containerRef) { return; }
 
+        if (startDragEventRef.current) {
             const pt = getEventPt(containerRef, event.clientX, event.clientY);
 
             const decimals = snapToGrid ? 0 : event.ctrlKey ? precision ? 0 : 3 : precision;
@@ -64,7 +68,7 @@ function SvgCanvas() {
                 // newSvg.path = svgPrevRef.current.path;
                 // setSvg(newSvg);
 
-                svg.setLocation((svgPointMouseDown.current.pt || svgPointMouseDown.current.cpt) as SvgPoint, pt);
+                svg.setLocation(startDragEventRef.current.pt as SvgPoint, pt);
                 const newSvg = new Svg();
                 newSvg.path = svg.path;
                 setSvg(newSvg);
@@ -74,21 +78,8 @@ function SvgCanvas() {
         }
     }
 
-    const svgPointMouseDown = React.useRef<SvgPointMouseDown | null>(null);
-
-    const [containerRef] = useAtom(containerRefAtom);
-
-    function getEventPt(containerRef: HTMLElement, eventClientX: number, eventClientY: number) {
-        const canvasRect = containerRef.getBoundingClientRect();
-        let [viewBoxX, viewBoxY] = viewBox;
-        const x = viewBoxX + (eventClientX - canvasRect.x) * canvasStroke;
-        const y = viewBoxY + (eventClientY - canvasRect.y) * canvasStroke;
-        return { x, y };
-    }
-
-    function onPointClick(ev: SvgPointMouseDown) {
-        svgPointMouseDown.current = ev;
-        //console.log(ev);
+    function onPointClick(ev: StartDragEvent) {
+        startDragEventRef.current = ev;
     }
 
     return (

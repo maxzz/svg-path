@@ -57,15 +57,15 @@ const DragPointEventAtom = atom(null, (get, set, { event, start, end }: { event:
     }
 });
 
-export type SvgPointMouseDown = {
+export type StartDragEvent = {
     event: React.MouseEvent;
-    pt?: SvgPoint;
-    cpt?: SvgControlPoint;
+    pt?: SvgPoint | SvgControlPoint;
+    isCp?: boolean;
 };
 
-export type OnSvgPointMouseDown = ({ event, pt, cpt }: SvgPointMouseDown) => void;
+export type StartDragEventHandler = (event: StartDragEvent) => void;
 
-export function TargetPoint({ svgItem, pt, stroke, idx, clk }: { svgItem: SvgItem; pt: SvgPoint, stroke: number; idx: number; clk: OnSvgPointMouseDown; }) {
+export function TargetPoint({ svgItem, pt, stroke, idx, clk }: { svgItem: SvgItem; pt: SvgPoint, stroke: number; idx: number; clk: StartDragEventHandler; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
     const active = activePt === idx;
@@ -102,7 +102,7 @@ export function TargetPoint({ svgItem, pt, stroke, idx, clk }: { svgItem: SvgIte
     </>);
 }
 
-export function ControlPoint({ pt, stroke, idx, clk }: { pt: SvgControlPoint, stroke: number; idx: number; clk: OnSvgPointMouseDown; }) {
+export function ControlPoint({ pt, stroke, idx, clk }: { pt: SvgControlPoint, stroke: number; idx: number; clk: StartDragEventHandler; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
     const active = activePt === idx;
@@ -124,7 +124,7 @@ export function ControlPoint({ pt, stroke, idx, clk }: { pt: SvgControlPoint, st
             onMouseDown={(event) => {
                 event.stopPropagation();
                 setActivePt(idx);
-                clk({ event, cpt: pt });
+                clk({ event, pt, isCp: true });
             }}
             onMouseUp={(event) => {
                 //event.stopPropagation();
