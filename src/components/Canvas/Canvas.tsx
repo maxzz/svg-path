@@ -2,7 +2,7 @@ import React from 'react';
 import { atom, useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, canvasStrokeAtom, containerRefAtom, pathUnsafeAtom, svgAtom, viewBoxAtom } from '../../store/store';
+import { activePointAtom, canvasStrokeAtom, containerRefAtom, pathUnsafeAtom, precisionAtom, svgAtom, viewBoxAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 import { CanvasControlsPanel } from './CanvasControlsPanel';
@@ -43,12 +43,18 @@ function SvgCanvas() {
         svgPrevRef.current = svg;
     }, [svg]);
 
+    const [precision] = useAtom(precisionAtom);
+
+
     function onMouseMove(event: React.MouseEvent) {
         if (svgPointMouseDown.current && containerRef) {
             //console.log('onMouseMove', event.target);
             //console.log('onMouseMove', svgPointMouseDown.current);
 
             const pt = getEventPt(containerRef, event.clientX, event.clientY);
+            const decimals = precision;
+            pt.x = parseFloat(pt.x.toFixed(decimals));
+            pt.y = parseFloat(pt.y.toFixed(decimals));
             //console.log('move', pt.x, pt.y);
 
             if (svgPrevRef.current) {
@@ -81,7 +87,7 @@ function SvgCanvas() {
 
     function onPointClick(ev: SvgPointMouseDown) {
         svgPointMouseDown.current = ev;
-        console.log(ev);
+        //console.log(ev);
     }
 
     return (

@@ -122,7 +122,7 @@ export function ControlPoint({ pt, stroke, idx, clk }: { pt: SvgControlPoint, st
             onMouseEnter={(event) => { event.stopPropagation(); setHoverPt(idx); }}
             onMouseLeave={() => setHoverPt(-1)}
             onMouseDown={(event) => {
-                //event.stopPropagation();
+                event.stopPropagation();
                 setActivePt(idx);
                 clk({ event, cpt: pt });
             }}
