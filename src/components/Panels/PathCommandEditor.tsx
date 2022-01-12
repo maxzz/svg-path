@@ -14,7 +14,6 @@ function PointName({ command, abs, onClick }: { command: string; abs: boolean; o
             className={`flex-0 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 ${abs ? 'bg-slate-500' : 'bg-slate-400'} cursor-pointer select-none`}
             onClick={onClick}
         >
-            {/* <input className="px-1 w-full text-xs text-center text-slate-900 bg-slate-500 focus:outline-none" defaultValue={"M"} /> */}
             <div className="">{command}</div>
         </label>
     );
@@ -41,20 +40,12 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt }: { atom: 
 
     return (
         <label
-            className={`relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex 
-                ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`
-            }
+            className={`relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`}
             ref={rowContainerRef}
         >
             {/* value */}
             <input
-                className={
-                    `px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none
-                    ${isActivePt ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverPt ? 'bg-slate-200 border-slate-400/40' : ''} 
-                    border-b-2 focus:border-blue-500 
-                    cursor-default focus:cursor-text
-                    `
-                }
+                className={`px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none ${isActivePt ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverPt ? 'bg-slate-200 border-slate-400/40' : ''} border-b-2 focus:border-blue-500  cursor-default focus:cursor-text`}
                 value={local}
                 onChange={(event) => convertToNumber(event.target.value)}
                 onBlur={resetInvalid}
@@ -62,10 +53,9 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt }: { atom: 
 
             {/* tooltip */}
             {isActivePt && isHovering &&
-                <div className={`mini-tooltip ${firstRow ? 'tooltip-up' : 'tooltip-down'} absolute min-w-[1.75rem] py-0.5 left-1/2 -translate-x-1/2
-                ${firstRow ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} text-xs text-center text-slate-100 bg-slate-400 rounded z-10
-                `
-                }>{tooltip}</div>
+                <div className={`mini-tooltip ${firstRow ? 'tooltip-up' : 'tooltip-down'} absolute min-w-[1.75rem] py-0.5 left-1/2 -translate-x-1/2 ${firstRow ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} text-xs text-center text-slate-100 bg-slate-400 rounded z-10`}>
+                    {tooltip}
+                </div>
             }
         </label>
     );
@@ -82,7 +72,9 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
         updateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
     }, []);
 
-    useEffect(() => setRowAtoms(createRowAtoms(svgItem.values, onAtomChange)), [...svgItem.values]);
+    useEffect(() => {
+        setRowAtoms(createRowAtoms(svgItem.values, onAtomChange));
+    }, [...svgItem.values]);
 
     const updateRowType = useUpdateAtom(updateRowTypeAtom);
     const onCommandNameClick = () => updateRowType({ item: svgItem, isRelative: !svgItem.relative });
@@ -93,11 +85,15 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     const rowContainerRef = React.useRef(null);
     const isHovering = useHoverDirty(rowContainerRef);
     const [isHoveringDebounced, setIsHoveringDebounced] = React.useState(false);
-    useDebounce(() => { setIsHoveringDebounced(isHovering); }, 60, [isHovering]);
+    useDebounce(() => {
+        setIsHoveringDebounced(isHovering);
+    }, 60, [isHovering]);
 
     const [hoverPoint, setHoverPoint] = useAtom(hoverPointAtom);
     const isHoverPt = hoverPoint === svgItemIdx;
-    React.useEffect(() => { setHoverPoint(isHovering ? svgItemIdx : -1); }, [isHoveringDebounced]);
+    React.useEffect(() => {
+        setHoverPoint(isHovering ? svgItemIdx : -1);
+    }, [isHoveringDebounced]);
 
     return (<>
         <div
@@ -136,8 +132,6 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
 export function PathCommandEditor() {
     const [svg] = useAtom(svgAtom);
-    //console.log('svg update', svg.asString());
-
     return (
         <div className="my-1 space-y-0.5">
             {svg.path.map((svgItem, idx) => (
