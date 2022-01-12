@@ -104,6 +104,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
             ref={rowContainerRef}
             className={`px-1 flex items-center justify-between ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`}
             onClick={() => setActivePoint(svgItemIdx)}
+            onFocus={() => setActivePoint(svgItemIdx)}
         >
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
@@ -126,7 +127,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
             </div>
 
             {/* Menu */}
-            <button className="flex-0 mt-0.5 active:scale-[.97]">
+            <button className="flex-0 mt-0.5 active:scale-[.97]" tabIndex={-1}>
                 <IconMenu className="w-4 h-4" />
             </button>
         </div>
