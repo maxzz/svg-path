@@ -14,7 +14,7 @@ const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocat
 
 function SvgCanvas() {
 
-    const [viewBox] = useAtom(viewBoxAtom);
+    const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const [canvasStroke] = useAtom(canvasStrokeAtom);
 
     const [svg, setSvg] = useAtom(svgAtom);
@@ -25,17 +25,12 @@ function SvgCanvas() {
 
     function onMouseDown(event: React.MouseEvent) {
         setActivePt(-1);
+        startDragEventRef.current = { event };
     }
 
     function onMouseUp(event: React.MouseEvent) {
         startDragEventRef.current = null;
     }
-
-    const setPathUnsafe = useUpdateAtom(pathUnsafeAtom);
-    const svgPrevRef = React.useRef<Svg>();
-    React.useEffect(() => {
-        svgPrevRef.current = svg;
-    }, [svg]);
 
     const [containerRef] = useAtom(containerRefAtom);
     function getEventPt(containerRef: HTMLElement, eventClientX: number, eventClientY: number) {
@@ -52,9 +47,9 @@ function SvgCanvas() {
     const [snapToGrid] = useAtom(snapToGridAtom);
 
     function onMouseMove(event: React.MouseEvent) {
-        if (!containerRef) { return; }
+        if (!containerRef || !startDragEventRef.current) { return; }
 
-        if (startDragEventRef.current) {
+        if (startDragEventRef.current.pt) {
             const pt = getEventPt(containerRef, event.clientX, event.clientY);
 
             const decimals = snapToGrid ? 0 : event.ctrlKey ? precision ? 0 : 3 : precision;
@@ -62,19 +57,21 @@ function SvgCanvas() {
             pt.y = parseFloat(pt.y.toFixed(decimals));
             //console.log('move', pt.x, pt.y);
 
-            if (svgPrevRef.current) {
-                // svgPrevRef.current.setLocation((svgPointMouseDown.current.pt || svgPointMouseDown.current.cpt) as SvgPoint, pt);
-                // const newSvg = new Svg();
-                // newSvg.path = svgPrevRef.current.path;
-                // setSvg(newSvg);
+            svg.setLocation(startDragEventRef.current.pt as SvgPoint, pt);
+            const newSvg = new Svg();
+            newSvg.path = svg.path;
+            setSvg(newSvg);
+        } else {
+            const startPt = getEventPt(containerRef, startDragEventRef.current.event.clientX, startDragEventRef.current.event.clientY);
+            const pt = getEventPt(containerRef, event.clientX, event.clientY);
 
-                svg.setLocation(startDragEventRef.current.pt as SvgPoint, pt);
-                const newSvg = new Svg();
-                newSvg.path = svg.path;
-                setSvg(newSvg);
-
-                // setPathUnsafe(svgPrevRef.current.asString());
-            }
+            const newViewBox: ViewBox = [
+                viewBox[0] + startPt.x - pt.x,
+                viewBox[1] + startPt.y - pt.y,
+                viewBox[2],
+                viewBox[3],
+            ];
+            setViewBox(newViewBox);
         }
     }
 
