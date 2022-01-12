@@ -26,6 +26,54 @@ export type CanvasSize = {
 
 export const nullCanvesSize: CanvasSize = { size: { w: 0, h: 0 }, port: [0, 0, 0, 0], stroke: 0.001 };
 
+type ViewBoxUpdate = {
+    viewBox: ViewBox;
+    stroke: number;
+} | undefined;
+
+function updateViewPort(canvasWidth: number, canvasHeight: number, x: number, y: number, w: number | null, h: number | null, force = false, viewPortLocked = false): ViewBoxUpdate {
+    if (!force && viewPortLocked) {
+        return;
+    }
+
+    if (w === null && h !== null) { w = canvasWidth * h / canvasHeight; }
+    if (h === null && w !== null) { h = canvasHeight * w / canvasWidth; }
+    if (!w || !h) {
+        return;
+    }
+
+    const viewBox: ViewBox = [
+        parseFloat((1 * x).toPrecision(6)),
+        parseFloat((1 * y).toPrecision(6)),
+        parseFloat((1 * w).toPrecision(4)),
+        parseFloat((1 * h).toPrecision(4)),
+    ];
+
+    return {
+        viewBox,
+        stroke: viewBox[2] / canvasWidth
+    };
+}
+
+function zoomAuto(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[], viewPortLocked = false): ViewBoxUpdate {
+    if (viewPortLocked) {
+        return;
+    }
+
+    const box = getPointsBoundingBox(targetPoints);
+
+    const k = canvasHeight / canvasWidth;
+    let w = box.xmax - box.xmin + 2;
+    let h = box.ymax - box.ymin + 2;
+    if (k < h / w) {
+        w = h / k;
+    } else {
+        h = k * w;
+    }
+
+    return updateViewPort(canvasWidth, canvasHeight, box.xmin - 1, box.ymin - 1, w, h, false, viewPortLocked);
+}
+
 export function getFitViewPort(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[]): CanvasSize {
 
     if (!canvasWidth || !canvasHeight) {
@@ -62,11 +110,11 @@ export function getFitViewPort(canvasWidth: number, canvasHeight: number, target
     };
 }
 
-export function eventToLocation(canvasSize: CanvasSize, canvasContainer: HTMLElement, event: MouseEvent | TouchEvent, idx = 0): { x: number, y: number; } {
-    const rect = canvasContainer.getBoundingClientRect();
-    const touch = event instanceof MouseEvent ? event : event.touches[idx];
-    let [x, y] = canvasSize.port;
-    x += (touch.clientX - rect.left) * canvasSize.stroke;
-    y += (touch.clientY - rect.top) * canvasSize.stroke;
-    return { x, y };
-}
+// export function eventToLocation(canvasSize: CanvasSize, canvasContainer: HTMLElement, event: MouseEvent | TouchEvent, idx = 0): { x: number, y: number; } {
+//     const rect = canvasContainer.getBoundingClientRect();
+//     const touch = event instanceof MouseEvent ? event : event.touches[idx];
+//     let [x, y] = canvasSize.port;
+//     x += (touch.clientX - rect.left) * canvasSize.stroke;
+//     y += (touch.clientY - rect.top) * canvasSize.stroke;
+//     return { x, y };
+// }

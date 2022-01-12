@@ -1,6 +1,7 @@
 import { atom, Getter } from "jotai";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgItem } from "../svg/svg";
+import { ViewBox, ViewPoint } from "../svg/svg-utils-viewport";
 import debounce from "../utils/debounce";
 
 namespace Storage {
@@ -71,7 +72,6 @@ function getParsedSvg(path: string): Svg | undefined {
 // Input comes from the user and is unsafe
 
 const _pathUnsafeAtom = atomWithCallback(Storage.initialData.path, ({ get }) => Storage.save(get));
-
 export const pathUnsafeAtom = atom(
     (get) => {
         return get(_pathUnsafeAtom);
@@ -89,7 +89,6 @@ export const pathUnsafeAtom = atom(
 // Input comes from the command editor and is safe (the editor must check the row numbers and quantity of required numbers)
 
 const _svgAtom = atom(getParsedSvg(Storage.initialData.path) || new Svg(''));
-
 export const svgAtom = atom(
     (get) => {
         return get(_svgAtom);
@@ -103,9 +102,8 @@ export const svgAtom = atom(
         //console.log('svgAtom update');
     }
 );
-
+/*
 const _svgCanvasAtom = atom(getParsedSvg(Storage.initialData.path) || new Svg(''));
-
 export const svgCanvasAtom = atom(
     (get) => {
         return get(_svgCanvasAtom);
@@ -119,7 +117,7 @@ export const svgCanvasAtom = atom(
         // set(_pathUnsafeAtom, path);
     }
 );
-
+*/
 
 // Upates from command editor
 
@@ -146,10 +144,64 @@ export const updateRowTypeAtom = atom(null, (get, set, { item, isRelative }: { i
 
 // canvas zoom
 
-export const zoomAtom = atom(1);
 export const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
-export const unscaledPathBoundingBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
 export const canvasStrokeAtom = atom(0);
+
+//export const unscaledPathBoundingBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
+
+// canvas zoom
+
+export const zoomAtom = atom(1);
+
+export type UpdateZoomEvent = {
+    deltaY: number;
+    pt?: ViewPoint;
+};
+
+function zoomViewPort(viewBox: ViewBox, scale: number, pt?: ViewPoint): ViewBox {
+    const [viewPortX, viewPortY, viewPortWidth, viewPortHeight] = viewBox;
+
+    pt = pt || {
+        x: viewPortX + 0.5 * viewPortWidth,
+        y: viewPortY + 0.5 * viewPortHeight
+    };
+
+    const x = viewPortX + ((pt.x - viewPortX) - scale * (pt.x - viewPortX));
+    const y = viewPortY + ((pt.y - viewPortY) - scale * (pt.y - viewPortY));
+    const w = scale * viewPortWidth;
+    const h = scale * viewPortHeight;
+
+    return [x, y, w, h];
+}
+
+export const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEvent) => {
+
+    let zoom = Math.min(1000, Math.max(-450, get(zoomAtom) + deltaY));
+    set(zoomAtom, zoom);
+
+    // let stroke = get(viewBoxStrokeAtom);
+    // let [x, y] = get(viewBoxAtom);
+    // x += pt.x;
+    // y += pt.y;
+    // console.log('update', { x, y });
+
+    /*
+    const unscaledPathBoundingBox = get(unscaledPathBoundingBoxAtom);
+
+    const scale = Math.pow(1.005, zoom);
+    const newPort = zoomViewPort(unscaledPathBoundingBox, scale);
+    // const newPort = zoomViewPort(unscaledPathBoundingBox, scale, pt);
+    // const newPort = zoomViewPort(unscaledPathBoundingBox, scale, { x, y });
+    set(viewBoxAtom, newPort);
+    */
+   
+    const viewBox = get(viewBoxAtom);
+
+    const scale = Math.pow(1.005, zoom);
+    const newPort = zoomViewPort(viewBox, scale);
+
+    set(viewBoxAtom, newPort);
+});
 
 // new canvas
 
