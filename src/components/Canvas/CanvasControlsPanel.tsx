@@ -1,6 +1,6 @@
 import React from 'react';
 import { PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from 'jotai';
-import { fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom } from '../../store/store';
+import { fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom, viewBoxAtom } from '../../store/store';
 import { useAtomValue } from 'jotai/utils';
 //import { AccordionHorizontal } from '../UI/Accordion';
 
@@ -44,6 +44,25 @@ function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; at
     );
 }
 
+function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string; idx: number; }) {
+    const [value, setValue] = useAtom(viewBoxAtom);
+    function setViewBoxValue(v: string) {
+        setValue(prev => {
+            return (prev[idx] = +v), [...prev];
+        });
+    }
+    return (
+        <label className="flex items-center text-xs space-x-0.5 select-none" title={tooltip}>
+            <div className="">{label}</div>
+            <input
+                className={`px-1 w-12 h-6 text-[.65rem] rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                value={value[idx]}
+                onChange={(event) => setViewBoxValue(event.target.value)}
+            />
+        </label>
+    );
+}
+
 export function AppCommands() {
     const showGrid = useAtomValue(showGridAtom);
     const showTicks = useAtomValue(showTicksAtom);
@@ -53,35 +72,43 @@ export function AppCommands() {
     return (
         <div className="absolute bottom-4 right-4 px-2 py-2 bg-slate-400/40 rounded flex items-center space-x-2">
 
-            <div className="space-y-1">
-                <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
-                <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
-                <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
-                <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
+            <div className="flex flex-col space-y-4">
+                <div className="flex space-x-1.5">
+                    <ViewboxInput label="x" tooltip="view box" idx={0} />
+                    <ViewboxInput label="y" tooltip="view box" idx={1} />
+                    <ViewboxInput label="w" tooltip="view box" idx={2} />
+                    <ViewboxInput label="h" tooltip="view box" idx={3} />
+                </div>
 
-                <label className="flex items-center text-xs space-x-2 select-none">
-                    <div className="">Precision</div>
-                    <input
-                        className={`w-6 h-6 text-sm text-center rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
-                        value={precision}
-                        onChange={(event) => setPrecision(+event.target.value)}
-                    />
-                </label>
-            </div>
+                <div className="space-y-1">
+                    <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
+                    <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
+                    <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
+                    <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
+                    <label className="flex items-center text-xs space-x-2 select-none">
+                        <div className="">Precision</div>
+                        <input
+                            className={`w-6 h-6 text-sm text-center rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                            value={precision}
+                            onChange={(event) => setPrecision(+event.target.value)}
+                        />
+                    </label>
+                </div>
 
-            <div className="self-end flex">
-                {showGrid &&
-                    <div className="flex items-center ">
-                        {showTicks &&
-                            <input
-                                className={`w-6 h-6 text-sm text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
-                                value={tickInteval}
-                                onChange={(event) => setTickInteval(+event.target.value)}
-                            />}
-                        <Button label="Ticks" atom={showTicksAtom} leftBorder={!showTicks} />
-                    </div>
-                }
-                <Button label="Grid" atom={showGridAtom} />
+                <div className="self-end flex">
+                    {showGrid &&
+                        <div className="flex items-center ">
+                            {showTicks &&
+                                <input
+                                    className={`w-6 h-6 text-sm text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                                    value={tickInteval}
+                                    onChange={(event) => setTickInteval(+event.target.value)}
+                                />}
+                            <Button label="Ticks" atom={showTicksAtom} leftBorder={!showTicks} />
+                        </div>
+                    }
+                    <Button label="Grid" atom={showGridAtom} />
+                </div>
             </div>
         </div>
     );
