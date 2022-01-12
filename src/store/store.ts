@@ -10,7 +10,9 @@ namespace Storage {
         path: string;
         showGrid: boolean;
         showTicks: boolean;
-        ticks: number;      // tick every n lines
+        ticks: number;          // tick every n lines. don't show ticks if zero or less then zero.
+        precision: number;      // drag operations precision for new points
+        snapToGrid: boolean;    // drag operations shap to grid
     };
 
     export let initialData: Store = {
@@ -18,6 +20,8 @@ namespace Storage {
         showGrid: true,
         showTicks: true,
         ticks: 5,
+        precision: 3,
+        snapToGrid: false,
     };
 
     function load() {
@@ -38,6 +42,8 @@ namespace Storage {
             showGrid: get(showGridAtom),
             showTicks: get(showTicksAtom),
             ticks: get(tickIntevalAtom),
+            precision: get(precisionAtom),
+            snapToGrid: get(snapToGridAtom),
         };
         localStorage.setItem(KEY, JSON.stringify(newStore));
     }, 1000);
@@ -138,7 +144,9 @@ export const canvasStrokeAtom = atom(0);
 
 // new canvas
 
-export const tickIntevalAtom = atomWithCallback(Storage.initialData.ticks, ({ get }) => Storage.save(get)); // don't show ticks if zero or less then zero.
+export const tickIntevalAtom = atomWithCallback(Storage.initialData.ticks, ({ get }) => Storage.save(get));
+export const precisionAtom = atomWithCallback(Storage.initialData.precision, ({ get }) => Storage.save(get));
+export const snapToGridAtom = atomWithCallback(Storage.initialData.snapToGrid, ({ get }) => Storage.save(get));
 
 const _canvasSizeAtom = atom({ w: 0, h: 0 });
 export const canvasSizeAtom = atom(
