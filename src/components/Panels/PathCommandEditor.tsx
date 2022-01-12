@@ -20,10 +20,12 @@ function PointName({ command, abs, onClick }: { command: string; abs: boolean; o
     );
 }
 
-function PointValue({ atom, tooltip, first, isActivePt, isHoverPt }: { atom: PrimitiveAtom<number>; tooltip: string; first: boolean; isActivePt: boolean; isHoverPt: boolean; }) {
+function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt }: { atom: PrimitiveAtom<number>; tooltip: string; firstRow: boolean; isActivePt: boolean; isHoverPt: boolean; }) {
     const [value, setValue] = useAtom(atom);
     const [local, setLocal] = React.useState('' + value);
     React.useEffect(() => setLocal('' + value), [value]);
+
+    //console.log('value', value, 'local', local);
 
     function convertToNumber(s: string) {
         s = s.replace(/[\u066B,]/g, '.').replace(/[^\-0-9.eE]/g, ''); //replace unicode-arabic-decimal-separator and remove non-float chars.
@@ -62,8 +64,8 @@ function PointValue({ atom, tooltip, first, isActivePt, isHoverPt }: { atom: Pri
 
             {/* tooltip */}
             {isActivePt && isHovering &&
-                <div className={`mini-tooltip ${first ? 'tooltip-up' : 'tooltip-down'} absolute min-w-[1.75rem] py-0.5 left-1/2 -translate-x-1/2
-                ${first ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} text-xs text-center text-slate-100 bg-slate-400 rounded z-10
+                <div className={`mini-tooltip ${firstRow ? 'tooltip-up' : 'tooltip-down'} absolute min-w-[1.75rem] py-0.5 left-1/2 -translate-x-1/2
+                ${firstRow ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} text-xs text-center text-slate-100 bg-slate-400 rounded z-10
                 `
                 }>{tooltip}</div>
             }
@@ -75,6 +77,8 @@ const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => val
 
 function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: number; }) {
 
+    console.log('svgItem update', svgItem.asString());
+
     const rowAtomRef = React.useRef(atom<WritableAtom<number, SetStateAction<number>>[]>([]));
     const [rowAtoms, setRowAtoms] = useAtom(rowAtomRef.current);
 
@@ -83,7 +87,12 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
         updateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
     }, []);
 
-    useEffect(() => setRowAtoms(createRowAtoms(svgItem.values, onAtomChange)), [svgItem]);
+    // useEffect(() => setRowAtoms(createRowAtoms(svgItem.values, onAtomChange)), [svgItem]);
+    useEffect(() => {
+        console.log('-----------RECREATE');
+        
+        setRowAtoms(createRowAtoms(svgItem.values, onAtomChange))
+    }, [...svgItem.values]);
 
     const updateRowType = useUpdateAtom(updateRowTypeAtom);
     const onCommandNameClick = () => updateRowType({ item: svgItem, isRelative: !svgItem.relative });
@@ -108,10 +117,21 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
         >
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
-                <PointName command={svgItem.getType()} abs={!svgItem.relative} onClick={onCommandNameClick} />
+                <PointName
+                    command={svgItem.getType()}
+                    abs={!svgItem.relative}
+                    onClick={onCommandNameClick}
+                />
 
                 {rowAtoms.map((atom, idx) => (
-                    <PointValue atom={atom} tooltip={getTooltip(svgItem.getType(), idx)} first={svgItemIdx === 0} isActivePt={isActivePt} isHoverPt={isHoverPt} key={idx} />
+                    <PointValue
+                        atom={atom}
+                        tooltip={getTooltip(svgItem.getType(), idx)}
+                        firstRow={svgItemIdx === 0}
+                        isActivePt={isActivePt}
+                        isHoverPt={isHoverPt}
+                        key={idx}
+                    />
                 ))}
             </div>
 
@@ -125,6 +145,8 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
 export function PathCommandEditor() {
     const [svg] = useAtom(svgAtom);
+    console.log('svg update', svg.asString());
+
     return (
         <div className="my-1 space-y-0.5">
             {svg.path.map((svgItem, idx) => (
