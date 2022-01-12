@@ -1,6 +1,6 @@
 import React from 'react';
-import { SetStateAction, useAtom, WritableAtom } from 'jotai';
-import { showGridAtom, showTicksAtom, tickIntevalAtom } from '../../store/store';
+import { PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from 'jotai';
+import { showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom } from '../../store/store';
 import { useAtomValue } from 'jotai/utils';
 //import { AccordionHorizontal } from '../UI/Accordion';
 
@@ -30,12 +30,30 @@ export function CanvasControlsPanel() {
     );
 }
 
+function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; atom: PrimitiveAtom<boolean>; }) {
+    const [value, setValue] = useAtom(atom);
+    return (
+        <label className="flex items-center text-xs space-x-2 select-none" title={tooltip}>
+            <input
+                type="checkbox" className="rounded text-slate-700 bg-slate-400 focus:ring-slate-900"
+                checked={value}
+                onChange={() => setValue(v => !v)}
+            />
+            <div className="">{label}</div>
+        </label>
+    );
+}
+
 export function AppCommands() {
     const showGrid = useAtomValue(showGridAtom);
     const showTicks = useAtomValue(showTicksAtom);
     const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom); //TODO: validate input
+
     return (
         <div className="absolute bottom-4 right-4 px-2 py-2 bg-slate-400/40 rounded flex items-center space-x-2">
+
+            <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
+
             {showGrid &&
                 <div className="flex items-center ">
                     {showTicks && <input
