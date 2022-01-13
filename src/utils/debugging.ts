@@ -1,7 +1,7 @@
 import { ViewBox } from "../svg/svg-utils-viewport";
 
 export function _ViewBox(viewBox: ViewBox): string {
-    return JSON.stringify(viewBox.map(_=>_.toFixed(2)));
+    return viewBox.map(_=>_.toFixed(2)).join(' ');
 }
 
 export function _fViewBox(viewBox: ViewBox): string {

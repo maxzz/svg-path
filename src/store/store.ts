@@ -3,6 +3,7 @@ import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgItem } from "../svg/svg";
 import { ViewBox, ViewPoint } from "../svg/svg-utils-viewport";
 import debounce from "../utils/debounce";
+import { _fViewBox, _ViewBox } from "../utils/debugging";
 
 namespace Storage {
     const KEY = 'react-svg-expo-01';
@@ -151,7 +152,7 @@ export const canvasStrokeAtom = atom(0);
 
 // canvas zoom
 
-const zoomAtom = atom(1);
+const zoomAtom = atom(0);
 
 export type UpdateZoomEvent = {
     deltaY: number;
@@ -199,6 +200,8 @@ export const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEv
 
     const scale = Math.pow(1.005, zoom);
     const newViewBox = scaleViewBox(viewBox, scale);
+
+    console.log('new zoom', (''+zoom).padStart(5, ' '), '-----old viewBox-----', _fViewBox(viewBox), '-----new viewBox-----', _fViewBox(newViewBox));
 
     set(viewBoxAtom, newViewBox);
 });

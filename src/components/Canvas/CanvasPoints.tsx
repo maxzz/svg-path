@@ -79,7 +79,7 @@ export function TargetPoint({ pt, stroke, pathPtIdx, clk, svgItem }: { pt: SvgPo
     const editorActive = editorActivePt?.[0] === pathPtIdx && editorActivePt?.[1] === -1;
     const editorHover = editorHoverPt?.[0] === pathPtIdx && editorHoverPt?.[1] === -1;
 
-    console.log(' pt', 'active', editorActivePt, 'hover', editorHoverPt);
+    //console.log(' pt', 'active', editorActivePt, 'hover', editorHoverPt);
 
     return (<>
         {(active || hover) &&
@@ -120,7 +120,7 @@ export function ControlPoint({ pt, stroke, pathPtIdx, clk}: { pt: SvgControlPoin
     const editorActive = editorActivePt?.[0] === pathPtIdx && editorActivePt?.[1] === pt.subIndex;
     const editorHover = editorHoverPt?.[0] === pathPtIdx && editorHoverPt?.[1] === pt.subIndex;
 
-    console.log('cpt', 'active', editorActivePt, 'hover', editorHoverPt, 'pathPtIdx', pathPtIdx, 'cPtIdx', pt.subIndex);
+    //console.log('cpt', 'active', editorActivePt, 'hover', editorHoverPt, 'pathPtIdx', pathPtIdx, 'cPtIdx', pt.subIndex);
 
     return (<>
         {pt.relations.map((rel, idx) => (
