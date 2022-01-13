@@ -66,7 +66,7 @@ function SvgCanvas() {
             const startPt = getEventPt(containerRef, startDragEventRef.current.event.clientX, startDragEventRef.current.event.clientY);
             const pt = getEventPt(containerRef, event.clientX, event.clientY);
 
-            console.log('startPt', { x: startPt.x.toFixed(2), y: startPt.y.toFixed(2) }, 'pt', { x: pt.x.toFixed(2), y: pt.y.toFixed(2) });
+            console.log('move startPt', { x: startPt.x.toFixed(0), y: startPt.y.toFixed(0) }, 'pt', { x: pt.x.toFixed(0), y: pt.y.toFixed(0) });
 
             setViewBox((prev) => {
                 const newViewBox: ViewBox = [
@@ -83,7 +83,9 @@ function SvgCanvas() {
     //console.log('viewBox', _ViewBox(viewBox));
 
     function onPointClick(ev: StartDragEvent) {
-        startDragEventRef.current = ev;
+        if (ev.event.button === 0) {
+            startDragEventRef.current = ev;
+        }
     }
 
     return (

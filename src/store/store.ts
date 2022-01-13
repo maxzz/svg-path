@@ -202,7 +202,7 @@ export const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEv
     const scale = Math.pow(1.005, zoom);
     const newViewBox = scaleViewBox(viewBox, scale);
 
-    console.log('new zoom', (''+zoom).padStart(5, ' '), '-----old viewBox-----', _fViewBox(viewBox), '-----new viewBox-----', _fViewBox(newViewBox));
+    //console.log('new zoom', (''+zoom).padStart(5, ' '), '-----old viewBox-----', _fViewBox(viewBox), '-----new viewBox-----', _fViewBox(newViewBox));
 
     set(viewBoxAtom, newViewBox);
 });
