@@ -9,7 +9,7 @@ import { CanvasControlsPanel } from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils-viewport';
 import { ControlPoint, StartDragEvent, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
-import { _ViewBox } from '../../utils/debugging';
+import { _fViewBox, _ViewBox, _ViewPoint } from '../../utils/debugging';
 
 const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocations.findIndex((pt) => pt.itemReference === ref);
 
@@ -26,7 +26,7 @@ function SvgCanvas() {
 
     function onMouseDown(event: React.MouseEvent) {
         setActivePt(-1);
-        startDragEventRef.current = { event };
+        startDragEventRef.current = { event, start: getEventPt(containerRef!, event.clientX, event.clientY) };
     }
 
     function onMouseUp() {
@@ -50,6 +50,8 @@ function SvgCanvas() {
     function onMouseMove(event: React.MouseEvent) {
         if (!containerRef || !startDragEventRef.current) { return; }
 
+        event.stopPropagation();
+
         if (startDragEventRef.current.pt) {
             const pt = getEventPt(containerRef, event.clientX, event.clientY);
 
@@ -63,10 +65,11 @@ function SvgCanvas() {
             newSvg.path = svg.path;
             setSvg(newSvg);
         } else {
-            const startPt = getEventPt(containerRef, startDragEventRef.current.event.clientX, startDragEventRef.current.event.clientY);
+            // const startPt = getEventPt(containerRef, startDragEventRef.current.event.clientX, startDragEventRef.current.event.clientY);
+            const startPt = startDragEventRef.current.start!;
             const pt = getEventPt(containerRef, event.clientX, event.clientY);
 
-            console.log('move startPt', { x: startPt.x.toFixed(0), y: startPt.y.toFixed(0) }, 'pt', { x: pt.x.toFixed(0), y: pt.y.toFixed(0) });
+            console.log('move startPt', _ViewPoint(startPt).padEnd(20, ' '), 'pt', _ViewPoint(pt).padEnd(20, ' '), '--------------------------------', _fViewBox(viewBox));
 
             setViewBox((prev) => {
                 const newViewBox: ViewBox = [
@@ -75,6 +78,7 @@ function SvgCanvas() {
                     prev[2],
                     prev[3],
                 ];
+                //console.log('-------------set view box prev', _fViewBox(prev), '--------new', _fViewBox(newViewBox));
                 return newViewBox;
             });
         }
