@@ -109,7 +109,7 @@ export function TargetPoint({ pt, stroke, pathPtIdx, clk, svgItem }: { pt: SvgPo
     </>);
 }
 
-export function ControlPoint({ pt, stroke, pathPtIdx, clk, cPtIdx }: { pt: SvgControlPoint, stroke: number; pathPtIdx: number; clk: StartDragEventHandler; cPtIdx: number; }) {
+export function ControlPoint({ pt, stroke, pathPtIdx, clk}: { pt: SvgControlPoint, stroke: number; pathPtIdx: number; clk: StartDragEventHandler; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
     const active = activePt === pathPtIdx;
@@ -117,10 +117,10 @@ export function ControlPoint({ pt, stroke, pathPtIdx, clk, cPtIdx }: { pt: SvgCo
 
     const [editorActivePt] = useAtom(editorActivePointAtom);
     const [editorHoverPt] = useAtom(editorHoverPointAtom);
-    const editorActive = editorActivePt?.[0] === pathPtIdx && editorActivePt?.[1] === Math.ceil(cPtIdx / 2);
-    const editorHover = editorHoverPt?.[0] === pathPtIdx && editorHoverPt?.[1] === Math.ceil(cPtIdx / 2);
+    const editorActive = editorActivePt?.[0] === pathPtIdx && editorActivePt?.[1] === pt.subIndex;
+    const editorHover = editorHoverPt?.[0] === pathPtIdx && editorHoverPt?.[1] === pt.subIndex;
 
-    console.log('cpt', 'active', editorActivePt, 'hover', editorHoverPt, 'cPtIdx', Math.ceil(cPtIdx / 2));
+    console.log('cpt', 'active', editorActivePt, 'hover', editorHoverPt, 'pathPtIdx', pathPtIdx, 'cPtIdx', pt.subIndex);
 
     return (<>
         {pt.relations.map((rel, idx) => (

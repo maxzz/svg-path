@@ -97,7 +97,7 @@ function SvgCanvas() {
 
             <g className="cpPts">
                 {cpPoints.map((pt, idx) => (
-                    <ControlPoint key={idx} pt={pt} stroke={canvasStroke} pathPtIdx={cpToTargetIdx(pathPoints, pt.itemReference)} clk={onPointClick} cPtIdx={idx} />
+                    <ControlPoint key={idx} pt={pt} stroke={canvasStroke} pathPtIdx={cpToTargetIdx(pathPoints, pt.itemReference)} clk={onPointClick} />
                 ))}
             </g>
 
