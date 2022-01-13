@@ -35,8 +35,8 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx 
         (!local || isNaN(+local)) && setLocal('' + value);
     }
 
-    const [editorActivePt, setEditorActivePt] = useAtom(editorActivePointAtom);
-    const [editorHoverPt, setEditorHoverPt] = useAtom(editorHoverPointAtom);
+    const setEditorActivePt = useUpdateAtom(editorActivePointAtom);
+    const setEditorHoverPt = useUpdateAtom(editorHoverPointAtom);
 
     const rowContainerRef = React.useRef(null);
     const isHovering = useHoverDirty(rowContainerRef);
@@ -44,6 +44,11 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx 
     React.useEffect(() => {
         setEditorHoverPt(isHovering ? editorIdx : null);
     }, [isHovering]);
+
+    function onBlur() {
+        resetInvalid();
+        setEditorActivePt(null);
+    }
 
     return (
         <label
@@ -55,7 +60,8 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx 
                 className={`px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none ${isActivePt ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverPt ? 'bg-slate-200 border-slate-400/40' : ''} border-b-2 focus:border-blue-500  cursor-default focus:cursor-text`}
                 value={local}
                 onChange={(event) => convertToNumber(event.target.value)}
-                onBlur={resetInvalid}
+                onFocus={() => setEditorActivePt(editorIdx)}
+                onBlur={onBlur}
             />
 
             {/* tooltip */}

@@ -66,7 +66,7 @@ export type StartDragEvent = {
 export type StartDragEventHandler = (event: StartDragEvent) => void;
 
 const pointColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
-const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ff' : hover ? '#43ff43' : 'white';
+const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ff' : hover ? '#ffad40' : 'white';
 
 export function TargetPoint({ pt, stroke, pathPtIdx, clk, svgItem }: { pt: SvgPoint, stroke: number; pathPtIdx: number; clk: StartDragEventHandler; svgItem: SvgItem; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
