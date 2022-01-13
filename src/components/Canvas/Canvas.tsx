@@ -1,14 +1,15 @@
 import React from 'react';
-import { atom, useAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
 import { activePointAtom, canvasStrokeAtom, containerRefAtom, pathUnsafeAtom, precisionAtom, snapToGridAtom, svgAtom, viewBoxAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
-import { Svg, SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
+import { Svg, SvgItem, SvgPoint } from '../../svg/svg';
 import { CanvasControlsPanel } from './CanvasControlsPanel';
 import { ViewBox } from '../../svg/svg-utils-viewport';
 import { ControlPoint, StartDragEvent, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
+import { _ViewBox } from '../../utils/debugging';
 
 const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocations.findIndex((pt) => pt.itemReference === ref);
 
@@ -79,7 +80,7 @@ function SvgCanvas() {
         }
     }
 
-    //console.log('viewBox', JSON.stringify(viewBox.map(_=>_.toFixed(2))));
+    //console.log('viewBox', _ViewBox(viewBox));
 
     function onPointClick(ev: StartDragEvent) {
         startDragEventRef.current = ev;

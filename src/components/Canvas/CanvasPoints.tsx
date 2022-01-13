@@ -4,8 +4,7 @@ import { activePointAtom, canvasStrokeAtom, containerRefAtom, hoverPointAtom, sv
 import { formatNumber, Svg, SvgControlPoint, SvgItem, SvgPoint } from "../../svg/svg";
 import { ViewPoint } from "../../svg/svg-utils-viewport";
 
-const ptColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
-
+/*
 class DragPoint {
     constructor(public dragPt: SvgPoint, public startPt: ViewPoint) {
         //console.log('onMouseDown', startPt);
@@ -56,6 +55,7 @@ const DragPointEventAtom = atom(null, (get, set, { event, start, end }: { event:
         }
     }
 });
+*/
 
 export type StartDragEvent = {
     event: React.MouseEvent;
@@ -65,13 +65,13 @@ export type StartDragEvent = {
 
 export type StartDragEventHandler = (event: StartDragEvent) => void;
 
+const ptColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
+
 export function TargetPoint({ svgItem, pt, stroke, idx, clk }: { svgItem: SvgItem; pt: SvgPoint, stroke: number; idx: number; clk: StartDragEventHandler; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
     const active = activePt === idx;
     const hover = hoverPt === idx;
-
-    //const setDragPointEvent = useUpdateAtom(DragPointEventAtom);
     return (<>
         {(active || hover) &&
             <path style={{ stroke: ptColor(active, hover), fill: 'none' }} strokeWidth={stroke} d={svgItem.asStandaloneString()} />
@@ -81,20 +81,12 @@ export function TargetPoint({ svgItem, pt, stroke, idx, clk }: { svgItem: SvgIte
             style={{ stroke: 'transparent', fill: ptColor(active, hover) }}
             cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
 
-            onMouseEnter={(event) => { setHoverPt(idx); }}
+            onMouseEnter={() => { setHoverPt(idx); }}
             onMouseLeave={() => setHoverPt(-1)}
             onMouseDown={(event) => {
                 event.stopPropagation();
                 setActivePt(idx);
-                //setDragPointEvent({ event: event.nativeEvent, start: pt });
                 clk({ event, pt, });
-            }}
-            onMouseMove={(event) => {
-                //setDragPointEvent({ event: event.nativeEvent });
-            }}
-            onMouseUp={(event) => {
-                //event.stopPropagation();
-                //setDragPointEvent({ event: event.nativeEvent, end: true });
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
@@ -125,9 +117,6 @@ export function ControlPoint({ pt, stroke, idx, clk }: { pt: SvgControlPoint, st
                 event.stopPropagation();
                 setActivePt(idx);
                 clk({ event, pt, isCp: true });
-            }}
-            onMouseUp={(event) => {
-                //event.stopPropagation();
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
