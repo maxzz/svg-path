@@ -177,7 +177,8 @@ function scaleViewBox(viewBox: ViewBox, scale: number, pt?: ViewPoint): ViewBox 
 
 export const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEvent) => {
 
-    let zoom = Math.min(1000, Math.max(-450, get(zoomAtom) + deltaY));
+    // let zoom = Math.min(1000, Math.max(-450, get(zoomAtom) + deltaY));
+    let zoom = Math.min(1000, Math.max(-450, deltaY));
     set(zoomAtom, zoom);
 
     // let stroke = get(viewBoxStrokeAtom);
