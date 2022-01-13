@@ -10,6 +10,7 @@ import { ViewBox } from '../../svg/svg-utils-viewport';
 import { ControlPoint, StartDragEvent, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
 import { _fViewBox, _ViewBox, _ViewPoint } from '../../utils/debugging';
+import { useThrottle } from 'react-use';
 
 const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocations.findIndex((pt) => pt.itemReference === ref);
 
@@ -47,6 +48,7 @@ function SvgCanvas() {
     const [precision] = useAtom(precisionAtom);
     const [snapToGrid] = useAtom(snapToGridAtom);
 
+    /*
     function onMouseMove(event: React.MouseEvent) {
         if (!containerRef || !startDragEventRef.current) { return; }
 
@@ -83,6 +85,55 @@ function SvgCanvas() {
             });
         }
     }
+    */
+
+    const [moveEventXY, setMoveEventXY] = React.useState({x:0,y:0});
+
+    function onMouseMove(event: React.MouseEvent) {
+        if (!containerRef || !startDragEventRef.current) { return; }
+
+        event.stopPropagation();
+        const pt = getEventPt(containerRef, event.clientX, event.clientY);
+        setMoveEventXY(pt);
+    }
+
+    const moveEventXYThrottled =  useThrottle(moveEventXY, 100);
+
+    React.useEffect(() => {
+        if (!containerRef || !startDragEventRef.current) { return; }
+
+        if (startDragEventRef.current.pt) {
+            const pt = moveEventXYThrottled;
+
+            //const decimals = snapToGrid ? 0 : event.ctrlKey ? precision ? 0 : 3 : precision;
+            const decimals = snapToGrid ? 0 : precision;
+            pt.x = parseFloat(pt.x.toFixed(decimals));
+            pt.y = parseFloat(pt.y.toFixed(decimals));
+            //console.log('move', pt.x, pt.y);
+
+            svg.setLocation(startDragEventRef.current.pt as SvgPoint, pt);
+            const newSvg = new Svg();
+            newSvg.path = svg.path;
+            setSvg(newSvg);
+        } else {
+            // const startPt = getEventPt(containerRef, startDragEventRef.current.event.clientX, startDragEventRef.current.event.clientY);
+            const startPt = startDragEventRef.current.start!;
+            const pt = moveEventXYThrottled;
+
+            console.log('move startPt', _ViewPoint(startPt).padEnd(20, ' '), 'pt', _ViewPoint(pt).padEnd(20, ' '), '--------------------------------', _fViewBox(viewBox));
+
+            setViewBox((prev) => {
+                const newViewBox: ViewBox = [
+                    prev[0] + startPt.x - pt.x,
+                    prev[1] + startPt.y - pt.y,
+                    prev[2],
+                    prev[3],
+                ];
+                //console.log('-------------set view box prev', _fViewBox(prev), '--------new', _fViewBox(newViewBox));
+                return newViewBox;
+            });
+        }
+    }, [moveEventXYThrottled]);
 
     //console.log('viewBox', _ViewBox(viewBox));
 
