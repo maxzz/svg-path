@@ -16,9 +16,35 @@ const commandAttrs: { [key: string]: string[]; } = {
     T: ['x', 'y'],
     t: ['dx', 'dy'],
     A: ['rx', 'ry', 'x-axis-rotation', 'large-arc-flag', 'sweep-flag', 'x', 'y'],
-    a: ['rx', 'ry', 'x-axis-rotation', 'large-arc-flag', 'sweep-flag', 'dx', 'dy']
+    a: ['rx', 'ry', 'x-axis-rotation', 'large-arc-flag', 'sweep-flag', 'dx', 'dy'],
 };
 
 export function getTooltip(command: string, idx: number): string {
     return commandAttrs[command]?.[idx] || '';
+}
+
+const valueToPoint: { [key: string]: number[]; } = { // -1 point and >= 0 for control point
+    M: [-1, -1],
+    m: [-1, -1],
+    L: [-1, -1],
+    l: [-1, -1],
+    V: [-1],
+    v: [-1],
+    H: [-1],
+    h: [-1],
+    C: [0, 0, 1, 1, -1, -1],
+    c: [0, 0, 1, 1, -1, -1],
+    S: [0, 0, -1, -1],
+    s: [0, 0, -1, -1],
+    Q: [0, 0, -1, -1],
+    q: [0, 0, -1, -1],
+    T: [-1, -1],
+    t: [-1, -1],
+    A: [0, 0, -1, -1, -1, -1, -1],
+    a: [0, 0, -1, -1, -1, -1, -1],
+};
+
+export function getvalueToPoint(command: string, idx: number): number {
+    //console.log('getvalueToPoint', command, idx, valueToPoint[command]?.[idx] ?? -1);
+    return valueToPoint[command]?.[idx] ?? -1;
 }

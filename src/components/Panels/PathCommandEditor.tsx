@@ -3,9 +3,9 @@ import { useUpdateAtom } from "jotai/utils";
 import React, { useEffect } from "react";
 import { useDebounce, useHoverDirty } from "react-use";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
-import { activePointAtom, hoverPointAtom, svgAtom, updateRowTypeAtom, updateRowValuesAtom } from "../../store/store";
+import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, svgAtom, updateRowTypeAtom, updateRowValuesAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
-import { getTooltip } from "../../svg/svg-utils";
+import { getTooltip, getvalueToPoint } from "../../svg/svg-utils";
 import { IconMenu } from "../UI/icons/Icons";
 
 function PointName({ command, abs, onClick }: { command: string; abs: boolean; onClick: () => void; }) {
@@ -19,7 +19,7 @@ function PointName({ command, abs, onClick }: { command: string; abs: boolean; o
     );
 }
 
-function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt }: { atom: PrimitiveAtom<number>; tooltip: string; firstRow: boolean; isActivePt: boolean; isHoverPt: boolean; }) {
+function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx }: { atom: PrimitiveAtom<number>; tooltip: string; firstRow: boolean; isActivePt: boolean; isHoverPt: boolean; editorIdx: [number, number]; }) {
     const [value, setValue] = useAtom(atom);
     const [local, setLocal] = React.useState('' + value);
     React.useEffect(() => setLocal('' + value), [value]);
@@ -35,8 +35,15 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt }: { atom: 
         (!local || isNaN(+local)) && setLocal('' + value);
     }
 
+    const [editorActivePt, setEditorActivePt] = useAtom(editorActivePointAtom);
+    const [editorHoverPt, setEditorHoverPt] = useAtom(editorHoverPointAtom);
+
     const rowContainerRef = React.useRef(null);
     const isHovering = useHoverDirty(rowContainerRef);
+
+    React.useEffect(() => {
+        setEditorHoverPt(isHovering ? editorIdx : null);
+    }, [isHovering]);
 
     return (
         <label
@@ -117,6 +124,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
                         firstRow={svgItemIdx === 0}
                         isActivePt={isActivePt}
                         isHoverPt={isHoverPt}
+                        editorIdx={[svgItemIdx, getvalueToPoint(svgItem.getType(), idx)]}
                         key={idx}
                     />
                 ))}

@@ -25,13 +25,13 @@ function SvgCanvas({ viewBox, viewBoxStroke }: { viewBox: ViewBox; viewBoxStroke
 
             <g className="cpPts">
                 {cpPoints.map((pt, idx) => (
-                    <ControlPoint pt={pt} stroke={viewBoxStroke} idx={cpToTargetIdx(pathPoints, pt.itemReference)} key={idx} />
+                    <ControlPoint pt={pt} stroke={viewBoxStroke} pathPtIdx={cpToTargetIdx(pathPoints, pt.itemReference)} key={idx} />
                 ))}
             </g>
 
             <g className="pathPts">
                 {pathPoints.map((pt, idx) => (
-                    <TargetPoint svgItem={svg.path[idx]} pt={pt} stroke={viewBoxStroke} idx={idx} key={idx} />
+                    <TargetPoint svgItem={svg.path[idx]} pt={pt} stroke={viewBoxStroke} pathPtIdx={idx} key={idx} />
                 ))}
             </g>
         </svg>

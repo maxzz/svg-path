@@ -229,6 +229,8 @@ export const containerRefAtom = atom<HTMLElement | null | undefined>(undefined);
 
 export const activePointAtom = atom(-1);
 export const hoverPointAtom = atom(-1);
+export const editorActivePointAtom = atom<[number, number] | null>(null); // current point in path commands panel: pt index and cpt index (or -1)
+export const editorHoverPointAtom = atom<[number, number] | null>(null); // current hobering point in path commands panel: pt index and cpt index (or -1)
 
 // canvas controls
 

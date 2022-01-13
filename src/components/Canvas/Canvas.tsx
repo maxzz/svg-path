@@ -29,7 +29,7 @@ function SvgCanvas() {
         startDragEventRef.current = { event };
     }
 
-    function onMouseUp(event: React.MouseEvent) {
+    function onMouseUp() {
         startDragEventRef.current = null;
     }
 
@@ -66,7 +66,7 @@ function SvgCanvas() {
             const startPt = getEventPt(containerRef, startDragEventRef.current.event.clientX, startDragEventRef.current.event.clientY);
             const pt = getEventPt(containerRef, event.clientX, event.clientY);
 
-            console.log('startPt', {x: startPt.x.toFixed(2), y: startPt.y.toFixed(2)}, 'pt', {x: pt.x.toFixed(2), y: pt.y.toFixed(2)} );
+            console.log('startPt', { x: startPt.x.toFixed(2), y: startPt.y.toFixed(2) }, 'pt', { x: pt.x.toFixed(2), y: pt.y.toFixed(2) });
 
             setViewBox((prev) => {
                 const newViewBox: ViewBox = [
@@ -97,13 +97,13 @@ function SvgCanvas() {
 
             <g className="cpPts">
                 {cpPoints.map((pt, idx) => (
-                    <ControlPoint pt={pt} stroke={canvasStroke} idx={cpToTargetIdx(pathPoints, pt.itemReference)} clk={onPointClick} key={idx} />
+                    <ControlPoint key={idx} pt={pt} stroke={canvasStroke} pathPtIdx={cpToTargetIdx(pathPoints, pt.itemReference)} clk={onPointClick} cPtIdx={idx} />
                 ))}
             </g>
 
             <g className="pathPts">
                 {pathPoints.map((pt, idx) => (
-                    <TargetPoint svgItem={svg.path[idx]} pt={pt} stroke={canvasStroke} idx={idx} clk={onPointClick} key={idx} />
+                    <TargetPoint key={idx} pt={pt} stroke={canvasStroke} pathPtIdx={idx} clk={onPointClick} svgItem={svg.path[idx]} />
                 ))}
             </g>
         </svg>
