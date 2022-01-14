@@ -103,22 +103,6 @@ export const svgAtom = atom(
         //console.log('svgAtom update');
     }
 );
-/*
-const _svgCanvasAtom = atom(getParsedSvg(Storage.initialData.path) || new Svg(''));
-export const svgCanvasAtom = atom(
-    (get) => {
-        return get(_svgCanvasAtom);
-    },
-    (get, set, svg: Svg) => {
-        set(_svgCanvasAtom, svg);
-
-        // set(_svgAtom, svg);
-
-        // const path = svg.asString();
-        // set(_pathUnsafeAtom, path);
-    }
-);
-*/
 
 // Upates from command editor
 
