@@ -7,7 +7,7 @@ import './App.css';
 import { SectionPane } from './components/UI/SectionPane';
 import { PanelOperations } from './components/Panels/PanelOperations';
 import { PanelPath } from './components/Panels/PanelPath';
-import { AppCommands } from './components/Canvas/CanvasControlsPanel';
+import { PanelCanvasControls } from './components/Panels/PanelCanvasControls';
 
 function PanelOptions() {
     const [openAtom] = useState(atom(true));
@@ -57,7 +57,7 @@ function PanelAllEditors() {
                 <PanelOptions />
             </div>
             <div className="relative h-24">
-                <AppCommands />
+                <PanelCanvasControls />
             </div>
         </div>
     );

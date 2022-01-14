@@ -6,7 +6,7 @@ import { activePointAtom, svgAtom } from '../../../store/store';
 import { useContainerZoom } from './../useContainerZoom';
 import { SvgItem, SvgPoint } from '../../../svg/svg';
 import { BackgroundGrid } from './../BackgroundGrid';
-import CanvasControlsPanel from './../CanvasControlsPanel';
+import CanvasControlsPanel from '../../Panels/PanelCanvasControls';
 import { ViewBox } from '../../../svg/svg-utils-viewport';
 import { ControlPoint, TargetPoint } from './../CanvasPoints';
 

@@ -61,7 +61,7 @@ function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string;
     );
 }
 
-export function AppCommands() {
+export function PanelCanvasControls() {
     const showGrid = useAtomValue(showGridAtom);
     const showTicks = useAtomValue(showTicksAtom);
     const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom); //TODO: validate input

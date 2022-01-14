@@ -5,7 +5,7 @@ import { mergeRef } from '../../hooks/utils';
 import { activePointAtom, canvasStrokeAtom, containerRefAtom, pathUnsafeAtom, precisionAtom, snapToGridAtom, svgAtom, viewBoxAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { Svg, SvgItem, SvgPoint } from '../../svg/svg';
-import { CanvasControlsPanel } from './CanvasControlsPanel';
+import { CanvasControlsPanel } from '../Panels/PanelCanvasControls';
 import { ViewBox } from '../../svg/svg-utils-viewport';
 import { ControlPoint, StartDragEvent, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
