@@ -52,6 +52,8 @@ export function useContainerZoom() {
         const { width: w, height: h } = parentRef.current.getBoundingClientRect();
         const port = getFitViewPort(w, h, svg.targetLocations());
 
+        //console.log('update', width, w, height, h);
+
         setCanvasSize({ w, h });
         setCanvasStroke(port.stroke);
         //setUnscaledPathBoundingBox(port.port);
