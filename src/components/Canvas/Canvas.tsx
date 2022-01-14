@@ -75,8 +75,8 @@ function SvgCanvas() {
 
             setViewBox((prev) => {
                 const newViewBox: ViewBox = [
-                    prev[0] + (startPt.x - pt.x) * canvasStroke,
-                    prev[1] + (startPt.y - pt.y) * canvasStroke,
+                    prev[0] + startPt.x - pt.x,
+                    prev[1] + startPt.y - pt.y,
                     prev[2],
                     prev[3],
                 ];
