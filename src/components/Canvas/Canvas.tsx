@@ -87,17 +87,17 @@ function SvgCanvas() {
     }
     */
 
-    const [moveEventXY, setMoveEventXY] = React.useState({x:0,y:0});
+    const moveEventXYRef = React.useRef({x:0,y:0});
 
     function onMouseMove(event: React.MouseEvent) {
         if (!containerRef || !startDragEventRef.current) { return; }
 
         event.stopPropagation();
         const pt = getEventPt(containerRef, event.clientX, event.clientY);
-        setMoveEventXY(pt);
+        moveEventXYRef.current = pt;
     }
 
-    const moveEventXYThrottled =  useThrottle(moveEventXY, 100);
+    const moveEventXYThrottled =  useThrottle(moveEventXYRef.current, 100);
 
     React.useEffect(() => {
         if (!containerRef || !startDragEventRef.current) { return; }
