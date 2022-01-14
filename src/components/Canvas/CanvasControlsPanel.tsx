@@ -46,21 +46,6 @@ function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; at
     );
 }
 
-function ViewboxInputOld({ label, tooltip, idx }: { label: string; tooltip: string; idx: number; }) {
-    let [value, setValue] = useAtom(viewBoxAtom);
-    value = value.map(v => parseFloat(v.toFixed(3))) as ViewBox;
-    const bind = useNumberInput(value[idx], (v: number) => setValue(prev => ((prev[idx] = v), [...prev])));
-    return (
-        <label className="flex items-center text-xs space-x-0.5 select-none" title={tooltip}>
-            <div className="">{label}</div>
-            <input
-                className={`px-1 w-12 h-6 text-[.65rem] rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
-                {...bind}
-            />
-        </label>
-    );
-}
-
 function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string; idx: number; }) {
     let [value, setValue] = useAtom(viewBoxAtom);
     value = value.map(v => parseFloat(v.toFixed(3))) as ViewBox;
