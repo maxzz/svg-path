@@ -1,7 +1,7 @@
 import { atom, Getter } from "jotai";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgItem } from "../svg/svg";
-import { ViewBox, ViewPoint } from "../svg/svg-utils-viewport";
+import { getFitViewPort, ViewBox, ViewPoint } from "../svg/svg-utils-viewport";
 import debounce from "../utils/debounce";
 import { _fViewBox, _ViewBox } from "../utils/debugging";
 
@@ -87,8 +87,10 @@ export const pathUnsafeAtom = atom(
         const newSvg = getParsedSvg(path);
         newSvg && set(_svgAtom, newSvg);
         
-        ((newSvg && !current) || (!current && path)) && set(needInitialZoomAtom, true);
-        console.log('>>>>>>>>unsafe', newSvg, current, ((newSvg && !current) || (!current && path)));
+        // ((newSvg && !current) || (!current && path)) && set(needInitialZoomAtom, true);
+        // console.log('>>>>>>>>unsafe', newSvg, current, ((newSvg && !current) || (!current && path)));
+
+        newSvg && set(autoZoomAtom);
     }
 );
 
@@ -194,6 +196,16 @@ export const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEv
     //console.log('new zoom', (''+zoom).padStart(5, ' '), '-----old viewBox-----', _fViewBox(viewBox), '-----new viewBox-----', _fViewBox(newViewBox));
 
     set(viewBoxAtom, newViewBox);
+});
+
+export const autoZoomAtom = atom(null, (get, set, ) => {
+    const canvasSize = get(canvasSizeAtom);
+    const svg = get(svgAtom);
+    const box = getFitViewPort(canvasSize.w, canvasSize.h, svg.targetLocations());
+    if (box) {
+        set(viewBoxAtom, box.port);
+        set(canvasStrokeAtom, box.stroke);
+    }
 });
 
 // new canvas
