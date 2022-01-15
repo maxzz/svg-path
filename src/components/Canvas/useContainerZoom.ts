@@ -55,7 +55,7 @@ export function useContainerZoom() {
 
         if (containerRef) {
             const { width, height } = containerRef.getBoundingClientRect();
-            const box = zoomAuto(width, height, []);
+            const box = zoomAuto({w: width, h: height}, []);
             if (box) {
                 setViewBox(box.viewBox);
                 setCanvasStroke(box.stroke);
@@ -81,7 +81,7 @@ export function useContainerZoom() {
         if (parentRef.current) {
             console.log('update dim', width, height, _fViewBox(viewBox));
 
-            const newBox = updateViewPort(width, height, ...viewBox);
+            const newBox = updateViewPort({w: width, h: height}, ...viewBox);
             if (newBox) {
                 setViewBox(newBox.viewBox);
                 setCanvasStroke(newBox.stroke);
@@ -92,7 +92,7 @@ export function useContainerZoom() {
     React.useEffect(() => {
         console.log('update SVG', width, height);
 
-        const port = getFitViewPort(width, height, svg.targetLocations());
+        const port = getFitViewPort({w: width, h: height}, svg.targetLocations());
         port && setCanvasStroke(port.stroke);
         //setUnscaledPathBoundingBox(port.port);
     }, [width, height, svg]);
