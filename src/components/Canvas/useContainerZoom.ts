@@ -1,10 +1,11 @@
+import React from 'react';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import React from 'react';
 import { useMeasure } from 'react-use';
 import { canvasSizeAtom, svgAtom, viewBoxAtom, canvasStrokeAtom, containerRefAtom, updateZoomAtom, UpdateZoomEvent } from '../../store/store';
-import { getFitViewPort, ViewPoint } from '../../svg/svg-utils-viewport';
+import { getFitViewPort, updateViewPort, ViewPoint } from '../../svg/svg-utils-viewport';
 import throttle from '../../utils/throttle';
+import { _fViewBox } from '../../utils/debugging';
 
 function eventClientPoint(event: MouseEvent | TouchEvent, idx = 0): ViewPoint {
     const touch = event instanceof MouseEvent ? event : event.touches[idx];
@@ -37,7 +38,7 @@ export function useContainerZoom() {
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
     const parentRef = React.useRef<HTMLElement>();
 
-    const setViewBox = useUpdateAtom(viewBoxAtom);
+    const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const setCanvasStroke = useUpdateAtom(canvasStrokeAtom);
     //const setUnscaledPathBoundingBox = useUpdateAtom(unscaledPathBoundingBoxAtom);
     const setCanvasSize = useUpdateAtom(canvasSizeAtom);
@@ -46,21 +47,29 @@ export function useContainerZoom() {
     const updateZoom = useUpdateAtom(updateZoomAtom);
 
     React.useEffect(() => {
+        console.log('update ini', width, height, _fViewBox(viewBox), parentRef.current);
+
         setContainerRef(parentRef.current);
-        if (!parentRef.current) { return; }
+        setCanvasSize({ w: width, h: height });
 
-        const { width: w, height: h } = parentRef.current.getBoundingClientRect();
-        const port = getFitViewPort(w, h, svg.targetLocations());
+        if (parentRef.current) {
+            console.log('update dim', width, height, _fViewBox(viewBox));
 
-        //console.log('update', width, w, height, h);
+            const newBox = updateViewPort(width, height, ...viewBox);
+            if (newBox) {
+                setViewBox(newBox.viewBox);
+                setCanvasStroke(newBox.stroke);
+            }
+        }
+    }, [parentRef, width, height]);
 
-        setCanvasSize({ w, h });
+    React.useEffect(() => {
+        console.log('update SVG', width, height);
+
+        const port = getFitViewPort(width, height, svg.targetLocations());
         setCanvasStroke(port.stroke);
         //setUnscaledPathBoundingBox(port.port);
-        setViewBox(port.port);
-
-        updateZoom({ deltaY: 0 });
-    }, [parentRef, width, height, svg]);
+    }, [width, height, svg]);
 
     const setThrottledZoom = React.useCallback(throttle((zoomEvent: UpdateZoomEvent) => {
         updateZoom(zoomEvent);

@@ -1,6 +1,16 @@
 import { SvgPoint } from "./svg";
 
-function getPointsBoundingBox(targetPoints: SvgPoint[]): { xmin: number; ymin: number; xmax: number; ymax: number; } {
+export type ViewPoint = { x: number; y: number; };
+export type ViewSize = { w: number; h: number; };
+export type ViewBox = [x: number, y: number, w: number, h: number];
+
+export type CanvasSize = {
+    size: ViewSize; // canvas size
+    port: ViewBox;  // SVG viewBox
+    stroke: number; // SVG stroke scaled width
+};
+
+export function getPointsBoundingBox(targetPoints: SvgPoint[]): { xmin: number; ymin: number; xmax: number; ymax: number; } {
     let xmin = 0;
     let ymin = 0;
     let xmax = 10;
@@ -14,16 +24,6 @@ function getPointsBoundingBox(targetPoints: SvgPoint[]): { xmin: number; ymin: n
     return { xmin, ymin, xmax, ymax, };
 }
 
-export type ViewPoint = { x: number; y: number; };
-export type ViewSize = { w: number; h: number; };
-export type ViewBox = [x: number, y: number, w: number, h: number];
-
-export type CanvasSize = {
-    size: ViewSize; // canvas size
-    port: ViewBox;  // SVG viewBox
-    stroke: number; // SVG stroke scaled width
-};
-
 export const nullCanvesSize: CanvasSize = { size: { w: 0, h: 0 }, port: [0, 0, 0, 0], stroke: 0.001 };
 
 type ViewBoxUpdate = {
@@ -31,7 +31,7 @@ type ViewBoxUpdate = {
     stroke: number;
 } | undefined;
 
-function updateViewPort(canvasWidth: number, canvasHeight: number, x: number, y: number, w: number | null, h: number | null, force = false, viewPortLocked = false): ViewBoxUpdate {
+export function updateViewPort(canvasWidth: number, canvasHeight: number, x: number, y: number, w: number | null, h: number | null, force = false, viewPortLocked = false): ViewBoxUpdate | undefined {
     if (!force && viewPortLocked) {
         return;
     }
@@ -55,7 +55,7 @@ function updateViewPort(canvasWidth: number, canvasHeight: number, x: number, y:
     };
 }
 
-function zoomAuto(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[], viewPortLocked = false): ViewBoxUpdate {
+export function zoomAuto(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[], viewPortLocked = false): ViewBoxUpdate | undefined {
     if (viewPortLocked) {
         return;
     }

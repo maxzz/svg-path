@@ -6,7 +6,7 @@ import { activePointAtom, canvasStrokeAtom, containerRefAtom, pathUnsafeAtom, pr
 import { useContainerZoom } from './useContainerZoom';
 import { Svg, SvgItem, SvgPoint } from '../../svg/svg';
 import { CanvasControlsPanel } from '../Panels/PanelCanvasControls';
-import { ViewBox } from '../../svg/svg-utils-viewport';
+import { ViewBox, zoomAuto } from '../../svg/svg-utils-viewport';
 import { ControlPoint, StartDragEvent, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
 import { _fViewBox, _ViewBox, _ViewPoint } from '../../utils/debugging';
@@ -16,14 +16,27 @@ const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocat
 
 function SvgCanvas() {
 
+    const [containerRef] = useAtom(containerRefAtom);
+
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
-    const [canvasStroke] = useAtom(canvasStrokeAtom);
+    const [canvasStroke, setCanvasStroke] = useAtom(canvasStrokeAtom);
 
     const [svg, setSvg] = useAtom(svgAtom);
     const pathPoints = svg.targetLocations();
     const cpPoints = svg.controlLocations();
 
     const setActivePt = useUpdateAtom(activePointAtom);
+
+    React.useEffect(() => {
+        if (containerRef) {
+            const { width, height } = containerRef.getBoundingClientRect();
+            const box = zoomAuto(width, height, []);
+            if (box) {
+                setViewBox(box.viewBox);
+                setCanvasStroke(box.stroke);
+            }
+        }
+    }, [containerRef]);
 
     function onMouseDown(event: React.MouseEvent) {
         setActivePt(-1);
@@ -34,7 +47,7 @@ function SvgCanvas() {
         startDragEventRef.current = null;
     }
 
-    const [containerRef] = useAtom(containerRefAtom);
+
     function getEventPt(containerRef: HTMLElement, eventClientX: number, eventClientY: number) {
         const canvasRect = containerRef.getBoundingClientRect();
         let [viewBoxX, viewBoxY] = viewBox;

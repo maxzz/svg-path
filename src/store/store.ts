@@ -129,7 +129,7 @@ export const updateRowTypeAtom = atom(null, (get, set, { item, isRelative }: { i
 
 // canvas zoom
 
-export const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
+export const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 10, 10]);
 export const canvasStrokeAtom = atom(0);
 
 //export const unscaledPathBoundingBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);

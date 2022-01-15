@@ -63,7 +63,7 @@ function PanelAllEditors() {
     );
 }
 
-function PathViewer() {
+function PanelSvgCanvas() {
     return (
         <div className="flex-1 relative">
             <PathCanvas />
@@ -76,7 +76,7 @@ function App() {
     return (
         <div className="h-screen flex">
             <PanelAllEditors />
-            <PathViewer />
+            <PanelSvgCanvas />
         </div>
     );
 }
