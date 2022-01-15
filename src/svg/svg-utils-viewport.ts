@@ -24,20 +24,30 @@ export function getPointsBoundingBox(targetPoints: SvgPoint[]): { xmin: number; 
     return { xmin, ymin, xmax, ymax, };
 }
 
-export const nullCanvesSize: CanvasSize = { size: { w: 0, h: 0 }, port: [0, 0, 0, 0], stroke: 0.001 };
+//export const nullCanvesSize: CanvasSize = { size: { w: 0, h: 0 }, port: [0, 0, 0, 0], stroke: 0.001 };
 
 type ViewBoxUpdate = {
     viewBox: ViewBox;
     stroke: number;
-} | undefined;
+};
 
-export function updateViewPort(canvasWidth: number, canvasHeight: number, x: number, y: number, w: number | null, h: number | null, force = false, viewPortLocked = false): ViewBoxUpdate | undefined {
+function unexpected(...rest: any[]) {
+    //debugger
+    console.log(`%cneed check`, 'color: red', ...rest);
+}
+
+export function updateViewPort(canvas: ViewSize, x: number, y: number, w: number | null, h: number | null, force = false, viewPortLocked = false): ViewBoxUpdate | undefined {
     if (!force && viewPortLocked) {
         return;
     }
 
-    if (w === null && h !== null) { w = canvasWidth * h / canvasHeight; }
-    if (h === null && w !== null) { h = canvasHeight * w / canvasWidth; }
+    if (!canvas.w || !canvas.h) {
+        unexpected('updateViewPort');
+        return;
+    }
+
+    if (w === null && h !== null) { w = canvas.w * h / canvas.h; }
+    if (h === null && w !== null) { h = canvas.h * w / canvas.w; }
     if (!w || !h) {
         return;
     }
@@ -51,43 +61,52 @@ export function updateViewPort(canvasWidth: number, canvasHeight: number, x: num
 
     return {
         viewBox,
-        stroke: viewBox[2] / canvasWidth
+        stroke: viewBox[2] / canvas.w
     };
 }
 
-export function zoomAuto(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[], viewPortLocked = false): ViewBoxUpdate | undefined {
+export function zoomAuto(canvas: ViewSize, targetPoints: SvgPoint[], viewPortLocked = false): ViewBoxUpdate | undefined {
     if (viewPortLocked) {
+        return;
+    }
+
+    if (!canvas.w || !canvas.h) {
+        unexpected('zoomAuto');
         return;
     }
 
     const box = getPointsBoundingBox(targetPoints);
 
-    const k = canvasHeight / canvasWidth;
+    let x = box.xmin - 1;
+    let y = box.ymin - 1;
     let w = box.xmax - box.xmin + 2;
     let h = box.ymax - box.ymin + 2;
-    if (k < h / w) {
-        w = h / k;
+
+    const ratio = canvas.h / canvas.w;
+    if (ratio < h / w) {
+        w = h / ratio;
     } else {
-        h = k * w;
+        h = ratio * w;
     }
 
-    return updateViewPort(canvasWidth, canvasHeight, box.xmin - 1, box.ymin - 1, w, h, false, viewPortLocked);
+    return updateViewPort(canvas, x, y, w, h, false, viewPortLocked);
 }
 
-export function getFitViewPort(canvasWidth: number, canvasHeight: number, targetPoints: SvgPoint[]): CanvasSize {
+export function getFitViewPort(canvas: ViewSize, targetPoints: SvgPoint[]): CanvasSize | undefined {
 
-    if (!canvasWidth || !canvasHeight) {
-        return nullCanvesSize;
+    if (!canvas.w || !canvas.h) {
+        unexpected('getFitViewPort');
+        return;
     }
 
     const box = getPointsBoundingBox(targetPoints);
 
-    const x = box.xmin - 1;
-    const y = box.ymin - 1;
+    let x = box.xmin - 1;
+    let y = box.ymin - 1;
     let viewPortWidth = box.xmax - box.xmin + 2;
     let viewPortHeight = box.ymax - box.ymin + 2;
 
-    const ratio = canvasHeight / canvasWidth;
+    const ratio = canvas.h / canvas.w;
     if (ratio < viewPortHeight / viewPortWidth) {
         viewPortWidth = viewPortHeight / ratio;
     } else {
@@ -101,10 +120,10 @@ export function getFitViewPort(canvasWidth: number, canvasHeight: number, target
         parseFloat((1 * viewPortHeight).toPrecision(4)),
     ];
 
-    let strokeWidth = 1.1 * port[2] / canvasWidth;
+    let strokeWidth = 1.1 * port[2] / canvas.w;
 
     return {
-        size: { w: canvasWidth, h: canvasHeight },
+        size: { w: canvas.w, h: canvas.h },
         port: port,
         stroke: strokeWidth,
     };
