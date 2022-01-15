@@ -72,7 +72,7 @@ function getParsedSvg(path: string): Svg | undefined {
 
 // Input comes from the user and is unsafe
 
-export const needInitialZoomAtom = atom(false);
+export const needInitialZoomAtom = atom(true);
 
 const _pathUnsafeAtom = atomWithCallback(Storage.initialData.path, ({ get }) => Storage.save(get));
 export const pathUnsafeAtom = atom(
@@ -201,7 +201,7 @@ export const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEv
 export const autoZoomAtom = atom(null, (get, set, ) => {
     const canvasSize = get(canvasSizeAtom);
     const svg = get(svgAtom);
-    const box = getFitViewPort(canvasSize.w, canvasSize.h, svg.targetLocations());
+    const box = getFitViewPort(canvasSize, svg.targetLocations());
     if (box) {
         set(viewBoxAtom, box.port);
         set(canvasStrokeAtom, box.stroke);
