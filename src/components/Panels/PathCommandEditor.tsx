@@ -1,7 +1,7 @@
 import { atom, PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import React, { useEffect } from "react";
-import { useDebounce, useHoverDirty } from "react-use";
+import { useDebounce, useDeepCompareEffect, useHoverDirty } from "react-use";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
 import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, svgAtom, updateRowTypeAtom, updateRowValuesAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
@@ -85,9 +85,12 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
         updateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
     }, []);
 
-    useEffect(() => {
+    useDeepCompareEffect(() => {
         setRowAtoms(createRowAtoms(svgItem.values, onAtomChange));
-    }, [...svgItem.values]);
+    }, [svgItem.values]);
+    // useEffect(() => {
+    //     setRowAtoms(createRowAtoms(svgItem.values, onAtomChange));
+    // }, [...svgItem.values]);
 
     const updateRowType = useUpdateAtom(updateRowTypeAtom);
     const onCommandNameClick = () => updateRowType({ item: svgItem, isRelative: !svgItem.relative });
