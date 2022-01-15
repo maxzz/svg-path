@@ -27,17 +27,6 @@ function SvgCanvas() {
 
     const setActivePt = useUpdateAtom(activePointAtom);
 
-    React.useEffect(() => {
-        if (containerRef) {
-            const { width, height } = containerRef.getBoundingClientRect();
-            const box = zoomAuto(width, height, []);
-            if (box) {
-                setViewBox(box.viewBox);
-                setCanvasStroke(box.stroke);
-            }
-        }
-    }, [containerRef]);
-
     function onMouseDown(event: React.MouseEvent) {
         setActivePt(-1);
         startDragEventRef.current = { event, start: getEventPt(containerRef!, event.clientX, event.clientY) };

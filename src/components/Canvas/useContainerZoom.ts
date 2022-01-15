@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useMeasure } from 'react-use';
 import { canvasSizeAtom, svgAtom, viewBoxAtom, canvasStrokeAtom, containerRefAtom, updateZoomAtom, UpdateZoomEvent } from '../../store/store';
-import { getFitViewPort, updateViewPort, ViewPoint } from '../../svg/svg-utils-viewport';
+import { getFitViewPort, updateViewPort, ViewPoint, zoomAuto } from '../../svg/svg-utils-viewport';
 import throttle from '../../utils/throttle';
 import { _fViewBox } from '../../utils/debugging';
 
@@ -42,9 +42,22 @@ export function useContainerZoom() {
     const setCanvasStroke = useUpdateAtom(canvasStrokeAtom);
     //const setUnscaledPathBoundingBox = useUpdateAtom(unscaledPathBoundingBoxAtom);
     const setCanvasSize = useUpdateAtom(canvasSizeAtom);
-    const setContainerRef = useUpdateAtom(containerRefAtom);
+    const [containerRef, setContainerRef] = useAtom(containerRefAtom);
 
     const updateZoom = useUpdateAtom(updateZoomAtom);
+
+    React.useEffect(() => {
+        console.log('update container', width, height);
+
+        if (containerRef) {
+            const { width, height } = containerRef.getBoundingClientRect();
+            const box = zoomAuto(width, height, []);
+            if (box) {
+                setViewBox(box.viewBox);
+                setCanvasStroke(box.stroke);
+            }
+        }
+    }, [containerRef]);
 
     React.useEffect(() => {
         console.log('update ini', width, height, _fViewBox(viewBox), parentRef.current);
@@ -84,6 +97,8 @@ export function useContainerZoom() {
 
         setThrottledZoom({ deltaY: event.deltaY, pt: { x: x - left, y: y - top } });
     }, [parentRef]);
+
+    console.log('useContainerZoom hook', width, height);
 
     return {
         ref,
