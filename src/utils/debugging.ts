@@ -15,3 +15,8 @@ export function _ViewBox(viewBox: ViewBox): string {
 export function _fViewBox(viewBox: ViewBox): string {
     return viewBox.map(pt => pt.toFixed(0).padStart(4, ' ')).join(" ");
 }
+
+export function unexpected(...rest: any[]) {
+    //debugger
+    console.log(`%cneed check`, 'color: red', ...rest);
+}

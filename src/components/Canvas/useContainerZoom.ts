@@ -51,17 +51,34 @@ export function useContainerZoom() {
     const [needInitialZoom, setNeedInitialZoom] = useAtom(needInitialZoomAtom);
 
     React.useEffect(() => {
-        console.log('update container', width, height);
-
         if (containerRef) {
             const { width, height } = containerRef.getBoundingClientRect();
-            const box = zoomAuto({w: width, h: height}, []);
+            const box = width && height && zoomAuto({ w: width, h: height }, []);
             if (box) {
+                console.log('update on container change', width, height);
+
                 setViewBox(box.viewBox);
                 setCanvasStroke(box.stroke);
             }
         }
     }, [containerRef]);
+
+    React.useEffect(() => {
+        console.log('update ini', width, height, _fViewBox(viewBox), parentRef.current);
+
+        setContainerRef(parentRef.current);
+        setCanvasSize({ w: width, h: height });
+
+        if (parentRef.current && width && height) {
+            console.log('update dim', width, height, _fViewBox(viewBox));
+
+            const newBox = updateViewPort({ w: width, h: height }, ...viewBox);
+            if (newBox) {
+                setViewBox(newBox.viewBox);
+                setCanvasStroke(newBox.stroke);
+            }
+        }
+    }, [parentRef, width, height]);
 
     React.useEffect(() => {
         if (needInitialZoom && width && height) {
@@ -73,28 +90,13 @@ export function useContainerZoom() {
     }, [width, height, needInitialZoom]);
 
     React.useEffect(() => {
-        console.log('update ini', width, height, _fViewBox(viewBox), parentRef.current);
-
-        setContainerRef(parentRef.current);
-        setCanvasSize({ w: width, h: height });
-
-        if (parentRef.current) {
-            console.log('update dim', width, height, _fViewBox(viewBox));
-
-            const newBox = updateViewPort({w: width, h: height}, ...viewBox);
-            if (newBox) {
-                setViewBox(newBox.viewBox);
-                setCanvasStroke(newBox.stroke);
-            }
-        }
-    }, [parentRef, width, height]);
-
-    React.useEffect(() => {
         console.log('update SVG', width, height);
 
-        const port = getFitViewPort({w: width, h: height}, svg.targetLocations());
-        port && setCanvasStroke(port.stroke);
-        //setUnscaledPathBoundingBox(port.port);
+        if (width && height) {
+            const port = getFitViewPort({ w: width, h: height }, svg.targetLocations());
+            port && setCanvasStroke(port.stroke);
+            //setUnscaledPathBoundingBox(port.port);
+        }
     }, [width, height, svg]);
 
     const setThrottledZoom = React.useCallback(throttle((zoomEvent: UpdateZoomEvent) => {
@@ -111,7 +113,7 @@ export function useContainerZoom() {
         setThrottledZoom({ deltaY: event.deltaY, pt: { x: x - left, y: y - top } });
     }, [parentRef]);
 
-    console.log('useContainerZoom hook', width, height);
+    console.log('%c-------------useContainerZoom hook', 'color: mediumpurple', width, height);
 
     return {
         ref,

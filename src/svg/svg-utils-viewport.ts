@@ -1,3 +1,4 @@
+import { unexpected } from "../utils/debugging";
 import { SvgPoint } from "./svg";
 
 export type ViewPoint = { x: number; y: number; };
@@ -30,11 +31,6 @@ type ViewBoxUpdate = {
     viewBox: ViewBox;
     stroke: number;
 };
-
-function unexpected(...rest: any[]) {
-    //debugger
-    console.log(`%cneed check`, 'color: red', ...rest);
-}
 
 export function updateViewPort(canvas: ViewSize, x: number, y: number, w: number | null, h: number | null, force = false, viewPortLocked = false): ViewBoxUpdate | undefined {
     if (!force && viewPortLocked) {
