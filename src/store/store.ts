@@ -72,6 +72,8 @@ function getParsedSvg(path: string): Svg | undefined {
 
 // Input comes from the user and is unsafe
 
+export const needInitialZoomAtom = atom(false);
+
 const _pathUnsafeAtom = atomWithCallback(Storage.initialData.path, ({ get }) => Storage.save(get));
 export const pathUnsafeAtom = atom(
     (get) => {
@@ -84,6 +86,9 @@ export const pathUnsafeAtom = atom(
 
         const newSvg = getParsedSvg(path);
         newSvg && set(_svgAtom, newSvg);
+        
+        newSvg && !current && set(needInitialZoomAtom, true);
+        console.log('unsafe', newSvg, current);
     }
 );
 

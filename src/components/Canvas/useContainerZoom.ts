@@ -2,7 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useMeasure } from 'react-use';
-import { canvasSizeAtom, svgAtom, viewBoxAtom, canvasStrokeAtom, containerRefAtom, updateZoomAtom, UpdateZoomEvent } from '../../store/store';
+import { canvasSizeAtom, svgAtom, viewBoxAtom, canvasStrokeAtom, containerRefAtom, updateZoomAtom, UpdateZoomEvent, needInitialZoomAtom } from '../../store/store';
 import { getFitViewPort, updateViewPort, ViewPoint, zoomAuto } from '../../svg/svg-utils-viewport';
 import throttle from '../../utils/throttle';
 import { _fViewBox } from '../../utils/debugging';
@@ -46,6 +46,8 @@ export function useContainerZoom() {
 
     const updateZoom = useUpdateAtom(updateZoomAtom);
 
+    const [needInitialZoom, setNeedInitialZoom] = useAtom(needInitialZoomAtom);
+
     React.useEffect(() => {
         console.log('update container', width, height);
 
@@ -58,6 +60,13 @@ export function useContainerZoom() {
             }
         }
     }, [containerRef]);
+
+    React.useEffect(() => {
+        if (needInitialZoom) {
+            console.log('zzzzzzzz--------zzzzz');
+            setNeedInitialZoom(false);
+        }
+    }, [needInitialZoom]);
 
     React.useEffect(() => {
         console.log('update ini', width, height, _fViewBox(viewBox), parentRef.current);
