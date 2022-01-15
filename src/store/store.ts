@@ -87,8 +87,8 @@ export const pathUnsafeAtom = atom(
         const newSvg = getParsedSvg(path);
         newSvg && set(_svgAtom, newSvg);
         
-        newSvg && !current && set(needInitialZoomAtom, true);
-        console.log('unsafe', newSvg, current);
+        ((newSvg && !current) || (!current && path)) && set(needInitialZoomAtom, true);
+        console.log('>>>>>>>>unsafe', newSvg, current, ((newSvg && !current) || (!current && path)));
     }
 );
 
@@ -105,7 +105,7 @@ export const svgAtom = atom(
         const path = svg.asString();
         set(_pathUnsafeAtom, path);
 
-        //console.log('svgAtom update');
+        console.log('>>>>>>>>svgAtom update');
     }
 );
 
