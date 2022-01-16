@@ -195,9 +195,9 @@ export const autoZoomAtom = atom(null, (get, set,) => {
 export const updateViewBoxAtom = atom(null, (get, set,) => {
     const canvasSize = get(canvasSizeAtom);
 
-    if (!(canvasSize.w && canvasSize.h)) {
-        unexpected('updateViewBoxAtom');
-    }
+    // if (!(canvasSize.w && canvasSize.h)) {
+    //     unexpected('updateViewBoxAtom');
+    // }
 
     if (canvasSize.w && canvasSize.h) {
         const needInitialZoom = get(needInitialZoomAtom);

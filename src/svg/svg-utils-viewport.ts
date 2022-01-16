@@ -149,3 +149,29 @@ export function getFitViewPort(canvas: ViewSize, targetPoints: SvgPoint[]): Canv
 //     y += (touch.clientY - rect.top) * canvasSize.stroke;
 //     return { x, y };
 // }
+
+function eventClientPoint(event: MouseEvent | TouchEvent, idx = 0): ViewPoint {
+    const touch = event instanceof MouseEvent ? event : event.touches[idx];
+    return {
+        x: touch.clientX,
+        y: touch.clientY,
+    };
+}
+/*
+function eventToClient(canvasSize: CanvasSize, canvasContainer: HTMLElement, event: MouseEvent | TouchEvent, idx = 0): { x: number, y: number; } {
+    const rect = canvasContainer.getBoundingClientRect();
+    const touch = event instanceof MouseEvent ? event : event.touches[idx];
+    let [x, y] = canvasSize.port;
+    x += (touch.clientX - rect.left) * canvasSize.stroke;
+    y += (touch.clientY - rect.top) * canvasSize.stroke;
+    return { x, y };
+}
+
+function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDeltaY: number, event: WheelEvent): ViewBox {
+    const scale = Math.pow(1.005, accDeltaY);
+    const pt = eventToLocation(canvasSize, canvasContainer, event);
+    console.log('scale', scale, 'pt', pt);
+
+    return zoomViewPort(canvasSize.port, scale, pt);
+}
+*/
