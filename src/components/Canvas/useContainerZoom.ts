@@ -2,8 +2,8 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useMeasure } from 'react-use';
-import { canvasSizeAtom, svgAtom, viewBoxAtom, canvasStrokeAtom, containerRefAtom, updateZoomAtom, UpdateZoomEvent, needInitialZoomAtom, autoZoomAtom, updateViewBoxAtom } from '../../store/store';
-import { getFitViewPort, updateViewPort, ViewPoint } from '../../svg/svg-utils-viewport';
+import { canvasSizeAtom, svgAtom, canvasStrokeAtom, containerRefAtom, updateZoomAtom, UpdateZoomEvent, updateViewBoxAtom } from '../../store/store';
+import { getFitViewPort, ViewPoint } from '../../svg/svg-utils-viewport';
 import throttle from '../../utils/throttle';
 import { _fViewBox } from '../../utils/debugging';
 
@@ -39,7 +39,7 @@ export function useContainerZoom() {
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
     const parentRef = React.useRef<HTMLElement>();
 
-    console.log('%c------->>>>------useContainerZoom hook', 'color: mediumpurple', width, height);
+    //console.log('%c------->>>>------useContainerZoom hook', 'color: mediumpurple', width, height);
 
     //const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const setCanvasStroke = useUpdateAtom(canvasStrokeAtom);
@@ -48,9 +48,9 @@ export function useContainerZoom() {
 
     const updateViewBox = useUpdateAtom(updateViewBoxAtom);
     const updateZoom = useUpdateAtom(updateZoomAtom);
-    const autoZoom = useUpdateAtom(autoZoomAtom);
+    //const autoZoom = useUpdateAtom(autoZoomAtom);
 
-    const [needInitialZoom, setNeedInitialZoom] = useAtom(needInitialZoomAtom);
+    //const [needInitialZoom, setNeedInitialZoom] = useAtom(needInitialZoomAtom);
 
     React.useEffect(() => {
         //console.log('update ini', width, height, _fViewBox(viewBox), parentRef.current);
@@ -72,6 +72,7 @@ export function useContainerZoom() {
         */
     }, [parentRef, width, height]);
 
+    /*
     React.useEffect(() => {
         if (needInitialZoom && width && height) {
             console.log('zzzzzzzz--------setNeedInitialZoom');
@@ -80,6 +81,7 @@ export function useContainerZoom() {
             setNeedInitialZoom(false);
         }
     }, [width, height, needInitialZoom]);
+    */
 
     React.useEffect(() => {
         console.log('update SVG', width, height);
