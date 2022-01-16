@@ -86,7 +86,7 @@ export const pathUnsafeAtom = atom(
 
         const newSvg = getParsedSvg(path);
         newSvg && set(_svgAtom, newSvg);
-        
+
         // ((newSvg && !current) || (!current && path)) && set(needInitialZoomAtom, true);
         // console.log('>>>>>>>>unsafe', newSvg, current, ((newSvg && !current) || (!current && path)));
 
@@ -187,7 +187,7 @@ export const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEv
     // const newPort = zoomViewPort(unscaledPathBoundingBox, scale, { x, y });
     set(viewBoxAtom, newPort);
     */
-   
+
     const viewBox = get(viewBoxAtom);
 
     const scale = Math.pow(1.005, zoom);
@@ -198,7 +198,7 @@ export const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEv
     set(viewBoxAtom, newViewBox);
 });
 
-export const autoZoomAtom = atom(null, (get, set, ) => {
+export const autoZoomAtom = atom(null, (get, set,) => {
     const canvasSize = get(canvasSizeAtom);
     const svg = get(svgAtom);
     const box = getFitViewPort(canvasSize, svg.targetLocations());
@@ -208,19 +208,25 @@ export const autoZoomAtom = atom(null, (get, set, ) => {
     }
 });
 
-export const updateViewBoxAtom = atom(null, (get, set, ) => {
+export const updateViewBoxAtom = atom(null, (get, set,) => {
     const canvasSize = get(canvasSizeAtom);
-    
+
     if (!(canvasSize.w && canvasSize.h)) {
         unexpected('updateViewBoxAtom');
     }
 
     if (canvasSize.w && canvasSize.h) {
-        const viewBox = get(viewBoxAtom);
-        const box = updateViewPort(canvasSize, ...viewBox);
-        if (box) {
-            set(viewBoxAtom, box.viewBox);
-            set(canvasStrokeAtom, box.stroke);
+        const needInitialZoom = get(needInitialZoomAtom);
+        if (needInitialZoom) {
+            set(autoZoomAtom);
+            set(needInitialZoomAtom, false);
+        } else {
+            const viewBox = get(viewBoxAtom);
+            const box = updateViewPort(canvasSize, ...viewBox);
+            if (box) {
+                set(viewBoxAtom, box.viewBox);
+                set(canvasStrokeAtom, box.stroke);
+            }
         }
     }
 });
