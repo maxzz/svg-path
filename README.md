@@ -2,7 +2,7 @@
 
 SVG path exploration
 
-![](./src/assets/previews/2022-01-08_19-40-14.png)
+![](./src/assets/previews/2022-01-15_17-52-37.png)
 
 #### Credits, refs, links
 
