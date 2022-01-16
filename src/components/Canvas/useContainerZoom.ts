@@ -2,7 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useMeasure } from 'react-use';
-import { canvasSizeAtom, svgAtom, canvasStrokeAtom, containerRefAtom, updateZoomAtom, UpdateZoomEvent, updateViewBoxAtom } from '../../store/store';
+import { canvasSizeAtom, svgAtom, canvasStrokeAtom, containerRefAtom, updateZoomAtom, UpdateZoomEvent, updateViewBoxAtom, autoZoomAtom } from '../../store/store';
 import { getFitViewPort, ViewPoint } from '../../svg/svg-utils-viewport';
 import throttle from '../../utils/throttle';
 import { _fViewBox } from '../../utils/debugging';
@@ -43,10 +43,11 @@ export function useContainerZoom() {
 
     const setCanvasStroke = useUpdateAtom(canvasStrokeAtom);
     const setCanvasSize = useUpdateAtom(canvasSizeAtom);
-    const [containerRef, setContainerRef] = useAtom(containerRefAtom);
+    const setContainerRef = useUpdateAtom(containerRefAtom);
 
     const updateViewBox = useUpdateAtom(updateViewBoxAtom);
     const updateZoom = useUpdateAtom(updateZoomAtom);
+    const autoZoom = useUpdateAtom(autoZoomAtom);
 
     React.useEffect(() => {
         setContainerRef(parentRef.current);
@@ -54,6 +55,7 @@ export function useContainerZoom() {
         updateViewBox();
     }, [parentRef, width, height]);
 
+    /*
     React.useEffect(() => {
         console.log('update SVG', width, height);
 
@@ -62,6 +64,13 @@ export function useContainerZoom() {
             port && setCanvasStroke(port.stroke);
         }
     }, [width, height, svg]);
+    */
+
+    React.useEffect(() => {
+        console.log('update SVG', width, height);
+        //autoZoom();
+        updateViewBox();
+    }, [svg]);
 
     const setThrottledZoom = React.useCallback(throttle((zoomEvent: UpdateZoomEvent) => {
         updateZoom(zoomEvent);
