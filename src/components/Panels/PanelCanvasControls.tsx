@@ -61,16 +61,29 @@ function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string;
     );
 }
 
+function PrecisionInput() {
+    const [precision, setPrecision] = useAtom(precisionAtom); //TODO: validate input
+    return (
+        <label className="mt-3 flex items-center text-sm space-x-1 select-none">
+            <div className="">Precision</div>
+            <input
+                className={`w-6 h-6 text-sm text-center rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                value={precision}
+                onChange={(event) => setPrecision(+event.target.value)}
+            />
+        </label>
+    );
+}
+
 export function PanelCanvasControls() {
     const showGrid = useAtomValue(showGridAtom);
     const showTicks = useAtomValue(showTicksAtom);
     const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom); //TODO: validate input
-    const [precision, setPrecision] = useAtom(precisionAtom); //TODO: validate input
-
     return (
         <div className="absolute bottom-4 right-4 px-2 py-4 bg-slate-400/40 rounded flex items-center space-x-2">
 
             <div className="flex flex-col">
+                {/* ViewBox */}
                 <div className="flex space-x-1.5">
                     <ViewboxInput label="x" tooltip="view box" idx={0} />
                     <ViewboxInput label="y" tooltip="view box" idx={1} />
@@ -86,17 +99,13 @@ export function PanelCanvasControls() {
                             <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
                             <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
                         </div>
-                        
-                        <label className="mt-3 flex items-center text-sm space-x-1 select-none">
-                            <div className="">Precision</div>
-                            <input
-                                className={`w-6 h-6 text-sm text-center rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
-                                value={precision}
-                                onChange={(event) => setPrecision(+event.target.value)}
-                            />
-                        </label>
+                        <PrecisionInput />
                     </div>
                     <div className="self-end flex">
+                        <Button label="Grid" atom={showGridAtom} />
+                        <Button label="Grid" atom={showGridAtom} />
+                        <Button label="Grid" atom={showGridAtom} />
+
                         {showGrid &&
                             <div className="flex items-center ">
                                 {showTicks &&
