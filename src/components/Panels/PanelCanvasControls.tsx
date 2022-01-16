@@ -64,10 +64,10 @@ function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string;
 function PrecisionInput() {
     const [precision, setPrecision] = useAtom(precisionAtom); //TODO: validate input
     return (
-        <label className="flex items-center text-sm space-x-1 select-none">
+        <label className="flex items-center text-xs space-x-1 select-none">
             <div className="">Precision</div>
             <input
-                className={`w-6 h-6 text-sm text-center rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                className={`w-6 h-6 text-xs text-center rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
                 value={precision}
                 onChange={(event) => setPrecision(+event.target.value)}
             />
@@ -84,7 +84,7 @@ function TicksControl() {
             <div className="flex items-center ">
                 {showTicks &&
                     <input
-                        className={`w-6 h-6 text-sm text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                        className={`w-6 h-6 text-xs text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
                         value={tickInteval}
                         onChange={(event) => setTickInteval(+event.target.value)}
                     />}
