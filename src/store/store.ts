@@ -202,7 +202,7 @@ export const doUpdateViewBoxAtom = atom(null, (get, set,) => {
             set(needInitialZoomAtom, false);
         } else {
             const viewBox = get(viewBoxAtom);
-            const box = updateViewPort(canvasSize, ...viewBox);
+            const box = updateViewPort(canvasSize, viewBox[0], viewBox[1], viewBox[2], null, true);
             if (box) {
                 set(viewBoxAtom, box.viewBox);
                 set(canvasStrokeAtom, box.stroke);
