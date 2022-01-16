@@ -41,47 +41,18 @@ export function useContainerZoom() {
 
     //console.log('%c------->>>>------useContainerZoom hook', 'color: mediumpurple', width, height);
 
-    //const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const setCanvasStroke = useUpdateAtom(canvasStrokeAtom);
     const setCanvasSize = useUpdateAtom(canvasSizeAtom);
     const [containerRef, setContainerRef] = useAtom(containerRefAtom);
 
     const updateViewBox = useUpdateAtom(updateViewBoxAtom);
     const updateZoom = useUpdateAtom(updateZoomAtom);
-    //const autoZoom = useUpdateAtom(autoZoomAtom);
-
-    //const [needInitialZoom, setNeedInitialZoom] = useAtom(needInitialZoomAtom);
 
     React.useEffect(() => {
-        //console.log('update ini', width, height, _fViewBox(viewBox), parentRef.current);
-
         setContainerRef(parentRef.current);
         setCanvasSize({ w: width, h: height });
-
         updateViewBox();
-        /*
-        if (parentRef.current && width && height) {
-            console.log('update dim', width, height, _fViewBox(viewBox), parentRef.current);
-
-            const newBox = updateViewPort({ w: width, h: height }, ...viewBox);
-            if (newBox) {
-                setViewBox(newBox.viewBox);
-                setCanvasStroke(newBox.stroke);
-            }
-        }
-        */
     }, [parentRef, width, height]);
-
-    /*
-    React.useEffect(() => {
-        if (needInitialZoom && width && height) {
-            console.log('zzzzzzzz--------setNeedInitialZoom');
-
-            autoZoom();
-            setNeedInitialZoom(false);
-        }
-    }, [width, height, needInitialZoom]);
-    */
 
     React.useEffect(() => {
         console.log('update SVG', width, height);
