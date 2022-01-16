@@ -90,6 +90,7 @@ export default App;
 //M 5 0 C 8.6 0 10 2 11 10 C 14 7 14 10 18 10 C 22 10 22 6 22 4 C 22 2.3 21 0 19 0 c -2 0 -5 -1 -8 5 C 9 8 9 10 1 15 C 1 10 0 6 0 3 C 0 -2 1 -4 5 -11 Z
 //M 50 2 C 20 20 20 60 10 20 C 12 10 16.14 0.34 -10 -10
 //M 1 2 c 24 0 25 10 25 51 C 10 20 13 -9 38 -14
+//M 1 2 c 24 0 24 23 25 51 C 10 20 25 -10 38 -14 M 5 -5 c 25 0 25 6 25 11 C 10 20 10 -15 25 -20
 
 //TODO: switch to grid (first row width problem)
 //TODO: check scale when only one 'm' command

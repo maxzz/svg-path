@@ -85,12 +85,10 @@ export const pathUnsafeAtom = atom(
         set(_pathUnsafeAtom, path);
 
         const newSvg = getParsedSvg(path);
-        newSvg && set(_svgAtom, newSvg);
-
-        // ((newSvg && !current) || (!current && path)) && set(needInitialZoomAtom, true);
-        // console.log('>>>>>>>>unsafe', newSvg, current, ((newSvg && !current) || (!current && path)));
-
-        newSvg && set(doAutoZoomAtom);
+        if (newSvg) {
+            set(_svgAtom, newSvg);
+            set(doAutoZoomAtom); // auto zoom only for changes from row input text.
+        }
     }
 );
 
@@ -136,10 +134,8 @@ export const doUpdateRowTypeAtom = atom(null, (get, set, { item, isRelative }: {
 
 // canvas zoom
 
-export const viewBoxAtom = atom<[number, number, number, number,]>([0, 0, 10, 10]);
-export const canvasStrokeAtom = atom(0);
-
-//export const unscaledPathBoundingBoxAtom = atom<[number, number, number, number,]>([0, 0, 0, 0]);
+export const viewBoxAtom = atom<ViewBox>([0, 0, 10, 10]);
+export const canvasStrokeAtom = atom(1);
 
 // canvas zoom
 
