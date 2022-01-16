@@ -7,11 +7,14 @@ import { ViewBox } from '../../svg/svg-utils-viewport';
 //import { AccordionHorizontal } from '../UI/Accordion';
 
 function Button({ label, atom, leftBorder = true }: { label: string; atom: WritableAtom<boolean, SetStateAction<boolean>, void>; leftBorder?: boolean; }) {
-    const [showGrid, setShowGrid] = useAtom(atom);
+    const [isDown, setIsDown] = useAtom(atom);
     return (
         <button
-            className={`px-1 h-6 text-sm text-slate-400 border-slate-500 border ${leftBorder ? 'rounded' : 'rounded-r'} active:scale-[.97] ${showGrid ? 'bg-slate-800 shadow-sm shadow-slate-800' : 'bg-slate-600'}`}
-            onClick={() => setShowGrid((prev) => !prev)}
+            className={`px-1 h-6 text-sm text-slate-400 border-slate-500 border 
+                ${isDown ? 'bg-slate-800 shadow-sm shadow-slate-800' : 'bg-slate-600'}
+                ${leftBorder ? 'rounded' : 'rounded-r'} active:scale-[.97]`
+            }
+            onClick={() => setIsDown((prev) => !prev)}
         >
             {label}
         </button>
@@ -123,15 +126,17 @@ export function PanelCanvasControls() {
                     </div>
 
                     {/* Actions */}
-                    <div className="mt-3 self-end flex">
-                        <div className="mr-2">
+                    <div className="mt-3 flex justify-between">
+                        <div className="">
                             <Button label="-" atom={showGridAtom} />
                             <Button label="Fit" atom={showGridAtom} />
                             <Button label="+" atom={showGridAtom} />
                         </div>
 
-                        <TicksControl />
-                        <Button label="Grid" atom={showGridAtom} />
+                        <div className="flex">
+                            <TicksControl />
+                            <Button label="Grid" atom={showGridAtom} />
+                        </div>
                     </div>
                 </div>
             </div>
