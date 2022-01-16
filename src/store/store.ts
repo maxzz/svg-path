@@ -90,7 +90,7 @@ export const pathUnsafeAtom = atom(
         // ((newSvg && !current) || (!current && path)) && set(needInitialZoomAtom, true);
         // console.log('>>>>>>>>unsafe', newSvg, current, ((newSvg && !current) || (!current && path)));
 
-        newSvg && set(autoZoomAtom);
+        newSvg && set(doAutoZoomAtom);
     }
 );
 
@@ -113,7 +113,7 @@ export const svgAtom = atom(
 
 // Upates from command editor
 
-export const updateRowValuesAtom = atom(null, (get, set, { item, values }: { item: SvgItem, values: number[]; }) => {
+export const doUpdateRowValuesAtom = atom(null, (get, set, { item, values }: { item: SvgItem, values: number[]; }) => {
     //console.log('----------------------updateRowValuesAtom', JSON.stringify(values));
 
     const svg = get(_svgAtom);
@@ -125,7 +125,7 @@ export const updateRowValuesAtom = atom(null, (get, set, { item, values }: { ite
     set(svgAtom, newSvg);
 });
 
-export const updateRowTypeAtom = atom(null, (get, set, { item, isRelative }: { item: SvgItem, isRelative: boolean; }) => {
+export const doUpdateRowTypeAtom = atom(null, (get, set, { item, isRelative }: { item: SvgItem, isRelative: boolean; }) => {
     const svg = get(_svgAtom);
     item.setRelative(isRelative);
 
@@ -150,7 +150,7 @@ export type UpdateZoomEvent = {
     pt?: ViewPoint;
 };
 
-export const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEvent) => {
+export const doUpdateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEvent) => {
 
     // let zoom = Math.min(1000, Math.max(-450, get(zoomAtom) + deltaY));
     let zoom = Math.min(1000, Math.max(-450, deltaY));
@@ -182,7 +182,7 @@ export const updateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEv
     set(viewBoxAtom, newViewBox);
 });
 
-export const autoZoomAtom = atom(null, (get, set,) => {
+const doAutoZoomAtom = atom(null, (get, set,) => {
     const canvasSize = get(canvasSizeAtom);
     const svg = get(svgAtom);
     const box = getFitViewPort(canvasSize, svg.targetLocations());
@@ -192,7 +192,7 @@ export const autoZoomAtom = atom(null, (get, set,) => {
     }
 });
 
-export const updateViewBoxAtom = atom(null, (get, set,) => {
+export const doUpdateViewBoxAtom = atom(null, (get, set,) => {
     const canvasSize = get(canvasSizeAtom);
 
     // if (!(canvasSize.w && canvasSize.h)) {
@@ -202,7 +202,7 @@ export const updateViewBoxAtom = atom(null, (get, set,) => {
     if (canvasSize.w && canvasSize.h) {
         const needInitialZoom = get(needInitialZoomAtom);
         if (needInitialZoom) {
-            set(autoZoomAtom);
+            set(doAutoZoomAtom);
             set(needInitialZoomAtom, false);
         } else {
             const viewBox = get(viewBoxAtom);

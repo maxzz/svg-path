@@ -3,7 +3,7 @@ import { useUpdateAtom } from "jotai/utils";
 import React, { useEffect } from "react";
 import { useDebounce, useDeepCompareEffect, useHoverDirty } from "react-use";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
-import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, svgAtom, updateRowTypeAtom, updateRowValuesAtom } from "../../store/store";
+import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, svgAtom, doUpdateRowTypeAtom, doUpdateRowValuesAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
 import { getTooltip, getvalueToPoint } from "../../svg/svg-utils";
 import { IconMenu } from "../UI/icons/Icons";
@@ -80,9 +80,9 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     const rowAtomRef = React.useRef(atom<WritableAtom<number, SetStateAction<number>>[]>([]));
     const [rowAtoms, setRowAtoms] = useAtom(rowAtomRef.current);
 
-    const updateRowValues = useUpdateAtom(updateRowValuesAtom);
+    const doUpdateRowValues = useUpdateAtom(doUpdateRowValuesAtom);
     const onAtomChange = React.useCallback<OnValueChange<number>>(({ get }) => {
-        updateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
+        doUpdateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
     }, []);
 
     useDeepCompareEffect(() => {
@@ -92,8 +92,8 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     //     setRowAtoms(createRowAtoms(svgItem.values, onAtomChange));
     // }, [...svgItem.values]);
 
-    const updateRowType = useUpdateAtom(updateRowTypeAtom);
-    const onCommandNameClick = () => updateRowType({ item: svgItem, isRelative: !svgItem.relative });
+    const doUpdateRowType = useUpdateAtom(doUpdateRowTypeAtom);
+    const onCommandNameClick = () => doUpdateRowType({ item: svgItem, isRelative: !svgItem.relative });
 
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
     const isActivePt = activePoint === svgItemIdx;

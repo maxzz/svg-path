@@ -2,7 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useMeasure } from 'react-use';
-import { canvasSizeAtom, svgAtom, containerRefAtom, updateZoomAtom, UpdateZoomEvent, updateViewBoxAtom } from '../../store/store';
+import { canvasSizeAtom, svgAtom, containerRefAtom, doUpdateZoomAtom, UpdateZoomEvent, doUpdateViewBoxAtom } from '../../store/store';
 import throttle from '../../utils/throttle';
 
 export function useContainerZoom() {
@@ -12,11 +12,11 @@ export function useContainerZoom() {
 
     const setCanvasSize = useUpdateAtom(canvasSizeAtom);
     const setContainerRef = useUpdateAtom(containerRefAtom);
-    const updateViewBox = useUpdateAtom(updateViewBoxAtom);
-    const updateZoom = useUpdateAtom(updateZoomAtom);
+    const doUpdateViewBox = useUpdateAtom(doUpdateViewBoxAtom);
+    const doUpdateZoom = useUpdateAtom(doUpdateZoomAtom);
 
     const setThrottledZoom = React.useCallback(throttle((zoomEvent: UpdateZoomEvent) => {
-        updateZoom(zoomEvent);
+        doUpdateZoom(zoomEvent);
     }), []);
 
     const onWheel = React.useCallback((event: React.WheelEvent) => {
@@ -32,11 +32,11 @@ export function useContainerZoom() {
     React.useEffect(() => {
         setContainerRef(parentRef.current);
         setCanvasSize({ w: width, h: height });
-        updateViewBox();
+        doUpdateViewBox();
     }, [parentRef, width, height]);
 
     React.useEffect(() => {
-        updateViewBox();
+        doUpdateViewBox();
     }, [svg]);
 
     return {
