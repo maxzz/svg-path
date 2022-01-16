@@ -34,9 +34,12 @@ function mousewheel(canvasSize: CanvasSize, canvasContainer: HTMLElement, accDel
 */
 
 export function useContainerZoom() {
+
     const [svg] = useAtom(svgAtom);
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
     const parentRef = React.useRef<HTMLElement>();
+
+    console.log('%c------->>>>------useContainerZoom hook', 'color: mediumpurple', width, height);
 
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const setCanvasStroke = useUpdateAtom(canvasStrokeAtom);
@@ -113,7 +116,7 @@ export function useContainerZoom() {
         setThrottledZoom({ deltaY: event.deltaY, pt: { x: x - left, y: y - top } });
     }, [parentRef]);
 
-    console.log('%c-------------useContainerZoom hook', 'color: mediumpurple', width, height);
+    console.log('%c-------<<<<------useContainerZoom hook', 'color: mediumpurple', width, height);
 
     return {
         ref,
