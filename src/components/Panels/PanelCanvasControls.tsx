@@ -109,20 +109,20 @@ export function PanelCanvasControls() {
                 </div>
 
                 <div className="flex flex-col">
-                    <div className="mt-4">
-                        <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                                <div className="flex-1">
-                                    <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
-                                </div>
-                                <PrecisionInput />
+                    {/* Checkboxes */}
+                    <div className="mt-2 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                                <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
                             </div>
-                            <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
-                            <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
-                            <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
+                            <PrecisionInput />
                         </div>
-
+                        <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
+                        <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
+                        <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
                     </div>
+
+                    {/* Actions */}
                     <div className="mt-3 self-end flex">
                         <div className="mr-2">
                             <Button label="-" atom={showGridAtom} />
