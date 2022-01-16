@@ -5,7 +5,7 @@ import { mergeRef } from '../../hooks/utils';
 import { activePointAtom, canvasStrokeAtom, containerRefAtom, pathUnsafeAtom, precisionAtom, snapToGridAtom, svgAtom, viewBoxAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { Svg, SvgItem, SvgPoint } from '../../svg/svg';
-import { CanvasControlsPanel } from '../Panels/PanelCanvasControls';
+//import { CanvasControlsPanel } from '../Panels/PanelCanvasControls';
 import { ViewBox, zoomAuto } from '../../svg/svg-utils-viewport';
 import { ControlPoint, StartDragEvent, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
@@ -121,14 +121,14 @@ function SvgCanvas() {
     );
 }
 
-const CanvasControlsPanelMemo = React.memo(CanvasControlsPanel);
+// const CanvasControlsPanelMemo = React.memo(CanvasControlsPanel);
 
 export function PathCanvas() {
     const { ref, parentRef, onWheel, } = useContainerZoom();
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
             <SvgCanvas />
-            <CanvasControlsPanelMemo />
+            {/* <CanvasControlsPanelMemo /> */}
         </div>
     );
 }
