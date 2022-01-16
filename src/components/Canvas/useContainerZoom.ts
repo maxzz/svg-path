@@ -51,19 +51,6 @@ export function useContainerZoom() {
     const [needInitialZoom, setNeedInitialZoom] = useAtom(needInitialZoomAtom);
 
     React.useEffect(() => {
-        if (containerRef) {
-            const { width, height } = containerRef.getBoundingClientRect();
-            const box = width && height && zoomAuto({ w: width, h: height }, []);
-            if (box) {
-                console.log('update on container change', width, height);
-
-                setViewBox(box.viewBox);
-                setCanvasStroke(box.stroke);
-            }
-        }
-    }, [containerRef]);
-
-    React.useEffect(() => {
         console.log('update ini', width, height, _fViewBox(viewBox), parentRef.current);
 
         setContainerRef(parentRef.current);
@@ -79,6 +66,19 @@ export function useContainerZoom() {
             }
         }
     }, [parentRef, width, height]);
+
+    React.useEffect(() => {
+        if (containerRef) {
+            const { width, height } = containerRef.getBoundingClientRect();
+            const box = width && height && zoomAuto({ w: width, h: height }, []);
+            if (box) {
+                console.log('update on container change', width, height);
+
+                setViewBox(box.viewBox);
+                setCanvasStroke(box.stroke);
+            }
+        }
+    }, [containerRef]);
 
     React.useEffect(() => {
         if (needInitialZoom && width && height) {
