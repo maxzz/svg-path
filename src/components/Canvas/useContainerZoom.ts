@@ -2,7 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useMeasure } from 'react-use';
-import { canvasSizeAtom, svgAtom, viewBoxAtom, canvasStrokeAtom, containerRefAtom, updateZoomAtom, UpdateZoomEvent, needInitialZoomAtom, autoZoomAtom } from '../../store/store';
+import { canvasSizeAtom, svgAtom, viewBoxAtom, canvasStrokeAtom, containerRefAtom, updateZoomAtom, UpdateZoomEvent, needInitialZoomAtom, autoZoomAtom, updateViewBoxAtom } from '../../store/store';
 import { getFitViewPort, updateViewPort, ViewPoint } from '../../svg/svg-utils-viewport';
 import throttle from '../../utils/throttle';
 import { _fViewBox } from '../../utils/debugging';
@@ -39,24 +39,27 @@ export function useContainerZoom() {
     const [ref, { width, height }] = useMeasure<HTMLDivElement>();
     const parentRef = React.useRef<HTMLElement>();
 
-    //console.log('%c------->>>>------useContainerZoom hook', 'color: mediumpurple', width, height);
+    console.log('%c------->>>>------useContainerZoom hook', 'color: mediumpurple', width, height);
 
-    const [viewBox, setViewBox] = useAtom(viewBoxAtom);
+    //const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const setCanvasStroke = useUpdateAtom(canvasStrokeAtom);
     const setCanvasSize = useUpdateAtom(canvasSizeAtom);
     const [containerRef, setContainerRef] = useAtom(containerRefAtom);
 
+    const updateViewBox = useUpdateAtom(updateViewBoxAtom);
     const updateZoom = useUpdateAtom(updateZoomAtom);
     const autoZoom = useUpdateAtom(autoZoomAtom);
 
     const [needInitialZoom, setNeedInitialZoom] = useAtom(needInitialZoomAtom);
 
     React.useEffect(() => {
-        console.log('update ini', width, height, _fViewBox(viewBox), parentRef.current);
+        //console.log('update ini', width, height, _fViewBox(viewBox), parentRef.current);
 
         setContainerRef(parentRef.current);
         setCanvasSize({ w: width, h: height });
 
+        updateViewBox();
+        /*
         if (parentRef.current && width && height) {
             console.log('update dim', width, height, _fViewBox(viewBox), parentRef.current);
 
@@ -66,6 +69,7 @@ export function useContainerZoom() {
                 setCanvasStroke(newBox.stroke);
             }
         }
+        */
     }, [parentRef, width, height]);
 
     React.useEffect(() => {

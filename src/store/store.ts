@@ -1,9 +1,9 @@
 import { atom, Getter } from "jotai";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgItem } from "../svg/svg";
-import { getFitViewPort, ViewBox, ViewPoint } from "../svg/svg-utils-viewport";
+import { getFitViewPort, updateViewPort, ViewBox, ViewPoint } from "../svg/svg-utils-viewport";
 import debounce from "../utils/debounce";
-import { _fViewBox, _ViewBox } from "../utils/debugging";
+import { unexpected, _fViewBox, _ViewBox } from "../utils/debugging";
 
 namespace Storage {
     const KEY = 'react-svg-expo-01';
@@ -205,6 +205,23 @@ export const autoZoomAtom = atom(null, (get, set, ) => {
     if (box) {
         set(viewBoxAtom, box.port);
         set(canvasStrokeAtom, box.stroke);
+    }
+});
+
+export const updateViewBoxAtom = atom(null, (get, set, ) => {
+    const canvasSize = get(canvasSizeAtom);
+    
+    if (!(canvasSize.w && canvasSize.h)) {
+        unexpected('updateViewBoxAtom');
+    }
+
+    if (canvasSize.w && canvasSize.h) {
+        const viewBox = get(viewBoxAtom);
+        const box = updateViewPort(canvasSize, ...viewBox);
+        if (box) {
+            set(viewBoxAtom, box.viewBox);
+            set(canvasStrokeAtom, box.stroke);
+        }
     }
 });
 
