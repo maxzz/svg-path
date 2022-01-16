@@ -75,10 +75,27 @@ function PrecisionInput() {
     );
 }
 
-export function PanelCanvasControls() {
+function TicksControl() {
     const showGrid = useAtomValue(showGridAtom);
     const showTicks = useAtomValue(showTicksAtom);
     const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom); //TODO: validate input
+    return (<>
+        {showGrid &&
+            <div className="flex items-center ">
+                {showTicks &&
+                    <input
+                        className={`w-6 h-6 text-sm text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                        value={tickInteval}
+                        onChange={(event) => setTickInteval(+event.target.value)}
+                    />}
+                <Button label="Ticks" atom={showTicksAtom} leftBorder={!showTicks} />
+            </div>
+        }
+
+    </>);
+}
+
+export function PanelCanvasControls() {
     return (
         <div className="absolute bottom-4 right-4 px-3 py-4 bg-slate-400/40 rounded flex items-center space-x-2">
 
@@ -104,24 +121,16 @@ export function PanelCanvasControls() {
                             <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
                             <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
                         </div>
-                        
+
                     </div>
                     <div className="mt-3 self-end flex">
-                        <Button label="Grid" atom={showGridAtom} />
-                        <Button label="Grid" atom={showGridAtom} />
-                        <Button label="Grid" atom={showGridAtom} />
+                        <div className="mr-2">
+                            <Button label="-" atom={showGridAtom} />
+                            <Button label="Fit" atom={showGridAtom} />
+                            <Button label="+" atom={showGridAtom} />
+                        </div>
 
-                        {showGrid &&
-                            <div className="flex items-center ">
-                                {showTicks &&
-                                    <input
-                                        className={`w-6 h-6 text-sm text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
-                                        value={tickInteval}
-                                        onChange={(event) => setTickInteval(+event.target.value)}
-                                    />}
-                                <Button label="Ticks" atom={showTicksAtom} leftBorder={!showTicks} />
-                            </div>
-                        }
+                        <TicksControl />
                         <Button label="Grid" atom={showGridAtom} />
                     </div>
                 </div>
@@ -129,4 +138,3 @@ export function PanelCanvasControls() {
         </div>
     );
 }
-
