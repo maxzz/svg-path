@@ -25,6 +25,22 @@ export function getPointsBoundingBox(targetPoints: SvgPoint[]): { xmin: number; 
     return { xmin, ymin, xmax, ymax, };
 }
 
+export function scaleViewBox(viewBox: ViewBox, scale: number, pt?: ViewPoint): ViewBox {
+    const [viewPortX, viewPortY, viewPortWidth, viewPortHeight] = viewBox;
+
+    pt = pt || {
+        x: viewPortX + 0.5 * viewPortWidth,
+        y: viewPortY + 0.5 * viewPortHeight
+    };
+
+    const x = viewPortX + ((pt.x - viewPortX) - scale * (pt.x - viewPortX));
+    const y = viewPortY + ((pt.y - viewPortY) - scale * (pt.y - viewPortY));
+    const w = scale * viewPortWidth;
+    const h = scale * viewPortHeight;
+
+    return [x, y, w, h];
+}
+
 //export const nullCanvesSize: CanvasSize = { size: { w: 0, h: 0 }, port: [0, 0, 0, 0], stroke: 0.001 };
 
 type ViewBoxUpdate = {
