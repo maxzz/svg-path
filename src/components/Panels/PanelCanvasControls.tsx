@@ -1,6 +1,6 @@
 import React from 'react';
-import { PrimitiveAtom, useAtom, WritableAtom } from 'jotai';
-import { doAutoZoomAtom, fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom, viewBoxAtom } from '../../store/store';
+import { PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from 'jotai';
+import { doAutoZoomAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom, viewBoxAtom } from '../../store/store';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useNumberInput } from '../../hooks/useNumberInput';
 import { ViewBox } from '../../svg/svg-utils-viewport';
@@ -98,14 +98,14 @@ function TicksControl() {
     </>);
 }
 
-function ButtonZoom({ label, atom, leftBorder = true }: { label: string; atom: PrimitiveAtom<void>; leftBorder?: boolean; }) {
+function ButtonZoom({ label, atom, value, leftBorder = true }: { label: string; atom: WritableAtom<null, number>; value: number; leftBorder?: boolean; }) {
     const setIsDown = useUpdateAtom(atom);
     return (
         <button
             className={`px-1 h-6 text-sm text-slate-400 border-slate-500 border 
-            bg-slate-800 shadow-sm shadow-slate-800
-            ${leftBorder ? 'rounded' : 'rounded-r'} active:scale-[.97]`}
-            onClick={() => setIsDown()}
+            bg-slate-800 shadow-sm shadow-slate-800 active:scale-[.97]
+            ${leftBorder ? 'rounded' : 'rounded-r'}`}
+            onClick={() => setIsDown(value)}
         >
             {label}
         </button>
@@ -113,12 +113,11 @@ function ButtonZoom({ label, atom, leftBorder = true }: { label: string; atom: P
 }
 
 function ZoomControls() {
-    const [doAutoZoom] = useAtom(doAutoZoomAtom);
     return (
         <div className="">
-            <ButtonZoom label="-" atom={doAutoZoomAtom} />
-            <ButtonZoom label="Fit" atom={doAutoZoomAtom} />
-            <ButtonZoom label="+" atom={doAutoZoomAtom} />
+            <ButtonZoom label="-" atom={doSetZoomAtom} value={-10}/>
+            <ButtonZoom label="Fit" atom={doSetZoomAtom} value={0}/>
+            <ButtonZoom label="+" atom={doSetZoomAtom} value={10}/>
         </div>
     );
 }

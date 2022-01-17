@@ -188,6 +188,14 @@ export const doAutoZoomAtom = atom(null, (get, set,) => {
     }
 });
 
+export const doSetZoomAtom = atom(null, (get, set, delta: number) => {
+    if (!delta) {
+        set(doAutoZoomAtom);
+    } else {
+        set(doUpdateZoomAtom, { deltaY: delta });
+    }
+});
+
 export const doUpdateViewBoxAtom = atom(null, (get, set,) => {
     const canvasSize = get(canvasSizeAtom);
 
