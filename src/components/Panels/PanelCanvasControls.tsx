@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import { PrimitiveAtom, useAtom, WritableAtom } from 'jotai';
 import { doSetViewBoxAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom, viewBoxAtom } from '../../store/store';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
@@ -7,7 +7,7 @@ import { ViewBox, ViewBoxManual } from '../../svg/svg-utils-viewport';
 import { classNames } from '../../utils/classnames';
 //import { AccordionHorizontal } from '../UI/Accordion';
 
-function Button({ label, atom, leftBorder = true }: { label: string; atom: PrimitiveAtom<boolean>; leftBorder?: boolean; }) {
+function Button({ label, atom, leftBorder = true, ...rest }: { label: string; atom: PrimitiveAtom<boolean>; leftBorder?: boolean; } & HTMLAttributes<HTMLButtonElement>) {
     const [isDown, setIsDown] = useAtom(atom);
     return (
         <button
@@ -16,6 +16,7 @@ function Button({ label, atom, leftBorder = true }: { label: string; atom: Primi
                 ${leftBorder ? 'rounded' : 'rounded-r'} active:scale-[.97]`
             }
             onClick={() => setIsDown((prev) => !prev)}
+            {...rest}
         >
             {label}
         </button>
@@ -56,12 +57,8 @@ function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string;
     const bind = useNumberInput(value[idx], (v: number) => {
         let box: ViewBoxManual = [...value];
         box[idx] = v;
-        if (idx === 2) {
-            box[3] = null;
-        }
-        if (idx === 3) {
-            box[2] = null;
-        }
+        if (idx === 2) { box[3] = null; }
+        if (idx === 3) { box[2] = null; }
         setValue(box);
     });
     return (
@@ -99,14 +96,13 @@ function TicksControl() {
             <div className="flex items-center ">
                 {showTicks &&
                     <input
-                        className={`w-6 h-6 text-xs text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                        className={`w-6 h-6 text-xs text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800 focus:ring-0`}
                         {...bind}
                     />
                 }
-                <Button label="Ticks" atom={showTicksAtom} leftBorder={!showTicks} />
+                <Button label="Ticks" atom={showTicksAtom} leftBorder={!showTicks} tabIndex={-1} />
             </div>
         }
-
     </>);
 }
 
