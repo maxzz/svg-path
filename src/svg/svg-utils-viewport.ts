@@ -131,7 +131,7 @@ export function getFitViewPort(canvas: ViewSize, targetPoints: SvgPoint[]): Canv
         parseFloat((1 * viewPortHeight).toPrecision(4)),
     ];
 
-    let strokeWidth = 1.1 * port[2] / canvas.w;
+    let strokeWidth = port[2] / canvas.w;
 
     return {
         size: { w: canvas.w, h: canvas.h },
