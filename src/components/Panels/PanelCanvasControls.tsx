@@ -4,13 +4,14 @@ import { doAutoZoomAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, precisio
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useNumberInput } from '../../hooks/useNumberInput';
 import { ViewBox } from '../../svg/svg-utils-viewport';
+import { classNames } from '../../utils/classnames';
 //import { AccordionHorizontal } from '../UI/Accordion';
 
 function Button({ label, atom, leftBorder = true }: { label: string; atom: PrimitiveAtom<boolean>; leftBorder?: boolean; }) {
     const [isDown, setIsDown] = useAtom(atom);
     return (
         <button
-            className={`px-1 h-6 text-sm text-slate-400 border-slate-500 border 
+            className={`px-1 h-6 text-xs text-slate-400 border-slate-500 border 
                 ${isDown ? 'bg-slate-800 shadow-sm shadow-slate-800' : 'bg-slate-600'}
                 ${leftBorder ? 'rounded' : 'rounded-r'} active:scale-[.97]`
             }
@@ -102,7 +103,10 @@ function ButtonZoom({ label, atom, value, className = '' }: { label: string; ato
     const setIsDown = useUpdateAtom(atom);
     return (
         <button
-            className={`px-1 h-6 text-sm text-slate-400 border-slate-500 border bg-slate-800 shadow-sm shadow-slate-800 active:scale-[.97] ${className}`}
+            className={classNames(
+                `px-1 pb-0.5 h-6 text-xs text-slate-400 border-slate-500 bg-slate-800 shadow-sm shadow-slate-800 active:scale-[.97] select-none`,
+                className
+            )}
             onClick={() => setIsDown(value)}
         >
             {label}
@@ -112,10 +116,10 @@ function ButtonZoom({ label, atom, value, className = '' }: { label: string; ato
 
 function ZoomControls() {
     return (
-        <div className="">
-            <ButtonZoom label="-" atom={doSetZoomAtom} value={10} className="rounded-l"/>
-            <ButtonZoom label="Fit" atom={doSetZoomAtom} value={0}/>
-            <ButtonZoom label="+" atom={doSetZoomAtom} value={-10} className="rounded-r"/>
+        <div className="flex items-center">
+            <ButtonZoom label="-" atom={doSetZoomAtom} value={10} className="rounded-l border w-5"/>
+            <ButtonZoom label="Fit Zoom" atom={doSetZoomAtom} value={0} className="border-t border-b"/>
+            <ButtonZoom label="+" atom={doSetZoomAtom} value={-10} className="rounded-r border w-5"/>
         </div>
     );
 }
@@ -147,7 +151,7 @@ export function PanelCanvasControls() {
                     </div>
 
                     {/* Actions */}
-                    <div className="mt-3 flex justify-between">
+                    <div className="mt-3 flex items-center justify-between">
                         <ZoomControls />
 
                         <div className="flex">
