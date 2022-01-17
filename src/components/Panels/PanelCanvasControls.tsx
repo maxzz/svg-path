@@ -1,25 +1,10 @@
 import React from 'react';
-import { PrimitiveAtom, useAtom } from 'jotai';
+import { PrimitiveAtom, useAtom, WritableAtom } from 'jotai';
 import { doAutoZoomAtom, fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom, viewBoxAtom } from '../../store/store';
-import { useAtomValue } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useNumberInput } from '../../hooks/useNumberInput';
 import { ViewBox } from '../../svg/svg-utils-viewport';
 //import { AccordionHorizontal } from '../UI/Accordion';
-
-// function ButtonWAction({ label, atom, leftBorder = true }: { label: string; atom: PrimitiveAtom<boolean>; leftBorder?: boolean; }) {
-//     const [isDown, setIsDown] = useAtom(atom);
-//     return (
-//         <button
-//             className={`px-1 h-6 text-sm text-slate-400 border-slate-500 border 
-//                 ${isDown ? 'bg-slate-800 shadow-sm shadow-slate-800' : 'bg-slate-600'}
-//                 ${leftBorder ? 'rounded' : 'rounded-r'} active:scale-[.97]`
-//             }
-//             onClick={() => setIsDown((prev) => !prev)}
-//         >
-//             {label}
-//         </button>
-//     );
-// }
 
 function Button({ label, atom, leftBorder = true }: { label: string; atom: PrimitiveAtom<boolean>; leftBorder?: boolean; }) {
     const [isDown, setIsDown] = useAtom(atom);
@@ -112,13 +97,28 @@ function TicksControl() {
 
     </>);
 }
+
+function ButtonZoom({ label, atom, leftBorder = true }: { label: string; atom: PrimitiveAtom<void>; leftBorder?: boolean; }) {
+    const setIsDown = useUpdateAtom(atom);
+    return (
+        <button
+            className={`px-1 h-6 text-sm text-slate-400 border-slate-500 border 
+            bg-slate-800 shadow-sm shadow-slate-800
+            ${leftBorder ? 'rounded' : 'rounded-r'} active:scale-[.97]`}
+            onClick={() => setIsDown()}
+        >
+            {label}
+        </button>
+    );
+}
+
 function ZoomControls() {
     const [doAutoZoom] = useAtom(doAutoZoomAtom);
     return (
         <div className="">
-            <Button label="-" atom={showGridAtom} />
-            {/* <Button label="Fit" atom={doAutoZoomAtom} /> */}
-            <Button label="+" atom={showGridAtom} />
+            <ButtonZoom label="-" atom={doAutoZoomAtom} />
+            <ButtonZoom label="Fit" atom={doAutoZoomAtom} />
+            <ButtonZoom label="+" atom={doAutoZoomAtom} />
         </div>
     );
 }
