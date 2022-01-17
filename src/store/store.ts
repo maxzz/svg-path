@@ -182,9 +182,13 @@ export const doUpdateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoom
     const scale = Math.pow(1.005, zoom);
     const newViewBox = scaleViewBox(viewBox, scale);
 
+    const canvasSize = get(canvasSizeAtom);
+    const newStroke = newViewBox[2] / canvasSize.w;
+
     //console.log('new zoom', (''+zoom).padStart(5, ' '), '-----old viewBox-----', _fViewBox(viewBox), '-----new viewBox-----', _fViewBox(newViewBox));
 
     set(viewBoxAtom, newViewBox);
+    set(canvasStrokeAtom, newStroke);
 });
 
 export const doAutoZoomAtom = atom(null, (get, set,) => {
