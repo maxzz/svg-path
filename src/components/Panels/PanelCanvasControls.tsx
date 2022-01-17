@@ -1,12 +1,27 @@
 import React from 'react';
-import { PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from 'jotai';
-import { fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom, viewBoxAtom } from '../../store/store';
+import { PrimitiveAtom, useAtom } from 'jotai';
+import { doAutoZoomAtom, fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom, viewBoxAtom } from '../../store/store';
 import { useAtomValue } from 'jotai/utils';
 import { useNumberInput } from '../../hooks/useNumberInput';
 import { ViewBox } from '../../svg/svg-utils-viewport';
 //import { AccordionHorizontal } from '../UI/Accordion';
 
-function Button({ label, atom, leftBorder = true }: { label: string; atom: WritableAtom<boolean, SetStateAction<boolean>, void>; leftBorder?: boolean; }) {
+// function ButtonWAction({ label, atom, leftBorder = true }: { label: string; atom: PrimitiveAtom<boolean>; leftBorder?: boolean; }) {
+//     const [isDown, setIsDown] = useAtom(atom);
+//     return (
+//         <button
+//             className={`px-1 h-6 text-sm text-slate-400 border-slate-500 border 
+//                 ${isDown ? 'bg-slate-800 shadow-sm shadow-slate-800' : 'bg-slate-600'}
+//                 ${leftBorder ? 'rounded' : 'rounded-r'} active:scale-[.97]`
+//             }
+//             onClick={() => setIsDown((prev) => !prev)}
+//         >
+//             {label}
+//         </button>
+//     );
+// }
+
+function Button({ label, atom, leftBorder = true }: { label: string; atom: PrimitiveAtom<boolean>; leftBorder?: boolean; }) {
     const [isDown, setIsDown] = useAtom(atom);
     return (
         <button
@@ -97,11 +112,20 @@ function TicksControl() {
 
     </>);
 }
+function ZoomControls() {
+    const [doAutoZoom] = useAtom(doAutoZoomAtom);
+    return (
+        <div className="">
+            <Button label="-" atom={showGridAtom} />
+            {/* <Button label="Fit" atom={doAutoZoomAtom} /> */}
+            <Button label="+" atom={showGridAtom} />
+        </div>
+    );
+}
 
 export function PanelCanvasControls() {
     return (
         <div className="absolute bottom-4 right-4 px-3 py-4 bg-slate-400/40 rounded flex items-center space-x-2">
-
             <div className="flex flex-col">
                 {/* ViewBox */}
                 <div className="flex space-x-1.5">
@@ -127,11 +151,7 @@ export function PanelCanvasControls() {
 
                     {/* Actions */}
                     <div className="mt-3 flex justify-between">
-                        <div className="">
-                            <Button label="-" atom={showGridAtom} />
-                            <Button label="Fit" atom={showGridAtom} />
-                            <Button label="+" atom={showGridAtom} />
-                        </div>
+                        <ZoomControls />
 
                         <div className="flex">
                             <TicksControl />

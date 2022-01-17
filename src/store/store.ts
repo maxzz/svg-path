@@ -178,7 +178,7 @@ export const doUpdateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoom
     set(viewBoxAtom, newViewBox);
 });
 
-const doAutoZoomAtom = atom(null, (get, set,) => {
+export const doAutoZoomAtom = atom(null, (get, set,) => {
     const canvasSize = get(canvasSizeAtom);
     const svg = get(svgAtom);
     const box = getFitViewPort(canvasSize, svg.targetLocations());
