@@ -98,11 +98,11 @@ function TicksControl() {
     </>);
 }
 
-function ButtonZoom({ label, atom, value, rounded = 'rounded' }: { label: string; atom: WritableAtom<null, number>; value: number; rounded?: string; }) {
+function ButtonZoom({ label, atom, value, className = '' }: { label: string; atom: WritableAtom<null, number>; value: number; className?: string; }) {
     const setIsDown = useUpdateAtom(atom);
     return (
         <button
-            className={`px-1 h-6 text-sm text-slate-400 border-slate-500 border bg-slate-800 shadow-sm shadow-slate-800 active:scale-[.97] ${rounded}`}
+            className={`px-1 h-6 text-sm text-slate-400 border-slate-500 border bg-slate-800 shadow-sm shadow-slate-800 active:scale-[.97] ${className}`}
             onClick={() => setIsDown(value)}
         >
             {label}
@@ -113,9 +113,9 @@ function ButtonZoom({ label, atom, value, rounded = 'rounded' }: { label: string
 function ZoomControls() {
     return (
         <div className="">
-            <ButtonZoom label="-" atom={doSetZoomAtom} value={10} rounded="rounded-l"/>
-            <ButtonZoom label="Fit" atom={doSetZoomAtom} value={0}  rounded=""/>
-            <ButtonZoom label="+" atom={doSetZoomAtom} value={-10} rounded="rounded-r"/>
+            <ButtonZoom label="-" atom={doSetZoomAtom} value={10} className="rounded-l"/>
+            <ButtonZoom label="Fit" atom={doSetZoomAtom} value={0}/>
+            <ButtonZoom label="+" atom={doSetZoomAtom} value={-10} className="rounded-r"/>
         </div>
     );
 }
