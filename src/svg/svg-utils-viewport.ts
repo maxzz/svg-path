@@ -4,8 +4,14 @@ import { SvgPoint } from "./svg";
 export type ViewPoint = { x: number; y: number; };
 export type ViewSize = { w: number; h: number; };
 export type ViewBox = [x: number, y: number, w: number, h: number];
+export type ViewBoxManual = [x: number, y: number, w: number | null, h: number | null];
 
-export type CanvasSize = {
+type ViewBoxWithStroke = {
+    viewBox: ViewBox;
+    stroke: number;
+};
+
+type CanvasSize = {
     size: ViewSize; // canvas size
     port: ViewBox;  // SVG viewBox
     stroke: number; // SVG stroke scaled width
@@ -41,14 +47,7 @@ export function scaleViewBox(viewBox: ViewBox, scale: number, pt?: ViewPoint): V
     return [x, y, w, h];
 }
 
-//export const nullCanvesSize: CanvasSize = { size: { w: 0, h: 0 }, port: [0, 0, 0, 0], stroke: 0.001 };
-
-type ViewBoxUpdate = {
-    viewBox: ViewBox;
-    stroke: number;
-};
-
-export function updateViewPort(canvas: ViewSize, x: number, y: number, w: number | null, h: number | null, force = false, viewPortLocked = false): ViewBoxUpdate | undefined {
+export function updateViewPort(canvas: ViewSize, x: number, y: number, w: number | null, h: number | null, force = false, viewPortLocked = false): ViewBoxWithStroke | undefined {
     if (!force && viewPortLocked) {
         return;
     }
@@ -77,7 +76,7 @@ export function updateViewPort(canvas: ViewSize, x: number, y: number, w: number
     };
 }
 
-export function zoomAuto(canvas: ViewSize, targetPoints: SvgPoint[], viewPortLocked = false): ViewBoxUpdate | undefined {
+export function zoomAuto(canvas: ViewSize, targetPoints: SvgPoint[], viewPortLocked = false): ViewBoxWithStroke | undefined {
     if (viewPortLocked) {
         return;
     }

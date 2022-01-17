@@ -1,9 +1,9 @@
 import React from 'react';
-import { PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from 'jotai';
-import { doAutoZoomAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom, viewBoxAtom } from '../../store/store';
+import { PrimitiveAtom, useAtom, WritableAtom } from 'jotai';
+import { doSetViewBoxAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom, viewBoxAtom } from '../../store/store';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useNumberInput } from '../../hooks/useNumberInput';
-import { ViewBox } from '../../svg/svg-utils-viewport';
+import { ViewBox, ViewBoxManual } from '../../svg/svg-utils-viewport';
 import { classNames } from '../../utils/classnames';
 //import { AccordionHorizontal } from '../UI/Accordion';
 
@@ -51,9 +51,19 @@ function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; at
 }
 
 function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string; idx: number; }) {
-    let [value, setValue] = useAtom(viewBoxAtom);
+    let [value, setValue] = useAtom(doSetViewBoxAtom);
     value = value.map(v => parseFloat(v.toFixed(3))) as ViewBox;
-    const bind = useNumberInput(value[idx], (v: number) => setValue(prev => ((prev[idx] = v), [...prev])));
+    const bind = useNumberInput(value[idx], (v: number) => {
+        let box: ViewBoxManual = [...value];
+        box[idx] = v;
+        if (idx === 2) {
+            box[3] = null;
+        }
+        if (idx === 3) {
+            box[2] = null;
+        }
+        setValue(box);
+    });
     return (
         <label className="relative text-xs select-none text-slate-400" title={tooltip}>
             <div className="absolute left-1.5 text-[.6rem] text-slate-400/50">{label}</div>
@@ -104,7 +114,7 @@ function ButtonZoom({ label, atom, value, className = '' }: { label: string; ato
     return (
         <button
             className={classNames(
-                `px-1 pb-0.5 h-6 text-xs text-slate-400 border-slate-500 bg-slate-800 shadow-sm shadow-slate-800 active:scale-[.97] select-none`,
+                `px-1 pb-px h-6 text-xs text-slate-400 border-slate-500 bg-slate-800 shadow-sm shadow-slate-800 active:scale-[.97] select-none`,
                 className
             )}
             onClick={() => setIsDown(value)}
@@ -117,9 +127,9 @@ function ButtonZoom({ label, atom, value, className = '' }: { label: string; ato
 function ZoomControls() {
     return (
         <div className="flex items-center">
-            <ButtonZoom label="-" atom={doSetZoomAtom} value={10} className="rounded-l border w-5"/>
-            <ButtonZoom label="Fit Zoom" atom={doSetZoomAtom} value={0} className="border-t border-b"/>
-            <ButtonZoom label="+" atom={doSetZoomAtom} value={-10} className="rounded-r border w-5"/>
+            <ButtonZoom label="-" atom={doSetZoomAtom} value={10} className="rounded-l border w-5" />
+            <ButtonZoom label="Fit Zoom" atom={doSetZoomAtom} value={0} className="border-t border-b" />
+            <ButtonZoom label="+" atom={doSetZoomAtom} value={-10} className="rounded-r border w-5" />
         </div>
     );
 }
@@ -140,9 +150,7 @@ export function PanelCanvasControls() {
                     {/* Checkboxes */}
                     <div className="mt-2 space-y-1.5">
                         <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                                <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
-                            </div>
+                            <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
                             <PrecisionInput />
                         </div>
                         <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />

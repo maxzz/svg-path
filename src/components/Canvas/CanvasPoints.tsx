@@ -1,6 +1,6 @@
 import { atom, useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
-import { activePointAtom, canvasStrokeAtom, containerRefAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, svgAtom, viewBoxAtom } from "../../store/store";
+import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom } from "../../store/store";
 import { formatNumber, Svg, SvgControlPoint, SvgItem, SvgPoint } from "../../svg/svg";
 import { ViewPoint } from "../../svg/svg-utils-viewport";
 

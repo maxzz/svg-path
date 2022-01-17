@@ -1,7 +1,7 @@
 import { atom, Getter } from "jotai";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgItem } from "../svg/svg";
-import { getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewPoint } from "../svg/svg-utils-viewport";
+import { getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
 import debounce from "../utils/debounce";
 import { unexpected, _fViewBox, _ViewBox } from "../utils/debugging";
 
@@ -132,14 +132,23 @@ export const doUpdateRowTypeAtom = atom(null, (get, set, { item, isRelative }: {
     set(svgAtom, newSvg);
 });
 
-// canvas zoom
+// canvas size
 
 export const viewBoxAtom = atom<ViewBox>([0, 0, 10, 10]);
 export const canvasStrokeAtom = atom(1);
 
+export const doSetViewBoxAtom = atom((get) => get(viewBoxAtom), (get, set, box: ViewBoxManual) => {
+    const canvasSize = get(canvasSizeAtom);
+    const newBox = updateViewPort(canvasSize, ...box, true);
+    if (newBox) {
+        set(viewBoxAtom, newBox.viewBox);
+        set(canvasStrokeAtom, newBox.stroke);
+    }
+});
+
 // canvas zoom
 
-const zoomAtom = atom(0);
+//const zoomAtom = atom(0);
 
 export type UpdateZoomEvent = {
     deltaY: number;
@@ -150,7 +159,7 @@ export const doUpdateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoom
 
     // let zoom = Math.min(1000, Math.max(-450, get(zoomAtom) + deltaY));
     let zoom = Math.min(1000, Math.max(-450, deltaY));
-    set(zoomAtom, zoom);
+    //set(zoomAtom, zoom);
 
     // let stroke = get(viewBoxStrokeAtom);
     // let [x, y] = get(viewBoxAtom);
