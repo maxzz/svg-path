@@ -92,16 +92,17 @@ function PrecisionInput() {
 function TicksControl() {
     const showGrid = useAtomValue(showGridAtom);
     const showTicks = useAtomValue(showTicksAtom);
-    const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom); //TODO: validate input
+    const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom);
+    const bind = useNumberInput(tickInteval, (v: number) => setTickInteval(v));
     return (<>
         {showGrid &&
             <div className="flex items-center ">
                 {showTicks &&
                     <input
                         className={`w-6 h-6 text-xs text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
-                        value={tickInteval}
-                        onChange={(event) => setTickInteval(+event.target.value)}
-                    />}
+                        {...bind}
+                    />
+                }
                 <Button label="Ticks" atom={showTicksAtom} leftBorder={!showTicks} />
             </div>
         }
