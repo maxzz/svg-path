@@ -62,11 +62,17 @@ function SvgCanvas() {
             const decimals = snapToGrid ? 0 : event.ctrlKey ? precision ? 0 : 3 : precision;
             pt.x = parseFloat(pt.x.toFixed(decimals));
             pt.y = parseFloat(pt.y.toFixed(decimals));
-            //console.log('move', pt.x, pt.y);
+            console.log('move', pt.x, pt.y);
 
-            svg.setLocation(startDragEventRef.current.pt as SvgPoint, pt);
-            const newSvg = new Svg();
-            newSvg.path = svg.path;
+            // svg.setLocation(startDragEventRef.current.pt as SvgPoint, pt);
+            // const newSvg = new Svg();
+            // newSvg.path = svg.path;
+            // setSvg(newSvg);
+
+            svg.setLocation(startDragEventRef.current.pt as SvgPoint, pt); // no anymore this point
+            console.log('set new path', svg.asString());
+            
+            const newSvg = new Svg(svg.asString());
             setSvg(newSvg);
         } else {
             // const startPt = getEventPt(containerRef, startDragEventRef.current.event.clientX, startDragEventRef.current.event.clientY);

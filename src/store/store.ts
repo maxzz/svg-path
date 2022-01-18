@@ -105,7 +105,7 @@ export const svgAtom = atom(
         const path = svg.asString();
         set(_pathUnsafeAtom, path);
 
-        console.log('>>>>>>>>svgAtom update');
+        console.log('>>>>>>>>svgAtom update', svg.asString());
     }
 );
 

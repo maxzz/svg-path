@@ -1,7 +1,8 @@
 import { atom, PrimitiveAtom, SetStateAction, useAtom, WritableAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import React, { useEffect } from "react";
-import { useDebounce, useDeepCompareEffect, useHoverDirty } from "react-use";
+import { useDebounce, useHoverDirty } from "react-use";
+import useDeepCompareEffect from "use-deep-compare-effect";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
 import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, svgAtom, doUpdateRowTypeAtom, doUpdateRowValuesAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
@@ -85,7 +86,10 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
         doUpdateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
     }, []);
 
+    svgItemIdx === 1 && console.log('Row', ...svgItem.values);
+
     useDeepCompareEffect(() => {
+        console.log('------------------------recreate');
         setRowAtoms(createRowAtoms(svgItem.values, onAtomChange));
     }, [svgItem.values]);
     // useEffect(() => {
