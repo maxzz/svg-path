@@ -83,10 +83,12 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
     const doUpdateRowValues = useUpdateAtom(doUpdateRowValuesAtom);
     const onAtomChange = React.useCallback<OnValueChange<number>>(({ get }) => {
+        console.log('------------------------atom change', ...get(rowAtomRef.current).map(atomValue => get(atomValue)));
+
         doUpdateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
     }, []);
 
-    svgItemIdx === 1 && console.log('Row', ...svgItem.values);
+    svgItemIdx === 1 && console.log('1st row', ...svgItem.values);
 
     useDeepCompareEffect(() => {
         console.log('------------------------recreate');
