@@ -83,7 +83,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
     const doUpdateRowValues = useUpdateAtom(doUpdateRowValuesAtom);
     const onAtomChange = React.useCallback<OnValueChange<number>>(({ get }) => {
-        console.log('------------------------atom change', 'svgItem', svgItem.values, 'new values', ...get(rowAtomRef.current).map(atomValue => get(atomValue)));
+        console.log('------------------------atom change', 'svgItem', svgItem.id, 'new values', ...get(rowAtomRef.current).map(atomValue => get(atomValue)));
 
         doUpdateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
     }, [svgItem, rowAtomRef.current]);
@@ -117,7 +117,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
         setHoverPoint(isHovering ? svgItemIdx : -1);
     }, [isHoveringDebounced]);
 
-    //console.log('CommandRow render', svgItem);
+    svgItemIdx === 0 && console.log('CommandRow render', {id: svgItem.id, values: svgItem.values.join(', '), svgItem});
 
     return (<>
         <div
@@ -157,6 +157,8 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
 export function PathCommandEditor() {
     const [svg] = useAtom(svgAtom);
+    console.log('=========== render ============ all');
+    
     return (
         <div className="my-1 space-y-0.5">
             {svg.path.map((svgItem, idx) => (

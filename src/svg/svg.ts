@@ -1,4 +1,5 @@
 import { SvgParser } from './svg-parser';
+import uuid from '../utils/uuid';
 
 export function formatNumber(v: number, d: number, minify = false): string {
     let result = v.toFixed(d)
@@ -18,6 +19,8 @@ export class Point {
 export class SvgPoint extends Point {
     itemReference: SvgItem = new DummySvgItem();
     movable = true;
+    
+    id: string = uuid();
     constructor(x: number, y: number, movable = true) {
         super(x, y);
         this.movable = movable;
@@ -34,10 +37,12 @@ export class SvgControlPoint extends SvgPoint {
 export abstract class SvgItem {
     relative: boolean;
     values: number[];
-    
+
     previousPoint: Point = new Point(0, 0);
     absolutePoints: SvgPoint[] = [];
     absoluteControlPoints: SvgControlPoint[] = [];
+
+    id: string = uuid();
 
     constructor(values: number[], relative: boolean) {
         this.values = values;
