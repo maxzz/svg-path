@@ -112,11 +112,12 @@ export const svgAtom = atom(
 // Upates from command editor
 
 export const doUpdateRowValuesAtom = atom(null, (get, set, { item, values }: { item: SvgItem, values: number[]; }) => {
-    console.log('----------------------updateRowValuesAtom', JSON.stringify(values));
-
     const svg = get(_svgAtom);
-    item.values = values;
+    //debugger
+    item.values = [...values];
     svg.refreshAbsolutePositions();
+
+    console.log('----------------------updateRowValuesAtom', JSON.stringify(values), 'svg', svg.asString());
 
     const newSvg = new Svg(svg.asString());
     // const newSvg = new Svg();

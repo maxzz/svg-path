@@ -83,15 +83,15 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
     const doUpdateRowValues = useUpdateAtom(doUpdateRowValuesAtom);
     const onAtomChange = React.useCallback<OnValueChange<number>>(({ get }) => {
-        console.log('------------------------atom change', ...get(rowAtomRef.current).map(atomValue => get(atomValue)));
+        console.log('------------------------atom change', 'svgItem', svgItem.values, 'new values', ...get(rowAtomRef.current).map(atomValue => get(atomValue)));
 
         doUpdateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
-    }, []);
+    }, [svgItem, rowAtomRef.current]);
 
-    svgItemIdx === 1 && console.log('1st row', ...svgItem.values);
+    //svgItemIdx === 0 && console.log('CommandRow render (1st row)', ...svgItem.values);
 
     useDeepCompareEffect(() => {
-        console.log('------------------------recreate');
+        console.log('------------------------recreate row atoms');
         setRowAtoms(createRowAtoms(svgItem.values, onAtomChange));
     }, [svgItem.values]);
     // useEffect(() => {
@@ -116,6 +116,8 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     React.useEffect(() => {
         setHoverPoint(isHovering ? svgItemIdx : -1);
     }, [isHoveringDebounced]);
+
+    //console.log('CommandRow render', svgItem);
 
     return (<>
         <div
