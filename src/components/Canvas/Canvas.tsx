@@ -4,7 +4,7 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
 import { activePointAtom, canvasStrokeAtom, containerRefAtom, pathUnsafeAtom, precisionAtom, snapToGridAtom, svgAtom, viewBoxAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
-import { Svg, SvgItem, SvgPoint } from '../../svg/svg';
+import { Svg, SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 //import { CanvasControlsPanel } from '../Panels/PanelCanvasControls';
 import { ViewBox, zoomAuto } from '../../svg/svg-utils-viewport';
 import { ControlPoint, StartDragEvent, TargetPoint } from './CanvasPoints';
@@ -14,10 +14,16 @@ import { useThrottle } from 'react-use';
 
 const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocations.findIndex((pt) => pt.itemReference === ref);
 
+function initPtIdx(pathPoints: SvgPoint[], cpPoints: SvgControlPoint[], ev: StartDragEvent) {
+    ev.ptIdx = (ev.isCp ? cpPoints : pathPoints).findIndex(pt => pt === ev.pt);
+}
+
+function restorePtByIdx(pathPoints: SvgPoint[], cpPoints: SvgControlPoint[], ev: StartDragEvent) {
+    ev.pt = (ev.isCp ? cpPoints : pathPoints)[ev.ptIdx!];
+}
+
 function SvgCanvas() {
-
     const [containerRef] = useAtom(containerRefAtom);
-
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const [canvasStroke, setCanvasStroke] = useAtom(canvasStrokeAtom);
 
@@ -29,13 +35,12 @@ function SvgCanvas() {
 
     function onMouseDown(event: React.MouseEvent) {
         setActivePt(-1);
-        startDragEventRef.current = { event, start: getEventPt(containerRef!, event.clientX, event.clientY) };
+        startDragEventRef.current = { event, startXY: getEventPt(containerRef!, event.clientX, event.clientY) };
     }
 
     function onMouseUp() {
         startDragEventRef.current = null;
     }
-
 
     function getEventPt(containerRef: HTMLElement, eventClientX: number, eventClientY: number) {
         const canvasRect = containerRef.getBoundingClientRect();
@@ -57,34 +62,37 @@ function SvgCanvas() {
         event.stopPropagation();
 
         if (startDragEventRef.current.pt) {
-            const pt = getEventPt(containerRef, event.clientX, event.clientY);
+            
+            const nowXY = getEventPt(containerRef, event.clientX, event.clientY);
 
             const decimals = snapToGrid ? 0 : event.ctrlKey ? precision ? 0 : 3 : precision;
-            pt.x = parseFloat(pt.x.toFixed(decimals));
-            pt.y = parseFloat(pt.y.toFixed(decimals));
-            console.log('move', pt.x, pt.y);
+            nowXY.x = parseFloat(nowXY.x.toFixed(decimals));
+            nowXY.y = parseFloat(nowXY.y.toFixed(decimals));
+            console.log('move', nowXY.x, nowXY.y);
 
             // svg.setLocation(startDragEventRef.current.pt as SvgPoint, pt);
             // const newSvg = new Svg();
             // newSvg.path = svg.path;
             // setSvg(newSvg);
 
-            svg.setLocation(startDragEventRef.current.pt as SvgPoint, pt); // no anymore this point
+            restorePtByIdx(pathPoints, cpPoints, startDragEventRef.current);
+
+            svg.setLocation(startDragEventRef.current.pt as SvgPoint, nowXY); // no anymore this point
             console.log('set new path', svg.asString());
             
             const newSvg = new Svg(svg.asString());
             setSvg(newSvg);
         } else {
             // const startPt = getEventPt(containerRef, startDragEventRef.current.event.clientX, startDragEventRef.current.event.clientY);
-            const startPt = startDragEventRef.current.start!;
-            const pt = getEventPt(containerRef, event.clientX, event.clientY);
+            const startXY = startDragEventRef.current.startXY!;
+            const nowXY = getEventPt(containerRef, event.clientX, event.clientY);
 
             //console.log('move startPt', _ViewPoint(startPt).padEnd(20, ' '), 'pt', _ViewPoint(pt).padEnd(20, ' '), '--------------------------------', _fViewBox(viewBox));
 
             setViewBox((prev) => {
                 const newViewBox: ViewBox = [
-                    prev[0] + startPt.x - pt.x,
-                    prev[1] + startPt.y - pt.y,
+                    prev[0] + startXY.x - nowXY.x,
+                    prev[1] + startXY.y - nowXY.y,
                     prev[2],
                     prev[3],
                 ];
@@ -100,6 +108,7 @@ function SvgCanvas() {
     function onPointClick(ev: StartDragEvent) {
         if (ev.event.button === 0) {
             startDragEventRef.current = ev;
+            initPtIdx(pathPoints, cpPoints, ev);
         }
     }
 

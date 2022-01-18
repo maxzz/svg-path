@@ -61,7 +61,8 @@ export type StartDragEvent = {
     event: React.MouseEvent;
     pt?: SvgPoint | SvgControlPoint;
     isCp?: boolean;
-    start?: ViewPoint;
+    startXY?: ViewPoint;
+    ptIdx?: number;
 };
 
 export type StartDragEventHandler = (event: StartDragEvent) => void;
