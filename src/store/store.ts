@@ -105,7 +105,7 @@ export const svgAtom = atom(
         const path = svg.asString();
         set(_pathUnsafeAtom, path);
 
-        console.log('>>>>>>>>svgAtom update', svg.asString());
+        console.log('>>>>>>>> set _svgAtom, svg:', svg.asString());
     }
 );
 
@@ -115,10 +115,15 @@ export const doUpdateRowValuesAtom = atom(null, (get, set, { item, values }: { i
     const svg = get(_svgAtom);
     //debugger
     const cur = item.values;
-    item.values = [...values];
+    item.values = values;
     svg.refreshAbsolutePositions();
 
-    console.log('---------------------- doUpdateRowValuesAtom', 'cur', JSON.stringify(cur), 'new values', JSON.stringify(values), 'svg', svg.asString());
+    console.log('---------------------- doUpdateRowValuesAtom',
+        'cur', JSON.stringify(cur),
+        'new values', JSON.stringify(values), 'svg', svg.asString(),
+        'svgItem.id', item.id,
+        'svg.IDs', svg.path.map((svgItem) => svgItem.id.trim()).join(', '),
+    );
 
     const newSvg = new Svg(svg.asString());
     // const newSvg = new Svg();

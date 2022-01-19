@@ -121,7 +121,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
         setHoverPoint(isHovering ? svgItemIdx : -1);
     }, [isHoveringDebounced]);
 
-    svgItemIdx === 0 && console.log('CommandRow render', {id: svgItem.id, values: svgItem.values.join(', '), svgItem});
+    //svgItemIdx === 0 && console.log('CommandRow render', {id: svgItem.id, values: svgItem.values.join(', '), svgItem});
 
     return (<>
         <div
@@ -158,6 +158,9 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
         </div>
     </>);
 }
+
+//TODO: split and move row atoms to input controls
+//TODO: instead of svg keep item atom with svg
 
 export function PathCommandEditor() {
     const [svg] = useAtom(svgAtom);
