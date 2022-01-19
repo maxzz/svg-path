@@ -114,10 +114,11 @@ export const svgAtom = atom(
 export const doUpdateRowValuesAtom = atom(null, (get, set, { item, values }: { item: SvgItem, values: number[]; }) => {
     const svg = get(_svgAtom);
     //debugger
+    const cur = item.values;
     item.values = [...values];
     svg.refreshAbsolutePositions();
 
-    console.log('----------------------updateRowValuesAtom', JSON.stringify(values), 'svg', svg.asString());
+    console.log('---------------------- doUpdateRowValuesAtom', 'cur', JSON.stringify(cur), 'new values', JSON.stringify(values), 'svg', svg.asString());
 
     const newSvg = new Svg(svg.asString());
     // const newSvg = new Svg();
