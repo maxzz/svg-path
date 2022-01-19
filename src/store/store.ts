@@ -1,4 +1,4 @@
-import { atom, Getter } from "jotai";
+import { Atom, atom, Getter, PrimitiveAtom } from "jotai";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgItem } from "../svg/svg";
 import { getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
@@ -108,6 +108,40 @@ export const svgAtom = atom(
         console.log('>>>>>>>> set _svgAtom, svg:', svg.asString());
     }
 );
+
+// new data container
+
+type SvgItemEditTypeAtom = PrimitiveAtom<string>;
+type SvgItemEditValueAtom = PrimitiveAtom<number>;
+
+type SvgItemEdit = {
+    svgItem: SvgItem; // back reference to item from svg.path array.
+    typeAtom: SvgItemEditTypeAtom;
+    valueAtoms: SvgItemEditValueAtom[];
+};
+
+type SvgEditRoot = {
+    svg: Svg;
+    atoms: SvgItemEdit[];
+};
+
+function createSvgEditRoot(svg: Svg): SvgEditRoot {
+    const root: SvgEditRoot = {
+        svg,
+        atoms: [],
+    };
+    svg.path.forEach((svgItem) => {
+        const newSvgEdit: SvgItemEdit = {
+            svgItem,
+            typeAtom: atom(svgItem.getType()),
+            valueAtoms: svgItem.values.map((value) => atom(value))
+        };
+        root.atoms.push(newSvgEdit);
+    });
+    return root;
+}
+
+const SvgEditRootAtom = atom<SvgEditRoot>({ svg: new Svg(''), atoms: [] });
 
 // Upates from command editor
 
