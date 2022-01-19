@@ -87,6 +87,7 @@ export const pathUnsafeAtom = atom(
         const newSvg = getParsedSvg(path);
         if (newSvg) {
             set(_svgAtom, newSvg);
+            set(SvgEditRootAtom, createSvgEditRoot(newSvg));
             set(doAutoZoomAtom); // auto zoom only for changes from row input text.
         }
     }
@@ -99,13 +100,14 @@ export const svgAtom = atom(
     (get) => {
         return get(_svgAtom);
     },
-    (get, set, svg: Svg) => {
-        set(_svgAtom, svg);
+    (get, set, newSvg: Svg) => {
+        set(_svgAtom, newSvg);
+        set(SvgEditRootAtom, createSvgEditRoot(newSvg));
 
-        const path = svg.asString();
+        const path = newSvg.asString();
         set(_pathUnsafeAtom, path);
 
-        console.log('>>>>>>>> set _svgAtom, svg:', svg.asString());
+        console.log('>>>>>>>> set _svgAtom, svg:', newSvg.asString());
     }
 );
 
@@ -118,6 +120,7 @@ type SvgItemEdit = {
     svgItem: SvgItem; // back reference to item from svg.path array.
     typeAtom: SvgItemEditTypeAtom;
     valueAtoms: SvgItemEditValueAtom[];
+    //TODO: isActiveAtom, isHoverAtom
 };
 
 type SvgEditRoot = {
@@ -141,7 +144,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     return root;
 }
 
-const SvgEditRootAtom = atom<SvgEditRoot>({ svg: new Svg(''), atoms: [] });
+export const SvgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(new Svg('')));
 
 // Upates from command editor
 
