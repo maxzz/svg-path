@@ -83,7 +83,10 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
     const doUpdateRowValues = useUpdateAtom(doUpdateRowValuesAtom);
     const onAtomChange = React.useCallback<OnValueChange<number>>(({ get }) => {
-        console.log('------------------------atom change', 'svgItem.id', svgItem.id, 'new values', ...get(rowAtomRef.current).map(atomValue => get(atomValue)));
+        console.log('------------------------atom change', 'svgItem.id', svgItem.id, 
+            'cur values', ...svgItem.values.map(v => v),
+            'new values', ...get(rowAtomRef.current).map(atomValue => get(atomValue))
+            );
 
         doUpdateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
     }, [svgItem, rowAtomRef.current]);
