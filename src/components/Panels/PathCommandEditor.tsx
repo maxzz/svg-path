@@ -83,7 +83,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
     const doUpdateRowValues = useUpdateAtom(doUpdateRowValuesAtom);
     const onAtomChange = React.useCallback<OnValueChange<number>>(({ get }) => {
-        console.log('------------------------atom change', 'svgItem', svgItem.id, 'new values', ...get(rowAtomRef.current).map(atomValue => get(atomValue)));
+        console.log('------------------------atom change', 'svgItem.id', svgItem.id, 'new values', ...get(rowAtomRef.current).map(atomValue => get(atomValue)));
 
         doUpdateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
     }, [svgItem, rowAtomRef.current]);
@@ -91,7 +91,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
     //svgItemIdx === 0 && console.log('CommandRow render (1st row)', ...svgItem.values);
 
     useDeepCompareEffect(() => {
-        console.log('------------------------recreate row atoms');
+        console.log('------------------------recreate row atoms for', svgItem.id);
         setRowAtoms(createRowAtoms(svgItem.values, onAtomChange));
     }, [svgItem.values]);
     // useEffect(() => {
@@ -157,7 +157,7 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 
 export function PathCommandEditor() {
     const [svg] = useAtom(svgAtom);
-    console.log('=========== render ============ all');
+    console.log('======================================================= render ============ all');
     
     return (
         <div className="my-1 space-y-0.5">
