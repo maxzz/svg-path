@@ -139,9 +139,6 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         svg,
         atoms: [],
     };
-    function updateRowValues() {
-
-    }
     svg.path.forEach((svgItem, svgItemIdx) => {
         const newSvgEdit: SvgItemEdit = {
             id: uuid(),
@@ -154,7 +151,6 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
                 set(_pathUnsafeAtom, svg.asString());
             }),
             valueAtoms: svgItem.values.map((value) => atomWithCallback(value, ({ get, set }) => {
-                //debugger
                 svgItem.values = root.atoms[svgItemIdx].valueAtoms.map((valueAtom) => get(valueAtom));
                 set(_pathUnsafeAtom, svg.asString());
             }))
