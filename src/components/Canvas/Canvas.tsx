@@ -29,6 +29,7 @@ function SvgCanvas() {
 
     const [svgEditRoot] = useAtom(svgEditRootAtom);
     const [points] = useAtom(svgEditRoot.pointsAtom);
+    const doUpdatePoint = useUpdateAtom(svgEditRoot.doUpdatePointAtom);
 
     const pathPoints = points.targets;
     const cpPoints = points.controls;
@@ -38,8 +39,8 @@ function SvgCanvas() {
     const setActivePt = useUpdateAtom(activePointAtom);
 
     function onMouseDown(event: React.MouseEvent) {
-        setActivePt(-1);
-        startDragEventRef.current = { event, startXY: getEventPt(containerRef!, event.clientX, event.clientY) };
+        setActivePt(-1); // TODO: set it on mouse up only if where no move
+        startDragEventRef.current = { event, startXY: getEventPt(containerRef!, event.clientX, event.clientY), svgItemIdx: -1 };
     }
 
     function onMouseUp() {
@@ -66,7 +67,7 @@ function SvgCanvas() {
         event.stopPropagation();
 
         if (startDragEventRef.current.pt) {
-            
+
             const nowXY = getEventPt(containerRef, event.clientX, event.clientY);
 
             const decimals = snapToGrid ? 0 : event.ctrlKey ? precision ? 0 : 3 : precision;
@@ -80,13 +81,15 @@ function SvgCanvas() {
             // setSvg(newSvg);
 
             restorePtByIdx(pathPoints, cpPoints, startDragEventRef.current);
-/*
-            svg.setLocation(startDragEventRef.current.pt as SvgPoint, nowXY); // no anymore this point
-            console.log('set new path', svg.asString());
-            
-            const newSvg = new Svg(svg.asString());
-            setSvg(newSvg);
-*/
+
+            doUpdatePoint({ pt: startDragEventRef.current.pt, newXY: nowXY, svgItemIdx: startDragEventRef.current.svgItemIdx });
+            /*
+                svg.setLocation(startDragEventRef.current.pt as SvgPoint, nowXY); // no anymore this point
+                console.log('set new path', svg.asString());
+                
+                const newSvg = new Svg(svg.asString());
+                setSvg(newSvg);
+            */
         } else {
             // const startPt = getEventPt(containerRef, startDragEventRef.current.event.clientX, startDragEventRef.current.event.clientY);
             const startXY = startDragEventRef.current.startXY!;
@@ -128,13 +131,13 @@ function SvgCanvas() {
 
             <g className="cpPts">
                 {cpPoints.map((pt, idx) => (
-                    <ControlPoint key={idx} pt={pt} stroke={canvasStroke} pathPtIdx={cpToTargetIdx(pathPoints, pt.itemReference)} clk={onPointClick} />
+                    <ControlPoint key={idx} pt={pt} stroke={canvasStroke} svgItemIdx={cpToTargetIdx(pathPoints, pt.itemReference)} clk={onPointClick} />
                 ))}
             </g>
 
             <g className="pathPts">
                 {pathPoints.map((pt, idx) => (
-                    <TargetPoint key={idx} pt={pt} stroke={canvasStroke} pathPtIdx={idx} clk={onPointClick} asStringAtom={svgEditRoot.atoms[idx].asStringAtom} />
+                    <TargetPoint key={idx} pt={pt} stroke={canvasStroke} svgItemIdx={idx} clk={onPointClick} asStringAtom={svgEditRoot.atoms[idx].asStringAtom} />
                 ))}
             </g>
         </svg>
@@ -152,3 +155,7 @@ export function PathCanvas() {
         </div>
     );
 }
+function doUpdatePointAtom(doUpdatePointAtom: any): [any] {
+    throw new Error('Function not implemented.');
+}
+

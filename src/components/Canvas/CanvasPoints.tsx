@@ -9,6 +9,7 @@ export type StartDragEvent = {
     isCp?: boolean;
     startXY?: ViewPoint;
     ptIdx?: number;
+    svgItemIdx: number;
 };
 
 export type StartDragEventHandler = (event: StartDragEvent) => void;
@@ -16,16 +17,16 @@ export type StartDragEventHandler = (event: StartDragEvent) => void;
 const pointColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
 const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ff' : hover ? '#ffad40' : 'white';
 
-export function TargetPoint({ pt, stroke, svgItemIdx: pathPtIdx, clk, asStringAtom }: { pt: SvgPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; asStringAtom: Atom<string>; }) {
+export function TargetPoint({ pt, stroke, svgItemIdx, clk, asStringAtom }: { pt: SvgPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; asStringAtom: Atom<string>; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
-    const active = activePt === pathPtIdx;
-    const hover = hoverPt === pathPtIdx;
+    const active = activePt === svgItemIdx;
+    const hover = hoverPt === svgItemIdx;
 
     const [editorActivePt] = useAtom(editorActivePointAtom);
     const [editorHoverPt] = useAtom(editorHoverPointAtom);
-    const editorActive = editorActivePt?.[0] === pathPtIdx && editorActivePt?.[1] === -1;
-    const editorHover = editorHoverPt?.[0] === pathPtIdx && editorHoverPt?.[1] === -1;
+    const editorActive = editorActivePt?.[0] === svgItemIdx && editorActivePt?.[1] === -1;
+    const editorHover = editorHoverPt?.[0] === svgItemIdx && editorHoverPt?.[1] === -1;
 
     const [asString] = useAtom(asStringAtom);
 
@@ -46,12 +47,12 @@ export function TargetPoint({ pt, stroke, svgItemIdx: pathPtIdx, clk, asStringAt
             style={{ stroke: 'transparent', fill: pointColor(active, hover) }}
             cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
 
-            onMouseEnter={() => setHoverPt(pathPtIdx)}
+            onMouseEnter={() => setHoverPt(svgItemIdx)}
             onMouseLeave={() => setHoverPt(-1)}
             onMouseDown={(event) => {
                 event.stopPropagation();
-                setActivePt(pathPtIdx);
-                clk({ event, pt, });
+                setActivePt(svgItemIdx);
+                clk({ event, pt, svgItemIdx });
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
@@ -59,16 +60,16 @@ export function TargetPoint({ pt, stroke, svgItemIdx: pathPtIdx, clk, asStringAt
     </>);
 }
 
-export function ControlPoint({ pt, stroke, svgItemIdx: pathPtIdx, clk}: { pt: SvgControlPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; }) {
+export function ControlPoint({ pt, stroke, svgItemIdx, clk}: { pt: SvgControlPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
-    const active = activePt === pathPtIdx;
-    const hover = hoverPt === pathPtIdx;
+    const active = activePt === svgItemIdx;
+    const hover = hoverPt === svgItemIdx;
 
     const [editorActivePt] = useAtom(editorActivePointAtom);
     const [editorHoverPt] = useAtom(editorHoverPointAtom);
-    const editorActive = editorActivePt?.[0] === pathPtIdx && editorActivePt?.[1] === pt.subIndex;
-    const editorHover = editorHoverPt?.[0] === pathPtIdx && editorHoverPt?.[1] === pt.subIndex;
+    const editorActive = editorActivePt?.[0] === svgItemIdx && editorActivePt?.[1] === pt.subIndex;
+    const editorHover = editorHoverPt?.[0] === svgItemIdx && editorHoverPt?.[1] === pt.subIndex;
 
     //console.log('cpt', 'active', editorActivePt, 'hover', editorHoverPt, 'pathPtIdx', pathPtIdx, 'cPtIdx', pt.subIndex);
 
@@ -92,12 +93,12 @@ export function ControlPoint({ pt, stroke, svgItemIdx: pathPtIdx, clk}: { pt: Sv
             style={{ stroke: 'transparent', fill: pointColor(active, hover) }}
             x={pt.x - 3 * stroke} y={pt.y - 3 * stroke} width={stroke * 6} height={stroke * 6} strokeWidth={stroke * 12}
 
-            onMouseEnter={() => setHoverPt(pathPtIdx)}
+            onMouseEnter={() => setHoverPt(svgItemIdx)}
             onMouseLeave={() => setHoverPt(-1)}
             onMouseDown={(event) => {
                 event.stopPropagation();
-                setActivePt(pathPtIdx);
-                clk({ event, pt, isCp: true });
+                setActivePt(svgItemIdx);
+                clk({ event, pt, isCp: true, svgItemIdx });
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
