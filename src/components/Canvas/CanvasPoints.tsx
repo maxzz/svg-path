@@ -1,61 +1,7 @@
-import { Atom, atom, useAtom } from "jotai";
-import { useUpdateAtom } from "jotai/utils";
+import { Atom, useAtom } from "jotai";
 import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom } from "../../store/store";
-import { formatNumber, Svg, SvgControlPoint, SvgItem, SvgPoint } from "../../svg/svg";
+import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg/svg";
 import { ViewPoint } from "../../svg/svg-utils-viewport";
-
-/*
-class DragPoint {
-    constructor(public dragPt: SvgPoint, public startPt: ViewPoint) {
-        //console.log('onMouseDown', startPt);
-    }
-    onDrag(event: MouseEvent, pt: ViewPoint) {
-        //console.log('onMouseMove', this.startPt, pt);
-    }
-    onDragEnd(event: MouseEvent) {
-        //console.log('onMouseEnd', this.startPt);
-    }
-}
-
-//console.log({x: canvasRect.x, y: canvasRect.y, box: JSON.stringify(viewBox.map(_ => _.toFixed(2)))});
-
-const _DragPointAtom = atom<DragPoint | null>(null);
-const DragPointEventAtom = atom(null, (get, set, { event, start, end }: { event: MouseEvent, start?: SvgPoint, end?: boolean; }) => {
-    const canvasRef = get(containerRefAtom);
-    if (!canvasRef) { return; }
-
-    function getEventPt() {
-        const canvasRect = canvasRef!.getBoundingClientRect();
-        const viewBox = get(viewBoxAtom);
-        const canvasStroke = get(canvasStrokeAtom);
-        let [viewBoxX, viewBoxY] = viewBox;
-        const x = viewBoxX + (event.clientX - canvasRect.x) * canvasStroke;
-        const y = viewBoxY + (event.clientY - canvasRect.y) * canvasStroke;
-        return { x, y };
-    }
-
-    if (start) {
-        set(_DragPointAtom, new DragPoint(start, getEventPt()));
-    } else {
-        const dp = get(_DragPointAtom);
-        if (!dp) { return; }
-        if (end) {
-            dp.onDragEnd(event);
-            set(_DragPointAtom, null);
-        } else {
-            const pt = getEventPt();
-            dp.onDrag(event, pt);
-
-            const svg = get(svgAtom);
-            svg.setLocation(dp.dragPt, pt);
-
-            const newSvg = new Svg();
-            newSvg.path = svg.path;
-            set(svgAtom, newSvg);
-        }
-    }
-});
-*/
 
 export type StartDragEvent = {
     event: React.MouseEvent;
@@ -70,7 +16,7 @@ export type StartDragEventHandler = (event: StartDragEvent) => void;
 const pointColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
 const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ff' : hover ? '#ffad40' : 'white';
 
-export function TargetPoint({ pt, stroke, pathPtIdx, clk, asStringAtom }: { pt: SvgPoint, stroke: number; pathPtIdx: number; clk: StartDragEventHandler; asStringAtom: Atom<string>; }) {
+export function TargetPoint({ pt, stroke, svgItemIdx: pathPtIdx, clk, asStringAtom }: { pt: SvgPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; asStringAtom: Atom<string>; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
     const active = activePt === pathPtIdx;
@@ -100,7 +46,7 @@ export function TargetPoint({ pt, stroke, pathPtIdx, clk, asStringAtom }: { pt: 
             style={{ stroke: 'transparent', fill: pointColor(active, hover) }}
             cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
 
-            onMouseEnter={() => { setHoverPt(pathPtIdx); }}
+            onMouseEnter={() => setHoverPt(pathPtIdx)}
             onMouseLeave={() => setHoverPt(-1)}
             onMouseDown={(event) => {
                 event.stopPropagation();
@@ -113,7 +59,7 @@ export function TargetPoint({ pt, stroke, pathPtIdx, clk, asStringAtom }: { pt: 
     </>);
 }
 
-export function ControlPoint({ pt, stroke, pathPtIdx, clk}: { pt: SvgControlPoint, stroke: number; pathPtIdx: number; clk: StartDragEventHandler; }) {
+export function ControlPoint({ pt, stroke, svgItemIdx: pathPtIdx, clk}: { pt: SvgControlPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
     const active = activePt === pathPtIdx;
@@ -146,7 +92,7 @@ export function ControlPoint({ pt, stroke, pathPtIdx, clk}: { pt: SvgControlPoin
             style={{ stroke: 'transparent', fill: pointColor(active, hover) }}
             x={pt.x - 3 * stroke} y={pt.y - 3 * stroke} width={stroke * 6} height={stroke * 6} strokeWidth={stroke * 12}
 
-            onMouseEnter={(event) => { setHoverPt(pathPtIdx); }}
+            onMouseEnter={() => setHoverPt(pathPtIdx)}
             onMouseLeave={() => setHoverPt(-1)}
             onMouseDown={(event) => {
                 event.stopPropagation();

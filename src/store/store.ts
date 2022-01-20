@@ -1,4 +1,4 @@
-import { Atom, atom, Getter, PrimitiveAtom } from "jotai";
+import { atom, Getter, PrimitiveAtom, WritableAtom } from "jotai";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg/svg";
 import { getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
@@ -140,6 +140,7 @@ export type SvgEditRoot = {
     svg: Svg;
     atoms: SvgItemEdit[];
     pointsAtom: PrimitiveAtom<SvgEditPoints>;
+    doUpdatePointAtom: WritableAtom<null, {pt: SvgPoint, newXY: ViewPoint}>;
 };
 
 function createSvgEditRoot(svg: Svg): SvgEditRoot {
@@ -147,6 +148,9 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         svg,
         atoms: [],
         pointsAtom: atom<SvgEditPoints>(getPoints(svg)),
+        doUpdatePointAtom: atom(null, (get, set, {pt, newXY}) => {
+            console.log('aa', pt, newXY);
+        })
     };
     svg.path.forEach((svgItem, svgItemIdx) => {
         const newSvgEdit: SvgItemEdit = {
