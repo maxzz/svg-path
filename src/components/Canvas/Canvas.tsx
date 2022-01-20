@@ -132,11 +132,11 @@ function SvgCanvas() {
                 ))}
             </g>
 
-            {/* <g className="pathPts">
+            <g className="pathPts">
                 {pathPoints.map((pt, idx) => (
-                    <TargetPoint key={idx} pt={pt} stroke={canvasStroke} pathPtIdx={idx} clk={onPointClick} svgItem={svg.path[idx]} />
+                    <TargetPoint key={idx} pt={pt} stroke={canvasStroke} pathPtIdx={idx} clk={onPointClick} asStringAtom={svgEditRoot.atoms[idx].asStringAtom} />
                 ))}
-            </g> */}
+            </g>
         </svg>
     );
 }

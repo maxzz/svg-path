@@ -1,4 +1,4 @@
-import { atom, useAtom } from "jotai";
+import { Atom, atom, useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom } from "../../store/store";
 import { formatNumber, Svg, SvgControlPoint, SvgItem, SvgPoint } from "../../svg/svg";
@@ -70,7 +70,7 @@ export type StartDragEventHandler = (event: StartDragEvent) => void;
 const pointColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
 const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ff' : hover ? '#ffad40' : 'white';
 
-export function TargetPoint({ pt, stroke, pathPtIdx, clk, svgItem }: { pt: SvgPoint, stroke: number; pathPtIdx: number; clk: StartDragEventHandler; svgItem: SvgItem; }) {
+export function TargetPoint({ pt, stroke, pathPtIdx, clk, asStringAtom }: { pt: SvgPoint, stroke: number; pathPtIdx: number; clk: StartDragEventHandler; asStringAtom: Atom<string>; }) {
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
     const active = activePt === pathPtIdx;
@@ -81,11 +81,13 @@ export function TargetPoint({ pt, stroke, pathPtIdx, clk, svgItem }: { pt: SvgPo
     const editorActive = editorActivePt?.[0] === pathPtIdx && editorActivePt?.[1] === -1;
     const editorHover = editorHoverPt?.[0] === pathPtIdx && editorHoverPt?.[1] === -1;
 
+    const [asString] = useAtom(asStringAtom);
+
     //console.log(' pt', 'active', editorActivePt, 'hover', editorHoverPt);
 
     return (<>
         {(active || hover) &&
-            <path style={{ stroke: pointColor(active, hover), fill: 'none' }} strokeWidth={stroke} d={svgItem.asStandaloneString()} />
+            <path style={{ stroke: pointColor(active, hover), fill: 'none' }} strokeWidth={stroke} d={asString} />
         }
         {(editorActive || editorHover) &&
             <circle
