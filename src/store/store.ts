@@ -138,19 +138,17 @@ export type SvgEditPoints = {
 export type SvgEditRoot = {
     svg: Svg;
     atoms: SvgItemEdit[];
-    pointsAtom: Atom<SvgEditPoints>;
+    pointsAtom: PrimitiveAtom<SvgEditPoints>;
 };
 
 function createSvgEditRoot(svg: Svg): SvgEditRoot {
     const root: SvgEditRoot = {
         svg,
         atoms: [],
-        pointsAtom: atom<SvgEditPoints>((get) => {
-            return {
-                targets: root.svg.targetLocations(),
-                controls: root.svg.controlLocations(),
-                asString: root.svg.asString(),
-            };
+        pointsAtom: atom<SvgEditPoints>({
+            targets: svg.targetLocations(),
+            controls: svg.controlLocations(),
+            asString: svg.asString(),
         }),
     };
     svg.path.forEach((svgItem, svgItemIdx) => {
@@ -162,10 +160,20 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             isRelAtom: atomWithCallback(svgItem.relative, ({ set, nextValue }) => {
                 svgItem.relative = nextValue;
                 set(newSvgEdit.typeAtom, svgItem.getType());
+                set(root.pointsAtom, {
+                    targets: root.svg.targetLocations(),
+                    controls: root.svg.controlLocations(),
+                    asString: root.svg.asString(),
+                });
                 set(_pathUnsafeAtom, svg.asString());
             }),
             valueAtoms: svgItem.values.map((value) => atomWithCallback(value, ({ get, set }) => {
                 svgItem.values = root.atoms[svgItemIdx].valueAtoms.map((valueAtom) => get(valueAtom));
+                set(root.pointsAtom, {
+                    targets: root.svg.targetLocations(),
+                    controls: root.svg.controlLocations(),
+                    asString: root.svg.asString(),
+                });
                 set(_pathUnsafeAtom, svg.asString());
             }))
         };
