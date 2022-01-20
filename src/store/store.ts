@@ -145,11 +145,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     const root: SvgEditRoot = {
         svg,
         atoms: [],
-        pointsAtom: atom<SvgEditPoints>({
-            targets: svg.targetLocations(),
-            controls: svg.controlLocations(),
-            asString: svg.asString(),
-        }),
+        pointsAtom: atom<SvgEditPoints>(getPoints(svg)),
     };
     svg.path.forEach((svgItem, svgItemIdx) => {
         const newSvgEdit: SvgItemEdit = {
@@ -160,26 +156,26 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             isRelAtom: atomWithCallback(svgItem.relative, ({ set, nextValue }) => {
                 svgItem.relative = nextValue;
                 set(newSvgEdit.typeAtom, svgItem.getType());
-                set(root.pointsAtom, {
-                    targets: root.svg.targetLocations(),
-                    controls: root.svg.controlLocations(),
-                    asString: root.svg.asString(),
-                });
+                set(root.pointsAtom, getPoints(root.svg));
                 set(_pathUnsafeAtom, svg.asString());
             }),
             valueAtoms: svgItem.values.map((value) => atomWithCallback(value, ({ get, set }) => {
                 svgItem.values = root.atoms[svgItemIdx].valueAtoms.map((valueAtom) => get(valueAtom));
-                set(root.pointsAtom, {
-                    targets: root.svg.targetLocations(),
-                    controls: root.svg.controlLocations(),
-                    asString: root.svg.asString(),
-                });
+                set(root.pointsAtom, getPoints(root.svg));
                 set(_pathUnsafeAtom, svg.asString());
             }))
         };
         root.atoms.push(newSvgEdit);
     });
     return root;
+
+    function getPoints(svg: Svg): SvgEditPoints {
+        return {
+            targets: svg.targetLocations(),
+            controls: svg.controlLocations(),
+            asString: svg.asString(),
+        };
+    }
 }
 
 export const svgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(getParsedSvg(Storage.initialData.path) || new Svg('')));
