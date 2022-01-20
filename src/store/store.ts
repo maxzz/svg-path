@@ -133,11 +133,17 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         svg,
         atoms: [],
     };
-    svg.path.forEach((svgItem) => {
+    function updateRowValues() {
+
+    }
+    svg.path.forEach((svgItem, svgItemIdx) => {
         const newSvgEdit: SvgItemEdit = {
             svgItem,
             typeAtom: atom(svgItem.getType()),
-            valueAtoms: svgItem.values.map((value) => atom(value))
+            valueAtoms: svgItem.values.map((value) => atomWithCallback(value, ({ get, set }) => {
+                svgItem.values = root.atoms[svgItemIdx].valueAtoms.map((valueAtom) => get(valueAtom));
+                set(_pathUnsafeAtom, svg.asString());
+            }))
         };
         root.atoms.push(newSvgEdit);
     });
