@@ -86,7 +86,7 @@ export const pathUnsafeAtom = atom(
 
         const newSvg = getParsedSvg(path);
         if (newSvg) {
-            set(_svgAtom, newSvg);
+            //set(_svgAtom, newSvg);
             set(SvgEditRootAtom, createSvgEditRoot(newSvg));
             set(doAutoZoomAtom); // auto zoom only for changes from row input text.
         }
@@ -101,6 +101,7 @@ export const svgAtom = atom(
         return get(_svgAtom);
     },
     (get, set, newSvg: Svg) => {
+        /*
         set(_svgAtom, newSvg);
         set(SvgEditRootAtom, createSvgEditRoot(newSvg));
 
@@ -108,6 +109,7 @@ export const svgAtom = atom(
         set(_pathUnsafeAtom, path);
 
         console.log('>>>>>>>> set _svgAtom, svg:', newSvg.asString());
+        */
     }
 );
 
@@ -150,7 +152,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     return root;
 }
 
-export const SvgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(new Svg('')));
+export const SvgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(getParsedSvg(Storage.initialData.path) || new Svg('')));
 
 // Upates from command editor
 

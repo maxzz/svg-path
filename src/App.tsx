@@ -76,7 +76,7 @@ function App() {
     return (
         <div className="h-screen flex">
             <PanelAllEditors />
-            <PanelSvgCanvas />
+            {/* <PanelSvgCanvas /> */}
         </div>
     );
 }
