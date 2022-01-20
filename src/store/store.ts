@@ -123,6 +123,7 @@ export type SvgItemEdit = {
     id: string;
     svgItemIdx: number;
     svgItem: SvgItem; // back reference to item from svg.path array.
+    typeAtom: PrimitiveAtom<string>,
     isRelAtom: SvgItemEditIsRelAtom;
     valueAtoms: SvgItemEditValueAtom[];
     //TODO: isActiveAtom, isHoverAtom
@@ -146,11 +147,14 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             id: uuid(),
             svgItemIdx,
             svgItem,
+            typeAtom: atom(svgItem.getType()),
             isRelAtom: atomWithCallback(svgItem.relative, ({get, set, nextValue}) => {
                 svgItem.relative = nextValue;
+                set(newSvgEdit.typeAtom, svgItem.getType());
                 set(_pathUnsafeAtom, svg.asString());
             }),
             valueAtoms: svgItem.values.map((value) => atomWithCallback(value, ({ get, set }) => {
+                //debugger
                 svgItem.values = root.atoms[svgItemIdx].valueAtoms.map((valueAtom) => get(valueAtom));
                 set(_pathUnsafeAtom, svg.asString());
             }))

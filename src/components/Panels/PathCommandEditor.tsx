@@ -4,18 +4,20 @@ import React, { useEffect } from "react";
 import { useDebounce, useHoverDirty } from "react-use";
 import useDeepCompareEffect from "use-deep-compare-effect";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
-import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, svgAtom, doUpdateRowTypeAtom, doUpdateRowValuesAtom, SvgEditRootAtom, SvgItemEdit } from "../../store/store";
+import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, svgAtom, doUpdateRowTypeAtom, doUpdateRowValuesAtom, SvgEditRootAtom, SvgItemEdit, SvgItemEditIsRelAtom } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
 import { getTooltip, getvalueToPoint } from "../../svg/svg-utils";
 import { IconMenu } from "../UI/icons/Icons";
 
-function PointName({ command, abs, onClick }: { command: string; abs: boolean; onClick: () => void; }) {
+function PointName({ svgItemEdit }: { svgItemEdit: SvgItemEdit }) {
+    const [isRel, setIsRel] = useAtom(svgItemEdit.isRelAtom);
+    const [itemType] = useAtom(svgItemEdit.typeAtom);
     return (
         <label
-            className={`flex-0 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 ${abs ? 'bg-slate-500' : 'bg-slate-400'} cursor-pointer select-none`}
-            onClick={onClick}
+            className={`flex-0 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 ${!isRel ? 'bg-slate-500' : 'bg-slate-400'} cursor-pointer select-none`}
+            onClick={() => setIsRel(v => !v)}
         >
-            <div className="">{command}</div>
+            <div className="">{itemType}</div>
         </label>
     );
 }
@@ -78,6 +80,7 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx 
 const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => values.map((value) => atomWithCallback(value, monitor));
 
 function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svgItemIdx: number; }) {
+    /*
     const rowAtomRef = React.useRef(atom<WritableAtom<number, SetStateAction<number>>[]>([]));
     const [rowAtoms, setRowAtoms] = useAtom(rowAtomRef.current);
 
@@ -101,9 +104,7 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
     // useEffect(() => {
     //     setRowAtoms(createRowAtoms(svgItem.values, onAtomChange));
     // }, [...svgItem.values]);
-
-    const doUpdateRowType = useUpdateAtom(doUpdateRowTypeAtom);
-    const onCommandNameClick = () => doUpdateRowType({ item: svgItemEdit, isRelative: !svgItemEdit.relative });
+    */
 
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
     const isActivePt = activePoint === svgItemIdx;
@@ -123,6 +124,10 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
 
     //svgItemIdx === 0 && console.log('CommandRow render', {id: svgItem.id, values: svgItem.values.join(', '), svgItem});
 
+
+
+    const [itemType] = useAtom(svgItemEdit.typeAtom);
+
     return (<>
         <div
             ref={rowContainerRef}
@@ -132,20 +137,16 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
         >
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
-                <PointName
-                    command={svgItemEdit.svgItem.getType()}
-                    abs={!svgItemEdit.relative}
-                    onClick={onCommandNameClick}
-                />
+                <PointName svgItemEdit={svgItemEdit} />
 
-                {rowAtoms.map((atom, idx) => (
+                {svgItemEdit.valueAtoms.map((atom, idx) => (
                     <PointValue
                         atom={atom}
-                        tooltip={getTooltip(svgItemEdit.getType(), idx)}
+                        tooltip={getTooltip(itemType, idx)}
                         firstRow={svgItemIdx === 0}
                         isActivePt={isActivePt}
                         isHoverPt={isHoverPt}
-                        editorIdx={[svgItemIdx, getvalueToPoint(svgItemEdit.getType(), idx)]}
+                        editorIdx={[svgItemIdx, getvalueToPoint(itemType, idx)]}
                         key={idx}
                     />
                 ))}
