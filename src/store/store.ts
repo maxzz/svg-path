@@ -140,7 +140,7 @@ export type SvgEditRoot = {
     svg: Svg;
     atoms: SvgItemEdit[];
     pointsAtom: PrimitiveAtom<SvgEditPoints>;
-    doUpdatePointAtom: WritableAtom<null, {pt: SvgPoint, newXY: ViewPoint}>;
+    doUpdatePointAtom: WritableAtom<null, { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }>;
 };
 
 function createSvgEditRoot(svg: Svg): SvgEditRoot {
@@ -148,8 +148,12 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         svg,
         atoms: [],
         pointsAtom: atom<SvgEditPoints>(getPoints(svg)),
-        doUpdatePointAtom: atom(null, (get, set, {pt, newXY}) => {
-            console.log('aa', pt, newXY);
+        doUpdatePointAtom: atom(null, (get, set, { pt, newXY, svgItemIdx }) => {
+            const isCp = pt instanceof SvgControlPoint;
+            if (isCp) {
+
+            }
+            console.log('upd isCp', isCp, 'svgItemIdx', svgItemIdx, 'subIdx', (pt as SvgControlPoint).subIndex, pt.itemReference, pt, newXY);
         })
     };
     svg.path.forEach((svgItem, svgItemIdx) => {
@@ -159,7 +163,8 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             svgItem,
             typeAtom: atom(svgItem.getType()),
             isRelAtom: atomWithCallback(svgItem.relative, ({ set, nextValue }) => {
-                svgItem.relative = nextValue;
+                svgItem.setRelative(nextValue);
+                svgItem.values.forEach((value, idx) => set(newSvgEdit.valueAtoms[idx], value));
                 set(newSvgEdit.typeAtom, svgItem.getType());
                 set(newSvgEdit.asStringAtom, svgItem.asStandaloneString());
                 set(root.pointsAtom, getPoints(root.svg));
