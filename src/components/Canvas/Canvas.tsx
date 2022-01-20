@@ -2,7 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, canvasStrokeAtom, containerRefAtom, pathUnsafeAtom, precisionAtom, snapToGridAtom, svgAtom, viewBoxAtom } from '../../store/store';
+import { activePointAtom, canvasStrokeAtom, containerRefAtom, pathUnsafeAtom, precisionAtom, snapToGridAtom, svgAtom, svgEditRootAtom, viewBoxAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 //import { CanvasControlsPanel } from '../Panels/PanelCanvasControls';
@@ -27,9 +27,13 @@ function SvgCanvas() {
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const [canvasStroke, setCanvasStroke] = useAtom(canvasStrokeAtom);
 
-    const [svg, setSvg] = useAtom(svgAtom);
-    const pathPoints = svg.targetLocations();
-    const cpPoints = svg.controlLocations();
+    const [svgEditRoot] = useAtom(svgEditRootAtom);
+    const [points] = useAtom(svgEditRoot.pointsAtom);
+
+    const pathPoints = points.targets;
+    const cpPoints = points.controls;
+    // const pathPoints = svgEditRoot.svg.targetLocations();
+    // const cpPoints = svgEditRoot.svg.controlLocations();
 
     const setActivePt = useUpdateAtom(activePointAtom);
 
@@ -76,12 +80,13 @@ function SvgCanvas() {
             // setSvg(newSvg);
 
             restorePtByIdx(pathPoints, cpPoints, startDragEventRef.current);
-
+/*
             svg.setLocation(startDragEventRef.current.pt as SvgPoint, nowXY); // no anymore this point
             console.log('set new path', svg.asString());
             
             const newSvg = new Svg(svg.asString());
             setSvg(newSvg);
+*/
         } else {
             // const startPt = getEventPt(containerRef, startDragEventRef.current.event.clientX, startDragEventRef.current.event.clientY);
             const startXY = startDragEventRef.current.startXY!;
@@ -119,7 +124,7 @@ function SvgCanvas() {
         >
             <CanvasTicks />
 
-            <path d={svg.asString()} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} />
+            <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} />
 
             <g className="cpPts">
                 {cpPoints.map((pt, idx) => (
@@ -127,11 +132,11 @@ function SvgCanvas() {
                 ))}
             </g>
 
-            <g className="pathPts">
+            {/* <g className="pathPts">
                 {pathPoints.map((pt, idx) => (
                     <TargetPoint key={idx} pt={pt} stroke={canvasStroke} pathPtIdx={idx} clk={onPointClick} svgItem={svg.path[idx]} />
                 ))}
-            </g>
+            </g> */}
         </svg>
     );
 }

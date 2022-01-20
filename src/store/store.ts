@@ -1,6 +1,6 @@
 import { Atom, atom, Getter, PrimitiveAtom } from "jotai";
 import atomWithCallback from "../hooks/atomsX";
-import { Svg, SvgItem } from "../svg/svg";
+import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg/svg";
 import { getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
 import debounce from "../utils/debounce";
 import { unexpected, _fViewBox, _ViewBox } from "../utils/debugging";
@@ -88,7 +88,7 @@ export const pathUnsafeAtom = atom(
         const newSvg = getParsedSvg(path);
         if (newSvg) {
             //set(_svgAtom, newSvg);
-            set(SvgEditRootAtom, createSvgEditRoot(newSvg));
+            set(svgEditRootAtom, createSvgEditRoot(newSvg));
             set(doAutoZoomAtom); // auto zoom only for changes from row input text.
         }
     }
@@ -129,15 +129,29 @@ export type SvgItemEdit = {
     //TODO: isActiveAtom, isHoverAtom
 };
 
+export type SvgEditPoints = {
+    targets: SvgPoint[];
+    controls: SvgControlPoint[];
+    asString: string;
+};
+
 export type SvgEditRoot = {
     svg: Svg;
     atoms: SvgItemEdit[];
+    pointsAtom: Atom<SvgEditPoints>;
 };
 
 function createSvgEditRoot(svg: Svg): SvgEditRoot {
     const root: SvgEditRoot = {
         svg,
         atoms: [],
+        pointsAtom: atom<SvgEditPoints>((get) => {
+            return {
+                targets: root.svg.targetLocations(),
+                controls: root.svg.controlLocations(),
+                asString: root.svg.asString(),
+            };
+        }),
     };
     svg.path.forEach((svgItem, svgItemIdx) => {
         const newSvgEdit: SvgItemEdit = {
@@ -145,7 +159,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             svgItemIdx,
             svgItem,
             typeAtom: atom(svgItem.getType()),
-            isRelAtom: atomWithCallback(svgItem.relative, ({get, set, nextValue}) => {
+            isRelAtom: atomWithCallback(svgItem.relative, ({ set, nextValue }) => {
                 svgItem.relative = nextValue;
                 set(newSvgEdit.typeAtom, svgItem.getType());
                 set(_pathUnsafeAtom, svg.asString());
@@ -160,7 +174,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     return root;
 }
 
-export const SvgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(getParsedSvg(Storage.initialData.path) || new Svg('')));
+export const svgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(getParsedSvg(Storage.initialData.path) || new Svg('')));
 
 // canvas size
 
@@ -223,7 +237,7 @@ export const doUpdateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoom
 
 export const doAutoZoomAtom = atom(null, (get, set,) => {
     const canvasSize = get(canvasSizeAtom);
-    const svgEditRoot = get(SvgEditRootAtom);
+    const svgEditRoot = get(svgEditRootAtom);
     const box = getFitViewPort(canvasSize, svgEditRoot.svg.targetLocations());
     if (box) {
         set(viewBoxAtom, box.port);

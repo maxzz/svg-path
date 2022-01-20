@@ -1,7 +1,7 @@
 import React from "react";
 import { PrimitiveAtom, useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
-import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, SvgEditRootAtom, SvgItemEdit } from "../../store/store";
+import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, svgEditRootAtom, SvgItemEdit } from "../../store/store";
 import { useDebounce, useHoverDirty } from "react-use";
 import { IconMenu } from "../UI/icons/Icons";
 import { getTooltip, getvalueToPoint } from "../../svg/svg-utils";
@@ -122,7 +122,7 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
 }
 
 export function PathCommandEditor() {
-    const [SvgEditRoot] = useAtom(SvgEditRootAtom);
+    const [SvgEditRoot] = useAtom(svgEditRootAtom);
     console.log('=================================================================== render all ================================');
 
     return (
