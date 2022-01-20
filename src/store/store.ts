@@ -162,38 +162,6 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 
 export const SvgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(getParsedSvg(Storage.initialData.path) || new Svg('')));
 
-// Upates from command editor
-/*
-export const doUpdateRowValuesAtom = atom(null, (get, set, { item, values }: { item: SvgItem, values: number[]; }) => {
-    const svg = get(_svgAtom);
-    //debugger
-    const cur = item.values;
-    item.values = values;
-    svg.refreshAbsolutePositions();
-
-    console.log('---------------------- doUpdateRowValuesAtom',
-        'cur', JSON.stringify(cur),
-        'new values', JSON.stringify(values), 'svg', svg.asString(),
-        'svgItem.id', item.id,
-        'svg.IDs', svg.path.map((svgItem) => svgItem.id.trim()).join(', '),
-    );
-
-    const newSvg = new Svg(svg.asString());
-    // const newSvg = new Svg();
-    // newSvg.path = svg.path;
-    set(svgAtom, newSvg);
-});
-*/
-/*
-export const doUpdateRowTypeAtom = atom(null, (get, set, { item, isRelative }: { item: SvgItem, isRelative: boolean; }) => {
-    const svg = get(_svgAtom);
-    item.setRelative(isRelative);
-
-    const newSvg = new Svg();
-    newSvg.path = svg.path;
-    set(svgAtom, newSvg);
-});
-*/
 // canvas size
 
 export const viewBoxAtom = atom<ViewBox>([0, 0, 10, 10]);
