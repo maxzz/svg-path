@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useDebounce, useHoverDirty } from "react-use";
 import useDeepCompareEffect from "use-deep-compare-effect";
 import atomWithCallback, { OnValueChange } from "../../hooks/atomsX";
-import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, svgAtom, doUpdateRowTypeAtom, doUpdateRowValuesAtom } from "../../store/store";
+import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, svgAtom, doUpdateRowTypeAtom, doUpdateRowValuesAtom, SvgEditRootAtom, SvgItemEdit } from "../../store/store";
 import { SvgItem } from "../../svg/svg";
 import { getTooltip, getvalueToPoint } from "../../svg/svg-utils";
 import { IconMenu } from "../UI/icons/Icons";
@@ -77,33 +77,33 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx 
 
 const createRowAtoms = (values: number[], monitor: OnValueChange<number>) => values.map((value) => atomWithCallback(value, monitor));
 
-function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: number; }) {
+function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svgItemIdx: number; }) {
     const rowAtomRef = React.useRef(atom<WritableAtom<number, SetStateAction<number>>[]>([]));
     const [rowAtoms, setRowAtoms] = useAtom(rowAtomRef.current);
 
     const doUpdateRowValues = useUpdateAtom(doUpdateRowValuesAtom);
 
     const onAtomChange = React.useCallback<OnValueChange<number>>(({ get }) => {
-        console.log('++++ atom change', 'svgItem.id', svgItem.id, 
-            'cur values', ...svgItem.values.map(v => v),
+        console.log('++++ atom change', 'svgItem.id', svgItemEdit.id, 
+            'cur values', ...svgItemEdit.values.map(v => v),
             'new values', ...get(rowAtomRef.current).map(atomValue => get(atomValue))
             );
 
-        doUpdateRowValues({ item: svgItem, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
-    }, [svgItem, rowAtomRef.current]);
+        doUpdateRowValues({ item: svgItemEdit, values: get(rowAtomRef.current).map(atomValue => get(atomValue)) });
+    }, [svgItemEdit, rowAtomRef.current]);
 
     //svgItemIdx === 0 && console.log('CommandRow render (1st row)', ...svgItem.values);
 
     useDeepCompareEffect(() => {
-        console.log('------------------------ recreate row atoms for', svgItem.id, 'cur values', ...svgItem.values.map(v => v));
-        setRowAtoms(createRowAtoms(svgItem.values, onAtomChange));
-    }, [svgItem.values]);
+        console.log('------------------------ recreate row atoms for', svgItemEdit.id, 'cur values', ...svgItemEdit.values.map(v => v));
+        setRowAtoms(createRowAtoms(svgItemEdit.values, onAtomChange));
+    }, [svgItemEdit.values]);
     // useEffect(() => {
     //     setRowAtoms(createRowAtoms(svgItem.values, onAtomChange));
     // }, [...svgItem.values]);
 
     const doUpdateRowType = useUpdateAtom(doUpdateRowTypeAtom);
-    const onCommandNameClick = () => doUpdateRowType({ item: svgItem, isRelative: !svgItem.relative });
+    const onCommandNameClick = () => doUpdateRowType({ item: svgItemEdit, isRelative: !svgItemEdit.relative });
 
     const [activePoint, setActivePoint] = useAtom(activePointAtom);
     const isActivePt = activePoint === svgItemIdx;
@@ -133,19 +133,19 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
                 <PointName
-                    command={svgItem.getType()}
-                    abs={!svgItem.relative}
+                    command={svgItemEdit.svgItem.getType()}
+                    abs={!svgItemEdit.relative}
                     onClick={onCommandNameClick}
                 />
 
                 {rowAtoms.map((atom, idx) => (
                     <PointValue
                         atom={atom}
-                        tooltip={getTooltip(svgItem.getType(), idx)}
+                        tooltip={getTooltip(svgItemEdit.getType(), idx)}
                         firstRow={svgItemIdx === 0}
                         isActivePt={isActivePt}
                         isHoverPt={isHoverPt}
-                        editorIdx={[svgItemIdx, getvalueToPoint(svgItem.getType(), idx)]}
+                        editorIdx={[svgItemIdx, getvalueToPoint(svgItemEdit.getType(), idx)]}
                         key={idx}
                     />
                 ))}
@@ -163,13 +163,13 @@ function CommandRow({ svgItem, svgItemIdx }: { svgItem: SvgItem; svgItemIdx: num
 //TODO: instead of svg keep item atom with svg
 
 export function PathCommandEditor() {
-    const [svg] = useAtom(svgAtom);
+    const [SvgEditRoot] = useAtom(SvgEditRootAtom);
     console.log('=================================================================== render all ================================');
     
     return (
         <div className="my-1 space-y-0.5">
-            {svg.path.map((svgItem, idx) => (
-                <CommandRow svgItem={svgItem} svgItemIdx={idx} key={idx} />
+            {SvgEditRoot.atoms.map((svgItemEdit, idx) => (
+                <CommandRow svgItemEdit={svgItemEdit} svgItemIdx={idx} key={idx} />
             ))}
         </div >
     );
