@@ -4,6 +4,7 @@ import { Svg, SvgItem } from "../svg/svg";
 import { getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
 import debounce from "../utils/debounce";
 import { unexpected, _fViewBox, _ViewBox } from "../utils/debugging";
+import uuid from "../utils/uuid";
 
 namespace Storage {
     const KEY = 'react-svg-expo-01';
@@ -115,17 +116,19 @@ export const svgAtom = atom(
 
 // new data container
 
-type SvgItemEditTypeAtom = PrimitiveAtom<string>;
-type SvgItemEditValueAtom = PrimitiveAtom<number>;
+export type SvgItemEditIsRelAtom = PrimitiveAtom<boolean>; // is relative or absolute
+export type SvgItemEditValueAtom = PrimitiveAtom<number>;
 
-type SvgItemEdit = {
+export type SvgItemEdit = {
+    id: string;
+    svgItemIdx: number;
     svgItem: SvgItem; // back reference to item from svg.path array.
-    typeAtom: SvgItemEditTypeAtom;
+    isRelAtom: SvgItemEditIsRelAtom;
     valueAtoms: SvgItemEditValueAtom[];
     //TODO: isActiveAtom, isHoverAtom
 };
 
-type SvgEditRoot = {
+export type SvgEditRoot = {
     svg: Svg;
     atoms: SvgItemEdit[];
 };
@@ -140,8 +143,13 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     }
     svg.path.forEach((svgItem, svgItemIdx) => {
         const newSvgEdit: SvgItemEdit = {
+            id: uuid(),
+            svgItemIdx,
             svgItem,
-            typeAtom: atom(svgItem.getType()),
+            isRelAtom: atomWithCallback(svgItem.relative, ({get, set, nextValue}) => {
+                svgItem.relative = nextValue;
+                set(_pathUnsafeAtom, svg.asString());
+            }),
             valueAtoms: svgItem.values.map((value) => atomWithCallback(value, ({ get, set }) => {
                 svgItem.values = root.atoms[svgItemIdx].valueAtoms.map((valueAtom) => get(valueAtom));
                 set(_pathUnsafeAtom, svg.asString());
