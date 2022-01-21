@@ -1,4 +1,4 @@
-import { atom, Getter, PrimitiveAtom, WritableAtom } from "jotai";
+import { atom, Getter, PrimitiveAtom, Setter, WritableAtom } from "jotai";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg/svg";
 import { getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
@@ -166,16 +166,26 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
                 svgItem.setRelative(nextValue);
                 svgItem.values.forEach((value, idx) => set(newSvgEdit.valueAtoms[idx], value));
                 set(newSvgEdit.typeAtom, svgItem.getType());
+                
                 set(newSvgEdit.asStringAtom, svgItem.asStandaloneString());
                 set(root.pointsAtom, getPoints(root.svg));
                 set(_pathUnsafeAtom, svg.asString());
             }),
-            valueAtoms: svgItem.values.map((value) => atomWithCallback(value, ({ get, set }) => {
+            valueAtoms: svgItem.values.map((value, idx) => atomWithCallback(value, ((idx) => ({ get, set }: {get: Getter, set: Setter}) => {
+                console.log('idx', idx);
                 svgItem.values = root.atoms[svgItemIdx].valueAtoms.map((valueAtom) => get(valueAtom));
+                
                 set(newSvgEdit.asStringAtom, svgItem.asStandaloneString());
                 set(root.pointsAtom, getPoints(root.svg));
                 set(_pathUnsafeAtom, svg.asString());
-            })),
+            })())),
+            // valueAtoms: svgItem.values.map((value) => atomWithCallback(value, ({ get, set }) => {
+            //     svgItem.values = root.atoms[svgItemIdx].valueAtoms.map((valueAtom) => get(valueAtom));
+                
+            //     set(newSvgEdit.asStringAtom, svgItem.asStandaloneString());
+            //     set(root.pointsAtom, getPoints(root.svg));
+            //     set(_pathUnsafeAtom, svg.asString());
+            // })),
             asStringAtom: atom(svgItem.asStandaloneString()),
         };
         root.atoms.push(newSvgEdit);
