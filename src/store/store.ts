@@ -183,33 +183,28 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             isRelAtom: atomWithCallback(svgItem.relative, ({ get, set, nextValue }) => {
                 svgItem.setRelative(nextValue);
                 root.svg.refreshAbsolutePositions();
-
-                set(root.doReloadAllValuesAtom, true);
-                set(root.doReloadAllValuesAtom, false);
-
-                set(root.doReloadSvgItemIdxAtom, svgItemIdx);
-                set(root.doReloadSvgItemIdxAtom, -1);
+                triggerUpdate(set, svgItemIdx);
             }),
-            valueAtoms: svgItem.values.map((value, idx) => atomWithCallback(value, ((idx) => ({ get, set, nextValue }: { get: Getter, set: Setter; nextValue: number; }) => {
-                if (!get(root.allowUpdatesAtom)) {
-                    console.log('locked index', idx);
-                    return;
+            valueAtoms: svgItem.values.map((value, idx) => atomWithCallback(value, ((idx) => ({ get, set, nextValue }) => {
+                if (get(root.allowUpdatesAtom)) {
+                    svgItem.values[idx] = nextValue;
+                    root.svg.refreshAbsolutePositions();
+                    triggerUpdate(set, svgItemIdx);
                 }
-
-                svgItem.values[idx] = nextValue;
-                root.svg.refreshAbsolutePositions();
-
-                set(root.doReloadAllValuesAtom, true);
-                set(root.doReloadAllValuesAtom, false);
-
-                set(root.doReloadSvgItemIdxAtom, svgItemIdx);
-                set(root.doReloadSvgItemIdxAtom, -1);
             })(idx))),
             asStringAtom: atom(svgItem.asStandaloneString()),
         };
         root.edits.push(newSvgEdit);
     });
     return root;
+
+    function triggerUpdate(set: Setter, svgItemIdx: number) {
+        set(root.doReloadAllValuesAtom, true);
+        set(root.doReloadAllValuesAtom, false);
+
+        set(root.doReloadSvgItemIdxAtom, svgItemIdx);
+        set(root.doReloadSvgItemIdxAtom, -1);
+    }
 
     function reloadValues(set: Setter) {
         set(root.allowUpdatesAtom, false);
