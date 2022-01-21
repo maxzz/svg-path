@@ -151,25 +151,10 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         svg,
         edits: [],
         pointsAtom: atom<SvgEditPoints>(getPoints(svg)),
-        doUpdatePointAtom: atom(null, (get, set, { pt, newXY, svgItemIdx }) => {
-            svg.setLocation(pt, newXY);
-            triggerUpdate(set, svgItemIdx);
-        }),
         allowUpdatesAtom: atom<boolean>(true),
-        doReloadAllValuesAtom: atomWithCallback<boolean>(true, ({ get, set, nextValue: doUpdate }) => {
-            doUpdate && reloadValues(set);
-        }),
-        doReloadSvgItemIdxAtom: atomWithCallback<number>(-1, ({ set, nextValue: svgItemIdx }) => {
-            if (svgItemIdx >= 0) {
-                const svgEdit = root.edits[svgItemIdx];
-                const svgItem = root.svg.path[svgItemIdx];
-                set(svgEdit.typeAtom, svgItem.getType());
-                set(svgEdit.asStringAtom, svgItem.asStandaloneString());
-
-                set(root.pointsAtom, getPoints(root.svg));
-                set(_pathUnsafeAtom, svg.asString());
-            }
-        }),
+        doReloadAllValuesAtom: atomWithCallback<boolean>(true, doReloadAllValues),
+        doReloadSvgItemIdxAtom: atomWithCallback<number>(-1, doReloadSvgItemIdx),
+        doUpdatePointAtom: atom(null, doUpdatePoint),
     };
     svg.path.forEach((svgItem, svgItemIdx) => {
         const newSvgEdit: SvgItemEdit = {
@@ -195,6 +180,14 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     });
     return root;
 
+    function getPoints(svg: Svg): SvgEditPoints { // TODO: will be better to keep them separately
+        return {
+            targets: svg.targetLocations(),
+            controls: svg.controlLocations(),
+            asString: svg.asString(),
+        };
+    }
+
     function triggerUpdate(set: Setter, svgItemIdx: number) {
         set(root.doReloadAllValuesAtom, true);
         set(root.doReloadAllValuesAtom, false);
@@ -211,12 +204,23 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         set(root.allowUpdatesAtom, true);
     }
 
-    function getPoints(svg: Svg): SvgEditPoints { // TODO: will be better to keep them separately
-        return {
-            targets: svg.targetLocations(),
-            controls: svg.controlLocations(),
-            asString: svg.asString(),
-        };
+    function doReloadAllValues({ get, set, nextValue: doUpdate }: { get: Getter, set: Setter, nextValue: boolean; }) {
+        doUpdate && reloadValues(set);
+    }
+    function doReloadSvgItemIdx({ set, nextValue: svgItemIdx }: {set: Setter, nextValue: number }) {
+        if (svgItemIdx >= 0) {
+            const svgEdit = root.edits[svgItemIdx];
+            const svgItem = root.svg.path[svgItemIdx];
+            set(svgEdit.typeAtom, svgItem.getType());
+            set(svgEdit.asStringAtom, svgItem.asStandaloneString());
+
+            set(root.pointsAtom, getPoints(root.svg));
+            set(_pathUnsafeAtom, svg.asString());
+        }
+    }
+    function doUpdatePoint(get: Getter, set: Setter, { pt, newXY, svgItemIdx }: { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }) {
+        svg.setLocation(pt, newXY);
+        triggerUpdate(set, svgItemIdx);
     }
 }
 

@@ -117,6 +117,7 @@ function SvgCanvas() {
                     <TargetPoint key={idx} pt={pt} stroke={canvasStroke} svgItemIdx={idx} clk={onPointClick} asStringAtom={svgEditRoot.edits[idx].asStringAtom} />
                 ))}
             </g>
+            {/* TODO: svgEditRoot.edits[idx].asStringAtom failed if remove last or any svgItem */}
         </svg>
     );
 }
