@@ -8,7 +8,7 @@ export type StartDragEvent = {
     pt?: SvgPoint | SvgControlPoint;
     isCp?: boolean;
     startXY?: ViewPoint;
-    ptIdx?: number;
+    //ptIdx?: number;
     svgItemIdx: number;
 };
 

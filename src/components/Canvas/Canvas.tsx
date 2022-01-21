@@ -12,13 +12,13 @@ import { CanvasTicks } from './CanvasTicks';
 import { _fViewBox, _ViewBox, _ViewPoint } from '../../utils/debugging';
 //import { useThrottle } from 'react-use';
 
-function initPtIdx(pathPoints: SvgPoint[], cpPoints: SvgControlPoint[], ev: StartDragEvent) {
-    ev.ptIdx = (ev.isCp ? cpPoints : pathPoints).findIndex(pt => pt === ev.pt);
-}
+// function initPtIdx(pathPoints: SvgPoint[], cpPoints: SvgControlPoint[], ev: StartDragEvent) {
+//     ev.ptIdx = (ev.isCp ? cpPoints : pathPoints).findIndex(pt => pt === ev.pt);
+// }
 
-function restorePtByIdx(pathPoints: SvgPoint[], cpPoints: SvgControlPoint[], ev: StartDragEvent) {
-    ev.pt = (ev.isCp ? cpPoints : pathPoints)[ev.ptIdx!];
-}
+// function restorePtByIdx(pathPoints: SvgPoint[], cpPoints: SvgControlPoint[], ev: StartDragEvent) {
+//     ev.pt = (ev.isCp ? cpPoints : pathPoints)[ev.ptIdx!];
+// }
 
 function SvgCanvas() {
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
@@ -70,7 +70,7 @@ function SvgCanvas() {
             nowXY.y = parseFloat(nowXY.y.toFixed(decimals));
             //console.log('move', nowXY.x, nowXY.y);
 
-            restorePtByIdx(pathPoints, cpPoints, startDragEventRef.current);
+            //restorePtByIdx(pathPoints, cpPoints, startDragEventRef.current);
             doUpdatePoint({ pt: startDragEventRef.current.pt, newXY: nowXY, svgItemIdx: startDragEventRef.current.svgItemIdx });
         } else {
             // const startPt = getEventPt(containerRef, startDragEventRef.current.event.clientX, startDragEventRef.current.event.clientY);
@@ -93,7 +93,7 @@ function SvgCanvas() {
     function onPointClick(ev: StartDragEvent) {
         if (ev.event.button === 0) {
             startDragEventRef.current = ev;
-            initPtIdx(pathPoints, cpPoints, ev);
+            //initPtIdx(pathPoints, cpPoints, ev);
         }
     }
 
@@ -111,7 +111,7 @@ function SvgCanvas() {
                     const controls = edit.svgItem.controlLocations();
                     controls.forEach((cpt, idx) => cpt.subIndex = idx);
                     return controls.map((cpt, idx) => (
-                        <ControlPoint key={`${editIdx}.${idx}`} pt={cpt} stroke={canvasStroke} svgItemIdx={editIdx} clk={onPointClick} />
+                        <ControlPoint key={`${idx}${editIdx}`} pt={cpt} stroke={canvasStroke} svgItemIdx={editIdx} clk={onPointClick} />
                     ));
                 })}
             </g>
