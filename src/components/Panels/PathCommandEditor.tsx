@@ -127,7 +127,7 @@ export function PathCommandEditor() {
 
     return (
         <div className="my-1 space-y-0.5">
-            {SvgEditRoot.atoms.map((svgItemEdit, idx) => (
+            {SvgEditRoot.edits.map((svgItemEdit, idx) => (
                 <CommandRow svgItemEdit={svgItemEdit} svgItemIdx={idx} key={idx} />
             ))}
         </div >
