@@ -141,7 +141,7 @@ export type SvgEditRoot = {
     atoms: SvgItemEdit[];
     pointsAtom: PrimitiveAtom<SvgEditPoints>;
     doUpdatePointAtom: WritableAtom<null, { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }>;
-    doUpdatesAtom: PrimitiveAtom<boolean>;
+    doUpdatesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
 };
 
 function createSvgEditRoot(svg: Svg): SvgEditRoot {
@@ -166,40 +166,41 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             typeAtom: atom(svgItem.getType()),
             isRelAtom: atomWithCallback(svgItem.relative, ({ get, set, nextValue }) => {
                 svgItem.setRelative(nextValue);
+
+                root.svg.refreshAbsolutePositions();
                 set(root.doUpdatesAtom, false);
-                svgItem.values.forEach((value, idx) => set(newSvgEdit.valueAtoms[idx], value));
+                reloadValues(set);
                 set(root.doUpdatesAtom, true);
-                console.log('update done', get(root.doUpdatesAtom));
 
                 set(newSvgEdit.typeAtom, svgItem.getType());
-                
                 set(newSvgEdit.asStringAtom, svgItem.asStandaloneString());
+
                 set(root.pointsAtom, getPoints(root.svg));
                 set(_pathUnsafeAtom, svg.asString());
             }),
-            valueAtoms: svgItem.values.map((value, idx) => atomWithCallback(value, ((idx) => ({ get, set }: {get: Getter, set: Setter}) => {
-                if (get(root.doUpdatesAtom)) {
-                    console.log('locked');
+            valueAtoms: svgItem.values.map((value, idx) => atomWithCallback(value, ((idx) => ({ get, set }: { get: Getter, set: Setter; }) => {
+                if (!get(root.doUpdatesAtom)) {
+                    console.log('locked index', idx);
+                    return;
                 }
                 console.log('idx', idx, 'lock', get(root.doUpdatesAtom));
                 svgItem.values = root.atoms[svgItemIdx].valueAtoms.map((valueAtom) => get(valueAtom));
-                
+
                 set(newSvgEdit.asStringAtom, svgItem.asStandaloneString());
                 set(root.pointsAtom, getPoints(root.svg));
                 set(_pathUnsafeAtom, svg.asString());
             })(idx))),
-            // valueAtoms: svgItem.values.map((value) => atomWithCallback(value, ({ get, set }) => {
-            //     svgItem.values = root.atoms[svgItemIdx].valueAtoms.map((valueAtom) => get(valueAtom));
-                
-            //     set(newSvgEdit.asStringAtom, svgItem.asStandaloneString());
-            //     set(root.pointsAtom, getPoints(root.svg));
-            //     set(_pathUnsafeAtom, svg.asString());
-            // })),
             asStringAtom: atom(svgItem.asStandaloneString()),
         };
         root.atoms.push(newSvgEdit);
     });
     return root;
+
+    function reloadValues(set: Setter) {
+        root.svg.path.forEach((svgItem, svgItemIdx) => {
+            svgItem.values.forEach((value, idx) => set(root.atoms[svgItemIdx].valueAtoms[idx], value));
+        });
+    }
 
     function getPoints(svg: Svg): SvgEditPoints { // TODO: will be better to keep them separately
         return {
