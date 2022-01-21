@@ -141,8 +141,16 @@ export type SvgEditRoot = {
     edits: SvgItemEdit[];
     pointsAtom: PrimitiveAtom<SvgEditPoints>;
     doUpdatePointAtom: WritableAtom<null, { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }>;
+
     allowUpdatesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
-    doUpdatesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
+    doReloadAllValuesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
+    doReloadSvgItemIdxAtom: PrimitiveAtom<{ svgItemidx: number, newSvgItem: SvgItem; } | undefined>;
+};
+
+type ReloadState = {
+    values?: boolean;
+    svgItem?: SvgItem;
+    points?: boolean;
 };
 
 function createSvgEditRoot(svg: Svg): SvgEditRoot {
@@ -159,11 +167,18 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         }),
 
         allowUpdatesAtom: atom<boolean>(true),
-        doUpdatesAtom: atomWithCallback<boolean>(true, ({get, set, nextValue}) => {
+        doReloadAllValuesAtom: atomWithCallback<boolean>(true, ({ get, set, nextValue }) => {
             console.log('doUpdatesAtom', nextValue);
             if (nextValue) {
                 reloadValues(set);
-                //set(root.doUpdatesAtom, false);
+            }
+        }),
+        doReloadSvgItemIdxAtom: atomWithCallback<{ svgItemidx: number, newSvgItem: SvgItem; } | undefined>(undefined, ({ set, nextValue: svgItem2 }) => {
+            if (svgItem2) {
+                const svgEdit = root.edits[svgItem2.svgItemidx];
+                const svgItem = root.svg.path[svgItem2.svgItemidx];
+                set(svgEdit.typeAtom, svgItem.getType());
+                set(svgEdit.asStringAtom, svgItem.asStandaloneString());
             }
         }),
     };
@@ -193,8 +208,8 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
                 svgItem.values[idx] = nextValue;
                 root.svg.refreshAbsolutePositions();
 
-                set(root.doUpdatesAtom, true);
-                set(root.doUpdatesAtom, false);
+                set(root.doReloadAllValuesAtom, true);
+                set(root.doReloadAllValuesAtom, false);
 
 
 
