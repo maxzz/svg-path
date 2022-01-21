@@ -39,7 +39,7 @@ export function TargetPoint({ pt, stroke, svgItemIdx, clk, asStringAtom }:
         {(editorActive || editorHover) &&
             <circle
                 style={{ stroke: 'transparent', fill: editorColor(editorActive, editorHover) }}
-                cx={pt.x} cy={pt.y} r={stroke * 6} strokeWidth={stroke * 12}
+                cx={pt.x} cy={pt.y} r={stroke * 8} strokeWidth={stroke * 16}
             />
         }
         <circle
@@ -85,7 +85,7 @@ export function ControlPoint({ pt, stroke, svgItemIdx, clk }:
             <rect
                 className="cursor-pointer"
                 style={{ stroke: 'transparent', fill: editorColor(editorActive, editorHover) }}
-                x={pt.x - 6 * stroke} y={pt.y - 6 * stroke} width={stroke * 12} height={stroke * 12} strokeWidth={stroke * 12}
+                x={pt.x - 8 * stroke} y={pt.y - 8 * stroke} width={stroke * 16} height={stroke * 16} strokeWidth={stroke * 16}
             />
         }
         <rect
