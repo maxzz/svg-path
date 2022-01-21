@@ -109,46 +109,22 @@ function SvgCanvas() {
             <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} />
 
             <g className="cpPts">
-                {edits.map((edit, idx) => {
+                {edits.map((edit, editIdx) => {
                     const controls = edit.svgItem.controlLocations();
                     controls.forEach((cpt, idx) => cpt.subIndex = idx);
-                    return controls.map((pt) => (
-                        <ControlPoint key={idx} pt={pt} stroke={canvasStroke} svgItemIdx={cpToTargetIdx(pathPoints, pt.itemReference)} clk={onPointClick} />
+                    return controls.map((pt, idx) => (
+                        <ControlPoint key={`${editIdx}.${idx}`} pt={pt} stroke={canvasStroke} svgItemIdx={cpToTargetIdx(pathPoints, pt.itemReference)} clk={onPointClick} />
                     ));
                 })}
             </g>
 
             <g className="pathPts">
-                {pathPoints.map((pt, idx) => (
-                    <TargetPoint key={idx} pt={pt} stroke={canvasStroke} svgItemIdx={idx} clk={onPointClick} asStringAtom={svgEditRoot.edits[idx].asStringAtom} />
+                {edits.map((edit, editIdx) => (
+                    <TargetPoint key={editIdx} pt={edit.svgItem.targetLocation()} stroke={canvasStroke} svgItemIdx={editIdx} clk={onPointClick} asStringAtom={edit.asStringAtom} />
                 ))}
             </g>
         </svg>
     );
-
-    // return (
-    //     <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c] select-none"
-    //         onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
-    //     // onClick={() => setActivePt(-1)}
-    //     >
-    //         <CanvasTicks />
-
-    //         <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} />
-
-    //         <g className="cpPts">
-    //             {cpPoints.map((pt, idx) => (
-    //                 <ControlPoint key={idx} pt={pt} stroke={canvasStroke} svgItemIdx={cpToTargetIdx(pathPoints, pt.itemReference)} clk={onPointClick} />
-    //             ))}
-    //         </g>
-
-    //         <g className="pathPts">
-    //             {pathPoints.map((pt, idx) => (
-    //                 <TargetPoint key={idx} pt={pt} stroke={canvasStroke} svgItemIdx={idx} clk={onPointClick} asStringAtom={svgEditRoot.edits[idx].asStringAtom} />
-    //             ))}
-    //         </g>
-    //     </svg>
-    //     // TODO: svgEditRoot.edits[idx].asStringAtom failed if remove last or any svgItem
-    // );
 }
 
 // const CanvasControlsPanelMemo = React.memo(CanvasControlsPanel);
