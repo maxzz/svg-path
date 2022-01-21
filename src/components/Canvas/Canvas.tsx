@@ -2,7 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, canvasStrokeAtom, containerRefAtom, pathUnsafeAtom, precisionAtom, snapToGridAtom, svgAtom, svgEditRootAtom, viewBoxAtom } from '../../store/store';
+import { activePointAtom, canvasStrokeAtom, containerRefAtom, precisionAtom, snapToGridAtom, svgEditRootAtom, viewBoxAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { SvgControlPoint, SvgItem, SvgPoint } from '../../svg/svg';
 //import { CanvasControlsPanel } from '../Panels/PanelCanvasControls';
@@ -10,9 +10,7 @@ import { ViewBox } from '../../svg/svg-utils-viewport';
 import { ControlPoint, StartDragEvent, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
 import { _fViewBox, _ViewBox, _ViewPoint } from '../../utils/debugging';
-import { useThrottle } from 'react-use';
-
-const cpToTargetIdx = (targetLocations: SvgPoint[], ref: SvgItem) => targetLocations.findIndex((pt) => pt.itemReference === ref);
+//import { useThrottle } from 'react-use';
 
 function initPtIdx(pathPoints: SvgPoint[], cpPoints: SvgControlPoint[], ev: StartDragEvent) {
     ev.ptIdx = (ev.isCp ? cpPoints : pathPoints).findIndex(pt => pt === ev.pt);
@@ -112,8 +110,8 @@ function SvgCanvas() {
                 {edits.map((edit, editIdx) => {
                     const controls = edit.svgItem.controlLocations();
                     controls.forEach((cpt, idx) => cpt.subIndex = idx);
-                    return controls.map((pt, idx) => (
-                        <ControlPoint key={`${editIdx}.${idx}`} pt={pt} stroke={canvasStroke} svgItemIdx={cpToTargetIdx(pathPoints, pt.itemReference)} clk={onPointClick} />
+                    return controls.map((cpt, idx) => (
+                        <ControlPoint key={`${editIdx}.${idx}`} pt={cpt} stroke={canvasStroke} svgItemIdx={editIdx} clk={onPointClick} />
                     ));
                 })}
             </g>
