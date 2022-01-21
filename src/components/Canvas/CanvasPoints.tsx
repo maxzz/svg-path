@@ -17,7 +17,9 @@ export type StartDragEventHandler = (event: StartDragEvent) => void;
 const pointColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
 const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ff' : hover ? '#ffad40' : 'white';
 
-export function TargetPoint({ pt, stroke, svgItemIdx, clk, asStringAtom }: { pt: SvgPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; asStringAtom: Atom<string>; }) {
+export function TargetPoint({ pt, stroke, svgItemIdx, clk, asStringAtom }:
+    { pt: SvgPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; asStringAtom: Atom<string>; }) {
+
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
     const active = activePt === svgItemIdx;
@@ -58,7 +60,9 @@ export function TargetPoint({ pt, stroke, svgItemIdx, clk, asStringAtom }: { pt:
     </>);
 }
 
-export function ControlPoint({ pt, stroke, svgItemIdx, clk}: { pt: SvgControlPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; }) {
+export function ControlPoint({ pt, stroke, svgItemIdx, clk }:
+    { pt: SvgControlPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; }) {
+
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
     const active = activePt === svgItemIdx;
@@ -77,7 +81,7 @@ export function ControlPoint({ pt, stroke, svgItemIdx, clk}: { pt: SvgControlPoi
             />
         ))}
         {
-        (editorActive || editorHover) &&
+            (editorActive || editorHover) &&
             <rect
                 className="cursor-pointer"
                 style={{ stroke: 'transparent', fill: editorColor(editorActive, editorHover) }}
