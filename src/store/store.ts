@@ -144,14 +144,14 @@ export type SvgEditRoot = {
 
     allowUpdatesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
     doReloadAllValuesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
-    doReloadSvgItemIdxAtom: PrimitiveAtom<{ svgItemidx: number, newSvgItem: SvgItem; } | undefined>;
+    doReloadSvgItemIdxAtom: PrimitiveAtom<number>; // if -1 then do nothing
 };
 
-type ReloadState = {
-    values?: boolean;
-    svgItem?: SvgItem;
-    points?: boolean;
-};
+// type ReloadState = {
+//     values?: boolean;
+//     svgItem?: SvgItem;
+//     points?: boolean;
+// };
 
 function createSvgEditRoot(svg: Svg): SvgEditRoot {
     const root: SvgEditRoot = {
@@ -168,17 +168,21 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 
         allowUpdatesAtom: atom<boolean>(true),
         doReloadAllValuesAtom: atomWithCallback<boolean>(true, ({ get, set, nextValue }) => {
-            console.log('doUpdatesAtom', nextValue);
+            console.log('doReloadAllValuesAtom', nextValue);
             if (nextValue) {
                 reloadValues(set);
             }
         }),
-        doReloadSvgItemIdxAtom: atomWithCallback<{ svgItemidx: number, newSvgItem: SvgItem; } | undefined>(undefined, ({ set, nextValue: svgItem2 }) => {
-            if (svgItem2) {
-                const svgEdit = root.edits[svgItem2.svgItemidx];
-                const svgItem = root.svg.path[svgItem2.svgItemidx];
+        doReloadSvgItemIdxAtom: atomWithCallback<number>(-1, ({ set, nextValue: svgItemIdx }) => {
+            console.log('doReloadSvgItemIdxAtom', svgItemIdx);
+            if (svgItemIdx >= 0) {
+                const svgEdit = root.edits[svgItemIdx];
+                const svgItem = root.svg.path[svgItemIdx];
                 set(svgEdit.typeAtom, svgItem.getType());
                 set(svgEdit.asStringAtom, svgItem.asStandaloneString());
+
+                set(root.pointsAtom, getPoints(root.svg));
+                set(_pathUnsafeAtom, svg.asString());
             }
         }),
     };
@@ -191,6 +195,12 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             isRelAtom: atomWithCallback(svgItem.relative, ({ get, set, nextValue }) => {
                 svgItem.setRelative(nextValue);
                 root.svg.refreshAbsolutePositions();
+
+                set(root.doReloadAllValuesAtom, true);
+                set(root.doReloadAllValuesAtom, false);
+
+                set(root.doReloadSvgItemIdxAtom, svgItemIdx);
+                set(root.doReloadSvgItemIdxAtom, -1);
 
                 // reloadValues(set);
                 // set(newSvgEdit.typeAtom, svgItem.getType());
@@ -211,6 +221,8 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
                 set(root.doReloadAllValuesAtom, true);
                 set(root.doReloadAllValuesAtom, false);
 
+                set(root.doReloadSvgItemIdxAtom, svgItemIdx);
+                set(root.doReloadSvgItemIdxAtom, -1);
 
 
                 //reloadValues(set);
