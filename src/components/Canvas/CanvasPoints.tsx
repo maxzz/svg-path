@@ -30,8 +30,6 @@ export function TargetPoint({ pt, stroke, svgItemIdx, clk, asStringAtom }: { pt:
 
     const [asString] = useAtom(asStringAtom);
 
-    //console.log(' pt', 'active', editorActivePt, 'hover', editorHoverPt);
-
     return (<>
         {(active || hover) &&
             <path style={{ stroke: pointColor(active, hover), fill: 'none' }} strokeWidth={stroke} d={asString} />
@@ -70,8 +68,6 @@ export function ControlPoint({ pt, stroke, svgItemIdx, clk}: { pt: SvgControlPoi
     const [editorHoverPt] = useAtom(editorHoverPointAtom);
     const editorActive = editorActivePt?.[0] === svgItemIdx && editorActivePt?.[1] === pt.subIndex;
     const editorHover = editorHoverPt?.[0] === svgItemIdx && editorHoverPt?.[1] === pt.subIndex;
-
-    //console.log('cpt', 'active', editorActivePt, 'hover', editorHoverPt, 'pathPtIdx', pathPtIdx, 'cPtIdx', pt.subIndex);
 
     return (<>
         {pt.relations.map((rel, idx) => (

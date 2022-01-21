@@ -152,12 +152,6 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         edits: [],
         pointsAtom: atom<SvgEditPoints>(getPoints(svg)),
         doUpdatePointAtom: atom(null, (get, set, { pt, newXY, svgItemIdx }) => {
-            const isCp = pt instanceof SvgControlPoint;
-            if (isCp) {
-
-            }
-            console.log('upd isCp', isCp, 'svgItemIdx', svgItemIdx, 'subIdx', (pt as SvgControlPoint).subIndex, pt.itemReference, pt, newXY);
-
             svg.setLocation(pt, newXY);
             triggerUpdate(set, svgItemIdx);
         }),
