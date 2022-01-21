@@ -119,15 +119,22 @@ export const svgAtom = atom(
 export type SvgItemEditIsRelAtom = PrimitiveAtom<boolean>; // is relative or absolute
 export type SvgItemEditValueAtom = PrimitiveAtom<number>;
 
+export type SvgItemEditState = {
+    active: boolean;
+    hover: boolean;
+    editorActive: boolean;
+    editorHover: boolean;
+};
+
 export type SvgItemEdit = {
     id: string;
     svgItemIdx: number;
     svgItem: SvgItem; // back reference to item from svg.path array.
-    typeAtom: PrimitiveAtom<string>,
+    typeAtom: PrimitiveAtom<string>;
     isRelAtom: SvgItemEditIsRelAtom;
     valueAtoms: SvgItemEditValueAtom[];
     asStringAtom: PrimitiveAtom<string>;
-    //TODO: isActiveAtom, isHoverAtom
+    stateAtom: PrimitiveAtom<SvgItemEditState>;
 };
 
 export type SvgEditPoints = {
@@ -175,6 +182,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
                 }
             })(idx))),
             asStringAtom: atom(svgItem.asStandaloneString()),
+            stateAtom: atom<SvgItemEditState>({ active: false, hover: false, editorActive: false, editorHover: false, }),
         };
         root.edits.push(newSvgEdit);
     });
@@ -204,10 +212,12 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         set(root.allowUpdatesAtom, true);
     }
 
+    // action actoms
+
     function doReloadAllValues({ get, set, nextValue: doUpdate }: { get: Getter, set: Setter, nextValue: boolean; }) {
         doUpdate && reloadValues(set);
     }
-    function doReloadSvgItemIdx({ set, nextValue: svgItemIdx }: {set: Setter, nextValue: number }) {
+    function doReloadSvgItemIdx({ set, nextValue: svgItemIdx }: { set: Setter, nextValue: number; }) {
         if (svgItemIdx >= 0) {
             const svgEdit = root.edits[svgItemIdx];
             const svgItem = root.svg.path[svgItemIdx];
