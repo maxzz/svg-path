@@ -141,6 +141,7 @@ export type SvgEditRoot = {
     atoms: SvgItemEdit[];
     pointsAtom: PrimitiveAtom<SvgEditPoints>;
     doUpdatePointAtom: WritableAtom<null, { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }>;
+    doUpdatesAtom: PrimitiveAtom<boolean>;
 };
 
 function createSvgEditRoot(svg: Svg): SvgEditRoot {
@@ -154,7 +155,8 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 
             }
             console.log('upd isCp', isCp, 'svgItemIdx', svgItemIdx, 'subIdx', (pt as SvgControlPoint).subIndex, pt.itemReference, pt, newXY);
-        })
+        }),
+        doUpdatesAtom: atom<boolean>(true),
     };
     svg.path.forEach((svgItem, svgItemIdx) => {
         const newSvgEdit: SvgItemEdit = {
@@ -162,9 +164,13 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             svgItemIdx,
             svgItem,
             typeAtom: atom(svgItem.getType()),
-            isRelAtom: atomWithCallback(svgItem.relative, ({ set, nextValue }) => {
+            isRelAtom: atomWithCallback(svgItem.relative, ({ get, set, nextValue }) => {
                 svgItem.setRelative(nextValue);
+                set(root.doUpdatesAtom, false);
                 svgItem.values.forEach((value, idx) => set(newSvgEdit.valueAtoms[idx], value));
+                set(root.doUpdatesAtom, true);
+                console.log('update done', get(root.doUpdatesAtom));
+
                 set(newSvgEdit.typeAtom, svgItem.getType());
                 
                 set(newSvgEdit.asStringAtom, svgItem.asStandaloneString());
@@ -172,7 +178,10 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
                 set(_pathUnsafeAtom, svg.asString());
             }),
             valueAtoms: svgItem.values.map((value, idx) => atomWithCallback(value, ((idx) => ({ get, set }: {get: Getter, set: Setter}) => {
-                console.log('idx', idx);
+                if (get(root.doUpdatesAtom)) {
+                    console.log('locked');
+                }
+                console.log('idx', idx, 'lock', get(root.doUpdatesAtom));
                 svgItem.values = root.atoms[svgItemIdx].valueAtoms.map((valueAtom) => get(valueAtom));
                 
                 set(newSvgEdit.asStringAtom, svgItem.asStandaloneString());
