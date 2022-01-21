@@ -141,6 +141,7 @@ export type SvgEditRoot = {
     edits: SvgItemEdit[];
     pointsAtom: PrimitiveAtom<SvgEditPoints>;
     doUpdatePointAtom: WritableAtom<null, { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }>;
+    allowUpdatesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
     doUpdatesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
 };
 
@@ -156,10 +157,13 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             }
             console.log('upd isCp', isCp, 'svgItemIdx', svgItemIdx, 'subIdx', (pt as SvgControlPoint).subIndex, pt.itemReference, pt, newXY);
         }),
+
+        allowUpdatesAtom: atom<boolean>(true),
         doUpdatesAtom: atomWithCallback<boolean>(true, ({get, set, nextValue}) => {
             console.log('doUpdatesAtom', nextValue);
             if (nextValue) {
                 reloadValues(set);
+                //set(root.doUpdatesAtom, false);
             }
         }),
     };
@@ -181,7 +185,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
                 // set(_pathUnsafeAtom, svg.asString());
             }),
             valueAtoms: svgItem.values.map((value, idx) => atomWithCallback(value, ((idx) => ({ get, set, nextValue }: { get: Getter, set: Setter; nextValue: number; }) => {
-                if (!get(root.doUpdatesAtom)) {
+                if (!get(root.allowUpdatesAtom)) {
                     console.log('locked index', idx);
                     return;
                 }
@@ -190,6 +194,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
                 root.svg.refreshAbsolutePositions();
 
                 set(root.doUpdatesAtom, true);
+                set(root.doUpdatesAtom, false);
 
 
 
@@ -213,11 +218,11 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     return root;
 
     function reloadValues(set: Setter) {
-        //set(root.doUpdatesAtom, false);
+        set(root.allowUpdatesAtom, false);
         root.svg.path.forEach((svgItem, svgItemIdx) => {
             svgItem.values.forEach((value, idx) => set(root.edits[svgItemIdx].valueAtoms[idx], value));
         });
-        //set(root.doUpdatesAtom, true);
+        set(root.allowUpdatesAtom, true);
     }
 
     function getPoints(svg: Svg): SvgEditPoints { // TODO: will be better to keep them separately
