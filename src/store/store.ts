@@ -157,6 +157,9 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 
             }
             console.log('upd isCp', isCp, 'svgItemIdx', svgItemIdx, 'subIdx', (pt as SvgControlPoint).subIndex, pt.itemReference, pt, newXY);
+
+            svg.setLocation(pt, newXY);
+            triggerUpdate(set, svgItemIdx);
         }),
         allowUpdatesAtom: atom<boolean>(true),
         doReloadAllValuesAtom: atomWithCallback<boolean>(true, ({ get, set, nextValue: doUpdate }) => {
