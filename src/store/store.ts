@@ -178,7 +178,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
                 set(newSvgEdit.asStringAtom, svgItem.asStandaloneString());
                 set(root.pointsAtom, getPoints(root.svg));
                 set(_pathUnsafeAtom, svg.asString());
-            })())),
+            })(idx))),
             // valueAtoms: svgItem.values.map((value) => atomWithCallback(value, ({ get, set }) => {
             //     svgItem.values = root.atoms[svgItemIdx].valueAtoms.map((valueAtom) => get(valueAtom));
                 
