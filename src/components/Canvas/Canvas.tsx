@@ -12,14 +12,6 @@ import { CanvasTicks } from './CanvasTicks';
 import { _fViewBox, _ViewBox, _ViewPoint } from '../../utils/debugging';
 //import { useThrottle } from 'react-use';
 
-// function initPtIdx(pathPoints: SvgPoint[], cpPoints: SvgControlPoint[], ev: StartDragEvent) {
-//     ev.ptIdx = (ev.isCp ? cpPoints : pathPoints).findIndex(pt => pt === ev.pt);
-// }
-
-// function restorePtByIdx(pathPoints: SvgPoint[], cpPoints: SvgControlPoint[], ev: StartDragEvent) {
-//     ev.pt = (ev.isCp ? cpPoints : pathPoints)[ev.ptIdx!];
-// }
-
 function SvgCanvas() {
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const canvasStroke = useAtomValue(canvasStrokeAtom);
@@ -70,7 +62,6 @@ function SvgCanvas() {
             nowXY.y = parseFloat(nowXY.y.toFixed(decimals));
             //console.log('move', nowXY.x, nowXY.y);
 
-            //restorePtByIdx(pathPoints, cpPoints, startDragEventRef.current);
             doUpdatePoint({ pt: startDragEventRef.current.pt, newXY: nowXY, svgItemIdx: startDragEventRef.current.svgItemIdx });
         } else {
             // const startPt = getEventPt(containerRef, startDragEventRef.current.event.clientX, startDragEventRef.current.event.clientY);
@@ -91,10 +82,7 @@ function SvgCanvas() {
     }
 
     function onPointClick(ev: StartDragEvent) {
-        if (ev.event.button === 0) {
-            startDragEventRef.current = ev;
-            //initPtIdx(pathPoints, cpPoints, ev);
-        }
+        (ev.event.button === 0) && (startDragEventRef.current = ev);
     }
 
     return (

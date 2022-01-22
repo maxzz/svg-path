@@ -6,9 +6,7 @@ import { ViewPoint } from "../../svg/svg-utils-viewport";
 export type StartDragEvent = {
     event: React.MouseEvent;
     pt?: SvgPoint | SvgControlPoint;
-    isCp?: boolean;
     startXY?: ViewPoint;
-    //ptIdx?: number;
     svgItemIdx: number;
 };
 
@@ -98,7 +96,7 @@ export function ControlPoint({ pt, stroke, svgItemIdx, clk }:
             onMouseDown={(event) => {
                 event.stopPropagation();
                 setActivePt(svgItemIdx);
-                clk({ event, pt, isCp: true, svgItemIdx });
+                clk({ event, pt, svgItemIdx });
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
