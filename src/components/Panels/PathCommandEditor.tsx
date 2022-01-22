@@ -45,6 +45,7 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx,
     const isHovering = useHoverDirty(rowContainerRef);
 
     React.useEffect(() => {
+        console.log('hover edit', isHovering);
         //setEditorHoverPt(isHovering ? editorIdx : null);
         setState({ atom: stateAtom, states: { hoverEd: isHovering } })
     }, [isHovering]);
@@ -92,12 +93,18 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
     const rowContainerRef = React.useRef(null);
     const isHovering = useHoverDirty(rowContainerRef);
     const [isHoveringDebounced, setIsHoveringDebounced] = React.useState(false);
-    useDebounce(() => setIsHoveringDebounced(isHovering), 200, [isHovering]);
+    useDebounce(() => setIsHoveringDebounced(isHovering), 100, [isHovering]);
 
     //const [hoverPoint, setHoverPoint] = useAtom(hoverPointAtom);
     //const isHoverPt = hoverPoint === svgItemIdx;
     const isHoverPt = state.hover;
-    React.useEffect(() => /*setHoverPoint(isHovering ? svgItemIdx : -1)*/setState({ atom: svgItemEdit.stateAtom, states: { hover: isHovering } }), [isHoveringDebounced]);
+
+    // React.useEffect(() => /*setHoverPoint(isHovering ? svgItemIdx : -1)*/setState({ atom: svgItemEdit.stateAtom, states: { hover: isHovering } }), [isHoveringDebounced]);
+    React.useEffect(() => {
+        console.log('hover row debounced', isHoveringDebounced);
+        
+        setState({ atom: svgItemEdit.stateAtom, states: { hover: isHovering } })
+    }, [isHoveringDebounced]);
 
     return (<>
         <div

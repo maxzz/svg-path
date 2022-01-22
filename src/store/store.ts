@@ -148,7 +148,7 @@ export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: Pr
             set(globalStateAtom, (prev) => ({ ...prev, [key]: false }));
             //globalEditState[key] = undefined;
         }
-        globalEditState[key] = val ? atom : undefined; // there can be only one active, hover...
+        globalEditState[key] = val ? atom : undefined; // there can be only one
         //globalEditState[key] = atom;
         newState[key] = !!val;
     }
@@ -156,9 +156,9 @@ export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: Pr
     set(atom, (prev) => ({ ...prev, ...newState }));
 });
 
-export const doClearActiveAtom = atom(null, (get, set, ) => {
+export const doClearActiveAtom = atom(null, (get, set,) => {
     if (globalEditState.active) {
-        set(globalEditState.active, (prev) => ({...prev, active: false}));
+        set(globalEditState.active, (prev) => ({ ...prev, active: false }));
         globalEditState.active = undefined;
     }
 });
@@ -242,10 +242,16 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         set(root.doReloadSvgItemIdxAtom, -1);
     }
 
-    function reloadValues(set: Setter) {
+    function reloadValues(get: Getter, set: Setter) {
         set(root.allowUpdatesAtom, false);
         root.svg.path.forEach((svgItem, svgItemIdx) => {
-            svgItem.values.forEach((value, idx) => set(root.edits[svgItemIdx].valueAtoms[idx], value));
+            // svgItem.values.forEach((value, idx) => set(root.edits[svgItemIdx].valueAtoms[idx], value));
+            const thisRowAtoms = root.edits[svgItemIdx].valueAtoms;
+            svgItem.values.forEach((value, idx) => {
+                if (get(thisRowAtoms[idx]) != value) {
+                    set(thisRowAtoms[idx], value);
+                }
+            });
         });
         set(root.allowUpdatesAtom, true);
     }
@@ -253,7 +259,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     // action actoms
 
     function doReloadAllValues({ get, set, nextValue: doUpdate }: { get: Getter, set: Setter, nextValue: boolean; }) {
-        doUpdate && reloadValues(set);
+        doUpdate && reloadValues(get, set);
     }
     function doReloadSvgItemIdx({ set, nextValue: svgItemIdx }: { set: Setter, nextValue: number; }) {
         if (svgItemIdx >= 0) {
