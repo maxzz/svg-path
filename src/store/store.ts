@@ -116,12 +116,21 @@ export const svgAtom = atom(
 
 // new data container active and hover state
 
-type GlobalEditState = {
-    active: PrimitiveAtom<SvgItemEditState> | undefined;
-    hover: PrimitiveAtom<SvgItemEditState> | undefined;
-    activeEd: PrimitiveAtom<SvgItemEditState> | undefined;
-    hoverEd: PrimitiveAtom<SvgItemEditState> | undefined;
+export type SvgItemEditState = {
+    active: boolean;
+    hover: boolean;
+    activeEd: boolean;    // active in editor
+    hoverEd: boolean;     // hover in editor
 };
+
+type GlobalEditState = Record<keyof SvgItemEditState, PrimitiveAtom<SvgItemEditState> | undefined>;
+
+// type GlobalEditState = {
+//     active: PrimitiveAtom<SvgItemEditState> | undefined;
+//     hover: PrimitiveAtom<SvgItemEditState> | undefined;
+//     activeEd: PrimitiveAtom<SvgItemEditState> | undefined;
+//     hoverEd: PrimitiveAtom<SvgItemEditState> | undefined;
+// };
 
 const globalEditState: GlobalEditState = {
     active: undefined,
@@ -130,22 +139,55 @@ const globalEditState: GlobalEditState = {
     hoverEd: undefined,
 };
 
-export type SvgItemEditState = {
-    active: boolean;
-    hover: boolean;
-    activeEd: boolean;    // active in editor
-    hoverEd: boolean;     // hover in editor
-};
-
 export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: PrimitiveAtom<SvgItemEditState>; states: Partial<SvgItemEditState>; }) => {
-    if ('active' in states) {
-        if (globalEditState.active) {
-            set(globalEditState.active, (prev) => ({ ...prev, active: false }));
+    const newState: Partial<SvgItemEditState> = {};
+
+    for (const [name, val] of Object.entries(states)) {
+        const key = name as keyof SvgItemEditState;
+        const globalStateAtom = globalEditState[key];
+        if (globalStateAtom) {
+            set(globalStateAtom, (prev) => ({ ...prev, key: false }));
         }
-        globalEditState.active = atom;
-        set(atom, (prev) => ({ ...prev, active: !!states.active }));
+        globalEditState[key] = atom;
+        newState[key] = !!val;
     }
+
+    // for (const [name, val] of Object.entries(states)) {
+    //     const key = name as keyof (SvgItemEditState | GlobalEditState);
+    //     const globalStateAtom = globalEditState[key];
+    //     if (globalStateAtom) {
+    //         set(globalStateAtom, (prev) => ({ ...prev, key: false }));
+    //     }
+    //     globalEditState[key] = atom;
+    //     newState[key] = !!val;
+    // }
+
+    set(atom, (prev) => ({ ...prev, ...newState }));
 });
+
+// export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: PrimitiveAtom<SvgItemEditState>; states: Partial<SvgItemEditState>; }) => {
+//     const newState: Partial<SvgItemEditState> = {};
+
+//     if ('active' in states) {
+//         if (globalEditState.active) {
+//             set(globalEditState.active, (prev) => ({ ...prev, active: false }));
+//         }
+//         globalEditState.active = atom;
+//         newState.active = !!states.active;
+//     }
+
+//     set(atom, (prev) => ({ ...prev, ...newState }));
+// });
+
+// export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: PrimitiveAtom<SvgItemEditState>; states: Partial<SvgItemEditState>; }) => {
+//     if ('active' in states) {
+//         if (globalEditState.active) {
+//             set(globalEditState.active, (prev) => ({ ...prev, active: false }));
+//         }
+//         globalEditState.active = atom;
+//         set(atom, (prev) => ({ ...prev, active: !!states.active }));
+//     }
+// });
 
 // export const doSetActiveAtom = atom(null, (get, set, { atom, value }: { atom: PrimitiveAtom<SvgItemEditState>; value: boolean; }) => {
 //     if (globalEditState.active) {
