@@ -1,5 +1,5 @@
-import { Atom, useAtom } from "jotai";
-import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom } from "../../store/store";
+import { Atom, PrimitiveAtom, useAtom } from "jotai";
+import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, SvgItemEditState } from "../../store/store";
 import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg/svg";
 import { ViewPoint } from "../../svg/svg-utils-viewport";
 
@@ -15,8 +15,8 @@ export type StartDragEventHandler = (event: StartDragEvent) => void;
 const pointColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
 const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ff' : hover ? '#ffad40' : 'white';
 
-export function TargetPoint({ pt, stroke, svgItemIdx, clk, asStringAtom }:
-    { pt: SvgPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; asStringAtom: Atom<string>; }) {
+export function TargetPoint({ pt, clk, stroke, svgItemIdx, stateAtom, asStringAtom }:
+    { pt: SvgPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; asStringAtom: Atom<string>; stateAtom: PrimitiveAtom<SvgItemEditState>; }) {
 
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
@@ -29,6 +29,8 @@ export function TargetPoint({ pt, stroke, svgItemIdx, clk, asStringAtom }:
     const editorHover = editorHoverPt?.[0] === svgItemIdx && editorHoverPt?.[1] === -1;
 
     const [asString] = useAtom(asStringAtom);
+
+    const [state, setState] = useAtom(stateAtom);
 
     return (<>
         {(active || hover) &&
@@ -58,8 +60,8 @@ export function TargetPoint({ pt, stroke, svgItemIdx, clk, asStringAtom }:
     </>);
 }
 
-export function ControlPoint({ pt, stroke, svgItemIdx, clk }:
-    { pt: SvgControlPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; }) {
+export function ControlPoint({ pt, clk, stroke, svgItemIdx, stateAtom, }:
+    { pt: SvgControlPoint, stroke: number; svgItemIdx: number; clk: StartDragEventHandler; stateAtom: PrimitiveAtom<SvgItemEditState>; }) {
 
     const [activePt, setActivePt] = useAtom(activePointAtom);
     const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
@@ -70,6 +72,8 @@ export function ControlPoint({ pt, stroke, svgItemIdx, clk }:
     const [editorHoverPt] = useAtom(editorHoverPointAtom);
     const editorActive = editorActivePt?.[0] === svgItemIdx && editorActivePt?.[1] === pt.subIndex;
     const editorHover = editorHoverPt?.[0] === svgItemIdx && editorHoverPt?.[1] === pt.subIndex;
+
+    const [state, setState] = useAtom(stateAtom);
 
     return (<>
         {pt.relations.map((rel, idx) => (

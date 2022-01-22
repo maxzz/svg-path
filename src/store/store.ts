@@ -114,6 +114,30 @@ export const svgAtom = atom(
     }
 );
 
+// new data container active and hover state
+
+type GlobalEditState = {
+    active: PrimitiveAtom<SvgItemEditState> | undefined;
+    hover: PrimitiveAtom<SvgItemEditState> | undefined;
+    activeEd: PrimitiveAtom<SvgItemEditState> | undefined;
+    hoverEd: PrimitiveAtom<SvgItemEditState> | undefined;
+};
+
+const globalEditState: GlobalEditState = {
+    active: undefined,
+    hover: undefined,
+    activeEd: undefined,
+    hoverEd: undefined,
+};
+
+export const doSetActiveAtom = atom(null, (get, set, { atom, value }: { atom: PrimitiveAtom<SvgItemEditState>; value: boolean; }) => {
+    if (globalEditState.active) {
+        set(globalEditState.active, (prev) => ({ ...prev, active: false }));
+    }
+    globalEditState.active = atom;
+    set(atom, (prev) => ({ ...prev, active: value }));
+});
+
 // new data container
 
 export type SvgItemEditIsRelAtom = PrimitiveAtom<boolean>; // is relative or absolute
@@ -122,8 +146,8 @@ export type SvgItemEditValueAtom = PrimitiveAtom<number>;
 export type SvgItemEditState = {
     active: boolean;
     hover: boolean;
-    editorActive: boolean;
-    editorHover: boolean;
+    activeEd: boolean;    // active in editor
+    hoverEd: boolean;     // hover in editor
 };
 
 export type SvgItemEdit = {
@@ -180,7 +204,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
                 }
             })(idx))),
             asStringAtom: atom(svgItem.asStandaloneString()),
-            stateAtom: atom<SvgItemEditState>({ active: false, hover: false, editorActive: false, editorHover: false, }),
+            stateAtom: atom<SvgItemEditState>({ active: false, hover: false, activeEd: false, hoverEd: false, }),
         };
         root.edits.push(newSvgEdit);
     });

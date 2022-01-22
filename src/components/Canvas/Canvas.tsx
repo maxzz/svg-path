@@ -97,14 +97,14 @@ function SvgCanvas() {
                     const controls = edit.svgItem.controlLocations();
                     controls.forEach((cpt, idx) => cpt.subIndex = idx);
                     return controls.map((cpt, idx) => (
-                        <ControlPoint key={`${idx}${editIdx}`} pt={cpt} stroke={canvasStroke} svgItemIdx={editIdx} clk={onPointClick} />
+                        <ControlPoint key={`${idx}${editIdx}`} clk={onPointClick} pt={cpt} stroke={canvasStroke} svgItemIdx={editIdx} stateAtom={edit.stateAtom} />
                     ));
                 })}
             </g>
 
             <g className="pathPts">
                 {edits.map((edit, editIdx) => (
-                    <TargetPoint key={editIdx} pt={edit.svgItem.targetLocation()} stroke={canvasStroke} svgItemIdx={editIdx} clk={onPointClick} asStringAtom={edit.asStringAtom} />
+                    <TargetPoint key={editIdx} clk={onPointClick} pt={edit.svgItem.targetLocation()} stroke={canvasStroke} svgItemIdx={editIdx} stateAtom={edit.stateAtom} asStringAtom={edit.asStringAtom} />
                 ))}
             </g>
         </svg>
