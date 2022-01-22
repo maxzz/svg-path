@@ -95,24 +95,24 @@ export const pathUnsafeAtom = atom(
 );
 
 // Input comes from the command editor and is safe (the editor must check the row numbers and quantity of required numbers)
-
+/*
 const _svgAtom = atom(getParsedSvg(Storage.initialData.path) || new Svg(''));
 export const svgAtom = atom(
     (get) => {
         return get(_svgAtom);
     },
     (get, set, newSvg: Svg) => {
-        /*
-        set(_svgAtom, newSvg);
-        set(SvgEditRootAtom, createSvgEditRoot(newSvg));
 
-        const path = newSvg.asString();
-        set(_pathUnsafeAtom, path);
+        // set(_svgAtom, newSvg);
+        // set(SvgEditRootAtom, createSvgEditRoot(newSvg));
 
-        console.log('>>>>>>>> set _svgAtom, svg:', newSvg.asString());
-        */
+        // const path = newSvg.asString();
+        // set(_pathUnsafeAtom, path);
+
+        // console.log('>>>>>>>> set _svgAtom, svg:', newSvg.asString());
     }
 );
+*/
 
 // new data container active and hover state
 
@@ -124,13 +124,6 @@ export type SvgItemEditState = {
 };
 
 type GlobalEditState = Record<keyof SvgItemEditState, PrimitiveAtom<SvgItemEditState> | undefined>;
-
-// type GlobalEditState = {
-//     active: PrimitiveAtom<SvgItemEditState> | undefined;
-//     hover: PrimitiveAtom<SvgItemEditState> | undefined;
-//     activeEd: PrimitiveAtom<SvgItemEditState> | undefined;
-//     hoverEd: PrimitiveAtom<SvgItemEditState> | undefined;
-// };
 
 const globalEditState: GlobalEditState = {
     active: undefined,
@@ -152,50 +145,8 @@ export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: Pr
         newState[key] = !!val;
     }
 
-    // for (const [name, val] of Object.entries(states)) {
-    //     const key = name as keyof (SvgItemEditState | GlobalEditState);
-    //     const globalStateAtom = globalEditState[key];
-    //     if (globalStateAtom) {
-    //         set(globalStateAtom, (prev) => ({ ...prev, key: false }));
-    //     }
-    //     globalEditState[key] = atom;
-    //     newState[key] = !!val;
-    // }
-
     set(atom, (prev) => ({ ...prev, ...newState }));
 });
-
-// export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: PrimitiveAtom<SvgItemEditState>; states: Partial<SvgItemEditState>; }) => {
-//     const newState: Partial<SvgItemEditState> = {};
-
-//     if ('active' in states) {
-//         if (globalEditState.active) {
-//             set(globalEditState.active, (prev) => ({ ...prev, active: false }));
-//         }
-//         globalEditState.active = atom;
-//         newState.active = !!states.active;
-//     }
-
-//     set(atom, (prev) => ({ ...prev, ...newState }));
-// });
-
-// export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: PrimitiveAtom<SvgItemEditState>; states: Partial<SvgItemEditState>; }) => {
-//     if ('active' in states) {
-//         if (globalEditState.active) {
-//             set(globalEditState.active, (prev) => ({ ...prev, active: false }));
-//         }
-//         globalEditState.active = atom;
-//         set(atom, (prev) => ({ ...prev, active: !!states.active }));
-//     }
-// });
-
-// export const doSetActiveAtom = atom(null, (get, set, { atom, value }: { atom: PrimitiveAtom<SvgItemEditState>; value: boolean; }) => {
-//     if (globalEditState.active) {
-//         set(globalEditState.active, (prev) => ({ ...prev, active: false }));
-//     }
-//     globalEditState.active = atom;
-//     set(atom, (prev) => ({ ...prev, active: value }));
-// });
 
 // new data container
 
