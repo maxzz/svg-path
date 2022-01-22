@@ -2,7 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useMeasure } from 'react-use';
-import { canvasSizeAtom, containerRefAtom, doUpdateZoomAtom, UpdateZoomEvent, doUpdateViewBoxAtom, svgEditRootAtom } from '../../store/store';
+import { canvasSizeAtom, containerElmAtom, doUpdateZoomAtom, UpdateZoomEvent, doUpdateViewBoxAtom, svgEditRootAtom } from '../../store/store';
 import throttle from '../../utils/throttle';
 
 export function useContainerZoom() {
@@ -11,7 +11,7 @@ export function useContainerZoom() {
     const parentRef = React.useRef<HTMLElement>();
 
     const setCanvasSize = useUpdateAtom(canvasSizeAtom);
-    const setContainerRef = useUpdateAtom(containerRefAtom);
+    const setContainerElm = useUpdateAtom(containerElmAtom);
     const doUpdateViewBox = useUpdateAtom(doUpdateViewBoxAtom);
     const doUpdateZoom = useUpdateAtom(doUpdateZoomAtom);
 
@@ -30,7 +30,7 @@ export function useContainerZoom() {
     }, [parentRef]);
 
     React.useEffect(() => {
-        setContainerRef(parentRef.current);
+        setContainerElm(parentRef.current);
         setCanvasSize({ w: width, h: height });
         doUpdateViewBox();
     }, [parentRef, width, height]);
