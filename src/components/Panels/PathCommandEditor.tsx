@@ -88,7 +88,7 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
 
     //const [activePoint, setActivePoint] = useAtom(activePointAtom);
     //const isActivePt = activePoint === svgItemIdx;
-    const isActivePt = state.active;
+    const isActivePt = state.activeRow;
 
     const rowContainerRef = React.useRef(null);
     const isHovering = useHoverDirty(rowContainerRef);
@@ -97,21 +97,21 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
 
     //const [hoverPoint, setHoverPoint] = useAtom(hoverPointAtom);
     //const isHoverPt = hoverPoint === svgItemIdx;
-    const isHoverPt = state.hover;
+    const isHoverPt = state.hoverRow;
 
     // React.useEffect(() => /*setHoverPoint(isHovering ? svgItemIdx : -1)*/setState({ atom: svgItemEdit.stateAtom, states: { hover: isHovering } }), [isHoveringDebounced]);
     React.useEffect(() => {
         console.log('hover row debounced', isHoveringDebounced);
         
-        setState({ atom: svgItemEdit.stateAtom, states: { hover: isHovering } })
+        setState({ atom: svgItemEdit.stateAtom, states: { hoverRow: isHovering } })
     }, [isHoveringDebounced]);
 
     return (<>
         <div
             ref={rowContainerRef}
             className={`px-1 flex items-center justify-between ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`}
-            onClick={() => /*setActivePoint(svgItemIdx)*/ setState({ atom: svgItemEdit.stateAtom, states: { active: true } })}
-            onFocus={() => /*setActivePoint(svgItemIdx)*/ setState({ atom: svgItemEdit.stateAtom, states: { active: true } })}
+            onClick={() => /*setActivePoint(svgItemIdx)*/ setState({ atom: svgItemEdit.stateAtom, states: { activeRow: true } })}
+            onFocus={() => /*setActivePoint(svgItemIdx)*/ setState({ atom: svgItemEdit.stateAtom, states: { activeRow: true } })}
         >
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
