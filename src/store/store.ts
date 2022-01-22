@@ -145,7 +145,7 @@ export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: Pr
         const key = name as keyof SvgItemEditState;
         const globalStateAtom = globalEditState[key];
         if (globalStateAtom) {
-            set(globalStateAtom, (prev) => ({ ...prev, key: false }));
+            set(globalStateAtom, (prev) => ({ ...prev, [key]: false }));
             //globalEditState[key] = undefined;
         }
         globalEditState[key] = val ? atom : undefined; // there can be only one active, hover...
