@@ -130,25 +130,35 @@ const globalEditState: GlobalEditState = {
     hoverEd: undefined,
 };
 
-export const doSetActiveAtom = atom(null, (get, set, { atom, value }: { atom: PrimitiveAtom<SvgItemEditState>; value: boolean; }) => {
-    if (globalEditState.active) {
-        set(globalEditState.active, (prev) => ({ ...prev, active: false }));
-    }
-    globalEditState.active = atom;
-    set(atom, (prev) => ({ ...prev, active: value }));
-});
-
-// new data container
-
-export type SvgItemEditIsRelAtom = PrimitiveAtom<boolean>; // is relative or absolute
-export type SvgItemEditValueAtom = PrimitiveAtom<number>;
-
 export type SvgItemEditState = {
     active: boolean;
     hover: boolean;
     activeEd: boolean;    // active in editor
     hoverEd: boolean;     // hover in editor
 };
+
+export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: PrimitiveAtom<SvgItemEditState>; states: Partial<SvgItemEditState>; }) => {
+    if ('active' in states) {
+        if (globalEditState.active) {
+            set(globalEditState.active, (prev) => ({ ...prev, active: false }));
+        }
+        globalEditState.active = atom;
+        set(atom, (prev) => ({ ...prev, active: !!states.active }));
+    }
+});
+
+// export const doSetActiveAtom = atom(null, (get, set, { atom, value }: { atom: PrimitiveAtom<SvgItemEditState>; value: boolean; }) => {
+//     if (globalEditState.active) {
+//         set(globalEditState.active, (prev) => ({ ...prev, active: false }));
+//     }
+//     globalEditState.active = atom;
+//     set(atom, (prev) => ({ ...prev, active: value }));
+// });
+
+// new data container
+
+export type SvgItemEditIsRelAtom = PrimitiveAtom<boolean>; // is relative or absolute
+export type SvgItemEditValueAtom = PrimitiveAtom<number>;
 
 export type SvgItemEdit = {
     id: string;
