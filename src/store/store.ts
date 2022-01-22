@@ -123,9 +123,15 @@ export type SvgItemEditState = {
     hoverEd: boolean;     // hover in editor
 };
 
-type GlobalEditState = Record<keyof SvgItemEditState, PrimitiveAtom<SvgItemEditState> | undefined>;
+// const globalEditState: GlobalEditState = {
+//     active: undefined,
+//     hover: undefined,
+//     activeEd: undefined,
+//     hoverEd: undefined,
+// };
 
-const globalEditState: GlobalEditState = {
+
+const globalEditState: Record<keyof SvgItemEditState, PrimitiveAtom<SvgItemEditState> | undefined> = {
     active: undefined,
     hover: undefined,
     activeEd: undefined,
@@ -140,12 +146,21 @@ export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: Pr
         const globalStateAtom = globalEditState[key];
         if (globalStateAtom) {
             set(globalStateAtom, (prev) => ({ ...prev, key: false }));
+            //globalEditState[key] = undefined;
         }
-        globalEditState[key] = atom;
+        globalEditState[key] = val ? atom : undefined; // there can be only one active, hover...
+        //globalEditState[key] = atom;
         newState[key] = !!val;
     }
 
     set(atom, (prev) => ({ ...prev, ...newState }));
+});
+
+export const doClearActiveAtom = atom(null, (get, set, ) => {
+    if (globalEditState.active) {
+        set(globalEditState.active, (prev) => ({...prev, active: false}));
+        globalEditState.active = undefined;
+    }
 });
 
 // new data container

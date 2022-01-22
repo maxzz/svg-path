@@ -1,7 +1,7 @@
 import React from "react";
 import { PrimitiveAtom, useAtom } from "jotai";
-import { useUpdateAtom } from "jotai/utils";
-import { activePointAtom, editorActivePointAtom, editorHoverPointAtom, hoverPointAtom, svgEditRootAtom, SvgItemEdit } from "../../store/store";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { doSetStateAtom, svgEditRootAtom, SvgItemEdit, SvgItemEditState } from "../../store/store";
 import { useDebounce, useHoverDirty } from "react-use";
 import { IconMenu } from "../UI/icons/Icons";
 import { getTooltip, getvalueToPoint } from "../../svg/svg-utils";
@@ -19,7 +19,8 @@ function PointName({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     );
 }
 
-function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx }: { atom: PrimitiveAtom<number>; tooltip: string; firstRow: boolean; isActivePt: boolean; isHoverPt: boolean; editorIdx: [number, number]; }) {
+function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx, stateAtom }:
+    { atom: PrimitiveAtom<number>; tooltip: string; firstRow: boolean; isActivePt: boolean; isHoverPt: boolean; editorIdx: [number, number]; stateAtom: PrimitiveAtom<SvgItemEditState>; }) {
     const [value, setValue] = useAtom(atom);
     const [local, setLocal] = React.useState('' + value);
     React.useEffect(() => setLocal('' + value), [value]);
@@ -35,19 +36,23 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx 
         (!local || isNaN(+local)) && setLocal('' + value);
     }
 
-    const setEditorActivePt = useUpdateAtom(editorActivePointAtom);
-    const setEditorHoverPt = useUpdateAtom(editorHoverPointAtom);
+    const setState = useUpdateAtom(doSetStateAtom);
+
+    // const setEditorActivePt = useUpdateAtom(editorActivePointAtom);
+    // const setEditorHoverPt = useUpdateAtom(editorHoverPointAtom);
 
     const rowContainerRef = React.useRef(null);
     const isHovering = useHoverDirty(rowContainerRef);
 
     React.useEffect(() => {
-        setEditorHoverPt(isHovering ? editorIdx : null);
+        //setEditorHoverPt(isHovering ? editorIdx : null);
+        setState({ atom: stateAtom, states: { hoverEd: isHovering } })
     }, [isHovering]);
 
     function onBlur() {
         resetInvalid();
-        setEditorActivePt(null);
+        //setEditorActivePt(null);
+        setState({ atom: stateAtom, states: { activeEd: false } })
     }
 
     return (
@@ -60,7 +65,7 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx 
                 className={`px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none ${isActivePt ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverPt ? 'bg-slate-200 border-slate-400/40' : ''} border-b-2 focus:border-blue-500  cursor-default focus:cursor-text`}
                 value={local}
                 onChange={(event) => convertToNumber(event.target.value)}
-                onFocus={() => setEditorActivePt(editorIdx)}
+                onFocus={() => /*setEditorActivePt(editorIdx)*/setState({ atom: stateAtom, states: { activeEd: true } })}
                 onBlur={onBlur}
             />
 
@@ -77,24 +82,29 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx 
 function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svgItemIdx: number; }) {
     const [itemType] = useAtom(svgItemEdit.typeAtom);
 
-    const [activePoint, setActivePoint] = useAtom(activePointAtom);
-    const isActivePt = activePoint === svgItemIdx;
+    const state = useAtomValue(svgItemEdit.stateAtom);
+    const setState = useUpdateAtom(doSetStateAtom);
+
+    //const [activePoint, setActivePoint] = useAtom(activePointAtom);
+    //const isActivePt = activePoint === svgItemIdx;
+    const isActivePt = state.active;
 
     const rowContainerRef = React.useRef(null);
     const isHovering = useHoverDirty(rowContainerRef);
     const [isHoveringDebounced, setIsHoveringDebounced] = React.useState(false);
-    useDebounce(() => setIsHoveringDebounced(isHovering), 60, [isHovering]);
+    useDebounce(() => setIsHoveringDebounced(isHovering), 200, [isHovering]);
 
-    const [hoverPoint, setHoverPoint] = useAtom(hoverPointAtom);
-    const isHoverPt = hoverPoint === svgItemIdx;
-    React.useEffect(() => setHoverPoint(isHovering ? svgItemIdx : -1), [isHoveringDebounced]);
+    //const [hoverPoint, setHoverPoint] = useAtom(hoverPointAtom);
+    //const isHoverPt = hoverPoint === svgItemIdx;
+    const isHoverPt = state.hover;
+    React.useEffect(() => /*setHoverPoint(isHovering ? svgItemIdx : -1)*/setState({ atom: svgItemEdit.stateAtom, states: { hover: isHovering } }), [isHoveringDebounced]);
 
     return (<>
         <div
             ref={rowContainerRef}
             className={`px-1 flex items-center justify-between ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`}
-            onClick={() => setActivePoint(svgItemIdx)}
-            onFocus={() => setActivePoint(svgItemIdx)}
+            onClick={() => /*setActivePoint(svgItemIdx)*/ setState({ atom: svgItemEdit.stateAtom, states: { active: true } })}
+            onFocus={() => /*setActivePoint(svgItemIdx)*/ setState({ atom: svgItemEdit.stateAtom, states: { active: true } })}
         >
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
@@ -108,6 +118,7 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
                         isActivePt={isActivePt}
                         isHoverPt={isHoverPt}
                         editorIdx={[svgItemIdx, getvalueToPoint(itemType, idx)]}
+                        stateAtom={svgItemEdit.stateAtom}
                         key={idx}
                     />
                 ))}
