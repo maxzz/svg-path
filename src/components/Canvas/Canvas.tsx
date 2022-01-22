@@ -8,7 +8,16 @@ import { useContainerZoom } from './useContainerZoom';
 import { ControlPoint, StartDragEvent, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
 import { _fViewBox, _ViewBox, _ViewPoint } from '../../utils/debugging';
+import { ViewBox } from '../../svg/svg-utils-viewport';
 //import { useThrottle } from 'react-use';
+
+function getEventPt(viewBox: ViewBox, canvasStroke: number, containerElm: HTMLElement, eventClientX: number, eventClientY: number) {
+    const canvasRect = containerElm.getBoundingClientRect();
+    let [viewBoxX, viewBoxY] = viewBox;
+    const x = viewBoxX + (eventClientX - canvasRect.x) * canvasStroke;
+    const y = viewBoxY + (eventClientY - canvasRect.y) * canvasStroke;
+    return { x, y };
+}
 
 function SvgCanvas() {
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
@@ -25,21 +34,15 @@ function SvgCanvas() {
 
     const dragEventRef = React.useRef<StartDragEvent | null>(null);
 
+    const onPointClick = React.useCallback((e: StartDragEvent) => (e.event.button === 0) && (dragEventRef.current = e), []);
+
     function onMouseDown(event: React.MouseEvent) {
         setActivePt(-1); // TODO: set it on mouse up only if where no move
-        dragEventRef.current = { event, startXY: getEventPt(containerElm!, event.clientX, event.clientY), svgItemIdx: -1 };
+        dragEventRef.current = { event, startXY: getEventPt(viewBox, canvasStroke, containerElm!, event.clientX, event.clientY), svgItemIdx: -1 };
     }
 
     function onMouseUp() {
         dragEventRef.current = null;
-    }
-
-    function getEventPt(containerElm: HTMLElement, eventClientX: number, eventClientY: number) {
-        const canvasRect = containerElm.getBoundingClientRect();
-        let [viewBoxX, viewBoxY] = viewBox;
-        const x = viewBoxX + (eventClientX - canvasRect.x) * canvasStroke;
-        const y = viewBoxY + (eventClientY - canvasRect.y) * canvasStroke;
-        return { x, y };
     }
 
     const [precision] = useAtom(precisionAtom);
@@ -51,9 +54,15 @@ function SvgCanvas() {
         event.stopPropagation();
 
         if (dragEventRef.current.pt) {
-            const nowXY = getEventPt(containerElm, event.clientX, event.clientY);
+            const nowXY = getEventPt(viewBox, canvasStroke, containerElm, event.clientX, event.clientY);
 
-            const decimals = snapToGrid ? 0 : event.ctrlKey ? precision ? 0 : 3 : precision;
+            const decimals = snapToGrid
+                ? 0
+                : event.ctrlKey
+                    ? precision
+                        ? 0
+                        : 3
+                    : precision;
             nowXY.x = parseFloat(nowXY.x.toFixed(decimals));
             nowXY.y = parseFloat(nowXY.y.toFixed(decimals));
             //console.log('move', nowXY.x, nowXY.y);
@@ -62,7 +71,7 @@ function SvgCanvas() {
         } else {
             //const startPt = getEventPt(containerRef, dragEventRef.current.event.clientX, dragEventRef.current.event.clientY);
             const startXY = dragEventRef.current.startXY!;
-            const nowXY = getEventPt(containerElm, event.clientX, event.clientY);
+            const nowXY = getEventPt(viewBox, canvasStroke, containerElm, event.clientX, event.clientY);
             //console.log('move startPt', _ViewPoint(startPt).padEnd(20, ' '), 'pt', _ViewPoint(pt).padEnd(20, ' '), '--------------------------------', _fViewBox(viewBox));
 
             setViewBox((prev) => ([
@@ -73,8 +82,6 @@ function SvgCanvas() {
             ]));
         }
     }
-
-    const onPointClick = React.useCallback((e: StartDragEvent) => (e.event.button === 0) && (dragEventRef.current = e), []);
 
     return (
         <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c] select-none"
