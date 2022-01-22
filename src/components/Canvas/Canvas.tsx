@@ -81,9 +81,9 @@ function SvgCanvas() {
         }
     }
 
-    function onPointClick(ev: StartDragEvent) {
+    const onPointClick = React.useCallback(function onPointClick(ev: StartDragEvent) {
         (ev.event.button === 0) && (startDragEventRef.current = ev);
-    }
+    }, []);
 
     return (
         <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c] select-none"
