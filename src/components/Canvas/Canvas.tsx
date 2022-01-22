@@ -19,8 +19,6 @@ function SvgCanvas() {
 
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const points = useAtomValue(svgEditRoot.pointsAtom);
-    const pathPoints = points.targets;
-    const cpPoints = points.controls;
 
     const edits = svgEditRoot.edits;
 
@@ -81,9 +79,7 @@ function SvgCanvas() {
         }
     }
 
-    const onPointClick = React.useCallback(function onPointClick(ev: StartDragEvent) {
-        (ev.event.button === 0) && (startDragEventRef.current = ev);
-    }, []);
+    const onPointClick = React.useCallback((e: StartDragEvent) => (e.event.button === 0) && (startDragEventRef.current = e), []);
 
     return (
         <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c] select-none"

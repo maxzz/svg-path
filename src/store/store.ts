@@ -138,8 +138,6 @@ export type SvgItemEdit = {
 };
 
 export type SvgEditPoints = {
-    targets: SvgPoint[];
-    controls: SvgControlPoint[];
     asString: string;
 };
 
@@ -190,8 +188,6 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 
     function getPoints(svg: Svg): SvgEditPoints { // TODO: will be better to keep them separately
         return {
-            targets: svg.targetLocations(),
-            controls: svg.controlLocations(),
             asString: svg.asString(),
         };
     }
@@ -298,8 +294,8 @@ export const doUpdateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoom
 export const doAutoZoomAtom = atom(null, (get, set,) => {
     const canvasSize = get(canvasSizeAtom);
     const svgEditRoot = get(svgEditRootAtom);
-    const points = get(svgEditRoot.pointsAtom);
-    const box = getFitViewPort(canvasSize, points.targets);
+    const targets = svgEditRoot.svg.targetLocations();
+    const box = getFitViewPort(canvasSize, targets);
     if (box) {
         set(viewBoxAtom, box.port);
         set(canvasStrokeAtom, box.stroke);
