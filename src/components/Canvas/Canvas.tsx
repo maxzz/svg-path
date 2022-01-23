@@ -2,7 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, canvasStrokeAtom, containerElmAtom, precisionAtom, snapToGridAtom, svgEditRootAtom, viewBoxAtom } from '../../store/store';
+import { activePointAtom, canvasStrokeAtom, containerElmAtom, doClearActiveAtom, precisionAtom, snapToGridAtom, svgEditRootAtom, viewBoxAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 //import { CanvasControlsPanel } from '../Panels/PanelCanvasControls';
 import { ControlPoint, StartDragEvent, TargetPoint } from './CanvasPoints';
@@ -31,13 +31,15 @@ function SvgCanvas() {
 
     const doUpdatePoint = useUpdateAtom(svgEditRoot.doUpdatePointAtom);
     const setActivePt = useUpdateAtom(activePointAtom);
+    const doClearActive = useUpdateAtom(doClearActiveAtom);
 
     const dragEventRef = React.useRef<StartDragEvent | null>(null);
 
     const onPointClick = React.useCallback((e: StartDragEvent) => (e.event.button === 0) && (dragEventRef.current = e), []);
 
     function onMouseDown(event: React.MouseEvent) {
-        setActivePt(-1); // TODO: set it on mouse up only if where no move
+        //setActivePt(-1); // TODO: set it on mouse up only if where no move
+        doClearActive();
         dragEventRef.current = { event, startXY: getEventPt(viewBox, canvasStroke, containerElm!, event.clientX, event.clientY), svgItemIdx: -1 };
     }
 

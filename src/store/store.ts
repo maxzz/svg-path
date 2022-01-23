@@ -119,8 +119,8 @@ export const svgAtom = atom(
 export type SvgItemEditState = {
     activeRow: boolean;
     hoverRow: boolean;
-    activeEd: boolean;    // active in editor
-    hoverEd: boolean;     // hover in editor
+    activeEd: number;    // active input control index in editor
+    hoverEd: number;     // hover input control index in editor
 };
 
 // const globalEditState: GlobalEditState = {
@@ -146,14 +146,17 @@ export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: Pr
         const globalStateAtom = globalEditState[key];
         if (globalStateAtom) {
             set(globalStateAtom, (prev) => ({ ...prev, [key]: false }));
-            //globalEditState[key] = undefined;
         }
-        globalEditState[key] = val ? atom : undefined; // there can be only one
-        //globalEditState[key] = atom;
-        newState[key] = !!val;
+        globalEditState[key] = val && val !== -1 ? atom : undefined; // there can be only one
+        (newState[key] as boolean | number) = val;
     }
 
+    const before = get(atom);
+
     set(atom, (prev) => ({ ...prev, ...newState }));
+
+    const after = get(atom);
+    //console.log('state', 'before', before, 'after', after);
 });
 
 export const doClearActiveAtom = atom(null, (get, set,) => {
@@ -222,7 +225,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
                 }
             })(idx))),
             asStringAtom: atom(svgItem.asStandaloneString()),
-            stateAtom: atom<SvgItemEditState>({ activeRow: false, hoverRow: false, activeEd: false, hoverEd: false, }),
+            stateAtom: atom<SvgItemEditState>({ activeRow: false, hoverRow: false, activeEd: -1, hoverEd: -1, }),
         };
         root.edits.push(newSvgEdit);
     });

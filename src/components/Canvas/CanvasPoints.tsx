@@ -33,14 +33,16 @@ export function TargetPoint({ pt, clk, stroke, svgItemIdx, stateAtom, asStringAt
 
     const state = useAtomValue(stateAtom);
     const setState = useUpdateAtom(doSetStateAtom);
+    const activeEd = state.activeRow && state.activeEd === -1;
+    const hoverEd = state.hoverRow && state.hoverEd === -1;
 
     return (<>
         {(state.activeRow || state.hoverRow) &&
             <path style={{ stroke: pointColor(state.activeRow, state.hoverRow), fill: 'none' }} strokeWidth={stroke} d={asString} />
         }
-        {(state.activeEd || state.hoverEd) &&
+        {(activeEd || hoverEd) &&
             <circle
-                style={{ stroke: 'transparent', fill: editorColor(state.activeEd, state.hoverEd) }}
+                style={{ stroke: 'transparent', fill: editorColor(activeEd, hoverEd) }}
                 cx={pt.x} cy={pt.y} r={stroke * 8} strokeWidth={stroke * 16}
             />
         }
@@ -78,6 +80,10 @@ export function ControlPoint({ pt, clk, stroke, svgItemIdx, stateAtom, }:
 
     const state = useAtomValue(stateAtom);
     const setState = useUpdateAtom(doSetStateAtom);
+    const activeEd = state.activeRow && state.activeEd === pt.subIndex;
+    const hoverEd = state.hoverRow && state.hoverEd === pt.subIndex;
+
+    console.log('cp state', state);
 
     return (<>
         {pt.relations.map((rel, idx) => (
@@ -87,10 +93,10 @@ export function ControlPoint({ pt, clk, stroke, svgItemIdx, stateAtom, }:
             />
         ))}
         {
-            (state.activeEd || state.hoverEd) &&
+            (activeEd || hoverEd) &&
             <rect
                 className="cursor-pointer"
-                style={{ stroke: 'transparent', fill: editorColor(state.activeEd, state.hoverEd) }}
+                style={{ stroke: 'transparent', fill: editorColor(activeEd, hoverEd) }}
                 x={pt.x - 8 * stroke} y={pt.y - 8 * stroke} width={stroke * 16} height={stroke * 16} strokeWidth={stroke * 16}
             />
         }
@@ -99,8 +105,10 @@ export function ControlPoint({ pt, clk, stroke, svgItemIdx, stateAtom, }:
             style={{ stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow) }}
             x={pt.x - 3 * stroke} y={pt.y - 3 * stroke} width={stroke * 6} height={stroke * 6} strokeWidth={stroke * 12}
 
-            onMouseEnter={() => /*setHoverPt(svgItemIdx)*/ setState({atom: stateAtom, states: {hoverRow: true}})}
-            onMouseLeave={() => /*setHoverPt(-1)*/ setState({atom: stateAtom, states: {hoverRow: false}})}
+            // onMouseEnter={() => /*setHoverPt(svgItemIdx)*/ setState({atom: stateAtom, states: {hoverRow: true}})}
+            // onMouseLeave={() => /*setHoverPt(-1)*/ setState({atom: stateAtom, states: {hoverRow: false}})}
+            onMouseEnter={() => /*setHoverPt(svgItemIdx)*/ setState({atom: stateAtom, states: {hoverRow: true, hoverEd: pt.subIndex}})}
+            onMouseLeave={() => /*setHoverPt(-1)*/ setState({atom: stateAtom, states: {hoverRow: false, hoverEd: -1}})}
             onMouseDown={(event) => {
                 event.stopPropagation();
                 //setActivePt(svgItemIdx);

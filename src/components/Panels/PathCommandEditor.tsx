@@ -45,15 +45,15 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx,
     const isHovering = useHoverDirty(rowContainerRef);
 
     React.useEffect(() => {
-        console.log('hover edit', isHovering);
+        console.log('hover edit', isHovering, editorIdx[1]);
         //setEditorHoverPt(isHovering ? editorIdx : null);
-        setState({ atom: stateAtom, states: { hoverEd: isHovering } })
+        setState({ atom: stateAtom, states: { hoverEd: isHovering ? editorIdx[1] : -1 } })
     }, [isHovering]);
 
     function onBlur() {
         resetInvalid();
         //setEditorActivePt(null);
-        setState({ atom: stateAtom, states: { activeEd: false } })
+        setState({ atom: stateAtom, states: { activeEd: -1 } })
     }
 
     return (
@@ -66,7 +66,7 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx,
                 className={`px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none ${isActivePt ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverPt ? 'bg-slate-200 border-slate-400/40' : ''} border-b-2 focus:border-blue-500  cursor-default focus:cursor-text`}
                 value={local}
                 onChange={(event) => convertToNumber(event.target.value)}
-                onFocus={() => /*setEditorActivePt(editorIdx)*/setState({ atom: stateAtom, states: { activeEd: true } })}
+                onFocus={() => /*setEditorActivePt(editorIdx)*/setState({ atom: stateAtom, states: { activeEd: editorIdx[1] } })}
                 onBlur={onBlur}
             />
 
