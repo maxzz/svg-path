@@ -38,7 +38,7 @@ function useMouseHandlers() {
         //setActivePt(-1); 
         doClearActive(); // TODO: set it on mouse up only if where no move
         dragEventRef.current = { event, startXY: getEventPt(viewBox, canvasStroke, containerElm!, event.clientX, event.clientY), svgItemIdx: -1 };
-    }, [containerElm]);
+    }, [containerElm, viewBox]);
 
     const onMouseUp = React.useCallback(function onMouseUp() {
         dragEventRef.current = null;
@@ -224,15 +224,15 @@ function SvgCanvas() {
         >
 
             {
-            size.w && size.h && (<>
-                <CanvasTicks />
+                size.w && size.h && (<>
+                    <CanvasTicks />
 
-                {/* <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} /> */}
-                <RenderPath />
+                    {/* <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} /> */}
+                    <RenderPath />
 
-                <RenderControlPoints onPointClick={onPointClick} />
-                <RenderPoints onPointClick={onPointClick} />
-            </>)
+                    <RenderControlPoints onPointClick={onPointClick} />
+                    <RenderPoints onPointClick={onPointClick} />
+                </>)
             }
         </svg>
     );
