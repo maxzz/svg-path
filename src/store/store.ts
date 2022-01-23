@@ -116,6 +116,8 @@ export const svgAtom = atom(
 
 // new data container active and hover state
 
+//TODO: hover row and hover ed should be separate
+
 export type SvgItemEditState = {
     activeRow: boolean;
     hoverRow: boolean;

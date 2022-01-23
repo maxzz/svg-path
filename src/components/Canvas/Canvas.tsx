@@ -86,8 +86,6 @@ function RenderPoints() {
     );
 }
 
-//TODO: hover row and hover ed should be separate
-
 export function PathCanvas() {
     const { ref, parentRef, onWheel, } = useContainerZoom();
     return (
