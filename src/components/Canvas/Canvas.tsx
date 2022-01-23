@@ -87,7 +87,7 @@ function useMouseHandlers() {
         onMouseDown,
         onMouseUp,
         onMouseMove,
-    }
+    };
 }
 
 function RenderPath() {
@@ -96,16 +96,46 @@ function RenderPath() {
     const canvasStroke = useAtomValue(canvasStrokeAtom);
     return (
         <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} />
-    )
+    );
+}
+
+function RenderControlPoints({onPointClick}:{onPointClick:  (e: StartDragEvent) => void}) {
+    const svgEditRoot = useAtomValue(svgEditRootAtom);
+    const edits = svgEditRoot.edits;
+    const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
+    return (
+        <g className="cpPts">
+            {edits.map((edit, editIdx) => {
+                const controls = edit.svgItem.controlLocations();
+                controls.forEach((cpt, idx) => cpt.subIndex = idx);
+                return controls.map((cpt, idx) => (
+                    <ControlPoint key={`${idx}${editIdx}`} clk={onPointClick} pt={cpt} svgItemIdx={editIdx} stateAtom={edit.stateAtom} />
+                ));
+            })}
+        </g>
+    );
+}
+
+function RenderPoints({onPointClick}:{onPointClick:  (e: StartDragEvent) => void}) {
+    const svgEditRoot = useAtomValue(svgEditRootAtom);
+    const edits = svgEditRoot.edits;
+    const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
+    return (
+        <g className="pathPts">
+            {edits.map((edit, editIdx) => (
+                <TargetPoint key={editIdx} clk={onPointClick} pt={edit.svgItem.targetLocation()} svgItemIdx={editIdx} stateAtom={edit.stateAtom} asStringAtom={edit.asStringAtom} />
+            ))}
+        </g>
+    );
 }
 
 function SvgCanvas() {
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
-    const canvasStroke = useAtomValue(canvasStrokeAtom);
+    //const canvasStroke = useAtomValue(canvasStrokeAtom);
     //const containerElm = useAtomValue(containerElmAtom);
 
     const svgEditRoot = useAtomValue(svgEditRootAtom);
-    const points = useAtomValue(svgEditRoot.pointsAtom);
+    //const points = useAtomValue(svgEditRoot.pointsAtom);
 
     const edits = svgEditRoot.edits;
 
@@ -169,14 +199,14 @@ function SvgCanvas() {
     //     }
     // }
 
-    const {onMouseDown, onMouseMove, onMouseUp, onPointClick} = useMouseHandlers();
+    const { onMouseDown, onMouseMove, onMouseUp, onPointClick } = useMouseHandlers();
 
 
 
 
 
     //console.log('canvas re-render', 'canvasStroke', canvasStroke, _fViewBox(viewBox, 4), 'elm', containerElm);
-    
+
 
     return (
         <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c] select-none"
@@ -185,24 +215,11 @@ function SvgCanvas() {
         >
             <CanvasTicks />
 
-            <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} />
-            {/* <RenderPath /> */}
+            {/* <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} /> */}
+            <RenderPath />
 
-            <g className="cpPts">
-                {edits.map((edit, editIdx) => {
-                    const controls = edit.svgItem.controlLocations();
-                    controls.forEach((cpt, idx) => cpt.subIndex = idx);
-                    return controls.map((cpt, idx) => (
-                        <ControlPoint key={`${idx}${editIdx}`} clk={onPointClick} pt={cpt} svgItemIdx={editIdx} stateAtom={edit.stateAtom} />
-                    ));
-                })}
-            </g>
-
-            <g className="pathPts">
-                {edits.map((edit, editIdx) => (
-                    <TargetPoint key={editIdx} clk={onPointClick} pt={edit.svgItem.targetLocation()} svgItemIdx={editIdx} stateAtom={edit.stateAtom} asStringAtom={edit.asStringAtom} />
-                ))}
-            </g>
+            <RenderControlPoints onPointClick={onPointClick}/>
+            <RenderPoints onPointClick={onPointClick}/>
         </svg>
     );
 }
