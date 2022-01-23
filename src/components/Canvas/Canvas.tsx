@@ -1,8 +1,7 @@
 import React from 'react';
-import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, canvasSizeAtom, canvasStrokeAtom, containerElmAtom, doClearActiveAtom, precisionAtom, snapToGridAtom, CanvasDragEvent, svgEditRootAtom, viewBoxAtom, getEventPt, doCanvasMouseDownAtom, doCanvasMouseMoveAtom, doCanvasMouseUpAtom, doCanvasPointClkAtom } from '../../store/store';
+import { canvasSizeAtom, canvasStrokeAtom, doClearActiveAtom, CanvasDragEvent, svgEditRootAtom, viewBoxAtom, doCanvasMouseDownAtom, doCanvasMouseMoveAtom, doCanvasMouseUpAtom, doCanvasPointClkAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 //import { CanvasControlsPanel } from '../Panels/PanelCanvasControls';
 import { ControlPoint, TargetPoint } from './CanvasPoints';
@@ -11,34 +10,26 @@ import { _fViewBox, _ViewBox, _ViewPoint } from '../../utils/debugging';
 //import { useThrottle } from 'react-use';
 
 function useMouseHandlers() {
-    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
     const doCanvasMouseDown = useUpdateAtom(doCanvasMouseDownAtom);
     const doCanvasMouseMove = useUpdateAtom(doCanvasMouseMoveAtom);
     const doCanvasMouseUp = useUpdateAtom(doCanvasMouseUpAtom);
+    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
     const doClearActive = useUpdateAtom(doClearActiveAtom);
-
-    const onPointClick = React.useCallback((e: CanvasDragEvent) => (e.event.button === 0) && doCanvasPointClk(e), []);
 
     const onMouseDown = React.useCallback(function onMouseDown(event: React.MouseEvent) {
         doClearActive(); // TODO: set it on mouse up only if where no move
         doCanvasMouseDown(event);
     }, []);
 
-    const onMouseUp = React.useCallback(function onMouseUp() {
-        doCanvasMouseUp();
-    }, []);
-
-    const onMouseMove = React.useCallback(function onMouseMove(event: React.MouseEvent) {
-        doCanvasMouseMove(event);
-    }, []);
-
-    console.log(`------------------------- re-render useMouseHandlers -------------------------`);
+    const onMouseUp = React.useCallback(() => doCanvasMouseUp(), []);
+    const onMouseMove = React.useCallback((event: React.MouseEvent) => doCanvasMouseMove(event), []);
+    const onPointClick = React.useCallback((event: CanvasDragEvent) => (event.event.button === 0) && doCanvasPointClk(event), []);
 
     return {
-        onPointClick,
         onMouseDown,
         onMouseUp,
         onMouseMove,
+        onPointClick,
     };
 }
 
@@ -82,30 +73,19 @@ function RenderPoints({ onPointClick }: { onPointClick: (e: CanvasDragEvent) => 
 }
 
 function SvgCanvas() {
-    const { onMouseDown, onMouseMove, onMouseUp, onPointClick } = useMouseHandlers();
-
-    const viewBox = useAtomValue(viewBoxAtom);
     const size = useAtomValue(canvasSizeAtom);
-
-    console.log('canvas re-render', _fViewBox(viewBox, 4));
-
+    const viewBox = useAtomValue(viewBoxAtom);
+    console.log('--------------------------Canvas re-render -------------------------', _fViewBox(viewBox, 4));
+    const { onMouseDown, onMouseMove, onMouseUp, onPointClick } = useMouseHandlers();
+    if (!size.w || !size.h) {
+        return null;
+    }
     return (
-        <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c] select-none"
-            onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
-        // onClick={() => setActivePt(-1)}
-        >
-
-            {
-                size.w && size.h && (<>
-                    <CanvasTicks />
-
-                    {/* <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} /> */}
-                    <RenderPath />
-
-                    <RenderControlPoints onPointClick={onPointClick} />
-                    <RenderPoints onPointClick={onPointClick} />
-                </>)
-            }
+        <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c] select-none" onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}>
+            <CanvasTicks />
+            <RenderPath />
+            <RenderControlPoints onPointClick={onPointClick} />
+            <RenderPoints onPointClick={onPointClick} />
         </svg>
     );
 }
