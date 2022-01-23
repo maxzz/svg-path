@@ -34,20 +34,20 @@ function useMouseHandlers() {
 
     const onPointClick = React.useCallback((e: StartDragEvent) => (e.event.button === 0) && (dragEventRef.current = e), []);
 
-    function onMouseDown(event: React.MouseEvent) {
+    const onMouseDown = React.useCallback((event: React.MouseEvent) => {
         //setActivePt(-1); 
         doClearActive(); // TODO: set it on mouse up only if where no move
         dragEventRef.current = { event, startXY: getEventPt(viewBox, canvasStroke, containerElm!, event.clientX, event.clientY), svgItemIdx: -1 };
-    }
+    }, [dragEventRef, containerElm]);
 
-    function onMouseUp() {
+    const onMouseUp = React.useCallback(() => {
         dragEventRef.current = null;
-    }
+    }, [dragEventRef]);
 
     const [precision] = useAtom(precisionAtom);
     const [snapToGrid] = useAtom(snapToGridAtom);
 
-    function onMouseMove(event: React.MouseEvent) {
+    const onMouseMove = React.useCallback((event: React.MouseEvent) => {
         if (!containerElm || !dragEventRef.current) { return; }
 
         event.stopPropagation();
@@ -80,7 +80,7 @@ function useMouseHandlers() {
                 prev[3],
             ]));
         }
-    }
+    }, [dragEventRef, containerElm]);
 
     return {
         onPointClick,
