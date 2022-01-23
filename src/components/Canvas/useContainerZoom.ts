@@ -38,6 +38,8 @@ export function useContainerZoom() {
     }, [parentRef, width, height]);
 
     React.useEffect(() => {
+        console.log('--------------- useEffect[svgEditRoot]', parentRef, width, height);
+
         doUpdateViewBox();
     }, [svgEditRoot]);
 

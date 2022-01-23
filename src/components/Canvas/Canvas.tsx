@@ -19,6 +19,77 @@ function getEventPt(viewBox: ViewBox, canvasStroke: number, containerElm: HTMLEl
     return { x, y };
 }
 
+function useMouseHandlers() {
+    const [viewBox, setViewBox] = useAtom(viewBoxAtom);
+    const canvasStroke = useAtomValue(canvasStrokeAtom);
+    const containerElm = useAtomValue(containerElmAtom);
+
+    const svgEditRoot = useAtomValue(svgEditRootAtom);
+
+    const doUpdatePoint = useUpdateAtom(svgEditRoot.doUpdatePointAtom);
+    //const setActivePt = useUpdateAtom(activePointAtom);
+    const doClearActive = useUpdateAtom(doClearActiveAtom);
+
+    const dragEventRef = React.useRef<StartDragEvent | null>(null);
+
+    const onPointClick = React.useCallback((e: StartDragEvent) => (e.event.button === 0) && (dragEventRef.current = e), []);
+
+    function onMouseDown(event: React.MouseEvent) {
+        //setActivePt(-1); 
+        doClearActive(); // TODO: set it on mouse up only if where no move
+        dragEventRef.current = { event, startXY: getEventPt(viewBox, canvasStroke, containerElm!, event.clientX, event.clientY), svgItemIdx: -1 };
+    }
+
+    function onMouseUp() {
+        dragEventRef.current = null;
+    }
+
+    const [precision] = useAtom(precisionAtom);
+    const [snapToGrid] = useAtom(snapToGridAtom);
+
+    function onMouseMove(event: React.MouseEvent) {
+        if (!containerElm || !dragEventRef.current) { return; }
+
+        event.stopPropagation();
+
+        if (dragEventRef.current.pt) {
+            const nowXY = getEventPt(viewBox, canvasStroke, containerElm, event.clientX, event.clientY);
+
+            const decimals = snapToGrid
+                ? 0
+                : event.ctrlKey
+                    ? precision
+                        ? 0
+                        : 3
+                    : precision;
+            nowXY.x = parseFloat(nowXY.x.toFixed(decimals));
+            nowXY.y = parseFloat(nowXY.y.toFixed(decimals));
+            //console.log('move', nowXY.x, nowXY.y);
+
+            doUpdatePoint({ pt: dragEventRef.current.pt, newXY: nowXY, svgItemIdx: dragEventRef.current.svgItemIdx });
+        } else {
+            //const startPt = getEventPt(containerRef, dragEventRef.current.event.clientX, dragEventRef.current.event.clientY);
+            const startXY = dragEventRef.current.startXY!;
+            const nowXY = getEventPt(viewBox, canvasStroke, containerElm, event.clientX, event.clientY);
+            //console.log('move startPt', _ViewPoint(startPt).padEnd(20, ' '), 'pt', _ViewPoint(pt).padEnd(20, ' '), '--------------------------------', _fViewBox(viewBox));
+
+            setViewBox((prev) => ([
+                prev[0] + startXY.x - nowXY.x,
+                prev[1] + startXY.y - nowXY.y,
+                prev[2],
+                prev[3],
+            ]));
+        }
+    }
+
+    return {
+        onPointClick,
+        onMouseDown,
+        onMouseUp,
+        onMouseMove,
+    }
+}
+
 function SvgCanvas() {
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const canvasStroke = useAtomValue(canvasStrokeAtom);
@@ -29,6 +100,11 @@ function SvgCanvas() {
 
     const edits = svgEditRoot.edits;
 
+
+
+
+
+    /*
     const doUpdatePoint = useUpdateAtom(svgEditRoot.doUpdatePointAtom);
     //const setActivePt = useUpdateAtom(activePointAtom);
     const doClearActive = useUpdateAtom(doClearActiveAtom);
@@ -84,6 +160,13 @@ function SvgCanvas() {
             ]));
         }
     }
+    */
+
+    const {onMouseDown, onMouseMove, onMouseUp, onPointClick} = useMouseHandlers();
+
+
+
+
 
     console.log('canvas re-render', 'canvasStroke', canvasStroke, _fViewBox(viewBox, 4), 'elm', containerElm);
     
