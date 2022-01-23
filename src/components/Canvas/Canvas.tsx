@@ -2,7 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, canvasSizeAtom, canvasStrokeAtom, containerElmAtom, doClearActiveAtom, precisionAtom, snapToGridAtom, CanvasDragEvent, svgEditRootAtom, viewBoxAtom, getEventPt } from '../../store/store';
+import { activePointAtom, canvasSizeAtom, canvasStrokeAtom, containerElmAtom, doClearActiveAtom, precisionAtom, snapToGridAtom, CanvasDragEvent, svgEditRootAtom, viewBoxAtom, getEventPt, doCanvasMouseDownAtom, doCanvasMouseMoveAtom, doCanvasMouseUpAtom, doCanvasPointClkAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 //import { CanvasControlsPanel } from '../Panels/PanelCanvasControls';
 import { ControlPoint, TargetPoint } from './CanvasPoints';
@@ -11,6 +11,9 @@ import { _fViewBox, _ViewBox, _ViewPoint } from '../../utils/debugging';
 //import { useThrottle } from 'react-use';
 
 function useMouseHandlers() {
+    const doClearActive = useUpdateAtom(doClearActiveAtom);
+
+    /*
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
     const canvasStroke = useAtomValue(canvasStrokeAtom);
     const containerElm = useAtomValue(containerElmAtom);
@@ -19,7 +22,6 @@ function useMouseHandlers() {
 
     const doUpdatePoint = useUpdateAtom(svgEditRoot.doUpdatePointAtom);
     //const setActivePt = useUpdateAtom(activePointAtom);
-    const doClearActive = useUpdateAtom(doClearActiveAtom);
 
     const dragEventRef = React.useRef<CanvasDragEvent | null>(null);
 
@@ -78,8 +80,29 @@ function useMouseHandlers() {
         //, []); //cannot use viewbox
         , [containerElm, viewBox]); //cannot use viewbox
 
+    */
+
     console.log(`------------------------- re-render useMouseHandlers -------------------------`);
 
+    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
+    const doCanvasMouseDown = useUpdateAtom(doCanvasMouseDownAtom);
+    const doCanvasMouseMove = useUpdateAtom(doCanvasMouseMoveAtom);
+    const doCanvasMouseUp = useUpdateAtom(doCanvasMouseUpAtom);
+
+    const onPointClick = React.useCallback((e: CanvasDragEvent) => (e.event.button === 0) && doCanvasPointClk(e), []);
+
+    const onMouseDown = React.useCallback(function onMouseDown(event: React.MouseEvent) {
+        doClearActive(); // TODO: set it on mouse up only if where no move
+        doCanvasMouseDown(event);
+    }, []);
+
+    const onMouseUp = React.useCallback(function onMouseUp() {
+        doCanvasMouseUp();
+    }, []);
+
+    const onMouseMove = React.useCallback(function onMouseMove(event: React.MouseEvent) {
+        doCanvasMouseMove(event);
+    }, []);
 
     return {
         onPointClick,
