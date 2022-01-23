@@ -2,7 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, canvasStrokeAtom, containerElmAtom, doClearActiveAtom, precisionAtom, snapToGridAtom, svgEditRootAtom, viewBoxAtom } from '../../store/store';
+import { activePointAtom, canvasSizeAtom, canvasStrokeAtom, containerElmAtom, doClearActiveAtom, precisionAtom, snapToGridAtom, svgEditRootAtom, viewBoxAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 //import { CanvasControlsPanel } from '../Panels/PanelCanvasControls';
 import { ControlPoint, StartDragEvent, TargetPoint } from './CanvasPoints';
@@ -38,7 +38,7 @@ function useMouseHandlers() {
         //setActivePt(-1); 
         doClearActive(); // TODO: set it on mouse up only if where no move
         dragEventRef.current = { event, startXY: getEventPt(viewBox, canvasStroke, containerElm!, event.clientX, event.clientY), svgItemIdx: -1 };
-    }, []);
+    }, [containerElm]);
 
     const onMouseUp = React.useCallback(function onMouseUp() {
         dragEventRef.current = null;
@@ -50,6 +50,8 @@ function useMouseHandlers() {
     const onMouseMove = React.useCallback(
         function onMouseMove(event: React.MouseEvent) {
             if (!containerElm || !dragEventRef.current) { return; }
+
+            console.log('............... canvas onMouseMove containerElm', containerElm);
 
             event.stopPropagation();
 
@@ -82,8 +84,8 @@ function useMouseHandlers() {
                 ]));
             }
         }
-    //, []); //cannot use viewbox
-    , [viewBox]); //cannot use viewbox
+        //, []); //cannot use viewbox
+        , [containerElm, viewBox]); //cannot use viewbox
 
     console.log(`------------------------- re-render useMouseHandlers -------------------------`);
 
@@ -208,6 +210,7 @@ function SvgCanvas() {
     const { onMouseDown, onMouseMove, onMouseUp, onPointClick } = useMouseHandlers();
 
 
+    const [size] = useAtom(canvasSizeAtom);
 
 
 
@@ -219,16 +222,23 @@ function SvgCanvas() {
             onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
         // onClick={() => setActivePt(-1)}
         >
-            <CanvasTicks />
 
-            {/* <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} /> */}
-            <RenderPath />
+            {
+            size.w && size.h && (<>
+                <CanvasTicks />
 
-            <RenderControlPoints onPointClick={onPointClick} />
-            <RenderPoints onPointClick={onPointClick} />
+                {/* <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} /> */}
+                <RenderPath />
+
+                <RenderControlPoints onPointClick={onPointClick} />
+                <RenderPoints onPointClick={onPointClick} />
+            </>)
+            }
         </svg>
     );
 }
+
+//TODO: hover row and hover ed should be separate
 
 // const CanvasControlsPanelMemo = React.memo(CanvasControlsPanel);
 
