@@ -13,7 +13,7 @@ function useMouseHandlers() {
     const doCanvasMouseDown = useUpdateAtom(doCanvasMouseDownAtom);
     const doCanvasMouseMove = useUpdateAtom(doCanvasMouseMoveAtom);
     const doCanvasMouseUp = useUpdateAtom(doCanvasMouseUpAtom);
-    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
+    //const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
     const doClearActive = useUpdateAtom(doClearActiveAtom);
 
     const onMouseDown = React.useCallback(function onMouseDown(event: React.MouseEvent) {
@@ -23,13 +23,12 @@ function useMouseHandlers() {
 
     const onMouseUp = React.useCallback(() => doCanvasMouseUp(), []);
     const onMouseMove = React.useCallback((event: React.MouseEvent) => doCanvasMouseMove(event), []);
-    const onPointClick = React.useCallback((event: CanvasDragEvent) => (event.event.button === 0) && doCanvasPointClk(event), []);
+    //const onPointClick = React.useCallback((event: CanvasDragEvent) => (event.event.button === 0) && doCanvasPointClk(event), []);
 
     return {
         onMouseDown,
         onMouseUp,
         onMouseMove,
-        onPointClick,
     };
 }
 
@@ -72,23 +71,48 @@ function RenderPoints({ onPointClick }: { onPointClick: (e: CanvasDragEvent) => 
     );
 }
 
-function SvgCanvas() {
+function CanvasChildren() {
+    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
+    return (<>
+        <CanvasTicks />
+        <RenderPath />
+        <RenderControlPoints onPointClick={doCanvasPointClk} />
+        <RenderPoints onPointClick={doCanvasPointClk} />
+    </>);
+}
+
+function SvgCanvas({children}: {children: React.ReactNode}) {
     const size = useAtomValue(canvasSizeAtom);
     const viewBox = useAtomValue(viewBoxAtom);
-    console.log('--------------------------Canvas re-render -------------------------', _fViewBox(viewBox, 4));
-    const { onMouseDown, onMouseMove, onMouseUp, onPointClick } = useMouseHandlers();
+    console.log('--------------------------Canvas re-render -------------------------', _fViewBox(viewBox, 4), '---- canvas size', size);
+    const { onMouseDown, onMouseMove, onMouseUp } = useMouseHandlers();
     if (!size.w || !size.h) {
         return null;
     }
     return (
         <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c] select-none" onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}>
-            <CanvasTicks />
-            <RenderPath />
-            <RenderControlPoints onPointClick={onPointClick} />
-            <RenderPoints onPointClick={onPointClick} />
+            {children}
         </svg>
     );
 }
+
+// function SvgCanvas() {
+//     const size = useAtomValue(canvasSizeAtom);
+//     const viewBox = useAtomValue(viewBoxAtom);
+//     console.log('--------------------------Canvas re-render -------------------------', _fViewBox(viewBox, 4), '---- canvas size', size);
+//     const { onMouseDown, onMouseMove, onMouseUp, onPointClick } = useMouseHandlers();
+//     if (!size.w || !size.h) {
+//         return null;
+//     }
+//     return (
+//         <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c] select-none" onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}>
+//             <CanvasTicks />
+//             <RenderPath />
+//             <RenderControlPoints onPointClick={onPointClick} />
+//             <RenderPoints onPointClick={onPointClick} />
+//         </svg>
+//     );
+// }
 
 //TODO: hover row and hover ed should be separate
 
@@ -98,7 +122,9 @@ export function PathCanvas() {
     const { ref, parentRef, onWheel, } = useContainerZoom();
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
-            <SvgCanvas />
+            <SvgCanvas>
+                <CanvasChildren />
+            </SvgCanvas>
             {/* <CanvasControlsPanelMemo /> */}
         </div>
     );

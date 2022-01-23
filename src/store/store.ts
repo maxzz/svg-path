@@ -424,6 +424,9 @@ export const canvasDragStateAtom = atom(
 );
 
 export const doCanvasPointClkAtom = atom(null, (get, set, event: CanvasDragEvent) => {
+    if (event.event.button !== 0) {
+        return;
+    }
     const containerElm = get(containerElmAtom);
     if (containerElm) {
         set(_canvasDragStateAtom, event);
