@@ -432,7 +432,51 @@ export const doCanvasMouseDownAtom = atom(null, (get, set, { event, xy }: { even
     }
 });
 
-export const doCanvasMouseMoveAtom = atom(null, (get, set,) => {
+export const doCanvasMouseMoveAtom = atom(null, (get, set, { event, xy }: { event: React.MouseEvent; xy: ClientPoint; }) => {
+    const canvasDragState = get(_canvasDragStateAtom);
+    if (!canvasDragState) {
+        return;
+    }
+
+    const viewBox = get(viewBoxAtom);
+    const stroke = get(canvasStrokeAtom);
+    const containerElm = get(containerElmAtom);
+    if (containerElm) {
+        event.stopPropagation();
+
+        const precision = get(precisionAtom);
+        const snapToGrid = get(snapToGridAtom);
+
+        if (canvasDragState.pt) {
+            const nowXY = getEventPt(viewBox, stroke, containerElm, event.clientX, event.clientY);
+
+            const decimals = snapToGrid
+                ? 0
+                : event.ctrlKey
+                    ? precision
+                        ? 0
+                        : 3
+                    : precision;
+            nowXY.x = parseFloat(nowXY.x.toFixed(decimals));
+            nowXY.y = parseFloat(nowXY.y.toFixed(decimals));
+            //console.log('move', nowXY.x, nowXY.y);
+
+            const svgEditRoot = get(svgEditRootAtom);
+            set(svgEditRoot.doUpdatePointAtom, { pt: canvasDragState.pt, newXY: nowXY, svgItemIdx: canvasDragState.svgItemIdx });
+        } else {
+            //const startPt = getEventPt(containerRef, dragEventRef.current.event.clientX, dragEventRef.current.event.clientY);
+            const startXY = canvasDragState.startXY!;
+            const nowXY = getEventPt(viewBox, stroke, containerElm, event.clientX, event.clientY);
+            //console.log('move startPt', _ViewPoint(startPt).padEnd(20, ' '), 'pt', _ViewPoint(pt).padEnd(20, ' '), '--------------------------------', _fViewBox(viewBox));
+
+            set(viewBoxAtom, (prev) => ([
+                prev[0] + startXY.x - nowXY.x,
+                prev[1] + startXY.y - nowXY.y,
+                prev[2],
+                prev[3],
+            ]));
+        }
+    }
 });
 
 export const doCanvasMouseUpAtom = atom(null, (get, set,) => {
