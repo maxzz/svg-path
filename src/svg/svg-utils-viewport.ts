@@ -47,6 +47,11 @@ export function scaleViewBox(viewBox: ViewBox, scale: number, pt?: ViewPoint): V
     return [x, y, w, h];
 }
 
+export function getCanvasStroke(viewBoxWidth: number, canvasWidth: number) {
+    return parseFloat((viewBoxWidth / canvasWidth).toPrecision(6));
+    // return viewBoxWidth / canvasWidth;
+}
+
 export function updateViewPort(canvas: ViewSize, x: number, y: number, w: number | null, h: number | null, force = false, viewPortLocked = false): ViewBoxWithStroke | undefined {
     if (!force && viewPortLocked) {
         return;

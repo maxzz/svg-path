@@ -1,7 +1,7 @@
 import { atom, Getter, PrimitiveAtom, Setter, WritableAtom } from "jotai";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg/svg";
-import { getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
+import { getCanvasStroke, getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
 import debounce from "../utils/debounce";
 import { unexpected, _fViewBox, _ViewBox } from "../utils/debugging";
 import uuid from "../utils/uuid";
@@ -81,7 +81,7 @@ export const pathUnsafeAtom = atom(
         return get(_pathUnsafeAtom);
     },
     (get, set, path: string) => {
-        const current = get(_pathUnsafeAtom);
+        //const current = get(_pathUnsafeAtom);
 
         set(_pathUnsafeAtom, path);
 
@@ -151,11 +151,11 @@ export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: Pr
         (newState[key] as boolean | number) = val;
     }
 
-    const before = get(atom);
+    //const before = get(atom);
 
     set(atom, (prev) => ({ ...prev, ...newState }));
 
-    const after = get(atom);
+    //const after = get(atom);
     //console.log('state', 'before', before, 'after', after);
 });
 
@@ -345,7 +345,7 @@ export const doUpdateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoom
     const newViewBox = scaleViewBox(viewBox, scale);
 
     const canvasSize = get(canvasSizeAtom);
-    const newStroke = newViewBox[2] / canvasSize.w;
+    const newStroke = getCanvasStroke(newViewBox[2], canvasSize.w);
 
     //console.log('new zoom', (''+zoom).padStart(5, ' '), '-----old viewBox-----', _fViewBox(viewBox), '-----new viewBox-----', _fViewBox(newViewBox));
 
