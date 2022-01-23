@@ -8,12 +8,12 @@ export function _ViewPoint(pt: ViewPoint, diggits = 0) {
     return `${p.x}, ${p.y}`;
 }
 
-export function _ViewBox(viewBox: ViewBox): string {
-    return viewBox.map(_ => _.toFixed(2)).join(' ');
+export function _ViewBox(viewBox: ViewBox, diggits = 2): string {
+    return viewBox.map(_ => _.toFixed(diggits)).join(' ');
 }
 
-export function _fViewBox(viewBox: ViewBox): string {
-    return viewBox.map(pt => pt.toFixed(0).padStart(4, ' ')).join(" ");
+export function _fViewBox(viewBox: ViewBox, diggits = 0): string {
+    return viewBox.map(pt => pt.toFixed(diggits).padStart(4, ' ')).join(" ");
 }
 
 export function unexpected(...rest: any[]) {
