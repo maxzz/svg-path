@@ -77,7 +77,8 @@ export function updateViewPort(canvas: ViewSize, x: number, y: number, w: number
 
     return {
         viewBox,
-        stroke: viewBox[2] / canvas.w
+        // stroke: viewBox[2] / canvas.w
+        stroke: getCanvasStroke(viewBox[2], canvas.w)
     };
 }
 
@@ -136,12 +137,11 @@ export function getFitViewPort(canvas: ViewSize, targetPoints: SvgPoint[]): Canv
         parseFloat((1 * viewPortHeight).toPrecision(4)),
     ];
 
-    let strokeWidth = port[2] / canvas.w;
-
     return {
         size: { w: canvas.w, h: canvas.h },
         port: port,
-        stroke: strokeWidth,
+        //stroke: port[2] / canvas.w,
+        stroke: getCanvasStroke(port[2], canvas.w),
     };
 }
 
