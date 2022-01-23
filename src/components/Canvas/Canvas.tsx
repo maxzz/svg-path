@@ -2,22 +2,13 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { activePointAtom, canvasSizeAtom, canvasStrokeAtom, containerElmAtom, doClearActiveAtom, precisionAtom, snapToGridAtom, svgEditRootAtom, viewBoxAtom } from '../../store/store';
+import { activePointAtom, canvasSizeAtom, canvasStrokeAtom, containerElmAtom, doClearActiveAtom, precisionAtom, snapToGridAtom, CanvasDragEvent, svgEditRootAtom, viewBoxAtom, getEventPt } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 //import { CanvasControlsPanel } from '../Panels/PanelCanvasControls';
-import { ControlPoint, StartDragEvent, TargetPoint } from './CanvasPoints';
+import { ControlPoint, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
 import { _fViewBox, _ViewBox, _ViewPoint } from '../../utils/debugging';
-import { ViewBox } from '../../svg/svg-utils-viewport';
 //import { useThrottle } from 'react-use';
-
-function getEventPt(viewBox: ViewBox, canvasStroke: number, containerElm: HTMLElement, eventClientX: number, eventClientY: number) {
-    const canvasRect = containerElm.getBoundingClientRect();
-    let [viewBoxX, viewBoxY] = viewBox;
-    const x = viewBoxX + (eventClientX - canvasRect.x) * canvasStroke;
-    const y = viewBoxY + (eventClientY - canvasRect.y) * canvasStroke;
-    return { x, y };
-}
 
 function useMouseHandlers() {
     const [viewBox, setViewBox] = useAtom(viewBoxAtom);
@@ -30,9 +21,9 @@ function useMouseHandlers() {
     //const setActivePt = useUpdateAtom(activePointAtom);
     const doClearActive = useUpdateAtom(doClearActiveAtom);
 
-    const dragEventRef = React.useRef<StartDragEvent | null>(null);
+    const dragEventRef = React.useRef<CanvasDragEvent | null>(null);
 
-    const onPointClick = React.useCallback((e: StartDragEvent) => (e.event.button === 0) && (dragEventRef.current = e), []);
+    const onPointClick = React.useCallback((e: CanvasDragEvent) => (e.event.button === 0) && (dragEventRef.current = e), []);
 
     const onMouseDown = React.useCallback(function onMouseDown(event: React.MouseEvent) {
         //setActivePt(-1); 
@@ -107,7 +98,7 @@ function RenderPath() {
     );
 }
 
-function RenderControlPoints({ onPointClick }: { onPointClick: (e: StartDragEvent) => void; }) {
+function RenderControlPoints({ onPointClick }: { onPointClick: (e: CanvasDragEvent) => void; }) {
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const edits = svgEditRoot.edits;
     const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
@@ -124,7 +115,7 @@ function RenderControlPoints({ onPointClick }: { onPointClick: (e: StartDragEven
     );
 }
 
-function RenderPoints({ onPointClick }: { onPointClick: (e: StartDragEvent) => void; }) {
+function RenderPoints({ onPointClick }: { onPointClick: (e: CanvasDragEvent) => void; }) {
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const edits = svgEditRoot.edits;
     const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render

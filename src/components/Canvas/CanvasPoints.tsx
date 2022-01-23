@@ -1,23 +1,16 @@
 import { Atom, PrimitiveAtom, useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { canvasStrokeAtom, doSetStateAtom, SvgItemEditState } from "../../store/store";
+import { canvasStrokeAtom, doSetStateAtom, CanvasDragEvent, SvgItemEditState } from "../../store/store";
 import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg/svg";
 import { ViewPoint } from "../../svg/svg-utils-viewport";
 
-export type StartDragEvent = {
-    event: React.MouseEvent;
-    pt?: SvgPoint | SvgControlPoint;
-    startXY?: ViewPoint;
-    svgItemIdx: number;
-};
-
-export type StartDragEventHandler = (event: StartDragEvent) => void;
+type CanvasDragHandler = (event: CanvasDragEvent) => void;
 
 const pointColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
 const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ff' : hover ? '#ffad40' : 'white';
 
 export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }:
-    { pt: SvgPoint; svgItemIdx: number; clk: StartDragEventHandler; asStringAtom: Atom<string>; stateAtom: PrimitiveAtom<SvgItemEditState>; }) {
+    { pt: SvgPoint; svgItemIdx: number; clk: CanvasDragHandler; asStringAtom: Atom<string>; stateAtom: PrimitiveAtom<SvgItemEditState>; }) {
 
     // const [activePt, setActivePt] = useAtom(activePointAtom);
     // const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
@@ -69,7 +62,7 @@ export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }:
 }
 
 export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }:
-    { pt: SvgControlPoint; svgItemIdx: number; clk: StartDragEventHandler; stateAtom: PrimitiveAtom<SvgItemEditState>; }) {
+    { pt: SvgControlPoint; svgItemIdx: number; clk: CanvasDragHandler; stateAtom: PrimitiveAtom<SvgItemEditState>; }) {
 
     // const [activePt, setActivePt] = useAtom(activePointAtom);
     // const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);

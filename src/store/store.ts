@@ -395,6 +395,50 @@ export const doUpdateViewBoxAtom = atom(null, (get, set,) => {
     }
 });
 
+// canvas drag operations
+
+export type CanvasDragEvent = {
+    event: React.MouseEvent;
+    pt?: SvgPoint | SvgControlPoint;
+    startXY?: ViewPoint;
+    svgItemIdx: number;
+};
+
+type ClientPoint = {
+    clientX: number;
+    clientY: number;
+};
+
+export function getEventPt(viewBox: ViewBox, canvasStroke: number, containerElm: HTMLElement, eventClientX: number, eventClientY: number) {
+    const canvasRect = containerElm.getBoundingClientRect();
+    let [viewBoxX, viewBoxY] = viewBox;
+    const x = viewBoxX + (eventClientX - canvasRect.x) * canvasStroke;
+    const y = viewBoxY + (eventClientY - canvasRect.y) * canvasStroke;
+    return { x, y };
+}
+
+const _canvasDragStateAtom = atom<CanvasDragEvent | null>(null);
+
+export const canvasDragStateAtom = atom(
+    (get) => get(_canvasDragStateAtom)
+);
+
+export const doCanvasMouseDownAtom = atom(null, (get, set, { event, xy }: { event: React.MouseEvent; xy: ClientPoint; }) => {
+    const viewBox = get(viewBoxAtom);
+    const stroke = get(canvasStrokeAtom);
+    const containerElm = get(containerElmAtom);
+    if (containerElm) {
+        set(_canvasDragStateAtom, { event, startXY: getEventPt(viewBox, stroke, containerElm, xy.clientX, xy.clientY), svgItemIdx: -1 });
+    }
+});
+
+export const doCanvasMouseMoveAtom = atom(null, (get, set,) => {
+});
+
+export const doCanvasMouseUpAtom = atom(null, (get, set,) => {
+    set(_canvasDragStateAtom, null);
+});
+
 // new canvas
 
 export const tickIntevalAtom = atomWithCallback(Storage.initialData.ticks, ({ get }) => Storage.save(get));
