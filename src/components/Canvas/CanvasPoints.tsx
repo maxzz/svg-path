@@ -37,7 +37,7 @@ export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }:
     const activeEd = state.activeRow && state.activeEd === -1;
     const hoverEd = state.hoverRow && state.hoverEd === -1;
 
-    console.log('--PT-- re-rendder, state', state);
+    console.log(`--PT-- [${svgItemIdx}. ] re-rendder, state`, state);
 
     return (<>
         {(state.activeRow || state.hoverRow) &&
@@ -87,7 +87,7 @@ export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }:
     const activeEd = state.activeRow && state.activeEd === pt.subIndex;
     const hoverEd = state.hoverRow && state.hoverEd === pt.subIndex;
 
-    console.log('  cp   re-rendder, state', state);
+    console.log(`  cp   [${svgItemIdx}.${pt.subIndex}] re-rendder, state`, state);
 
     return (<>
         {pt.relations.map((rel, idx) => (
@@ -111,18 +111,25 @@ export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }:
 
             // onMouseEnter={() => /*setHoverPt(svgItemIdx)*/ setState({atom: stateAtom, states: {hoverRow: true, hoverEd: pt.subIndex}})}
             onMouseEnter={() => {
-                console.log('cp mouse enter');
+                console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse enter`);
 
                 setState({ atom: stateAtom, states: { hoverRow: true, hoverEd: pt.subIndex } });
 
-                console.log('cp mouse enter done');
+                console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse enter done`);
             }}
-            onMouseLeave={() => /*setHoverPt(-1)*/ setState({ atom: stateAtom, states: { hoverRow: false, hoverEd: -1 } })}
+            // onMouseLeave={() => /*setHoverPt(-1)*/ setState({ atom: stateAtom, states: { hoverRow: false, hoverEd: -1 } })}
+            onMouseLeave={() => {
+                console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse leave`);
+                setState({ atom: stateAtom, states: { hoverRow: false, hoverEd: -1 } });
+                console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse leave done`);
+            }}
             onMouseDown={(event) => {
+                console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse down`);
                 event.stopPropagation();
                 //setActivePt(svgItemIdx);
                 setState({ atom: stateAtom, states: { activeRow: true } });
                 clk({ event, pt, svgItemIdx });
+                console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse down done`);
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
