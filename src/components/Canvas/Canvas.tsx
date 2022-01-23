@@ -168,7 +168,7 @@ function SvgCanvas() {
 
 
 
-    console.log('canvas re-render', 'canvasStroke', canvasStroke, _fViewBox(viewBox, 4), 'elm', containerElm);
+    //console.log('canvas re-render', 'canvasStroke', canvasStroke, _fViewBox(viewBox, 4), 'elm', containerElm);
     
 
     return (
@@ -185,14 +185,14 @@ function SvgCanvas() {
                     const controls = edit.svgItem.controlLocations();
                     controls.forEach((cpt, idx) => cpt.subIndex = idx);
                     return controls.map((cpt, idx) => (
-                        <ControlPoint key={`${idx}${editIdx}`} clk={onPointClick} pt={cpt} stroke={canvasStroke} svgItemIdx={editIdx} stateAtom={edit.stateAtom} />
+                        <ControlPoint key={`${idx}${editIdx}`} clk={onPointClick} pt={cpt} svgItemIdx={editIdx} stateAtom={edit.stateAtom} />
                     ));
                 })}
             </g>
 
             <g className="pathPts">
                 {edits.map((edit, editIdx) => (
-                    <TargetPoint key={editIdx} clk={onPointClick} pt={edit.svgItem.targetLocation()} stroke={canvasStroke} svgItemIdx={editIdx} stateAtom={edit.stateAtom} asStringAtom={edit.asStringAtom} />
+                    <TargetPoint key={editIdx} clk={onPointClick} pt={edit.svgItem.targetLocation()} svgItemIdx={editIdx} stateAtom={edit.stateAtom} asStringAtom={edit.asStringAtom} />
                 ))}
             </g>
         </svg>
