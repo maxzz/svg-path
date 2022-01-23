@@ -7,7 +7,9 @@ import { ViewBox, ViewBoxManual } from '../../svg/svg-utils-viewport';
 import { classNames } from '../../utils/classnames';
 //import { AccordionHorizontal } from '../UI/Accordion';
 
-function Button({ label, atom, leftBorder = true, ...rest }: { label: string; atom: PrimitiveAtom<boolean>; leftBorder?: boolean; } & HTMLAttributes<HTMLButtonElement>) {
+function Button({ label, atom, leftBorder = true, ...rest }:
+    { label: string; atom: PrimitiveAtom<boolean>; leftBorder?: boolean; } & HTMLAttributes<HTMLButtonElement>) {
+        
     const [isDown, setIsDown] = useAtom(atom);
     return (
         <button
@@ -36,6 +38,7 @@ function Button({ label, atom, leftBorder = true, ...rest }: { label: string; at
 //         </div>
 //     );
 // }
+// const CanvasControlsPanelMemo = React.memo(CanvasControlsPanel);
 
 function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; atom: PrimitiveAtom<boolean>; }) {
     const [value, setValue] = useAtom(atom);
