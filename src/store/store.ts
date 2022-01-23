@@ -273,6 +273,17 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 
             set(root.pointsAtom, getPoints(root.svg));
             set(_pathUnsafeAtom, svg.asString());
+
+            if (svgItemIdx - 1 >= 0) {
+                const svgEdit = root.edits[svgItemIdx - 1];
+                const svgItem = root.svg.path[svgItemIdx - 1];
+                set(svgEdit.asStringAtom, svgItem.asStandaloneString());
+            }
+            if (svgItemIdx + 1 < root.edits.length) {
+                const svgEdit = root.edits[svgItemIdx + 1];
+                const svgItem = root.svg.path[svgItemIdx + 1];
+                set(svgEdit.asStringAtom, svgItem.asStandaloneString());
+            }
         }
     }
     function doUpdatePoint(get: Getter, set: Setter, { pt, newXY, svgItemIdx }: { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }) {
