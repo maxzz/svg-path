@@ -30,6 +30,8 @@ export function useContainerZoom() {
     }, [parentRef]);
 
     React.useEffect(() => {
+        console.log('--------------- useEffect[parentRef, width, height]', parentRef, width, height);
+
         setContainerElm(parentRef.current);
         setCanvasSize({ w: width, h: height });
         doUpdateViewBox();

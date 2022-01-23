@@ -30,7 +30,7 @@ function SvgCanvas() {
     const edits = svgEditRoot.edits;
 
     const doUpdatePoint = useUpdateAtom(svgEditRoot.doUpdatePointAtom);
-    const setActivePt = useUpdateAtom(activePointAtom);
+    //const setActivePt = useUpdateAtom(activePointAtom);
     const doClearActive = useUpdateAtom(doClearActiveAtom);
 
     const dragEventRef = React.useRef<StartDragEvent | null>(null);
@@ -84,6 +84,9 @@ function SvgCanvas() {
             ]));
         }
     }
+
+    console.log('canvas re-render', 'canvasStroke', canvasStroke, _fViewBox(viewBox, 4), 'elm', containerElm);
+    
 
     return (
         <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c] select-none"
