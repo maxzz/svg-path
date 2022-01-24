@@ -30,15 +30,20 @@ export function useContainerZoom() {
     }, [parentRef]);
 
     React.useEffect(() => {
-        console.log('--------------- useEffect[parentRef, width, height]', parentRef, width, height);
-
+        console.log('--------------- useContainerZoom.useEffect[parentRef]', parentRef, width, height);
+        
         setContainerElm(parentRef.current);
-        setCanvasSize({ w: width, h: height });
-        doUpdateViewBox();
-    }, [parentRef, width, height]);
+    }, [parentRef]);
 
     React.useEffect(() => {
-        console.log('--------------- useEffect[svgEditRoot]', parentRef, width, height);
+        console.log('--------------- useContainerZoom.useEffect[width, height]', parentRef, width, height);
+
+        setCanvasSize({ w: width, h: height });
+        doUpdateViewBox();
+    }, [width, height]);
+
+    React.useEffect(() => {
+        console.log('--------------- useContainerZoom.useEffect[svgEditRoot]', parentRef, width, height);
 
         doUpdateViewBox();
     }, [svgEditRoot]);
