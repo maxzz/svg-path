@@ -61,6 +61,8 @@ namespace Storage {
     }, 1000);
 }
 
+//#region Unsafe SVG Atom
+
 //export const pathAtom = atom('M 0 100 L 25 100 C 34 20 40 0 100 0');
 //export const pathSafeAtom = atom('M 0 100 L 25 100 C 34 20 40 0 100 0');
 
@@ -122,6 +124,8 @@ export const hoverPointAtom = atom(-1);
 export const editorActivePointAtom = atom<[number, number] | null>(null); // current point in path commands panel: pt index and cpt index (or -1)
 export const editorHoverPointAtom = atom<[number, number] | null>(null); // current hobering point in path commands panel: pt index and cpt index (or -1)
 */
+
+//#endregion Unsafe SVG Atom
 
 //#region SvgItemEdit state
 
@@ -312,6 +316,8 @@ export const svgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(getParsedSvg(
 
 //#endregion SvgRoot
 
+//#region canvas size
+
 // canvas size
 
 export const viewBoxAtom = atom<ViewBox>([0, 0, 10, 10]);
@@ -325,6 +331,8 @@ export const doSetViewBoxAtom = atom((get) => get(viewBoxAtom), (get, set, box: 
         set(canvasStrokeAtom, newBox.stroke);
     }
 });
+
+//#endregion canvas size
 
 //#region canvas zoom
 
@@ -444,6 +452,8 @@ export type CanvasDragEvent = {
     mmoved?: boolean;                       // mouse moved between mouse down and mouse up
 };
 
+//TODO: do we need to keep mdownPt
+
 type ClientPoint = {
     clientX: number;
     clientY: number;
@@ -544,6 +554,8 @@ export const doCanvasMouseUpAtom = atom(null, (get, set,) => {
 
 //#endregion canvas drag operations
 
+//#region Option atoms
+
 // new canvas
 
 export const tickIntevalAtom = atomWithCallback(Storage.initialData.ticks, ({ get }) => Storage.save(get));
@@ -557,6 +569,8 @@ export const minifyOutputAtom = atomWithCallback(Storage.initialData.minifyOutpu
 
 export const showGridAtom = atomWithCallback(Storage.initialData.showGrid, ({ get }) => Storage.save(get));
 export const showTicksAtom = atomWithCallback(Storage.initialData.showTicks, ({ get }) => Storage.save(get));
+
+//#endregion Option atoms
 
 //#region History
 
