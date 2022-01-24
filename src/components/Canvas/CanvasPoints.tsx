@@ -11,21 +11,19 @@ const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00
 const stokeCpLineColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : '#fff5';
 
 export function TargetPoint({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
-    const pt: SvgPoint = svgItemEdit.svgItem.targetLocation();
+    const asString = useAtomValue(svgItemEdit.standaloneStringAtom); // The main purpose is to trigger update
+    const stroke = useAtomValue(canvasStrokeAtom);
+    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
+    const setState = useUpdateAtom(doSetStateAtom);
     const svgItemIdx = svgItemEdit.svgItemIdx;
     const stateAtom = svgItemEdit.stateAtom;
 
-    const stroke = useAtomValue(canvasStrokeAtom);
-    const asString = useAtomValue(svgItemEdit.standaloneStringAtom);
+    const pt: SvgPoint = svgItemEdit.svgItem.targetLocation();
+    const isMCommand = pt.itemReference.getType().toUpperCase() === 'M';
 
-    const setState = useUpdateAtom(doSetStateAtom);
     const state = useAtomValue(stateAtom);
     const activeEd = state.activeRow && state.activeEd === -1;
     const hoverEd = state.hoverRow && state.hoverEd === -1;
-
-    const isMCommand = pt.itemReference.getType().toUpperCase() === 'M';
-
-    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
 
     doTrace && console.log(`%c--PT-- [${svgItemIdx}. ] re-rendder, state`, 'color: #bbb', state);
 
@@ -66,20 +64,19 @@ export function TargetPoint({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
 }
 
 export function ControlPoint({ svgItemEdit, cpIdx }: { svgItemEdit: SvgItemEdit; cpIdx: number; }) {
+    const asString = useAtomValue(svgItemEdit.standaloneStringAtom); // The main purpose is to trigger update
+    const stroke = useAtomValue(canvasStrokeAtom);
+    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
+    const setState = useUpdateAtom(doSetStateAtom);
     const svgItemIdx = svgItemEdit.svgItemIdx;
     const stateAtom = svgItemEdit.stateAtom;
+
     const controls: SvgControlPoint[] = svgItemEdit.svgItem.controlLocations();
     const pt: SvgControlPoint = controls[cpIdx];
 
-    const asString = useAtomValue(svgItemEdit.standaloneStringAtom);
-
-    const stroke = useAtomValue(canvasStrokeAtom);
     const state = useAtomValue(stateAtom);
-    const setState = useUpdateAtom(doSetStateAtom);
     const activeEd = state.activeRow && state.activeEd === pt.subIndex;
     const hoverEd = state.hoverRow && state.hoverEd === pt.subIndex;
-
-    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
 
     doTrace && console.log(`%c  cp   [${svgItemIdx}.${pt.subIndex}] re-rendder, state`, 'color: gray', state);
 

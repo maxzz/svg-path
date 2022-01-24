@@ -94,7 +94,7 @@ export default App;
 //M 1 2 L 10 12
 //m 2 1 L 5 1 C 5 6 10 2 10 8
 //M 4 -6 C 26 -7 25 14 25 41 C 10 20 15 19 28 9 M 5 12 C 14 15 10 -10 24 -10
-//m 2 1 L 5 1 C 3 5 10 2 10 8 C 8 6 2 10 8 10
+//m 2 1 L 5 1 C 3 6 9 2 9 5 C 9 8 4 10 7 12
 
 // drag not working
 // lost last target point render
