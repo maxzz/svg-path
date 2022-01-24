@@ -226,6 +226,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         doReloadSvgItemIdxAtom: atomWithCallback<number>(-1, doReloadSvgItemIdx),
         doUpdatePointAtom: atom(null, doUpdatePoint),
     };
+    updateSubIndecies();
     svg.path.forEach((svgItem, svgItemIdx) => {
         const newSvgEdit: SvgItemEdit = {
             id: uuid(),
@@ -257,7 +258,16 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         };
     }
 
+    function updateSubIndecies() {
+        root.svg.path.forEach((svgItem) => {
+            const controls = svgItem.controlLocations();
+            controls.forEach((cpt, idx) => cpt.subIndex = idx);
+        });
+    }
+
     function triggerUpdate(set: Setter, svgItemIdx: number) {
+        updateSubIndecies();
+
         set(root.doReloadAllValuesAtom, true);
         set(root.doReloadAllValuesAtom, false);
 
