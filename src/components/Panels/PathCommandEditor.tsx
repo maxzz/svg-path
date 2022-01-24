@@ -21,55 +21,40 @@ function PointName({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
 
 function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx, stateAtom }:
     { atom: PrimitiveAtom<number>; tooltip: string; firstRow: boolean; isActivePt: boolean; isHoverPt: boolean; editorIdx: [number, number]; stateAtom: PrimitiveAtom<SvgItemEditState>; }) {
+
     const [value, setValue] = useAtom(atom);
     const [local, setLocal] = React.useState('' + value);
     React.useEffect(() => setLocal('' + value), [value]);
 
-    function convertToNumber(s: string) {
-        s = s.replace(/[\u066B,]/g, '.').replace(/[^\-0-9.eE]/g, ''); //replace unicode-arabic-decimal-separator and remove non-float chars.
-        setLocal(s);
-        const v = +s;
-        s && !isNaN(v) && setValue(v);
-    }
-
-    function resetInvalid() {
-        (!local || isNaN(+local)) && setLocal('' + value);
-    }
-
     const setState = useUpdateAtom(doSetStateAtom);
 
-    // const setEditorActivePt = useUpdateAtom(editorActivePointAtom);
-    // const setEditorHoverPt = useUpdateAtom(editorHoverPointAtom);
-
-    const rowContainerRef = React.useRef(null);
-    const isHovering = useHoverDirty(rowContainerRef);
+    const editContainerRef = React.useRef(null);
+    const isHovering = useHoverDirty(editContainerRef);
 
     React.useEffect(() => {
         console.log(`%cuseEffect[isHovering] [${editorIdx}]  single edit`, 'color: #bbf5', 'hovering', isHovering, '');
-        //setEditorHoverPt(isHovering ? editorIdx : null);
-        setState({ atom: stateAtom, states: { hoverEd: isHovering ? editorIdx[1] : -1 } })
+
+        setState({ atom: stateAtom, states: { hoverEd: isHovering ? editorIdx[1] : -1 } });
     }, [isHovering]);
 
     function onBlur() {
         resetInvalid();
-        //setEditorActivePt(null);
-        setState({ atom: stateAtom, states: { activeEd: -1 } })
+        setState({ atom: stateAtom, states: { activeEd: -1 } });
     }
 
     return (
         <label
             className={`relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`}
-            ref={rowContainerRef}
+            ref={editContainerRef}
         >
             {/* value */}
             <input
                 className={`px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none ${isActivePt ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverPt ? 'bg-slate-200 border-slate-400/40' : ''} border-b-2 focus:border-blue-500  cursor-default focus:cursor-text`}
                 value={local}
                 onChange={(event) => convertToNumber(event.target.value)}
-                onFocus={() => /*setEditorActivePt(editorIdx)*/setState({ atom: stateAtom, states: { activeEd: editorIdx[1] } })}
+                onFocus={() => setState({ atom: stateAtom, states: { activeEd: editorIdx[1] } })}
                 onBlur={onBlur}
             />
-
             {/* tooltip */}
             {isActivePt && isHovering &&
                 <div className={`mini-tooltip ${firstRow ? 'tooltip-up' : 'tooltip-down'} absolute min-w-[1.75rem] py-0.5 left-1/2 -translate-x-1/2 ${firstRow ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} text-xs text-center text-slate-100 bg-slate-400 rounded z-10`}>
@@ -78,40 +63,49 @@ function PointValue({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx,
             }
         </label>
     );
+
+    function convertToNumber(s: string) {
+        s = s.replace(/[\u066B,]/g, '.').replace(/[^\-0-9.eE]/g, ''); //replace unicode-arabic-decimal-separator and remove non-float chars.
+        setLocal(s);
+        const v = +s;
+        s && !isNaN(v) && setValue(v);
+    }
+    function resetInvalid() {
+        (!local || isNaN(+local)) && setLocal('' + value);
+    }
 }
 
 function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svgItemIdx: number; }) {
     const [itemType] = useAtom(svgItemEdit.typeAtom);
 
-    const state = useAtomValue(svgItemEdit.stateAtom);
     const setState = useUpdateAtom(doSetStateAtom);
-
-    //const [activePoint, setActivePoint] = useAtom(activePointAtom);
-    //const isActivePt = activePoint === svgItemIdx;
+    const state = useAtomValue(svgItemEdit.stateAtom);
     const isActivePt = state.activeRow;
+    const isHoverPt = state.hoverRow;
 
     const rowContainerRef = React.useRef(null);
     const isHovering = useHoverDirty(rowContainerRef);
     const [isHoveringDebounced, setIsHoveringDebounced] = React.useState(false);
     useDebounce(() => setIsHoveringDebounced(isHovering), 100, [isHovering]);
 
-    //const [hoverPoint, setHoverPoint] = useAtom(hoverPointAtom);
-    //const isHoverPt = hoverPoint === svgItemIdx;
-    const isHoverPt = state.hoverRow;
-
-    // React.useEffect(() => /*setHoverPoint(isHovering ? svgItemIdx : -1)*/setState({ atom: svgItemEdit.stateAtom, states: { hover: isHovering } }), [isHoveringDebounced]);
     React.useEffect(() => {
         console.log(`%cuseEffect[isHovering] [${svgItemIdx}  ] row hover debounced value =`, 'color: #bbf8', isHoveringDebounced);
-        
-        setState({ atom: svgItemEdit.stateAtom, states: { hoverRow: isHovering } })
+
+        setState({ atom: svgItemEdit.stateAtom, states: { hoverRow: isHovering } });
     }, [isHoveringDebounced]);
 
     return (<>
         <div
             ref={rowContainerRef}
             className={`px-1 flex items-center justify-between ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`}
-            onClick={() => /*setActivePoint(svgItemIdx)*/ setState({ atom: svgItemEdit.stateAtom, states: { activeRow: true } })}
-            onFocus={() => /*setActivePoint(svgItemIdx)*/ setState({ atom: svgItemEdit.stateAtom, states: { activeRow: true } })}
+            onClick={() => {
+                console.log('%c[${svgItemIdx}  ] state on click', 'color: #528');
+                setState({ atom: svgItemEdit.stateAtom, states: { activeRow: true } });
+            }}
+            onFocus={() => {
+                console.log('%c[${svgItemIdx}  ] state on focus', 'color: #528');
+                setState({ atom: svgItemEdit.stateAtom, states: { activeRow: true } });
+            }}
         >
             {/* Values */}
             <div className="flex items-center justify-items-start font-mono space-x-0.5">
