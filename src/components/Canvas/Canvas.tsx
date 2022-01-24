@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { canvasSizeAtom, canvasStrokeAtom, svgEditRootAtom, viewBoxAtom, doCanvasMouseDownAtom, doCanvasMouseMoveAtom, doCanvasMouseUpAtom, doCanvasPointClkAtom } from '../../store/store';
+import { canvasSizeAtom, canvasStrokeAtom, svgEditRootAtom, viewBoxAtom, doCanvasMouseDownAtom, doCanvasMouseMoveAtom, doCanvasMouseUpAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { ControlPoint, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
@@ -49,7 +49,6 @@ function RenderPath() {
 }
 
 function RenderTargetPoints() {
-    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const edits = svgEditRoot.edits;
     const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
@@ -58,7 +57,6 @@ function RenderTargetPoints() {
             {edits.map((edit, editIdx) => (
                 <TargetPoint
                     key={editIdx}
-                    clk={doCanvasPointClk}
                     pt={edit.svgItem.targetLocation()}
                     svgItemIdx={editIdx}
                     stateAtom={edit.stateAtom}
@@ -70,7 +68,6 @@ function RenderTargetPoints() {
 }
 
 function RenderControlPoints() {
-    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const edits = svgEditRoot.edits;
     const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
@@ -82,7 +79,6 @@ function RenderControlPoints() {
                 return controls.map((cpt, idx) => (
                     <ControlPoint
                         key={`${idx}${editIdx}`}
-                        clk={doCanvasPointClk}
                         pt={cpt}
                         svgItemIdx={editIdx}
                         stateAtom={edit.stateAtom}

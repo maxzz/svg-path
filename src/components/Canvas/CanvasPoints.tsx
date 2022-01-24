@@ -1,6 +1,6 @@
 import { Atom, PrimitiveAtom, useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { canvasStrokeAtom, doSetStateAtom, CanvasDragEvent, SvgItemEditState } from "../../store/store";
+import { canvasStrokeAtom, doSetStateAtom, CanvasDragEvent, SvgItemEditState, doCanvasPointClkAtom } from "../../store/store";
 import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg/svg";
 import { doTrace } from "../../utils/debugging";
 
@@ -10,10 +10,9 @@ const pointColor = (active: boolean, hover: boolean): string => active ? '#009cf
 const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : 'white';
 const stokeCpLineColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : '#fff5';
 
-export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, standaloneStringAtom }: {
+export function TargetPoint({ pt, svgItemIdx, stateAtom, standaloneStringAtom }: {
     pt: SvgPoint;
     svgItemIdx: number;
-    clk: CanvasDragHandler;
     standaloneStringAtom: Atom<string>;
     stateAtom: PrimitiveAtom<SvgItemEditState>;
 }) {
@@ -26,6 +25,8 @@ export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, standaloneStringAt
     const hoverEd = state.hoverRow && state.hoverEd === -1;
 
     const isMCommand = pt.itemReference.getType().toUpperCase() === 'M';
+
+    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
 
     doTrace && console.log(`%c--PT-- [${svgItemIdx}. ] re-rendder, state`, 'color: #bbb', state);
 
@@ -57,7 +58,7 @@ export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, standaloneStringAt
             onMouseDown={(event) => {
                 event.stopPropagation();
                 setState({ atom: stateAtom, states: { activeRow: true } });
-                clk({ mdownEvent: event, mdownPt: pt, svgItemIdx });
+                doCanvasPointClk({ mdownEvent: event, mdownPt: pt, svgItemIdx });
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
@@ -65,10 +66,9 @@ export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, standaloneStringAt
     </>);
 }
 
-export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }: {
+export function ControlPoint({ pt, svgItemIdx, stateAtom, }: {
     pt: SvgControlPoint;
     svgItemIdx: number;
-    clk: CanvasDragHandler;
     stateAtom: PrimitiveAtom<SvgItemEditState>;
 }) {
     const stroke = useAtomValue(canvasStrokeAtom);
@@ -76,6 +76,8 @@ export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }: {
     const setState = useUpdateAtom(doSetStateAtom);
     const activeEd = state.activeRow && state.activeEd === pt.subIndex;
     const hoverEd = state.hoverRow && state.hoverEd === pt.subIndex;
+
+    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
 
     doTrace && console.log(`%c  cp   [${svgItemIdx}.${pt.subIndex}] re-rendder, state`, 'color: gray', state);
 
@@ -122,7 +124,7 @@ export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }: {
 
                 event.stopPropagation();
                 setState({ atom: stateAtom, states: { activeRow: true } });
-                clk({ mdownEvent: event, mdownPt: pt, svgItemIdx });
+                doCanvasPointClk({ mdownEvent: event, mdownPt: pt, svgItemIdx });
 
                 doTrace && console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse down done`);
             }}
