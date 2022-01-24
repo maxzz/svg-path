@@ -40,9 +40,9 @@ function CanvasSvgElement({ children }: { children: React.ReactNode; }) {
 }
 
 function RenderPath() {
+    const canvasStroke = useAtomValue(canvasStrokeAtom);
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const points = useAtomValue(svgEditRoot.pointsAtom);
-    const canvasStroke = useAtomValue(canvasStrokeAtom);
     return (
         <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} />
     );
@@ -59,7 +59,13 @@ function RenderControlPoints() {
                 const controls = edit.svgItem.controlLocations();
                 controls.forEach((cpt, idx) => cpt.subIndex = idx);
                 return controls.map((cpt, idx) => (
-                    <ControlPoint key={`${idx}${editIdx}`} clk={doCanvasPointClk} pt={cpt} svgItemIdx={editIdx} stateAtom={edit.stateAtom} />
+                    <ControlPoint
+                        key={`${idx}${editIdx}`}
+                        clk={doCanvasPointClk}
+                        pt={cpt}
+                        svgItemIdx={editIdx}
+                        stateAtom={edit.stateAtom}
+                    />
                 ));
             })}
         </g>
@@ -74,7 +80,14 @@ function RenderPoints() {
     return (
         <g className="pathPts">
             {edits.map((edit, editIdx) => (
-                <TargetPoint key={editIdx} clk={doCanvasPointClk} pt={edit.svgItem.targetLocation()} svgItemIdx={editIdx} stateAtom={edit.stateAtom} asStringAtom={edit.asStringAtom} />
+                <TargetPoint
+                    key={editIdx}
+                    clk={doCanvasPointClk}
+                    pt={edit.svgItem.targetLocation()}
+                    svgItemIdx={editIdx}
+                    stateAtom={edit.stateAtom}
+                    asStringAtom={edit.asStringAtom}
+                />
             ))}
         </g>
     );

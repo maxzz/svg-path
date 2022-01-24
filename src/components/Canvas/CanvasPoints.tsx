@@ -7,11 +7,15 @@ import { doTrace } from "../../utils/debugging";
 type CanvasDragHandler = (event: CanvasDragEvent) => void;
 
 const pointColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
-const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ff' : hover ? '#ffad40' : 'white';
+const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : 'white';
 
-export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }:
-    { pt: SvgPoint; svgItemIdx: number; clk: CanvasDragHandler; asStringAtom: Atom<string>; stateAtom: PrimitiveAtom<SvgItemEditState>; }) {
-
+export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }: {
+    pt: SvgPoint;
+    svgItemIdx: number;
+    clk: CanvasDragHandler;
+    asStringAtom: Atom<string>;
+    stateAtom: PrimitiveAtom<SvgItemEditState>;
+}) {
     const stroke = useAtomValue(canvasStrokeAtom);
     const [asString] = useAtom(asStringAtom);
 
@@ -19,6 +23,8 @@ export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }:
     const state = useAtomValue(stateAtom);
     const activeEd = state.activeRow && state.activeEd === -1;
     const hoverEd = state.hoverRow && state.hoverEd === -1;
+
+    const isMCommand = pt.itemReference.getType().toUpperCase() === 'M';
 
     doTrace && console.log(`%c--PT-- [${svgItemIdx}. ] re-rendder, state`, 'color: #bbb', state);
 
@@ -28,14 +34,19 @@ export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }:
         }
         {(activeEd || hoverEd) &&
             <circle
-                style={{ stroke: 'transparent', fill: editorColor(activeEd, hoverEd) }}
+                style={{ stroke: '#9c00ff63', fill: editorColor(activeEd, hoverEd) }}
                 cx={pt.x} cy={pt.y} r={stroke * 8} strokeWidth={stroke * 16}
             />
         }
         <circle
             className="cursor-pointer"
-            style={{ stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow) }}
-            cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
+            style={isMCommand
+                ? { stroke: pointColor(state.activeRow, state.hoverRow), fill: '#fff3', strokeWidth: stroke * 1.2, }
+                : { stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow), strokeWidth: stroke * 12, }
+            }
+            cx={pt.x} cy={pt.y} r={isMCommand ? stroke * 5 : stroke * 3}
+            // r={stroke * 3} 
+            // strokeWidth={stroke * 12}
 
             onMouseEnter={() => setState({ atom: stateAtom, states: { hoverRow: true } })}
             onMouseLeave={() => setState({ atom: stateAtom, states: { hoverRow: false } })}
@@ -50,9 +61,12 @@ export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }:
     </>);
 }
 
-export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }:
-    { pt: SvgControlPoint; svgItemIdx: number; clk: CanvasDragHandler; stateAtom: PrimitiveAtom<SvgItemEditState>; }) {
-
+export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }: {
+    pt: SvgControlPoint;
+    svgItemIdx: number;
+    clk: CanvasDragHandler;
+    stateAtom: PrimitiveAtom<SvgItemEditState>;
+}) {
     const stroke = useAtomValue(canvasStrokeAtom);
     const state = useAtomValue(stateAtom);
     const setState = useUpdateAtom(doSetStateAtom);
@@ -90,9 +104,9 @@ export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }:
             }}
             onMouseLeave={() => {
                 doTrace && console.log(`%c       [${svgItemIdx}.${pt.subIndex}] cp mouse leave`, 'color: limegreen');
-                
+
                 setState({ atom: stateAtom, states: { hoverRow: false, hoverEd: -1 } });
-                
+
                 doTrace && console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse leave done`);
             }}
             onMouseDown={(event) => {
