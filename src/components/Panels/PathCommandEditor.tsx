@@ -5,6 +5,7 @@ import { doSetStateAtom, svgEditRootAtom, SvgItemEdit, SvgItemEditState } from "
 import { useDebounce, useHoverDirty } from "react-use";
 import { IconMenu } from "../UI/icons/Icons";
 import { getTooltip, getvalueToPoint } from "../../svg/svg-utils";
+import { doTrace } from "../../utils/debugging";
 
 function RowCommandName({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     const [isRel, setIsRel] = useAtom(svgItemEdit.isRelAtom);
@@ -29,7 +30,7 @@ function ValueInput({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx,
     stateAtom: PrimitiveAtom<SvgItemEditState>;
     debugIdx: number;
 }) {
-    console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] enter`, 'color: #bbf5');
+    doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] enter`, 'color: #bbf5');
 
     const [value, setValue] = useAtom(atom);
     const [local, setLocal] = React.useState('' + value);
@@ -42,7 +43,7 @@ function ValueInput({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx,
 
     React.useEffect(() => {
         //if (editContainerRef.current) {
-        console.log(`%cValueInput useEffect[isHovering] [${editorIdx}].[${debugIdx}]  single edit hovering=${isHovering} labelRef=${editContainerRef.current ? 'exist' : 'null'}`, 'color: #bbf5');
+        doTrace && console.log(`%cValueInput useEffect[isHovering] [${editorIdx}].[${debugIdx}]  single edit hovering=${isHovering} labelRef=${editContainerRef.current ? 'exist' : 'null'}`, 'color: #bbf5');
 
         setState({ atom: stateAtom, states: { hoverEd: isHovering ? editorIdx[1] : -1 } });
         //}
@@ -53,14 +54,14 @@ function ValueInput({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx,
         setState({ atom: stateAtom, states: { activeEd: -1 } });
     }
 
-    console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] done: hovering=${isHovering} labelRef=${editContainerRef.current ? 'exist' : 'null'} value=${value}`, 'color: #bbf5');
+    doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] done: hovering=${isHovering} labelRef=${editContainerRef.current ? 'exist' : 'null'} value=${value}`, 'color: #bbf5');
 
     return (
         <label
             className={`relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`}
             ref={editContainerRef}
         >
-            {console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] %c..... from render tree`, 'color: #bbf1', 'color: #bbf1')}
+            {doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] %c..... from render tree`, 'color: #bbf1', 'color: #bbf1')}
             {/* value */}
             <input
                 className={`px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none ${isActivePt ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverPt ? 'bg-slate-200 border-slate-400/40' : ''} border-b-2 focus:border-blue-500  cursor-default focus:cursor-text`}
@@ -103,23 +104,23 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
     useDebounce(() => setIsHoveringDebounced(isHovering), 100, [isHovering]);
 
     React.useEffect(() => {
-        console.log(`%cRow useEffect[isHovering] [${svgItemIdx}  ] row hover debounced value = ${isHoveringDebounced} ref=${rowContainerRef.current ? 'exist' : 'null'}`, 'color: #bbf8');
+        doTrace && console.log(`%cRow useEffect[isHovering] [${svgItemIdx}  ] row hover debounced value = ${isHoveringDebounced} ref=${rowContainerRef.current ? 'exist' : 'null'}`, 'color: #bbf8');
 
         setState({ atom: svgItemEdit.stateAtom, states: { hoverRow: isHovering } });
     }, [isHoveringDebounced]);
 
-    console.log(`%c ====== render Row [${svgItemIdx}  ] hovering=${isHovering} ref=${rowContainerRef.current ? 'exist' : 'null'}`, 'color: #bbf5');
+    doTrace && console.log(`%c ====== render Row [${svgItemIdx}  ] hovering=${isHovering} ref=${rowContainerRef.current ? 'exist' : 'null'}`, 'color: #bbf5');
 
     return (<>
         <div
             ref={rowContainerRef}
             className={`px-1 flex items-center justify-between ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`}
             onClick={() => {
-                console.log('%c[${svgItemIdx}  ] state on click', 'color: #528');
+                doTrace && console.log('%c[${svgItemIdx}  ] state on click', 'color: #528');
                 setState({ atom: svgItemEdit.stateAtom, states: { activeRow: true } });
             }}
             onFocus={() => {
-                console.log('%c[${svgItemIdx}  ] state on focus', 'color: #528');
+                doTrace && console.log('%c[${svgItemIdx}  ] state on focus', 'color: #528');
                 setState({ atom: svgItemEdit.stateAtom, states: { activeRow: true } });
             }}
         >
@@ -152,7 +153,7 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
 
 export function PathCommandEditor() {
     const [SvgEditRoot] = useAtom(svgEditRootAtom);
-    console.log('======================= PathCommandEditor render rows (only on SvgEditRoot change) ================================');
+    console.log('=============== PathCommandEditor render rows (only on SvgEditRoot change) ===============');
 
     return (
         <div className="my-1 space-y-0.5">

@@ -20,3 +20,5 @@ export function unexpected(...rest: any[]) {
     //debugger
     console.log(`%cneed check`, 'color: red', ...rest);
 }
+
+export const doTrace = false;

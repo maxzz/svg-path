@@ -2,6 +2,7 @@ import { Atom, PrimitiveAtom, useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { canvasStrokeAtom, doSetStateAtom, CanvasDragEvent, SvgItemEditState } from "../../store/store";
 import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg/svg";
+import { doTrace } from "../../utils/debugging";
 
 type CanvasDragHandler = (event: CanvasDragEvent) => void;
 
@@ -19,7 +20,7 @@ export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }:
     const activeEd = state.activeRow && state.activeEd === -1;
     const hoverEd = state.hoverRow && state.hoverEd === -1;
 
-    console.log(`%c--PT-- [${svgItemIdx}. ] re-rendder, state`, 'color: #bbb', state);
+    doTrace && console.log(`%c--PT-- [${svgItemIdx}. ] re-rendder, state`, 'color: #bbb', state);
 
     return (<>
         {(state.activeRow || state.hoverRow) &&
@@ -58,7 +59,7 @@ export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }:
     const activeEd = state.activeRow && state.activeEd === pt.subIndex;
     const hoverEd = state.hoverRow && state.hoverEd === pt.subIndex;
 
-    console.log(`%c  cp   [${svgItemIdx}.${pt.subIndex}] re-rendder, state`, 'color: gray', state);
+    doTrace && console.log(`%c  cp   [${svgItemIdx}.${pt.subIndex}] re-rendder, state`, 'color: gray', state);
 
     return (<>
         {pt.relations.map((rel, idx) => (
@@ -81,27 +82,27 @@ export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }:
             x={pt.x - 3 * stroke} y={pt.y - 3 * stroke} width={stroke * 6} height={stroke * 6} strokeWidth={stroke * 12}
 
             onMouseEnter={() => {
-                console.log(`%c       [${svgItemIdx}.${pt.subIndex}] cp mouse enter`, 'color: limegreen');
+                doTrace && console.log(`%c       [${svgItemIdx}.${pt.subIndex}] cp mouse enter`, 'color: limegreen');
 
                 setState({ atom: stateAtom, states: { hoverRow: true, hoverEd: pt.subIndex } });
 
-                console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse enter done`);
+                doTrace && console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse enter done`);
             }}
             onMouseLeave={() => {
-                console.log(`%c       [${svgItemIdx}.${pt.subIndex}] cp mouse leave`, 'color: limegreen');
+                doTrace && console.log(`%c       [${svgItemIdx}.${pt.subIndex}] cp mouse leave`, 'color: limegreen');
                 
                 setState({ atom: stateAtom, states: { hoverRow: false, hoverEd: -1 } });
                 
-                console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse leave done`);
+                doTrace && console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse leave done`);
             }}
             onMouseDown={(event) => {
-                console.log(`%c       [${svgItemIdx}.${pt.subIndex}] cp mouse down`, 'color: limegreen');
-                
+                doTrace && console.log(`%c       [${svgItemIdx}.${pt.subIndex}] cp mouse down`, 'color: limegreen');
+
                 event.stopPropagation();
                 setState({ atom: stateAtom, states: { activeRow: true } });
                 clk({ mdownEvent: event, mdownPt: pt, svgItemIdx });
 
-                console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse down done`);
+                doTrace && console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse down done`);
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
