@@ -114,9 +114,18 @@ export const svgAtom = atom(
 );
 */
 
-// new data container active and hover state
+/*
+// canvas the active and hover point indices on the path (TODO: it must be atom). -1 if no index effective
+
+export const activePointAtom = atom(-1);
+export const hoverPointAtom = atom(-1);
+export const editorActivePointAtom = atom<[number, number] | null>(null); // current point in path commands panel: pt index and cpt index (or -1)
+export const editorHoverPointAtom = atom<[number, number] | null>(null); // current hobering point in path commands panel: pt index and cpt index (or -1)
+*/
 
 //#region SvgItemEdit state
+
+// new data container active and hover state
 
 //TODO: hover row and hover ed should be separate
 
@@ -133,7 +142,6 @@ export type SvgItemEditState = {
 //     activeEd: undefined,
 //     hoverEd: undefined,
 // };
-
 
 const globalEditState: Record<keyof SvgItemEditState, PrimitiveAtom<SvgItemEditState> | undefined> = {
     activeRow: undefined,
@@ -407,6 +415,21 @@ export const doUpdateViewBoxAtom = atom(null, (get, set,) => {
     }
 });
 
+// canvas container and size
+
+const _canvasSizeAtom = atom({ w: 0, h: 0 });
+export const canvasSizeAtom = atom(
+    (get) => get(_canvasSizeAtom),
+    (get, set, size: { w: number; h: number; }) => {
+        const current = get(_canvasSizeAtom);
+        if (size.w !== current.w || size.h !== current.h) {
+            set(_canvasSizeAtom, size);
+        }
+    }
+);
+
+export const containerElmAtom = atom<HTMLElement | null | undefined>(undefined);
+
 //#endregion canvas zoom
 
 //#region canvas drag operations
@@ -529,26 +552,6 @@ export const snapToGridAtom = atomWithCallback(Storage.initialData.snapToGrid, (
 export const fillPathAtom = atomWithCallback(Storage.initialData.fillPath, ({ get }) => Storage.save(get));
 export const previewAtom = atomWithCallback(Storage.initialData.preview, ({ get }) => Storage.save(get));
 export const minifyOutputAtom = atomWithCallback(Storage.initialData.minifyOutput, ({ get }) => Storage.save(get));
-
-const _canvasSizeAtom = atom({ w: 0, h: 0 });
-export const canvasSizeAtom = atom(
-    (get) => get(_canvasSizeAtom),
-    (get, set, size: { w: number; h: number; }) => {
-        const current = get(_canvasSizeAtom);
-        if (size.w !== current.w || size.h !== current.h) {
-            set(_canvasSizeAtom, size);
-        }
-    }
-);
-
-export const containerElmAtom = atom<HTMLElement | null | undefined>(undefined);
-
-// canvas the active and hover point indices on the path (TODO: it must be atom). -1 if no index effective
-
-export const activePointAtom = atom(-1);
-export const hoverPointAtom = atom(-1);
-export const editorActivePointAtom = atom<[number, number] | null>(null); // current point in path commands panel: pt index and cpt index (or -1)
-export const editorHoverPointAtom = atom<[number, number] | null>(null); // current hobering point in path commands panel: pt index and cpt index (or -1)
 
 // canvas controls
 
