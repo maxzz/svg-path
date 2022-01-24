@@ -10,16 +10,13 @@ const pointColor = (active: boolean, hover: boolean): string => active ? '#009cf
 const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : 'white';
 const stokeCpLineColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : '#fff5';
 
-export function TargetPoint({ svgItemEdit }: {
-    svgItemEdit: SvgItemEdit;
-}) {
+export function TargetPoint({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     const pt: SvgPoint = svgItemEdit.svgItem.targetLocation();
     const svgItemIdx = svgItemEdit.svgItemIdx;
-    const standaloneStringAtom = svgItemEdit.standaloneStringAtom;
     const stateAtom = svgItemEdit.stateAtom;
 
     const stroke = useAtomValue(canvasStrokeAtom);
-    const [asString] = useAtom(standaloneStringAtom);
+    const asString = useAtomValue(svgItemEdit.standaloneStringAtom);
 
     const setState = useUpdateAtom(doSetStateAtom);
     const state = useAtomValue(stateAtom);
@@ -68,11 +65,14 @@ export function TargetPoint({ svgItemEdit }: {
     </>);
 }
 
-export function ControlPoint({ pt, svgItemIdx, stateAtom, }: {
-    pt: SvgControlPoint;
-    svgItemIdx: number;
-    stateAtom: PrimitiveAtom<SvgItemEditState>;
-}) {
+export function ControlPoint({ svgItemEdit, cpIdx }: { svgItemEdit: SvgItemEdit; cpIdx: number; }) {
+    const svgItemIdx = svgItemEdit.svgItemIdx;
+    const stateAtom = svgItemEdit.stateAtom;
+    const controls: SvgControlPoint[] = svgItemEdit.svgItem.controlLocations();
+    const pt: SvgControlPoint = controls[cpIdx];
+
+    const asString = useAtomValue(svgItemEdit.standaloneStringAtom);
+
     const stroke = useAtomValue(canvasStrokeAtom);
     const state = useAtomValue(stateAtom);
     const setState = useUpdateAtom(doSetStateAtom);

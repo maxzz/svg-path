@@ -67,18 +67,16 @@ function RenderTargetPoints() {
 function RenderControlPoints() {
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const edits = svgEditRoot.edits;
-    const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
+    //const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
     return (
         <g className="ctrl-pts">
             {edits.map((edit, editIdx) => {
                 const controls = edit.svgItem.controlLocations();
-                controls.forEach((cpt, idx) => cpt.subIndex = idx);
                 return controls.map((cpt, idx) => (
                     <ControlPoint
                         key={`${editIdx}${idx}`}
-                        pt={cpt}
-                        svgItemIdx={editIdx}
-                        stateAtom={edit.stateAtom}
+                        svgItemEdit={edit}
+                        cpIdx={idx}
                     />
                 ));
             })}
