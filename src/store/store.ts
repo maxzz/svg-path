@@ -116,6 +116,8 @@ export const svgAtom = atom(
 
 // new data container active and hover state
 
+//#region SvgItemEdit state
+
 //TODO: hover row and hover ed should be separate
 
 export type SvgItemEditState = {
@@ -167,6 +169,10 @@ export const doClearActiveAtom = atom(null, (get, set,) => {
         globalEditState.activeRow = undefined;
     }
 });
+
+//#endregion SvgItemEdit state
+
+//#region SvgRoot
 
 // new data container
 
@@ -296,6 +302,8 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 
 export const svgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(getParsedSvg(Storage.initialData.path) || new Svg('')));
 
+//#endregion SvgRoot
+
 // canvas size
 
 export const viewBoxAtom = atom<ViewBox>([0, 0, 10, 10]);
@@ -309,6 +317,8 @@ export const doSetViewBoxAtom = atom((get) => get(viewBoxAtom), (get, set, box: 
         set(canvasStrokeAtom, newBox.stroke);
     }
 });
+
+//#region canvas zoom
 
 // canvas zoom
 
@@ -397,13 +407,18 @@ export const doUpdateViewBoxAtom = atom(null, (get, set,) => {
     }
 });
 
+//#endregion canvas zoom
+
+//#region canvas drag operations
+
 // canvas drag operations
 
 export type CanvasDragEvent = {
-    event: React.MouseEvent;
-    pt?: SvgPoint | SvgControlPoint;
-    startXY?: ViewPoint;
-    svgItemIdx: number;
+    mdownEvent: React.MouseEvent;           // mouse down event
+    mdownPt?: SvgPoint | SvgControlPoint;   // SVG point
+    mdownXY?: ViewPoint;                    // mouse down event point
+    svgItemIdx: number;                     // SVG item index
+    mmoved?: boolean;                       // mouse moved between mouse down and mouse up
 };
 
 type ClientPoint = {
@@ -426,11 +441,12 @@ export const canvasDragStateAtom = atom(
 );
 
 export const doCanvasPointClkAtom = atom(null, (get, set, event: CanvasDragEvent) => {
-    if (event.event.button !== 0) {
+    if (event.mdownEvent.button !== 0) {
         return;
     }
     const containerElm = get(containerElmAtom);
     if (containerElm) {
+        event.mmoved = false;
         set(_canvasDragStateAtom, event);
     }
 });
@@ -440,7 +456,8 @@ export const doCanvasMouseDownAtom = atom(null, (get, set, event: React.MouseEve
     if (containerElm) {
         const viewBox = get(viewBoxAtom);
         const stroke = get(canvasStrokeAtom);
-        set(_canvasDragStateAtom, { event, startXY: getEventPt(viewBox, stroke, containerElm, event.clientX, event.clientY), svgItemIdx: -1 });
+        const xy = getEventPt(viewBox, stroke, containerElm, event.clientX, event.clientY);
+        set(_canvasDragStateAtom, { mdownEvent: event, mdownXY: xy, svgItemIdx: -1, mmoved: false });
     }
 });
 
@@ -455,11 +472,12 @@ export const doCanvasMouseMoveAtom = atom(null, (get, set, event: React.MouseEve
     const containerElm = get(containerElmAtom);
     if (containerElm) {
         event.stopPropagation();
+        canvasDragState.mmoved = true;
 
         const precision = get(precisionAtom);
         const snapToGrid = get(snapToGridAtom);
 
-        if (canvasDragState.pt) {
+        if (canvasDragState.mdownPt) {
             const nowXY = getEventPt(viewBox, stroke, containerElm, event.clientX, event.clientY);
 
             const decimals = snapToGrid
@@ -474,10 +492,10 @@ export const doCanvasMouseMoveAtom = atom(null, (get, set, event: React.MouseEve
             //console.log('move', nowXY.x, nowXY.y);
 
             const svgEditRoot = get(svgEditRootAtom);
-            set(svgEditRoot.doUpdatePointAtom, { pt: canvasDragState.pt, newXY: nowXY, svgItemIdx: canvasDragState.svgItemIdx });
+            set(svgEditRoot.doUpdatePointAtom, { pt: canvasDragState.mdownPt, newXY: nowXY, svgItemIdx: canvasDragState.svgItemIdx });
         } else {
             //const startPt = getEventPt(containerRef, dragEventRef.current.event.clientX, dragEventRef.current.event.clientY);
-            const startXY = canvasDragState.startXY!;
+            const startXY = canvasDragState.mdownXY!;
             const nowXY = getEventPt(viewBox, stroke, containerElm, event.clientX, event.clientY);
             //console.log('move startPt', _ViewPoint(startPt).padEnd(20, ' '), 'pt', _ViewPoint(pt).padEnd(20, ' '), '--------------------------------', _fViewBox(viewBox));
 
@@ -492,8 +510,16 @@ export const doCanvasMouseMoveAtom = atom(null, (get, set, event: React.MouseEve
 });
 
 export const doCanvasMouseUpAtom = atom(null, (get, set,) => {
-    set(_canvasDragStateAtom, null);
+    const canvasDragState = get(_canvasDragStateAtom);
+    if (canvasDragState) {
+        if (!canvasDragState.mdownPt && !canvasDragState.mmoved) {
+            set(doClearActiveAtom);
+        }
+        set(_canvasDragStateAtom, null);
+    }
 });
+
+//#endregion canvas drag operations
 
 // new canvas
 

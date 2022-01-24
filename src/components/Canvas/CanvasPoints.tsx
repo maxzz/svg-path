@@ -2,7 +2,6 @@ import { Atom, PrimitiveAtom, useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { canvasStrokeAtom, doSetStateAtom, CanvasDragEvent, SvgItemEditState } from "../../store/store";
 import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg/svg";
-import { ViewPoint } from "../../svg/svg-utils-viewport";
 
 type CanvasDragHandler = (event: CanvasDragEvent) => void;
 
@@ -12,21 +11,11 @@ const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00
 export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }:
     { pt: SvgPoint; svgItemIdx: number; clk: CanvasDragHandler; asStringAtom: Atom<string>; stateAtom: PrimitiveAtom<SvgItemEditState>; }) {
 
-    // const [activePt, setActivePt] = useAtom(activePointAtom);
-    // const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
-    // const active = activePt === svgItemIdx;
-    // const hover = hoverPt === svgItemIdx;
-
-    // const [editorActivePt] = useAtom(editorActivePointAtom);
-    // const [editorHoverPt] = useAtom(editorHoverPointAtom);
-    // const activeEd2 = editorActivePt?.[0] === svgItemIdx && editorActivePt?.[1] === -1;
-    // const hoverEd2 = editorHoverPt?.[0] === svgItemIdx && editorHoverPt?.[1] === -1;
-
     const stroke = useAtomValue(canvasStrokeAtom);
     const [asString] = useAtom(asStringAtom);
 
-    const state = useAtomValue(stateAtom);
     const setState = useUpdateAtom(doSetStateAtom);
+    const state = useAtomValue(stateAtom);
     const activeEd = state.activeRow && state.activeEd === -1;
     const hoverEd = state.hoverRow && state.hoverEd === -1;
 
@@ -47,13 +36,12 @@ export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }:
             style={{ stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow) }}
             cx={pt.x} cy={pt.y} r={stroke * 3} strokeWidth={stroke * 12}
 
-            onMouseEnter={() => /*setHoverPt(svgItemIdx)*/ setState({ atom: stateAtom, states: { hoverRow: true } })}
-            onMouseLeave={() => /*setHoverPt(-1)*/ setState({ atom: stateAtom, states: { hoverRow: false } })}
+            onMouseEnter={() => setState({ atom: stateAtom, states: { hoverRow: true } })}
+            onMouseLeave={() => setState({ atom: stateAtom, states: { hoverRow: false } })}
             onMouseDown={(event) => {
                 event.stopPropagation();
-                //setActivePt(svgItemIdx);
                 setState({ atom: stateAtom, states: { activeRow: true } });
-                clk({ event, pt, svgItemIdx });
+                clk({ mdownEvent: event, mdownPt: pt, svgItemIdx });
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
@@ -63,16 +51,6 @@ export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }:
 
 export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }:
     { pt: SvgControlPoint; svgItemIdx: number; clk: CanvasDragHandler; stateAtom: PrimitiveAtom<SvgItemEditState>; }) {
-
-    // const [activePt, setActivePt] = useAtom(activePointAtom);
-    // const [hoverPt, setHoverPt] = useAtom(hoverPointAtom);
-    // const active = activePt === svgItemIdx;
-    // const hover = hoverPt === svgItemIdx;
-
-    // const [editorActivePt] = useAtom(editorActivePointAtom);
-    // const [editorHoverPt] = useAtom(editorHoverPointAtom);
-    // const activeEd2 = editorActivePt?.[0] === svgItemIdx && editorActivePt?.[1] === pt.subIndex;
-    // const hoverEd2 = editorHoverPt?.[0] === svgItemIdx && editorHoverPt?.[1] === pt.subIndex;
 
     const stroke = useAtomValue(canvasStrokeAtom);
     const state = useAtomValue(stateAtom);
@@ -102,7 +80,6 @@ export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }:
             style={{ stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow) }}
             x={pt.x - 3 * stroke} y={pt.y - 3 * stroke} width={stroke * 6} height={stroke * 6} strokeWidth={stroke * 12}
 
-            // onMouseEnter={() => /*setHoverPt(svgItemIdx)*/ setState({atom: stateAtom, states: {hoverRow: true, hoverEd: pt.subIndex}})}
             onMouseEnter={() => {
                 console.log(`%c       [${svgItemIdx}.${pt.subIndex}] cp mouse enter`, 'color: limegreen');
 
@@ -110,18 +87,20 @@ export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }:
 
                 console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse enter done`);
             }}
-            // onMouseLeave={() => /*setHoverPt(-1)*/ setState({ atom: stateAtom, states: { hoverRow: false, hoverEd: -1 } })}
             onMouseLeave={() => {
                 console.log(`%c       [${svgItemIdx}.${pt.subIndex}] cp mouse leave`, 'color: limegreen');
+                
                 setState({ atom: stateAtom, states: { hoverRow: false, hoverEd: -1 } });
+                
                 console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse leave done`);
             }}
             onMouseDown={(event) => {
                 console.log(`%c       [${svgItemIdx}.${pt.subIndex}] cp mouse down`, 'color: limegreen');
+                
                 event.stopPropagation();
-                //setActivePt(svgItemIdx);
                 setState({ atom: stateAtom, states: { activeRow: true } });
-                clk({ event, pt, svgItemIdx });
+                clk({ mdownEvent: event, mdownPt: pt, svgItemIdx });
+
                 console.log(`       [${svgItemIdx}.${pt.subIndex}] cp mouse down done`);
             }}
         >

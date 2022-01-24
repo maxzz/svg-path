@@ -1,25 +1,19 @@
 import React from 'react';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { canvasSizeAtom, canvasStrokeAtom, doClearActiveAtom, CanvasDragEvent, svgEditRootAtom, viewBoxAtom, doCanvasMouseDownAtom, doCanvasMouseMoveAtom, doCanvasMouseUpAtom, doCanvasPointClkAtom } from '../../store/store';
+import { canvasSizeAtom, canvasStrokeAtom, svgEditRootAtom, viewBoxAtom, doCanvasMouseDownAtom, doCanvasMouseMoveAtom, doCanvasMouseUpAtom, doCanvasPointClkAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
-//import { CanvasControlsPanel } from '../Panels/PanelCanvasControls';
 import { ControlPoint, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
-import { _fViewBox, _ViewBox, _ViewPoint } from '../../utils/debugging';
+//import { _fViewBox } from '../../utils/debugging';
 //import { useThrottle } from 'react-use';
 
 function useMouseHandlers() {
     const doCanvasMouseDown = useUpdateAtom(doCanvasMouseDownAtom);
     const doCanvasMouseMove = useUpdateAtom(doCanvasMouseMoveAtom);
     const doCanvasMouseUp = useUpdateAtom(doCanvasMouseUpAtom);
-    const doClearActive = useUpdateAtom(doClearActiveAtom);
 
-    const onMouseDown = React.useCallback(function onMouseDown(event: React.MouseEvent) {
-        doClearActive(); // TODO: set it on mouse up only if where no move
-        doCanvasMouseDown(event);
-    }, []);
-
+    const onMouseDown = React.useCallback((event: React.MouseEvent) => doCanvasMouseDown(event), []);
     const onMouseUp = React.useCallback(() => doCanvasMouseUp(), []);
     const onMouseMove = React.useCallback((event: React.MouseEvent) => doCanvasMouseMove(event), []);
 
