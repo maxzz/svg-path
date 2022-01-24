@@ -10,15 +10,15 @@ const pointColor = (active: boolean, hover: boolean): string => active ? '#009cf
 const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : 'white';
 const stokeCpLineColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : '#fff5';
 
-export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }: {
+export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, standaloneStringAtom }: {
     pt: SvgPoint;
     svgItemIdx: number;
     clk: CanvasDragHandler;
-    asStringAtom: Atom<string>;
+    standaloneStringAtom: Atom<string>;
     stateAtom: PrimitiveAtom<SvgItemEditState>;
 }) {
     const stroke = useAtomValue(canvasStrokeAtom);
-    const [asString] = useAtom(asStringAtom);
+    const [asString] = useAtom(standaloneStringAtom);
 
     const setState = useUpdateAtom(doSetStateAtom);
     const state = useAtomValue(stateAtom);

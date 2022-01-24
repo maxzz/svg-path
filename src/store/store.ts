@@ -198,7 +198,7 @@ export type SvgItemEdit = {
     typeAtom: PrimitiveAtom<string>;
     isRelAtom: SvgItemEditIsRelAtom;
     valueAtoms: SvgItemEditValueAtom[];
-    asStringAtom: PrimitiveAtom<string>;
+    standaloneStringAtom: PrimitiveAtom<string>;
     stateAtom: PrimitiveAtom<SvgItemEditState>;
 };
 
@@ -244,7 +244,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
                     triggerUpdate(set, svgItemIdx);
                 }
             })(idx))),
-            asStringAtom: atom(svgItem.asStandaloneString()),
+            standaloneStringAtom: atom(svgItem.asStandaloneString()),
             stateAtom: atom<SvgItemEditState>({ activeRow: false, hoverRow: false, activeEd: -1, hoverEd: -1, }),
         };
         root.edits.push(newSvgEdit);
@@ -289,7 +289,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             const svgEdit = root.edits[svgItemIdx];
             const svgItem = root.svg.path[svgItemIdx];
             set(svgEdit.typeAtom, svgItem.getType());
-            set(svgEdit.asStringAtom, svgItem.asStandaloneString());
+            set(svgEdit.standaloneStringAtom, svgItem.asStandaloneString());
 
             set(root.pointsAtom, getPoints(root.svg));
             set(_pathUnsafeAtom, svg.asString());
@@ -297,12 +297,12 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             if (svgItemIdx - 1 >= 0) {
                 const svgEdit = root.edits[svgItemIdx - 1];
                 const svgItem = root.svg.path[svgItemIdx - 1];
-                set(svgEdit.asStringAtom, svgItem.asStandaloneString());
+                set(svgEdit.standaloneStringAtom, svgItem.asStandaloneString());
             }
             if (svgItemIdx + 1 < root.edits.length) {
                 const svgEdit = root.edits[svgItemIdx + 1];
                 const svgItem = root.svg.path[svgItemIdx + 1];
-                set(svgEdit.asStringAtom, svgItem.asStandaloneString());
+                set(svgEdit.standaloneStringAtom, svgItem.asStandaloneString());
             }
         }
     }

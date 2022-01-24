@@ -48,6 +48,27 @@ function RenderPath() {
     );
 }
 
+function RenderTargetPoints() {
+    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
+    const svgEditRoot = useAtomValue(svgEditRootAtom);
+    const edits = svgEditRoot.edits;
+    const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
+    return (
+        <g className="pathPts">
+            {edits.map((edit, editIdx) => (
+                <TargetPoint
+                    key={editIdx}
+                    clk={doCanvasPointClk}
+                    pt={edit.svgItem.targetLocation()}
+                    svgItemIdx={editIdx}
+                    stateAtom={edit.stateAtom}
+                    standaloneStringAtom={edit.standaloneStringAtom}
+                />
+            ))}
+        </g>
+    );
+}
+
 function RenderControlPoints() {
     const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
     const svgEditRoot = useAtomValue(svgEditRootAtom);
@@ -72,27 +93,6 @@ function RenderControlPoints() {
     );
 }
 
-function RenderPoints() {
-    const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
-    const svgEditRoot = useAtomValue(svgEditRootAtom);
-    const edits = svgEditRoot.edits;
-    const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
-    return (
-        <g className="pathPts">
-            {edits.map((edit, editIdx) => (
-                <TargetPoint
-                    key={editIdx}
-                    clk={doCanvasPointClk}
-                    pt={edit.svgItem.targetLocation()}
-                    svgItemIdx={editIdx}
-                    stateAtom={edit.stateAtom}
-                    asStringAtom={edit.asStringAtom}
-                />
-            ))}
-        </g>
-    );
-}
-
 export function PathCanvas() {
     const { ref, parentRef, onWheel, } = useContainerZoom();
     return (
@@ -101,7 +101,7 @@ export function PathCanvas() {
                 <CanvasTicks />
                 <RenderPath />
                 <RenderControlPoints />
-                <RenderPoints />
+                <RenderTargetPoints />
             </CanvasSvgElement>
         </div>
     );
