@@ -8,6 +8,7 @@ type CanvasDragHandler = (event: CanvasDragEvent) => void;
 
 const pointColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
 const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : 'white';
+const stokeCpLineColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : '#fff5';
 
 export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }: {
     pt: SvgPoint;
@@ -29,15 +30,18 @@ export function TargetPoint({ pt, clk, svgItemIdx, stateAtom, asStringAtom }: {
     doTrace && console.log(`%c--PT-- [${svgItemIdx}. ] re-rendder, state`, 'color: #bbb', state);
 
     return (<>
+        {/* A piece of path */}
         {(state.activeRow || state.hoverRow) &&
             <path style={{ stroke: pointColor(state.activeRow, state.hoverRow), fill: 'none' }} strokeWidth={stroke} d={asString} />
         }
+        {/* Active or hover circle marker */}
         {(activeEd || hoverEd) &&
             <circle
                 style={{ stroke: '#9c00ff63', fill: editorColor(activeEd, hoverEd) }}
                 cx={pt.x} cy={pt.y} r={stroke * 8} strokeWidth={stroke * 16}
             />
         }
+        {/* Path point as circle */}
         <circle
             className="cursor-pointer"
             style={isMCommand
@@ -76,12 +80,15 @@ export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }: {
     doTrace && console.log(`%c  cp   [${svgItemIdx}.${pt.subIndex}] re-rendder, state`, 'color: gray', state);
 
     return (<>
+        {/* Connected lines */}
         {pt.relations.map((rel, idx) => (
             <line
-                className="stroke-[#fff7]"
+                //style={{ stroke: stokeCpLineColor(activeEd, hoverEd), strokeDasharray: `${stroke * 3} ${stroke * 5}` }}
+                style={{ stroke: stokeCpLineColor(state.activeRow, state.hoverRow), strokeWidth: stroke * 1.5, strokeDasharray: `${stroke * 3} ${stroke * 5}` }}
                 x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke} key={idx}
             />
         ))}
+        {/* Active or hover square marker */}
         {
             (activeEd || hoverEd) &&
             <rect
@@ -90,6 +97,7 @@ export function ControlPoint({ pt, clk, svgItemIdx, stateAtom, }: {
                 x={pt.x - 8 * stroke} y={pt.y - 8 * stroke} width={stroke * 16} height={stroke * 16} strokeWidth={stroke * 16}
             />
         }
+        {/* Control point as square */}
         <rect
             className="cursor-pointer"
             style={{ stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow) }}

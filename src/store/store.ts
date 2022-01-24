@@ -452,7 +452,8 @@ export type CanvasDragEvent = {
     mmoved?: boolean;                       // mouse moved between mouse down and mouse up
 };
 
-//TODO: do we need to keep mdownPt
+//TODO: do we need to keep mdownPt? it's enough to have boolean
+//TODO: do we need to keep event? it's enough to keep client pos
 
 type ClientPoint = {
     clientX: number;
