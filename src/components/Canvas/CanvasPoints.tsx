@@ -1,6 +1,6 @@
 import { Atom, PrimitiveAtom, useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { canvasStrokeAtom, doSetStateAtom, CanvasDragEvent, SvgItemEditState, doCanvasPointClkAtom } from "../../store/store";
+import { canvasStrokeAtom, doSetStateAtom, CanvasDragEvent, SvgItemEditState, doCanvasPointClkAtom, SvgItemEdit } from "../../store/store";
 import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg/svg";
 import { doTrace } from "../../utils/debugging";
 
@@ -10,12 +10,14 @@ const pointColor = (active: boolean, hover: boolean): string => active ? '#009cf
 const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : 'white';
 const stokeCpLineColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : '#fff5';
 
-export function TargetPoint({ pt, svgItemIdx, stateAtom, standaloneStringAtom }: {
-    pt: SvgPoint;
-    svgItemIdx: number;
-    standaloneStringAtom: Atom<string>;
-    stateAtom: PrimitiveAtom<SvgItemEditState>;
+export function TargetPoint({ svgItemEdit }: {
+    svgItemEdit: SvgItemEdit;
 }) {
+    const pt: SvgPoint = svgItemEdit.svgItem.targetLocation();
+    const svgItemIdx = svgItemEdit.svgItemIdx;
+    const standaloneStringAtom = svgItemEdit.standaloneStringAtom;
+    const stateAtom = svgItemEdit.stateAtom;
+
     const stroke = useAtomValue(canvasStrokeAtom);
     const [asString] = useAtom(standaloneStringAtom);
 

@@ -51,16 +51,13 @@ function RenderPath() {
 function RenderTargetPoints() {
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const edits = svgEditRoot.edits;
-    const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
+    //const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
     return (
-        <g className="pathPts">
+        <g className="path-pts">
             {edits.map((edit, editIdx) => (
                 <TargetPoint
                     key={editIdx}
-                    pt={edit.svgItem.targetLocation()}
-                    svgItemIdx={editIdx}
-                    stateAtom={edit.stateAtom}
-                    standaloneStringAtom={edit.standaloneStringAtom}
+                    svgItemEdit={edit}
                 />
             ))}
         </g>
@@ -72,13 +69,13 @@ function RenderControlPoints() {
     const edits = svgEditRoot.edits;
     const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
     return (
-        <g className="cpPts">
+        <g className="ctrl-pts">
             {edits.map((edit, editIdx) => {
                 const controls = edit.svgItem.controlLocations();
                 controls.forEach((cpt, idx) => cpt.subIndex = idx);
                 return controls.map((cpt, idx) => (
                     <ControlPoint
-                        key={`${idx}${editIdx}`}
+                        key={`${editIdx}${idx}`}
                         pt={cpt}
                         svgItemIdx={editIdx}
                         stateAtom={edit.stateAtom}
