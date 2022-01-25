@@ -5,8 +5,6 @@ import { canvasSizeAtom, canvasStrokeAtom, svgEditRootAtom, viewBoxAtom, doCanva
 import { useContainerZoom } from './useContainerZoom';
 import { ControlPoint, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
-//import { _fViewBox } from '../../utils/debugging';
-//import { useThrottle } from 'react-use';
 
 function useMouseHandlers() {
     const doCanvasMouseDown = useUpdateAtom(doCanvasMouseDownAtom);
@@ -27,7 +25,6 @@ function useMouseHandlers() {
 function CanvasSvgElement({ children }: { children: React.ReactNode; }) {
     const size = useAtomValue(canvasSizeAtom);
     const viewBox = useAtomValue(viewBoxAtom);
-    //console.log('--------------------------Canvas SVG element re-render -------------------------', _fViewBox(viewBox, 4), '---- canvas size', size);
     const { onMouseDown, onMouseMove, onMouseUp } = useMouseHandlers();
     if (!size.w || !size.h) {
         return null;
@@ -40,25 +37,21 @@ function CanvasSvgElement({ children }: { children: React.ReactNode; }) {
 }
 
 function RenderPath() {
-    const canvasStroke = useAtomValue(canvasStrokeAtom);
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const points = useAtomValue(svgEditRoot.pointsAtom);
+    const stroke = useAtomValue(canvasStrokeAtom);
     return (
-        <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={canvasStroke} />
+        <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={stroke} />
     );
 }
 
 function RenderTargetPoints() {
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const edits = svgEditRoot.edits;
-    //const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
     return (
-        <g className="path-pts">
+        <g className="target-pts">
             {edits.map((edit, editIdx) => (
-                <TargetPoint
-                    key={editIdx}
-                    svgItemEdit={edit}
-                />
+                <TargetPoint key={editIdx} svgItemEdit={edit} />
             ))}
         </g>
     );
@@ -67,17 +60,12 @@ function RenderTargetPoints() {
 function RenderControlPoints() {
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const edits = svgEditRoot.edits;
-    //const points = useAtomValue(svgEditRoot.pointsAtom); // just to trigger re-render
     return (
         <g className="ctrl-pts">
             {edits.map((edit, editIdx) => {
                 const controls = edit.svgItem.controlLocations();
-                return controls.map((cpt, idx) => (
-                    <ControlPoint
-                        key={`${editIdx}${idx}`}
-                        svgItemEdit={edit}
-                        cpIdx={idx}
-                    />
+                return controls.map((cpt, cpIdx) => (
+                    <ControlPoint key={`${editIdx}${cpIdx}`} svgItemEdit={edit} cpIdx={cpIdx} />
                 ));
             })}
         </g>
@@ -91,8 +79,10 @@ export function PathCanvas() {
             <CanvasSvgElement>
                 <CanvasTicks />
                 <RenderPath />
-                <RenderControlPoints />
-                <RenderTargetPoints />
+                <g className="pts">
+                    <RenderControlPoints />
+                    <RenderTargetPoints />
+                </g>
             </CanvasSvgElement>
         </div>
     );
