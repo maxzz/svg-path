@@ -86,44 +86,6 @@ function ViewBoxControls() {
     );
 }
 
-// function ViewboxInput({ idx }: { idx: number; }) {
-//     let [value, setValue] = useAtom(doSetViewBoxAtom);
-//     value = value.map(v => parseFloat(v.toFixed(3))) as ViewBox;
-//     const bind = useNumberInput(value[idx], (v: number) => {
-//         let box: ViewBoxManual = [...value];
-//         box[idx] = v;
-//         if (idx === 2) { box[3] = null; }
-//         if (idx === 3) { box[2] = null; }
-//         setValue(box);
-//     });
-//     return (
-//         <input
-//             className={`px-1 pt-3 w-14 h-8 text-xs rounded border border-slate-500 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
-//             {...bind}
-//         />
-//     );
-// }
-
-// function ViewboxInputWrapper({ label, tooltip, children }: { label: string; tooltip: string; children: React.ReactNode; }) {
-//     return (
-//         <label className="relative text-xs select-none text-slate-400" title={tooltip}>
-//             <div className="absolute left-1.5 text-[.6rem] text-slate-400/50">{label}</div>
-//             {children}
-//         </label>
-//     );
-// }
-
-// function ViewBoxControls() {
-//     return (
-//         <div className="flex space-x-1.5">
-//             <ViewboxInputWrapper label="x" tooltip="view box" > <ViewboxInput idx={0} /> </ViewboxInputWrapper>
-//             <ViewboxInputWrapper label="y" tooltip="view box" > <ViewboxInput idx={1} /> </ViewboxInputWrapper>
-//             <ViewboxInputWrapper label="width" tooltip="view box" > <ViewboxInput idx={2} /> </ViewboxInputWrapper>
-//             <ViewboxInputWrapper label="height" tooltip="view box" > <ViewboxInput idx={3} /> </ViewboxInputWrapper>
-//         </div>
-//     );
-// }
-
 function PrecisionInput() {
     const [precision, setPrecision] = useAtom(precisionAtom);
     const bind = useNumberInput(precision, (v: number) => setPrecision(v));
