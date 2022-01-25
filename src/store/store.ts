@@ -334,7 +334,6 @@ export const viewBoxAtom = atom<ViewBox>([0, 0, 10, 10]);
 export const canvasStrokeAtom = atom(1);
 
 export const doSetViewBoxAtom = atom((get) => get(viewBoxAtom), (get, set, box: ViewBoxManual) => {
-    console.log('atom box', box);
     const canvasSize = get(canvasSizeAtom);
     const newBox = updateViewPort(canvasSize, ...box, true);
     if (newBox) {
