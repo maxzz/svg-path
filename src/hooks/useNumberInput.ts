@@ -11,9 +11,15 @@ export function useNumberInput(value: number, setValue: (v: number) => void) {
         s && !isNaN(v) && setValue(v);
     }
 
-    function resetInvalid() {
+    const resetInvalid = React.useCallback(function resetInvalid() {
+        console.log(`local = "${local}" value = ${value}`);
         (!local || isNaN(+local)) && setLocal('' + value);
-    }
+    }, [local]);
+
+    // function resetInvalid() {
+    //     console.log(`local = "${local}" value = ${value}`);
+    //     (!local || isNaN(+local)) && setLocal('' + value);
+    // }
 
     return {
         value: local,
