@@ -63,7 +63,7 @@ function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string;
 
     const prevValueRef = usePreviousRef<ViewBox>(value);
 
-    const cc = React.useCallback((v: number) => {
+    const bind = useNumberInputStable(value[idx], (v: number) => {
         let box: ViewBoxManual = [...prevValueRef.current];
 
         console.log('idx', idx, prevValueRef.current);
@@ -72,9 +72,7 @@ function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string;
         if (idx === 2) { box[3] = null; }
         if (idx === 3) { box[2] = null; }
         setValue(box);
-    }, []);
-
-    const bind = useNumberInputStable(value[idx], cc);
+    });
     return (
         <label className="relative text-xs select-none text-slate-400" title={tooltip}>
             <div className="absolute left-1.5 text-[.6rem] text-slate-400/50">{label}</div>
