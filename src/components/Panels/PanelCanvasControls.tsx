@@ -1,11 +1,10 @@
 import React, { HTMLAttributes } from 'react';
 import { PrimitiveAtom, useAtom, WritableAtom } from 'jotai';
-import { doSetViewBoxAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom, viewBoxAtom } from '../../store/store';
+import { doSetViewBoxAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom } from '../../store/store';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { useNumberInput, useNumberInputStable } from '../../hooks/useNumberInput';
+import { useNumberInput } from '../../hooks/useNumberInput';
 import { ViewBox, ViewBoxManual } from '../../svg/svg-utils-viewport';
 import { classNames } from '../../utils/classnames';
-import { usePrevious, usePreviousRef } from '../../hooks/usePrevious';
 //import { AccordionHorizontal } from '../UI/Accordion';
 
 function Button({ label, atom, leftBorder = true, ...rest }:
@@ -58,16 +57,8 @@ function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; at
 function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string; idx: number; }) {
     let [value, setValue] = useAtom(doSetViewBoxAtom);
     value = value.map(v => parseFloat(v.toFixed(3))) as ViewBox;
-
-    console.log(`value`, value);
-
-    const prevValueRef = usePreviousRef<ViewBox>(value);
-
-    const bind = useNumberInputStable(value[idx], (v: number) => {
-        let box: ViewBoxManual = [...prevValueRef.current];
-
-        console.log('idx', idx, prevValueRef.current);
-
+    const bind = useNumberInput(value[idx], (v: number) => {
+        let box: ViewBoxManual = [...value];
         box[idx] = v;
         if (idx === 2) { box[3] = null; }
         if (idx === 3) { box[2] = null; }
@@ -83,27 +74,6 @@ function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string;
         </label>
     );
 }
-
-// function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string; idx: number; }) {
-//     let [value, setValue] = useAtom(doSetViewBoxAtom);
-//     value = value.map(v => parseFloat(v.toFixed(3))) as ViewBox;
-//     const bind = useNumberInput(value[idx], (v: number) => {
-//         let box: ViewBoxManual = [...value];
-//         box[idx] = v;
-//         if (idx === 2) { box[3] = null; }
-//         if (idx === 3) { box[2] = null; }
-//         setValue(box);
-//     });
-//     return (
-//         <label className="relative text-xs select-none text-slate-400" title={tooltip}>
-//             <div className="absolute left-1.5 text-[.6rem] text-slate-400/50">{label}</div>
-//             <input
-//                 className={`px-1 pt-3 w-14 h-8 text-xs rounded border border-slate-500 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
-//                 {...bind}
-//             />
-//         </label>
-//     );
-// }
 
 function PrecisionInput() {
     const [precision, setPrecision] = useAtom(precisionAtom);

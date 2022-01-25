@@ -1,4 +1,5 @@
 import React from "react";
+import { usePreviousRef } from "./usePrevious";
 
 export function useNumberInput(value: number, setValue: (v: number) => void) {
     const [local, setLocal] = React.useState('' + value);
@@ -7,48 +8,50 @@ export function useNumberInput(value: number, setValue: (v: number) => void) {
     function convertToNumber(s: string) {
         s = s.replace(/[\u066B,]/g, '.').replace(/[^\-0-9.eE]/g, ''); //replace unicode-arabic-decimal-separator and remove non-float chars.
         setLocal(s);
-        const v = +s;
-        s && !isNaN(v) && setValue(v);
+        const newValue = +s;
+        s && !isNaN(newValue) && setValue(newValue);
     }
 
     function resetInvalid() {
         (!local || isNaN(+local)) && setLocal('' + value);
     }
 
+    function onChange(event: React.ChangeEvent<HTMLInputElement>) {
+        convertToNumber(event.target.value);
+    }
+
     return {
         value: local,
-        onChange: (event: React.ChangeEvent<HTMLInputElement>) => convertToNumber(event.target.value),
+        onChange,
         onBlur: resetInvalid
     };
 }
 
 export function useNumberInputStable(value: number, setValue: (v: number) => void) {
     const [local, setLocal] = React.useState('' + value);
-    
-    const localRef = React.useRef(local);
-    React.useEffect(() => { localRef.current = local; }, [local]);
-
-    const valueRef = React.useRef(value);
-    React.useEffect(() => { valueRef.current = value; }, [value]);
-
     React.useEffect(() => setLocal('' + value), [value]);
+
+    const localRef = usePreviousRef(local);
+    const valueRef = usePreviousRef(value);
 
     function convertToNumber(s: string) {
         s = s.replace(/[\u066B,]/g, '.').replace(/[^\-0-9.eE]/g, ''); //replace unicode-arabic-decimal-separator and remove non-float chars.
         setLocal(s);
-        const v = +s;
-        s && !isNaN(v) && setValue(v);
+        const newValue = +s;
+        s && !isNaN(newValue) && setValue(newValue);
     }
 
     const resetInvalid = React.useCallback(function resetInvalid() {
         (!localRef.current || isNaN(+localRef.current)) && setLocal('' + valueRef.current);
     }, []);
 
-    const onChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => convertToNumber(event.target.value), []);
+    const onChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        convertToNumber(event.target.value);
+    }, []);
 
     return {
         value: local,
-        onChange: onChange,
+        onChange,
         onBlur: resetInvalid
     };
 }
