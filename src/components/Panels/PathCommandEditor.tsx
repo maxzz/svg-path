@@ -8,8 +8,8 @@ import { getTooltip, getvalueToPoint } from "../../svg/svg-utils";
 import { doTrace } from "../../utils/debugging";
 
 function RowCommandName({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
+    const itemType = useAtomValue(svgItemEdit.typeAtom);
     const [isRel, setIsRel] = useAtom(svgItemEdit.isRelAtom);
-    const [itemType] = useAtom(svgItemEdit.typeAtom);
     return (
         <label
             className={`flex-0 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 ${!isRel ? 'bg-slate-500' : 'bg-slate-400'} cursor-pointer select-none`}
@@ -20,15 +20,15 @@ function RowCommandName({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     );
 }
 
-function ValueInput({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx, stateAtom, debugIdx }: {
+function ValueInput({ atom, isFirstRow, isActivePt, isHoverPt, editorIdx, debugIdx, stateAtom, tooltip }: {
     atom: PrimitiveAtom<number>;
-    tooltip: string;
-    firstRow: boolean;
+    isFirstRow: boolean;
     isActivePt: boolean;
     isHoverPt: boolean;
     editorIdx: [number, number];
-    stateAtom: PrimitiveAtom<SvgItemEditState>;
     debugIdx: number;
+    stateAtom: PrimitiveAtom<SvgItemEditState>;
+    tooltip: string;
 }) {
     doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] enter`, 'color: #bbf5');
 
@@ -72,7 +72,7 @@ function ValueInput({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx,
             />
             {/* tooltip */}
             {isActivePt && isHovering &&
-                <div className={`mini-tooltip ${firstRow ? 'tooltip-up' : 'tooltip-down'} absolute min-w-[1.75rem] py-0.5 left-1/2 -translate-x-1/2 ${firstRow ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} text-xs text-center text-slate-100 bg-slate-400 rounded z-10`}>
+                <div className={`mini-tooltip ${isFirstRow ? 'tooltip-up' : 'tooltip-down'} absolute min-w-[1.75rem] py-0.5 left-1/2 -translate-x-1/2 ${isFirstRow ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} text-xs text-center text-slate-100 bg-slate-400 rounded z-10`}>
                     {tooltip}
                 </div>
             }
@@ -90,11 +90,16 @@ function ValueInput({ atom, tooltip, firstRow, isActivePt, isHoverPt, editorIdx,
     }
 }
 
-function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svgItemIdx: number; }) {
-    const [itemType] = useAtom(svgItemEdit.typeAtom);
+function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
+
+    const svgItemIdx = svgItemEdit.svgItemIdx;
+    const stateAtom = svgItemEdit.stateAtom;
+
+    const itemType = useAtomValue(svgItemEdit.typeAtom);
 
     const setState = useUpdateAtom(doSetStateAtom);
-    const state = useAtomValue(svgItemEdit.stateAtom);
+    const state = useAtomValue(stateAtom);
+
     const isActivePt = state.activeRow;
     const isHoverPt = state.hoverRow;
 
@@ -106,7 +111,7 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
     React.useEffect(() => {
         doTrace && console.log(`%cRow useEffect[isHovering] [${svgItemIdx}  ] row hover debounced value = ${isHoveringDebounced} ref=${rowContainerRef.current ? 'exist' : 'null'}`, 'color: #bbf8');
 
-        setState({ atom: svgItemEdit.stateAtom, states: { hoverRow: isHovering } });
+        setState({ atom: stateAtom, states: { hoverRow: isHovering } });
     }, [isHoveringDebounced]);
 
     doTrace && console.log(`%c ====== render Row [${svgItemIdx}  ] hovering=${isHovering} ref=${rowContainerRef.current ? 'exist' : 'null'}`, 'color: #bbf5');
@@ -117,11 +122,11 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
             className={`px-1 flex items-center justify-between ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`}
             onClick={() => {
                 doTrace && console.log('%c[${svgItemIdx}  ] state on click', 'color: #528');
-                setState({ atom: svgItemEdit.stateAtom, states: { activeRow: true } });
+                setState({ atom: stateAtom, states: { activeRow: true } });
             }}
             onFocus={() => {
                 doTrace && console.log('%c[${svgItemIdx}  ] state on focus', 'color: #528');
-                setState({ atom: svgItemEdit.stateAtom, states: { activeRow: true } });
+                setState({ atom: stateAtom, states: { activeRow: true } });
             }}
         >
             {/* Values */}
@@ -131,13 +136,13 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
                 {svgItemEdit.valueAtoms.map((atom, idx) => (
                     <ValueInput
                         atom={atom}
-                        tooltip={getTooltip(itemType, idx)}
-                        firstRow={svgItemIdx === 0}
+                        isFirstRow={svgItemIdx === 0}
                         isActivePt={isActivePt}
                         isHoverPt={isHoverPt}
                         editorIdx={[svgItemIdx, getvalueToPoint(itemType, idx)]}
-                        stateAtom={svgItemEdit.stateAtom}
                         debugIdx={idx}
+                        stateAtom={stateAtom}
+                        tooltip={getTooltip(itemType, idx)}
                         key={idx}
                     />
                 ))}
@@ -152,13 +157,13 @@ function CommandRow({ svgItemEdit, svgItemIdx }: { svgItemEdit: SvgItemEdit; svg
 }
 
 export function PathCommandEditor() {
-    const [SvgEditRoot] = useAtom(svgEditRootAtom);
-    console.log('=============== PathCommandEditor render rows (only on SvgEditRoot change) ===============');
-
+    const SvgEditRoot = useAtomValue(svgEditRootAtom);
+    const edits = SvgEditRoot.edits;
+    doTrace && console.log('=============== PathCommandEditor render rows (only on SvgEditRoot change) ===============');
     return (
         <div className="my-1 space-y-0.5">
-            {SvgEditRoot.edits.map((svgItemEdit, idx) => (
-                <CommandRow svgItemEdit={svgItemEdit} svgItemIdx={idx} key={idx} />
+            {edits.map((svgItemEdit, idx) => (
+                <CommandRow svgItemEdit={svgItemEdit} key={idx} />
             ))}
         </div >
     );
