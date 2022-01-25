@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
-import { canvasSizeAtom, canvasStrokeAtom, svgEditRootAtom, viewBoxAtom, doCanvasMouseDownAtom, doCanvasMouseMoveAtom, doCanvasMouseUpAtom } from '../../store/store';
+import { canvasSizeAtom, canvasStrokeAtom, svgEditRootAtom, viewBoxAtom, doCanvasMouseDownAtom, doCanvasMouseMoveAtom, doCanvasMouseUpAtom, previewAtom, fillPathAtom } from '../../store/store';
 import { useContainerZoom } from './useContainerZoom';
 import { ControlPoint, TargetPoint } from './CanvasPoints';
 import { CanvasTicks } from './CanvasTicks';
@@ -40,8 +40,17 @@ function RenderPath() {
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const points = useAtomValue(svgEditRoot.pointsAtom);
     const stroke = useAtomValue(canvasStrokeAtom);
+    const preview = useAtomValue(previewAtom);
+    const fill = useAtomValue(fillPathAtom);
+    const fillColor = fill
+        ? '#94a3b830'
+        : preview
+            ? fill
+                ? '#94a3b830'
+                : 'none'
+            : 'none';
     return (
-        <path d={points.asString} fill="#94a3b830" stroke="white" strokeWidth={stroke} />
+        <path d={points.asString} fill={fillColor} stroke="white" strokeWidth={stroke} />
     );
 }
 
@@ -74,15 +83,16 @@ function RenderControlPoints() {
 
 export function PathCanvas() {
     const { ref, parentRef, onWheel, } = useContainerZoom();
+    const preview = useAtomValue(previewAtom);
     return (
         <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
             <CanvasSvgElement>
                 <CanvasTicks />
                 <RenderPath />
-                <g className="pts">
+                {!preview && <g className="pts">
                     <RenderControlPoints />
                     <RenderTargetPoints />
-                </g>
+                </g>}
             </CanvasSvgElement>
         </div>
     );
