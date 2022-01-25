@@ -63,9 +63,6 @@ namespace Storage {
 
 //#region Unsafe SVG Atom
 
-//export const pathAtom = atom('M 0 100 L 25 100 C 34 20 40 0 100 0');
-//export const pathSafeAtom = atom('M 0 100 L 25 100 C 34 20 40 0 100 0');
-
 function getParsedSvg(path: string): Svg | undefined {
     try {
         return new Svg(path);
@@ -73,7 +70,7 @@ function getParsedSvg(path: string): Svg | undefined {
     }
 }
 
-// Input comes from the user and is unsafe
+// Input comes from the user and is unsafe vs. Input comes from the command editor and is safe (the editor must check the row numbers validity and quantity of required numbers)
 
 const needInitialZoomAtom = atom(true);
 
@@ -83,47 +80,15 @@ export const pathUnsafeAtom = atom(
         return get(_pathUnsafeAtom);
     },
     (get, set, path: string) => {
-        //const current = get(_pathUnsafeAtom);
-
         set(_pathUnsafeAtom, path);
 
         const newSvg = getParsedSvg(path);
         if (newSvg) {
-            //set(_svgAtom, newSvg);
             set(svgEditRootAtom, createSvgEditRoot(newSvg));
             set(doAutoZoomAtom); // auto zoom only for changes from row input text.
         }
     }
 );
-
-// Input comes from the command editor and is safe (the editor must check the row numbers and quantity of required numbers)
-/*
-const _svgAtom = atom(getParsedSvg(Storage.initialData.path) || new Svg(''));
-export const svgAtom = atom(
-    (get) => {
-        return get(_svgAtom);
-    },
-    (get, set, newSvg: Svg) => {
-
-        // set(_svgAtom, newSvg);
-        // set(SvgEditRootAtom, createSvgEditRoot(newSvg));
-
-        // const path = newSvg.asString();
-        // set(_pathUnsafeAtom, path);
-
-        // console.log('>>>>>>>> set _svgAtom, svg:', newSvg.asString());
-    }
-);
-*/
-
-/*
-// canvas the active and hover point indices on the path (TODO: it must be atom). -1 if no index effective
-
-export const activePointAtom = atom(-1);
-export const hoverPointAtom = atom(-1);
-export const editorActivePointAtom = atom<[number, number] | null>(null); // current point in path commands panel: pt index and cpt index (or -1)
-export const editorHoverPointAtom = atom<[number, number] | null>(null); // current hobering point in path commands panel: pt index and cpt index (or -1)
-*/
 
 //#endregion Unsafe SVG Atom
 
