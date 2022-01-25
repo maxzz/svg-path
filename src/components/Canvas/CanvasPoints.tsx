@@ -94,7 +94,7 @@ export function ControlPoint({ svgItemEdit, cpIdx }: { svgItemEdit: SvgItemEdit;
             (activeEd || hoverEd) &&
             <rect
                 className="cursor-pointer"
-                style={{ stroke: 'transparent', fill: editorColor(activeEd, hoverEd) }}
+                style={{ stroke: '#9c00ff63', fill: editorColor(activeEd, hoverEd) }}
                 x={pt.x - 8 * stroke} y={pt.y - 8 * stroke} width={stroke * 16} height={stroke * 16} strokeWidth={stroke * 16}
             />
         }
