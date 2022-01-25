@@ -1,5 +1,4 @@
 import React from 'react';
-import { useAtom } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
 import { ViewBox } from '../../svg/svg-utils-viewport';
 import { canvasSizeAtom, showGridAtom, showTicksAtom, tickIntevalAtom, viewBoxAtom, canvasStrokeAtom } from '../../store/store';
@@ -12,38 +11,38 @@ function calcGrid(viewBox: ViewBox, canvasWidth: number) {
     };
 }
 
-export function CanvasTicks({ onClick }: { onClick?: () => void; }) {
-    const [viewBox] = useAtom(viewBoxAtom);
-    const [canvasSize] = useAtom(canvasSizeAtom);
-    const [canvasStroke] = useAtom(canvasStrokeAtom);
-    const [tickInteval] = useAtom(tickIntevalAtom);
-    const showGrid = useAtomValue(showGridAtom);
+export function CanvasTicks() {
+    const viewBox = useAtomValue(viewBoxAtom);
+    const canvasSize = useAtomValue(canvasSizeAtom);
+    const canvasStroke = useAtomValue(canvasStrokeAtom);
     const showTicks = useAtomValue(showTicksAtom);
-
+    const tickInteval = useAtomValue(tickIntevalAtom);
+    const showGrid = useAtomValue(showGridAtom);
     if (!showGrid) {
         return null;
     }
-
     const grid = calcGrid(viewBox, canvasSize.w);
-    
     return (
-        <g className="bg-red-400 font-numbers" onClick={onClick}> {/* TODO: font-mono allows align by number of chars */}
+        <g className="svg-ticks">
+            {/* X axis (vertical lines) */}
             {grid.xGrid.map((v) =>
                 <line
                     x1={v} x2={v} y1={viewBox[1]} y2={viewBox[1] + viewBox[3]} key={`x${v}`}
-                    className={`${v ===0 ? 'stroke-[#f005]' : v % tickInteval === 0 ? 'stroke-[#8888]' : 'stroke-[#8884]'}`}
+                    className={`${v === 0 ? 'stroke-[#f005]' : v % tickInteval === 0 ? 'stroke-[#8888]' : 'stroke-[#8884]'}`}
                     style={{ strokeWidth: canvasStroke }}
                 />
             )}
+            {/* Y axis (horizontal lines) */}
             {grid.yGrid.map((v) =>
                 <line
                     y1={v} y2={v} x1={viewBox[0]} x2={viewBox[0] + viewBox[2]} key={`y${v}`}
-                    className={`${v ===0 ? 'stroke-[#f005]' : v % tickInteval === 0 ? 'stroke-[#8888]' : 'stroke-[#8884]'}`}
+                    className={`${v === 0 ? 'stroke-[#f005]' : v % tickInteval === 0 ? 'stroke-[#8888]' : 'stroke-[#8884]'}`}
                     style={{ strokeWidth: canvasStroke }}
                 />
             )}
 
             {showTicks && <>
+                {/* X axis numbers */}
                 {grid.xGrid.map((v) => <React.Fragment key={v}>
                     {v % tickInteval === 0 &&
                         <text className="fill-[#744]"
@@ -55,6 +54,7 @@ export function CanvasTicks({ onClick }: { onClick?: () => void; }) {
                         </text>
                     }
                 </React.Fragment>)}
+                {/* Y axis numbers */}
                 {grid.yGrid.map((v) => <React.Fragment key={v}>
                     {v % tickInteval === 0 &&
                         <text className="fill-[#744]"
@@ -70,3 +70,5 @@ export function CanvasTicks({ onClick }: { onClick?: () => void; }) {
         </g>
     );
 }
+
+// TODO: font-mono allows align by number of chars.
