@@ -1,4 +1,4 @@
-import { atom, Getter, PrimitiveAtom, Setter, WritableAtom } from "jotai";
+import { atom, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom } from "jotai";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg/svg";
 import { getCanvasStroke, getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
@@ -294,15 +294,19 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     function doReloadAllValues({ get, set, nextValue: doUpdate }: { get: Getter, set: Setter, nextValue: boolean; }) {
         doUpdate && reloadValues(get, set);
     }
-    function doReloadSvgItemIdx({ set, nextValue: svgItemIdx }: { set: Setter, nextValue: number; }) {
+    function doReloadSvgItemIdx({ get, set, nextValue: svgItemIdx }: { get: Getter; set: Setter, nextValue: number; }) {
         if (svgItemIdx >= 0) {
             const svgEdit = root.edits[svgItemIdx];
             const svgItem = root.svg.path[svgItemIdx];
+
+            const minify = get(minifyOutputAtom);
+            const precision = get(precisionAtom);
+
             set(svgEdit.typeAtom, svgItem.getType());
             set(svgEdit.standaloneStringAtom, svgItem.asStandaloneString());
 
             set(root.pointsAtom, getPoints(root.svg));
-            set(_pathUnsafeAtom, svg.asString());
+            set(_pathUnsafeAtom, svg.asString(precision, minify));
 
             if (svgItemIdx - 1 >= 0) {
                 const svgEdit = root.edits[svgItemIdx - 1];
@@ -574,7 +578,29 @@ export const precisionAtom = atomWithCallback(Storage.initialData.precision, ({ 
 export const snapToGridAtom = atomWithCallback(Storage.initialData.snapToGrid, ({ get }) => Storage.save(get));
 export const fillPathAtom = atomWithCallback(Storage.initialData.fillPath, ({ get }) => Storage.save(get));
 export const previewAtom = atomWithCallback(Storage.initialData.preview, ({ get }) => Storage.save(get));
-export const minifyOutputAtom = atomWithCallback(Storage.initialData.minifyOutput, ({ get }) => Storage.save(get));
+export const _minifyOutputAtom = atomWithCallback(Storage.initialData.minifyOutput, ({ get }) => Storage.save(get));
+
+export const doSetMinifyAtom = atom(null, (get, set, newMinify: boolean) => {
+    let path = get(_pathUnsafeAtom);
+    const newSvg = getParsedSvg(path);
+    if (newSvg) {
+        const precision = get(precisionAtom);
+        path = newSvg.asString(precision, newMinify);
+        set(_pathUnsafeAtom, path);
+    }
+
+    set(_minifyOutputAtom, newMinify);
+});
+
+export const minifyOutputAtom = atom(
+    (get) => get(_minifyOutputAtom),
+    (get, set, newValue: SetStateAction<boolean>) => {
+        const nextValue = typeof newValue === 'function'
+            ? (newValue as (prev: boolean) => boolean)(get(_minifyOutputAtom))
+            : newValue;
+        set(doSetMinifyAtom, nextValue);
+    }
+);
 
 // canvas controls
 
