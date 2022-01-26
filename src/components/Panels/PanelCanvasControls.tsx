@@ -145,36 +145,42 @@ function ZoomControls() {
     );
 }
 
-export function PanelCanvasControls() {
+export function PanelCanvasControlsInternals() {
     return (
-        <div className="absolute bottom-4 right-4 px-3 py-4 bg-slate-400/40 rounded flex items-center space-x-2">
+        <div className="flex flex-col">
+            {/* ViewBox */}
+            <ViewBoxControls />
+
             <div className="flex flex-col">
-                {/* ViewBox */}
-                <ViewBoxControls />
-
-                <div className="flex flex-col">
-                    {/* Checkboxes */}
-                    <div className="mt-2 space-y-1.5">
-                        <div className="flex items-center justify-between">
-                            <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
-                            <PrecisionInput />
-                        </div>
-                        <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
-                        <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
-                        <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
+                {/* Checkboxes */}
+                <div className="mt-2 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                        <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
+                        <PrecisionInput />
                     </div>
+                    <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
+                    <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
+                    <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
+                </div>
 
-                    {/* Actions */}
-                    <div className="mt-3 flex items-center justify-between">
-                        <ZoomControls />
+                {/* Actions */}
+                <div className="mt-3 flex items-center justify-between">
+                    <ZoomControls />
 
-                        <div className="flex">
-                            <TicksControl />
-                            <Button label="Grid" atom={showGridAtom} />
-                        </div>
+                    <div className="flex">
+                        <TicksControl />
+                        <Button label="Grid" atom={showGridAtom} />
                     </div>
                 </div>
             </div>
+        </div>
+    );
+}
+
+export function PanelCanvasControls() {
+    return (
+        <div className="absolute bottom-4 right-4 px-3 py-4 bg-slate-400/40 rounded flex items-center space-x-2">
+            <PanelCanvasControlsInternals />
         </div>
     );
 }
