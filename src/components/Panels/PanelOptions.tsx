@@ -27,21 +27,6 @@ function Button({ label, atom, leftBorder = true, ...rest }:
     );
 }
 
-// export function CanvasControlsPanel() {
-//     const [showGrid] = useAtom(showGridAtom);
-//     return (
-//         <div className="absolute bottom-4 right-4 px-2 py-2 bg-slate-400/40 rounded flex items-center space-x-2">
-//             {/* <AccordionHorizontal toggle={showGrid}>
-//                 <div className=""> */}
-//             {showGrid && <Button label="Ticks" atom={showTicksAtom} />}
-//             <Button label="Grid" atom={showGridAtom} />
-//             {/* </div>
-//             </AccordionHorizontal> */}
-//         </div>
-//     );
-// }
-// const CanvasControlsPanelMemo = React.memo(CanvasControlsPanel);
-
 function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; atom: PrimitiveAtom<boolean>; }) {
     const [value, setValue] = useAtom(atom);
     return (
@@ -57,20 +42,20 @@ function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; at
 }
 
 function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string; idx: number; }) {
-    let [value, setValue] = useAtom(doSetViewBoxAtom);
-    value = value.map(v => parseFloat(v.toFixed(3))) as ViewBox;
-    const bind = useNumberInput(value[idx], (v: number) => {
-        let box: ViewBoxManual = [...value];
+    const [viewboxRow, setViewbox] = useAtom(doSetViewBoxAtom);
+    const viewbox = viewboxRow.map(v => parseFloat(v.toFixed(3))) as ViewBox;
+    const bind = useNumberInput(viewbox[idx], (v: number) => {
+        let box: ViewBoxManual = [...viewbox];
         box[idx] = v;
         if (idx === 2) { box[3] = null; }
         if (idx === 3) { box[2] = null; }
-        setValue(box);
+        setViewbox(box);
     });
     return (
-        <label className="relative text-xs select-none text-slate-400" title={tooltip}>
-            <div className="absolute left-1.5 text-[.6rem] text-slate-400/50">{label}</div>
+        <label className="relative text-xs select-none" title={tooltip}>
+            <div className="absolute left-1.5 text-[.6rem] text-slate-900/60">{label}</div>
             <input
-                className={`px-1 pt-3 w-14 h-8 text-xs rounded border border-slate-500 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                className={`px-1 pt-3 w-14 h-8 text-xs text-slate-900 rounded border border-slate-300 bg-slate-200 focus:outline-none shadow-sm shadow-slate-800/30`}
                 {...bind}
             />
         </label>
@@ -149,29 +134,31 @@ function ZoomControls() {
 
 export function PanelCanvasControlsInternals() {
     return (
-        <div className="flex flex-col">
-            {/* ViewBox */}
-            <ViewBoxControls />
-
+        <div className="px-3 py-3 bg-slate-400/40 rounded flex items-center space-x-2">
             <div className="flex flex-col">
-                {/* Checkboxes */}
-                <div className="mt-2 space-y-1.5">
-                    <div className="flex items-center justify-between">
-                        <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
-                        <PrecisionInput />
+                {/* ViewBox */}
+                <ViewBoxControls />
+
+                <div className="flex flex-col">
+                    {/* Checkboxes */}
+                    <div className="mt-2 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                            <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
+                            <PrecisionInput />
+                        </div>
+                        <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
+                        <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
+                        <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
                     </div>
-                    <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
-                    <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
-                    <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
-                </div>
 
-                {/* Actions */}
-                <div className="mt-3 flex items-center justify-between">
-                    <ZoomControls />
+                    {/* Actions */}
+                    <div className="mt-3 flex items-center justify-between">
+                        <ZoomControls />
 
-                    <div className="flex">
-                        <TicksControl />
-                        <Button label="Grid" atom={showGridAtom} />
+                        <div className="flex">
+                            <TicksControl />
+                            <Button label="Grid" atom={showGridAtom} />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -188,14 +175,7 @@ export default function PanelOptions() {
             </SectionPane>
             <Accordion toggle={open}>
                 <div className="text-sm bg-slate-300 overflow-hidden">
-
-                    <div className="px-3 py-3 bg-slate-400/40 rounded flex items-center space-x-2">
-                        <PanelCanvasControlsInternals />
-                    </div>
-                    {/* <br />
-                    Configuration. Ground zero
-                    <br />
-                    <br /> */}
+                    <PanelCanvasControlsInternals />
                 </div>
             </Accordion>
         </div>
