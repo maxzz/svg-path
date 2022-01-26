@@ -38,7 +38,7 @@ function CanvasSvgElement({ children }: { children: React.ReactNode; }) {
 
 function RenderPath() {
     const svgEditRoot = useAtomValue(svgEditRootAtom);
-    const points = useAtomValue(svgEditRoot.pointsAtom);
+    const completePath = useAtomValue(svgEditRoot.completePathAtom);
     const stroke = useAtomValue(canvasStrokeAtom);
     const preview = useAtomValue(previewAtom);
     const fill = useAtomValue(fillPathAtom);
@@ -50,7 +50,7 @@ function RenderPath() {
                 : 'none'
             : 'none';
     return (
-        <path d={points.asString} fill={fillColor} stroke="white" strokeWidth={stroke} />
+        <path d={completePath} fill={fillColor} stroke="white" strokeWidth={stroke} />
     );
 }
 

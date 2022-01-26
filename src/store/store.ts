@@ -172,7 +172,7 @@ export type SvgEditPoints = {
 export type SvgEditRoot = {
     svg: Svg;
     edits: SvgItemEdit[];
-    pointsAtom: PrimitiveAtom<SvgEditPoints>;
+    completePathAtom: PrimitiveAtom<string>;
     doUpdatePointAtom: WritableAtom<null, { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }>;
     allowUpdatesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
     doReloadAllValuesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
@@ -183,7 +183,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     const root: SvgEditRoot = {
         svg,
         edits: [],
-        pointsAtom: atom<SvgEditPoints>(getPoints(svg)),
+        completePathAtom: atom(svg.asString()),
         allowUpdatesAtom: atom<boolean>(true),
         doReloadAllValuesAtom: atomWithCallback<boolean>(true, doReloadAllValues),
         doReloadSvgItemIdxAtom: atomWithCallback<number>(-1, doReloadSvgItemIdx),
@@ -214,12 +214,6 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         root.edits.push(newSvgEdit);
     });
     return root;
-
-    function getPoints(svg: Svg): SvgEditPoints { // TODO: will be better to keep them separately
-        return {
-            asString: svg.asString(),
-        };
-    }
 
     function updateSubIndecies() {
         root.svg.path.forEach((svgItem) => {
@@ -268,7 +262,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             set(svgEdit.typeAtom, svgItem.getType());
             set(svgEdit.standaloneStringAtom, svgItem.asStandaloneString());
 
-            set(root.pointsAtom, getPoints(root.svg));
+            set(root.completePathAtom, root.svg.asString());
             set(_pathUnsafeAtom, svg.asString(precision, minify));
 
             if (svgItemIdx - 1 >= 0) {
