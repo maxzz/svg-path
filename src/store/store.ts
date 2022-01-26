@@ -19,6 +19,8 @@ namespace Storage {
         fillPath: boolean;
         preview: boolean;
         minifyOutput: boolean;
+        openPanelCommands: boolean;
+        openPanelOptions: boolean;
     };
 
     export let initialData: Store = {
@@ -31,6 +33,8 @@ namespace Storage {
         fillPath: true,
         preview: false,
         minifyOutput: false,
+        openPanelCommands: true,
+        openPanelOptions: true,
     };
 
     function load() {
@@ -56,6 +60,8 @@ namespace Storage {
             fillPath: get(fillPathAtom),
             preview: get(previewAtom),
             minifyOutput: get(minifyOutputAtom),
+            openPanelCommands: get(openPanelCommandsAtom),
+            openPanelOptions: get(openPanelOptionsAtom),
         };
         localStorage.setItem(KEY, JSON.stringify(newStore));
     }, 1000);
@@ -563,6 +569,11 @@ export const minifyOutputAtom = atom(
 
 export const showGridAtom = atomWithCallback(Storage.initialData.showGrid, ({ get }) => Storage.save(get));
 export const showTicksAtom = atomWithCallback(Storage.initialData.showTicks, ({ get }) => Storage.save(get));
+
+// panels
+
+export const openPanelCommandsAtom = atomWithCallback(Storage.initialData.openPanelCommands, ({ get }) => Storage.save(get));
+export const openPanelOptionsAtom = atomWithCallback(Storage.initialData.openPanelOptions, ({ get }) => Storage.save(get));
 
 //#endregion Option atoms
 

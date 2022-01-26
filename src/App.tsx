@@ -8,10 +8,26 @@ import { SectionPane } from './components/UI/SectionPane';
 import { PanelOperations } from './components/Panels/PanelOperations';
 import { PanelPath } from './components/Panels/PanelPath';
 import { PanelCanvasControls } from './components/Panels/PanelCanvasControls';
+import { openPanelCommandsAtom, openPanelOptionsAtom } from './store/store';
+
+function PanelCommands() {
+    const [open, setOpen] = useAtom(openPanelCommandsAtom);
+    return (
+        <div className="">
+            <SectionPane open={open} onClick={() => setOpen(v => !v)}>
+                Path Commands
+            </SectionPane>
+            <Accordion toggle={open}>
+                <div className="text-sm bg-slate-300 overflow-hidden">
+                    <PathCommandEditor />
+                </div>
+            </Accordion>
+        </div>
+    );
+}
 
 function PanelOptions() {
-    const [openAtom] = useState(atom(true));
-    const [open, setOpen] = useAtom(openAtom);
+    const [open, setOpen] = useAtom(openPanelOptionsAtom);
     return (
         <div className="">
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
@@ -23,23 +39,6 @@ function PanelOptions() {
                     Configuration. Ground zero
                     <br />
                     <br />
-                </div>
-            </Accordion>
-        </div>
-    );
-}
-
-function PanelCommands() {
-    const [openAtom] = useState(atom(true));
-    const [open, setOpen] = useAtom(openAtom);
-    return (
-        <div className="">
-            <SectionPane open={open} onClick={() => setOpen(v => !v)}>
-                Path Commands
-            </SectionPane>
-            <Accordion toggle={open}>
-                <div className="text-sm bg-slate-300 overflow-hidden">
-                    <PathCommandEditor />
                 </div>
             </Accordion>
         </div>
