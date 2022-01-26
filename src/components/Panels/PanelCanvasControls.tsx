@@ -145,7 +145,7 @@ function ZoomControls() {
     );
 }
 
-export function PanelCanvasControlsInternals() {
+function PanelCanvasControlsInternals() {
     return (
         <div className="flex flex-col">
             {/* ViewBox */}
