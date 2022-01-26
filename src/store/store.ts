@@ -133,26 +133,9 @@ export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: Pr
     }
 
     const before = get(atom);
-    const areDiff = Object.entries(newState).some(([key, val]) => {
-        console.log('diff = ', before[key as keyof SvgItemEditState] !== val, 'key =', key, 'val =', val, 'before val =', before[key as keyof SvgItemEditState]);
-        return before[key as keyof SvgItemEditState] !== val;
-    });
-    console.log('areDiff =', areDiff, 'before = ', before);
+    const areDiff = Object.entries(newState).some(([key, val]) => before[key as keyof SvgItemEditState] !== val);
 
-    if (areDiff) {
-        // set(atom, (prev) => ({ ...prev, ...newState }));
-        set(atom, (prev) => {
-            console.log('areDiff =', areDiff, 'prev = ', prev);
-            console.log('areDiff =', areDiff, ' new = ', { ...prev, ...newState });
-            return { ...prev, ...newState };
-        });
-    }
-
-    const after = get(atom);
-    console.log('areDiff =', areDiff, 'after = ', after);
-
-    //const after = get(atom);
-    //console.log('state', 'before', before, 'after', after);
+    areDiff && set(atom, (prev) => ({ ...prev, ...newState }));
 });
 
 export const doClearActiveAtom = atom(null, (get, set,) => {
