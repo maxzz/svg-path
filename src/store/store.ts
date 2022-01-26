@@ -125,16 +125,31 @@ export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: Pr
     for (const [name, val] of Object.entries(states)) {
         const key = name as keyof SvgItemEditState;
         const globalStateAtom = globalEditState[key];
-        if (globalStateAtom) {
+        if (globalStateAtom && globalStateAtom !== atom) {
             set(globalStateAtom, (prev) => ({ ...prev, [key]: false }));
         }
         globalEditState[key] = val && val !== -1 ? atom : undefined; // there can be only one
         (newState[key] as boolean | number) = val;
     }
 
-    //const before = get(atom);
+    const before = get(atom);
+    const areDiff = Object.entries(newState).some(([key, val]) => {
+        console.log('diff = ', before[key as keyof SvgItemEditState] !== val, 'key =', key, 'val =', val, 'before val =', before[key as keyof SvgItemEditState]);
+        return before[key as keyof SvgItemEditState] !== val;
+    });
+    console.log('areDiff =', areDiff, 'before = ', before);
 
-    set(atom, (prev) => ({ ...prev, ...newState }));
+    if (areDiff) {
+        // set(atom, (prev) => ({ ...prev, ...newState }));
+        set(atom, (prev) => {
+            console.log('areDiff =', areDiff, 'prev = ', prev);
+            console.log('areDiff =', areDiff, ' new = ', { ...prev, ...newState });
+            return { ...prev, ...newState };
+        });
+    }
+
+    const after = get(atom);
+    console.log('areDiff =', areDiff, 'after = ', after);
 
     //const after = get(atom);
     //console.log('state', 'before', before, 'after', after);
