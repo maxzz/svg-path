@@ -30,7 +30,7 @@ function Button({ label, atom, leftBorder = true, ...rest }:
 function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; atom: PrimitiveAtom<boolean>; }) {
     const [value, setValue] = useAtom(atom);
     return (
-        <label className="flex items-center text-xs space-x-2 select-none" title={tooltip}>
+        <label className="w-min whitespace-nowrap flex items-center text-xs space-x-2 select-none" title={tooltip}>
             <input
                 type="checkbox" className="rounded text-slate-700 bg-slate-400 focus:ring-slate-900"
                 checked={value}
