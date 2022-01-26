@@ -8,10 +8,10 @@ import { SectionPane } from './components/UI/SectionPane';
 import { PanelOperations } from './components/Panels/PanelOperations';
 import { PanelPath } from './components/Panels/PanelPath';
 import { PanelCanvasControls } from './components/Panels/PanelCanvasControls';
-import { openPanelCommandsAtom, openPanelOptionsAtom } from './store/store';
+import { openPanelCmdsAtom, openPanelOptsAtom } from './store/store';
 
 function PanelCommands() {
-    const [open, setOpen] = useAtom(openPanelCommandsAtom);
+    const [open, setOpen] = useAtom(openPanelCmdsAtom);
     return (
         <div className="">
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
@@ -27,7 +27,7 @@ function PanelCommands() {
 }
 
 function PanelOptions() {
-    const [open, setOpen] = useAtom(openPanelOptionsAtom);
+    const [open, setOpen] = useAtom(openPanelOptsAtom);
     return (
         <div className="">
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>

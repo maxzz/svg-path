@@ -1,5 +1,6 @@
 import { atom, useAtom } from "jotai";
 import React, { useState } from "react";
+import { openPanelOperAtom } from "../../store/store";
 import { Accordion } from "../UI/Accordion";
 import { SectionPane } from "../UI/SectionPane";
 
@@ -13,8 +14,7 @@ function OperationInput({ label, className = "" }: { label: string; className?: 
 }
 
 export function PanelOperations() {
-    const [openAtom] = useState(atom(true));
-    const [open, setOpen] = useAtom(openAtom);
+    const [open, setOpen] = useAtom(openPanelOperAtom);
     return (
         <div className="">
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>

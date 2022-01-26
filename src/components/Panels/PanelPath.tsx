@@ -1,6 +1,6 @@
-import { atom, useAtom } from 'jotai';
-import React, { useState } from 'react';
-import { pathUnsafeAtom } from '../../store/store';
+import React from 'react';
+import { useAtom } from 'jotai';
+import { openPanelPathAtom, pathUnsafeAtom } from '../../store/store';
 import { Accordion } from '../UI/Accordion';
 import { SectionPane } from '../UI/SectionPane';
 
@@ -18,8 +18,7 @@ function PathEditor() {
 }
 
 export function PanelPath() {
-    const [openAtom] = useState(atom(true));
-    const [open, setOpen] = useAtom(openAtom);
+    const [open, setOpen] = useAtom(openPanelPathAtom);
     return (
         <div className="">
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>

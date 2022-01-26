@@ -19,8 +19,10 @@ namespace Storage {
         fillPath: boolean;
         preview: boolean;
         minifyOutput: boolean;
-        openPanelCommands: boolean;
-        openPanelOptions: boolean;
+        openPanelPath: boolean;
+        openPanelCmds: boolean;
+        openPanelOper: boolean;
+        openPanelOpts: boolean;
     };
 
     export let initialData: Store = {
@@ -33,8 +35,10 @@ namespace Storage {
         fillPath: true,
         preview: false,
         minifyOutput: false,
-        openPanelCommands: true,
-        openPanelOptions: true,
+        openPanelPath: true,
+        openPanelCmds: true,
+        openPanelOper: false,
+        openPanelOpts: true,
     };
 
     function load() {
@@ -60,8 +64,10 @@ namespace Storage {
             fillPath: get(fillPathAtom),
             preview: get(previewAtom),
             minifyOutput: get(minifyOutputAtom),
-            openPanelCommands: get(openPanelCommandsAtom),
-            openPanelOptions: get(openPanelOptionsAtom),
+            openPanelPath: get(openPanelPathAtom),
+            openPanelCmds: get(openPanelCmdsAtom),
+            openPanelOper: get(openPanelOperAtom),
+            openPanelOpts: get(openPanelOptsAtom),
         };
         localStorage.setItem(KEY, JSON.stringify(newStore));
     }, 1000);
@@ -572,8 +578,10 @@ export const showTicksAtom = atomWithCallback(Storage.initialData.showTicks, ({ 
 
 // panels
 
-export const openPanelCommandsAtom = atomWithCallback(Storage.initialData.openPanelCommands, ({ get }) => Storage.save(get));
-export const openPanelOptionsAtom = atomWithCallback(Storage.initialData.openPanelOptions, ({ get }) => Storage.save(get));
+export const openPanelPathAtom = atomWithCallback(Storage.initialData.openPanelPath, ({ get }) => Storage.save(get));
+export const openPanelCmdsAtom = atomWithCallback(Storage.initialData.openPanelCmds, ({ get }) => Storage.save(get));
+export const openPanelOperAtom = atomWithCallback(Storage.initialData.openPanelOper, ({ get }) => Storage.save(get));
+export const openPanelOptsAtom = atomWithCallback(Storage.initialData.openPanelOpts, ({ get }) => Storage.save(get));
 
 //#endregion Option atoms
 
