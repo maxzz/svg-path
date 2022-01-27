@@ -1,31 +1,12 @@
-import React, { Children, HTMLAttributes } from 'react';
+import React from 'react';
 import { PrimitiveAtom, useAtom, WritableAtom } from 'jotai';
-import { doSetViewBoxAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, openPanelOptsAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom } from '../../store/store';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { doSetViewBoxAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, openPanelOptsAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom } from '../../store/store';
 import { useNumberInput } from '../../hooks/useNumberInput';
-import { ViewBox, ViewBoxManual } from '../../svg/svg-utils-viewport';
 import { classNames } from '../../utils/classnames';
+import { ViewBox, ViewBoxManual } from '../../svg/svg-utils-viewport';
 import { SectionPane } from '../UI/SectionPane';
 import { Accordion } from '../UI/Accordion';
-//import { AccordionHorizontal } from '../UI/Accordion';
-
-function Button({ label, atom, leftBorder = true, ...rest }:
-    { label: string; atom: PrimitiveAtom<boolean>; leftBorder?: boolean; } & HTMLAttributes<HTMLButtonElement>) {
-
-    const [isDown, setIsDown] = useAtom(atom);
-    return (
-        <button
-            className={`px-1 h-6 text-xs text-slate-400 border-slate-500 border 
-                ${isDown ? 'bg-slate-800 shadow-sm shadow-slate-800' : 'bg-slate-600'}
-                ${leftBorder ? 'rounded' : 'rounded-r'} active:scale-[.97]`
-            }
-            onClick={() => setIsDown((prev) => !prev)}
-            {...rest}
-        >
-            {label}
-        </button>
-    );
-}
 
 function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; atom: PrimitiveAtom<boolean>; }) {
     const [value, setValue] = useAtom(atom);
@@ -86,28 +67,6 @@ function PrecisionInput() {
         </label>
     );
 }
-
-/*
-function TicksControl() {
-    const showGrid = useAtomValue(showGridAtom);
-    const showTicks = useAtomValue(showTicksAtom);
-    const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom);
-    const bind = useNumberInput(tickInteval, (v: number) => setTickInteval(v));
-    return (<>
-        {showGrid &&
-            <div className="flex items-center ">
-                {showTicks &&
-                    <input
-                        className={`w-6 h-6 text-xs text-center text-slate-400 bg-slate-700 border-slate-500 rounded-l border focus:outline-none shadow-sm shadow-slate-800 focus:ring-0`}
-                        {...bind}
-                    />
-                }
-                <Button label="Ticks" atom={showTicksAtom} leftBorder={!showTicks} tabIndex={-1} />
-            </div>
-        }
-    </>);
-}
-*/
 
 function TicksControl() {
     const showGrid = useAtomValue(showGridAtom);
@@ -190,16 +149,6 @@ export function PanelCanvasControlsInternals() {
                         </div>
                         <Checkbox label="Minify output" tooltip="Minify output" atom={minifyOutputAtom} />
                     </div>
-
-                    {/* Actions */}
-                    {/* <div className="mt-3 flex items-center justify-between">
-                        <ZoomControls />
-
-                        <div className="flex">
-                            <TicksControl />
-                            <Button label="Grid" atom={showGridAtom} />
-                        </div>
-                    </div> */}
                 </div>
             </div>
         </div>
