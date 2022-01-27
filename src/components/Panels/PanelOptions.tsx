@@ -97,7 +97,7 @@ function TicksControl() {
             <div className="flex items-center ">
                 {showTicks &&
                     <input
-                        className={`w-6 h-6 text-xs text-center rounded-l border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800 focus:ring-0`}
+                        className={`w-6 h-6 text-xs text-center text-slate-400 bg-slate-700 border-slate-500 rounded-l border focus:outline-none shadow-sm shadow-slate-800 focus:ring-0`}
                         {...bind}
                     />
                 }
@@ -107,15 +107,35 @@ function TicksControl() {
     </>);
 }
 
-function ButtonZoom({ label, atom, value, className = '' }: { label: string; atom: WritableAtom<null, number>; value: number; className?: string; }) {
-    const setIsDown = useUpdateAtom(atom);
+function TicksControl2() {
+    const showGrid = useAtomValue(showGridAtom);
+    const showTicks = useAtomValue(showTicksAtom);
+    const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom);
+    const bind = useNumberInput(tickInteval, (v: number) => setTickInteval(v));
+    return (<>
+        {showGrid &&
+            <div className="flex items-center ">
+                {showTicks &&
+                    <input
+                        className={`w-8 h-6 text-xs text-center text-slate-900 bg-slate-200 border-slate-300 rounded border focus:outline-none shadow-sm shadow-slate-800/30 focus:ring-0`}
+                        {...bind}
+                    />
+                }
+            </div>
+        }
+    </>);
+}
+
+function ZoomButton({ label, title, atom, value, className = '' }: { label: string; title: string; atom: WritableAtom<null, number>; value: number; className?: string; }) {
+    const doAction = useUpdateAtom(atom);
     return (
         <button
             className={classNames(
                 `px-1 pb-px h-8 text-xs text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/50 active:scale-[.97] select-none`,
                 className
             )}
-            onClick={() => setIsDown(value)}
+            onClick={() => doAction(value)}
+            title={title}
         >
             {label}
         </button>
@@ -125,9 +145,9 @@ function ButtonZoom({ label, atom, value, className = '' }: { label: string; ato
 function ZoomControls() {
     return (
         <div className="flex items-center">
-            <ButtonZoom label="-" atom={doSetZoomAtom} value={10} className="rounded-l border w-8" />
-            <ButtonZoom label="Zoom to Fit" atom={doSetZoomAtom} value={0} className="border-t border-b px-2" />
-            <ButtonZoom label="+" atom={doSetZoomAtom} value={-10} className="rounded-r border w-8" />
+            <ZoomButton label="-" title="Zoom Out" atom={doSetZoomAtom} value={10} className="rounded-l border w-8" />
+            <ZoomButton label="Zoom to Fit" title="Zoom to Fit" atom={doSetZoomAtom} value={0} className="border-t border-b px-2" />
+            <ZoomButton label="+" title="Zoom In" atom={doSetZoomAtom} value={-10} className="rounded-r border w-8" />
         </div>
     );
 }
@@ -150,6 +170,13 @@ export function PanelCanvasControlsInternals() {
                         <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
                         <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
                         <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
+                        <div className="flex items-center space-x-4">
+                            <Checkbox label="Show Grid" tooltip="Show grid" atom={minifyOutputAtom} />
+                            <div className="flex space-x-2">
+                                <Checkbox label="Ticks" tooltip="Show ticks" atom={minifyOutputAtom} />
+                                <TicksControl2 />
+                            </div>
+                        </div>
                     </div>
 
                     {/* Actions */}
