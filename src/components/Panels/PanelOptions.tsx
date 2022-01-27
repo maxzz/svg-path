@@ -11,7 +11,7 @@ import { Accordion } from '../UI/Accordion';
 function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; atom: PrimitiveAtom<boolean>; }) {
     const [value, setValue] = useAtom(atom);
     return (
-        <label className="w-min h-6 whitespace-nowrap flex items-center text-xs space-x-2 select-none" title={tooltip}>
+        <label className="w-min h-6 whitespace-nowrap flex items-center text-xs space-x-1.5 select-none" title={tooltip}>
             <input
                 type="checkbox" className="rounded text-slate-700 bg-slate-400 focus:ring-slate-900"
                 checked={value}
@@ -131,21 +131,21 @@ export function PanelCanvasControlsInternals() {
                     {/* Checkboxes */}
                     <div className="mt-2">
                         {/* Snap controls */}
-                        <div className="flex items-center space-x-2">
-                            <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
+                        <div className="flex items-center justify-between">
+                            <Checkbox label="Snap to grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
                             <PrecisionInput />
                         </div>
                         {/* Grid controls */}
-                        <div className="h-6 flex items-center space-x-4">
-                            <Checkbox label="Show Grid" tooltip="Show grid" atom={showGridAtom} />
+                        <div className="h-6 flex items-center justify-between">
+                            <Checkbox label="Show grid" tooltip="Show grid" atom={showGridAtom} />
                             <div className="flex space-x-2">
                                 <TicksControl />
                             </div>
                         </div>
 
                         <div className="flex items-center space-x-2">
-                            <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
-                            <Checkbox label="Fill Path" tooltip="Fill path" atom={fillPathAtom} />
+                            <Checkbox label="Show point contols" tooltip="Preview mode" atom={previewAtom} />
+                            <Checkbox label="Fill path" tooltip="Fill path" atom={fillPathAtom} />
                         </div>
                         <Checkbox label="Minify output" tooltip="Minify output" atom={minifyOutputAtom} />
                     </div>
