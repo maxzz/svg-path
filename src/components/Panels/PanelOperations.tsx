@@ -1,5 +1,5 @@
-import { atom, useAtom } from "jotai";
-import React, { useState } from "react";
+import React from "react";
+import { useAtom } from "jotai";
 import { openPanelOperAtom } from "../../store/store";
 import { Accordion } from "../UI/Accordion";
 import { SectionPane } from "../UI/SectionPane";
@@ -21,7 +21,7 @@ export function PanelOperations() {
                 Path Operations
             </SectionPane>
             <Accordion toggle={open}>
-                <div className="px-1 text-sm bg-slate-300 overflow-hidden">
+                <div className="px-1.5 py-0.5 text-sm bg-slate-300 overflow-hidden">
                     <div className="my-1 flex space-x-1">
                         <OperationInput label="Scale X" />
                         <OperationInput label="Scale Y" />

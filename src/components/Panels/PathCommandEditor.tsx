@@ -119,7 +119,7 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     return (<>
         <div
             ref={rowContainerRef}
-            className={`px-1 flex items-center justify-between ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`}
+            className={`px-1.5 flex items-center justify-between ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`}
             onClick={() => {
                 doTrace && console.log('%c[${svgItemIdx}  ] state on click', 'color: #528');
                 setState({ atom: stateAtom, states: { activeRow: true } });
@@ -161,7 +161,7 @@ export function PathCommandEditor() {
     const edits = SvgEditRoot.edits;
     doTrace && console.log('=============== PathCommandEditor render rows (only on SvgEditRoot change) ===============');
     return (
-        <div className="my-1 space-y-0.5">
+        <div className="my-1 py-0.5 space-y-0.5">
             {edits.map((svgItemEdit, idx) => (
                 <CommandRow svgItemEdit={svgItemEdit} key={idx} />
             ))}

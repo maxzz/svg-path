@@ -87,6 +87,7 @@ function PrecisionInput() {
     );
 }
 
+/*
 function TicksControl() {
     const showGrid = useAtomValue(showGridAtom);
     const showTicks = useAtomValue(showTicksAtom);
@@ -106,8 +107,9 @@ function TicksControl() {
         }
     </>);
 }
+*/
 
-function TicksControl2() {
+function TicksControl() {
     const showGrid = useAtomValue(showGridAtom);
     const showTicks = useAtomValue(showTicksAtom);
     const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom);
@@ -159,7 +161,7 @@ export function PanelCanvasControlsInternals() {
         <div className="px-1.5 pt-1 pb-3 bg-slate-400/40 rounded flex items-center space-x-2">
             <div className="flex flex-col">
                 {/* ViewBox */}
-                <div className="text-xs">Viewbox</div>
+                <div className="text-xs">viewbox</div>
                 <ViewBoxControls />
 
                 <div className="mt-3">
@@ -169,19 +171,19 @@ export function PanelCanvasControlsInternals() {
                 <div className="flex flex-col">
                     {/* Checkboxes */}
                     <div className="mt-2">
+                        {/* Snap controls */}
                         <div className="flex items-center justify-between">
                             <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
                             <PrecisionInput />
                         </div>
-                        <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
+                        <Checkbox label="Fill Path" tooltip="Fill path" atom={fillPathAtom} />
                         <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
-                        <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
+                        <Checkbox label="Minify output" tooltip="Minify output" atom={minifyOutputAtom} />
                         {/* Grid controls */}
                         <div className="h-6 flex items-center space-x-4">
                             <Checkbox label="Show Grid" tooltip="Show grid" atom={showGridAtom} />
                             <div className="flex space-x-2">
-                                {/* <Checkbox label="Ticks" tooltip="Show ticks" atom={showTicksAtom} /> */}
-                                <TicksControl2 />
+                                <TicksControl />
                             </div>
                         </div>
                     </div>

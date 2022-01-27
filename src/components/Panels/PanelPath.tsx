@@ -8,7 +8,7 @@ function PathEditor() {
     const [path, setPath] = useAtom(pathUnsafeAtom);
     return (
         <textarea
-            className="p-0.5 w-full bg-slate-200 font-mono text-xs"
+            className="p-0.5 w-full bg-slate-200 text-xs font-mono"
             rows={5}
             spellCheck={false}
             value={path}
@@ -25,10 +25,10 @@ export function PanelPath() {
                 Path
             </SectionPane>
             <Accordion toggle={open}>
-                <div className="px-1 text-sm bg-slate-300 overflow-hidden">
+                <div className="px-1.5 pt-1.5 pb-0.5 text-sm bg-slate-300 overflow-hidden">
                     <div className="flex justify-between">
                         <div className="pb-0.5 text-xs tracking-tighter self-end">path</div>
-                        <div className="py-1 flex space-x-1">
+                        <div className="pb-1 flex space-x-1">
                             <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Open</button>
                             <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Save</button>
                             <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Clear</button>
