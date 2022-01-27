@@ -149,7 +149,7 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
             </div>
 
             {/* Menu */}
-            <button className="flex-0 mt-0.5 active:scale-[.97]" tabIndex={-1}>
+            <button className="flex-0 mt-0.5 active:scale-[.97]" tabIndex={-1} aria-label="sub-menu">
                 <IconMenu className="w-4 h-4" />
             </button>
         </div>

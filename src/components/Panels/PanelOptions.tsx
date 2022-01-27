@@ -80,7 +80,7 @@ function PrecisionInput() {
         <label className="flex items-center text-xs space-x-1 select-none">
             <div className="">Precision</div>
             <input
-                className={`w-8 h-6 text-xs text-center text-slate-900 bg-slate-200 border-slate-300 rounded border focus:outline-none shadow-sm shadow-slate-800/30`}
+                className={`w-8 h-[1.375rem] text-xs text-center text-slate-900 bg-slate-200 border-slate-300 rounded border focus:outline-none shadow-sm shadow-slate-800/30`}
                 {...bind}
             />
         </label>
@@ -120,7 +120,7 @@ function TicksControl() {
             <div className="flex items-center ">
                 {showTicks &&
                     <input
-                        className={`w-8 h-6 text-xs text-center text-slate-900 bg-slate-200 border-slate-300 rounded border focus:outline-none shadow-sm shadow-slate-800/30 focus:ring-0`}
+                        className={`w-8 h-[1.375rem] text-xs text-center text-slate-900 bg-slate-200 border-slate-300 shadow-slate-800/30 rounded border focus:outline-none shadow-sm focus:ring-0`}
                         {...bind}
                     />
                 }
@@ -172,13 +172,10 @@ export function PanelCanvasControlsInternals() {
                     {/* Checkboxes */}
                     <div className="mt-2">
                         {/* Snap controls */}
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
                             <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
                             <PrecisionInput />
                         </div>
-                        <Checkbox label="Fill Path" tooltip="Fill path" atom={fillPathAtom} />
-                        <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
-                        <Checkbox label="Minify output" tooltip="Minify output" atom={minifyOutputAtom} />
                         {/* Grid controls */}
                         <div className="h-6 flex items-center space-x-4">
                             <Checkbox label="Show Grid" tooltip="Show grid" atom={showGridAtom} />
@@ -186,6 +183,12 @@ export function PanelCanvasControlsInternals() {
                                 <TicksControl />
                             </div>
                         </div>
+
+                        <div className="flex items-center space-x-2">
+                            <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
+                            <Checkbox label="Fill Path" tooltip="Fill path" atom={fillPathAtom} />
+                        </div>
+                        <Checkbox label="Minify output" tooltip="Minify output" atom={minifyOutputAtom} />
                     </div>
 
                     {/* Actions */}
