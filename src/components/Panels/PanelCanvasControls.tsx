@@ -1,6 +1,6 @@
 import React, { Children, HTMLAttributes } from 'react';
 import { PrimitiveAtom, useAtom, WritableAtom } from 'jotai';
-import { doSetViewBoxAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, precisionAtom, previewAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom } from '../../store/store';
+import { doSetViewBoxAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, precisionAtom, showCPsAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom } from '../../store/store';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useNumberInput } from '../../hooks/useNumberInput';
 import { ViewBox, ViewBoxManual } from '../../svg/svg-utils-viewport';
@@ -158,8 +158,8 @@ function PanelCanvasControlsInternals() {
                         <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
                         <PrecisionInput />
                     </div>
-                    <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
-                    <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
+                    <Checkbox label="Show controls point" tooltip="Show controls point" atom={showCPsAtom} />
+                    <Checkbox label="Fill path" tooltip="Fill path" atom={fillPathAtom} />
                     <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
                 </div>
 

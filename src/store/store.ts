@@ -16,8 +16,8 @@ namespace Storage {
         ticks: number;          // tick every n lines. don't show ticks if zero or less then zero.
         precision: number;      // drag operations precision for new points
         snapToGrid: boolean;    // drag operations shap to grid
+        showCPs: boolean;       // show control points
         fillPath: boolean;
-        preview: boolean;
         minifyOutput: boolean;
         openPanelPath: boolean;
         openPanelCmds: boolean;
@@ -32,8 +32,8 @@ namespace Storage {
         ticks: 5,
         precision: 3,
         snapToGrid: false,
+        showCPs: false,
         fillPath: true,
-        preview: false,
         minifyOutput: false,
         openPanelPath: true,
         openPanelCmds: true,
@@ -61,8 +61,8 @@ namespace Storage {
             ticks: get(tickIntevalAtom),
             precision: get(precisionAtom),
             snapToGrid: get(snapToGridAtom),
+            showCPs: get(showCPsAtom),
             fillPath: get(fillPathAtom),
-            preview: get(previewAtom),
             minifyOutput: get(minifyOutputAtom),
             openPanelPath: get(openPanelPathAtom),
             openPanelCmds: get(openPanelCmdsAtom),
@@ -545,8 +545,8 @@ export const doCanvasMouseUpAtom = atom(null, (get, set,) => {
 export const tickIntevalAtom = atomWithCallback(Storage.initialData.ticks, ({ get }) => Storage.save(get));
 export const precisionAtom = atomWithCallback(Storage.initialData.precision, ({ get }) => Storage.save(get));
 export const snapToGridAtom = atomWithCallback(Storage.initialData.snapToGrid, ({ get }) => Storage.save(get));
+export const showCPsAtom = atomWithCallback(Storage.initialData.showCPs, ({ get }) => Storage.save(get));
 export const fillPathAtom = atomWithCallback(Storage.initialData.fillPath, ({ get }) => Storage.save(get));
-export const previewAtom = atomWithCallback(Storage.initialData.preview, ({ get }) => Storage.save(get));
 export const _minifyOutputAtom = atomWithCallback(Storage.initialData.minifyOutput, ({ get }) => Storage.save(get));
 
 export const doSetMinifyAtom = atom(null, (get, set, newMinify: boolean) => {
