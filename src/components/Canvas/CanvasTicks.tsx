@@ -71,4 +71,5 @@ export function CanvasTicks() {
     );
 }
 
-// TODO: font-mono allows align by number of chars.
+//TODO: font-mono allows align by number of chars.
+//TODO: tailwind: tabular-nums

@@ -8,20 +8,6 @@ import { ViewBox, ViewBoxManual } from '../../svg/svg-utils-viewport';
 import { SectionPane } from '../UI/SectionPane';
 import { Accordion } from '../UI/Accordion';
 
-function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; atom: PrimitiveAtom<boolean>; }) {
-    const [value, setValue] = useAtom(atom);
-    return (
-        <label className="w-min h-6 whitespace-nowrap flex items-center text-xs space-x-1.5 select-none" title={tooltip}>
-            <input
-                type="checkbox" className="rounded text-slate-700 bg-slate-400 focus:ring-slate-900"
-                checked={value}
-                onChange={() => setValue(v => !v)}
-            />
-            <div className="">{label}</div>
-        </label>
-    );
-}
-
 function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string; idx: number; }) {
     const [viewboxRow, setViewbox] = useAtom(doSetViewBoxAtom);
     const viewbox = viewboxRow.map(v => parseFloat(v.toFixed(3))) as ViewBox;
@@ -54,41 +40,6 @@ function ViewBoxControls() {
     );
 }
 
-function PrecisionInput() {
-    const [precision, setPrecision] = useAtom(precisionAtom);
-    const bind = useNumberInput(precision, (v: number) => setPrecision(v));
-    return (
-        <label className="flex items-center text-xs space-x-1 select-none">
-            <div className="">Precision</div>
-            <input
-                className={`w-8 h-[1.375rem] text-xs text-center text-slate-900 bg-slate-200 border-slate-300 rounded border focus:outline-none shadow-sm shadow-slate-800/30`}
-                {...bind}
-            />
-        </label>
-    );
-}
-
-function TicksControl() {
-    const showGrid = useAtomValue(showGridAtom);
-    const showTicks = useAtomValue(showTicksAtom);
-    const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom);
-    const bind = useNumberInput(tickInteval, (v: number) => setTickInteval(v));
-    return (<>
-        {showGrid && <>
-            <Checkbox label="Ticks" tooltip="Show ticks" atom={showTicksAtom} />
-            <div className="flex items-center ">
-                {showTicks &&
-                    <input
-                        className={`w-8 h-[1.375rem] text-xs text-center text-slate-900 bg-slate-200 border-slate-300 shadow-slate-800/30 rounded border focus:outline-none shadow-sm focus:ring-0`}
-                        {...bind}
-                    />
-                }
-            </div>
-        </>
-        }
-    </>);
-}
-
 function ZoomButton({ label, title, atom, value, className = '' }: { label: string; title: string; atom: WritableAtom<null, number>; value: number; className?: string; }) {
     const doAction = useUpdateAtom(atom);
     return (
@@ -115,6 +66,57 @@ function ZoomControls() {
     );
 }
 
+function Checkbox({ label, tooltip, atom, className, ...rest }: { label: string; tooltip: string; atom: PrimitiveAtom<boolean>; } & React.HTMLAttributes<HTMLLabelElement>) {
+    const [value, setValue] = useAtom(atom);
+    return (
+        <label className={classNames("w-min h-6 whitespace-nowrap flex items-center text-xs space-x-1.5 select-none", className)} title={tooltip} {...rest}>
+            <input
+                type="checkbox" className="rounded text-slate-700 bg-slate-400 focus:ring-slate-900"
+                checked={value}
+                onChange={() => setValue(v => !v)}
+            />
+            <div className="">{label}</div>
+        </label>
+    );
+}
+
+function PrecisionInput({ className, ...rest }: React.HTMLAttributes<HTMLLabelElement>) {
+    const [precision, setPrecision] = useAtom(precisionAtom);
+    const bind = useNumberInput(precision, (v: number) => setPrecision(v));
+    return (
+        <label className={classNames("flex items-center text-xs space-x-1 select-none", className)} {...rest}>
+            <div className="">Precision</div>
+            <input
+                className={`w-8 h-[1.375rem] text-xs text-center text-slate-900 bg-slate-200 border-slate-300 rounded border focus:outline-none shadow-sm shadow-slate-800/30`}
+                {...bind}
+            />
+        </label>
+    );
+}
+
+function TicksControl({ className, ...rest }: React.HTMLAttributes<HTMLElement>) {
+    const showGrid = useAtomValue(showGridAtom);
+    const showTicks = useAtomValue(showTicksAtom);
+    const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom);
+    const bind = useNumberInput(tickInteval, (v: number) => setTickInteval(v));
+    return (<>
+        <div className={classNames("flex space-x-2", className)} {...rest}>
+            {showGrid && <>
+                <Checkbox label="Ticks" tooltip="Show ticks" atom={showTicksAtom} />
+                <div className="flex items-center ">
+                    {showTicks &&
+                        <input
+                            className={`w-8 h-[1.375rem] text-xs text-center text-slate-900 bg-slate-200 border-slate-300 shadow-slate-800/30 rounded border focus:outline-none shadow-sm focus:ring-0`}
+                            {...bind}
+                        />
+                    }
+                </div>
+            </>
+            }
+        </div>
+    </>);
+}
+
 export function PanelCanvasControlsInternals() {
     return (
         <div className="px-1.5 pt-1 pb-3 bg-slate-400/40 rounded flex items-center space-x-2">
@@ -133,19 +135,18 @@ export function PanelCanvasControlsInternals() {
                         {/* Snap controls */}
                         <div className="flex items-center justify-between">
                             <Checkbox label="Snap to grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
-                            <PrecisionInput />
+                            <PrecisionInput className="w-24 justify-end" />
                         </div>
-                        {/* Grid controls */}
+                        {/* Show grid and tick controls */}
                         <div className="h-6 flex items-center justify-between">
                             <Checkbox label="Show grid" tooltip="Show grid" atom={showGridAtom} />
-                            <div className="flex space-x-2">
-                                <TicksControl />
-                            </div>
-                        </div>
 
-                        <div className="flex items-center space-x-2">
+                            <TicksControl className="w-24 justify-end" />
+                        </div>
+                        {/* All other */}
+                        <div className="flex items-center justify-between">
                             <Checkbox label="Show point contols" tooltip="Preview mode" atom={showCPsAtom} />
-                            <Checkbox label="Fill path" tooltip="Fill path" atom={fillPathAtom} />
+                            <Checkbox label="Fill path" tooltip="Fill path" className="w-24" atom={fillPathAtom} />
                         </div>
                         <Checkbox label="Minify output" tooltip="Minify output" atom={minifyOutputAtom} />
                     </div>
