@@ -1,11 +1,11 @@
-export default function cx(...configs: Array<string | Record<string, boolean>>): string {
-    return configs.map((config) => (
-        typeof config === 'string'
-            ? config
-            : Object.keys(config).filter((subKey: string) => config[subKey]).join(' ')),
+export default function cx(...classes: Array<string | Record<string, boolean>>): string {
+    return classes.map((cls) => (
+        typeof cls === 'string'
+            ? cls
+            : Object.keys(cls).filter((subKey: string) => cls[subKey]).join(' ')),
     ).join(' ');
 }
 
-export function classNames(...classes: string[]): string {
+export function classNames(...classes: (string | undefined)[]): string {
     return classes.filter(Boolean).join(' ');
 }
