@@ -55,7 +55,7 @@ function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string;
         <label className="relative text-xs select-none" title={tooltip}>
             <div className="absolute left-1.5 text-[.6rem] text-slate-900/60">{label}</div>
             <input
-                className={`px-1 pt-3 w-14 h-8 text-xs text-slate-900 rounded border border-slate-300 bg-slate-200 focus:outline-none shadow-sm shadow-slate-800/30`}
+                className={`px-1 pt-3 w-14 h-8 text-xs text-slate-900 bg-slate-200 border-slate-300 rounded border focus:outline-none shadow-sm shadow-slate-800/30`}
                 {...bind}
             />
         </label>
@@ -80,7 +80,7 @@ function PrecisionInput() {
         <label className="flex items-center text-xs space-x-1 select-none">
             <div className="">Precision</div>
             <input
-                className={`w-6 h-6 text-xs text-center rounded border border-slate-500 text-slate-400 bg-slate-700 focus:outline-none shadow-sm shadow-slate-800`}
+                className={`w-8 h-6 text-xs text-center text-slate-900 bg-slate-200 border-slate-300 rounded border focus:outline-none shadow-sm shadow-slate-800/30`}
                 {...bind}
             />
         </label>
@@ -112,7 +112,7 @@ function ButtonZoom({ label, atom, value, className = '' }: { label: string; ato
     return (
         <button
             className={classNames(
-                `px-1 pb-px h-6 text-xs text-slate-400 border-slate-500 bg-slate-800 shadow-sm shadow-slate-800 active:scale-[.97] select-none`,
+                `px-1 pb-px h-8 text-xs text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/50 active:scale-[.97] select-none`,
                 className
             )}
             onClick={() => setIsDown(value)}
@@ -125,18 +125,19 @@ function ButtonZoom({ label, atom, value, className = '' }: { label: string; ato
 function ZoomControls() {
     return (
         <div className="flex items-center">
-            <ButtonZoom label="-" atom={doSetZoomAtom} value={10} className="rounded-l border w-5" />
-            <ButtonZoom label="Fit Zoom" atom={doSetZoomAtom} value={0} className="border-t border-b" />
-            <ButtonZoom label="+" atom={doSetZoomAtom} value={-10} className="rounded-r border w-5" />
+            <ButtonZoom label="-" atom={doSetZoomAtom} value={10} className="rounded-l border w-8" />
+            <ButtonZoom label="Zoom to Fit" atom={doSetZoomAtom} value={0} className="border-t border-b px-2" />
+            <ButtonZoom label="+" atom={doSetZoomAtom} value={-10} className="rounded-r border w-8" />
         </div>
     );
 }
 
 export function PanelCanvasControlsInternals() {
     return (
-        <div className="px-3 py-3 bg-slate-400/40 rounded flex items-center space-x-2">
+        <div className="px-1 pt-1 pb-3 bg-slate-400/40 rounded flex items-center space-x-2">
             <div className="flex flex-col">
                 {/* ViewBox */}
+                <div className="text-xs">Viewbox</div>
                 <ViewBoxControls />
 
                 <div className="flex flex-col">
