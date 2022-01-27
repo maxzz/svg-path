@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import { openPanelCmdsAtom } from '../../store/store';
 import { SectionPane } from '../UI/SectionPane';
 import { Accordion } from '../UI/Accordion';
-import { PathCommandEditor } from './PathCommandEditor';
+import { PathCommandEditor } from './PanelCommandsEditor';
 
 export function PanelCommands() {
     const [open, setOpen] = useAtom(openPanelCmdsAtom);

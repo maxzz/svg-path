@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { atom, useAtom } from 'jotai';
 import { Accordion } from './components/UI/Accordion';
-import { PathCommandEditor } from './components/Panels/PathCommandEditor';
+import { PathCommandEditor } from './components/Panels/PanelCommandsEditor';
 import { PathCanvas } from './components/Canvas/Canvas';
 import './App.css';
 import { PanelOperations } from './components/Panels/PanelOperations';
