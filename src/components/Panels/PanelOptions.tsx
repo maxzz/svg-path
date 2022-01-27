@@ -30,7 +30,7 @@ function Button({ label, atom, leftBorder = true, ...rest }:
 function Checkbox({ label, tooltip, atom }: { label: string; tooltip: string; atom: PrimitiveAtom<boolean>; }) {
     const [value, setValue] = useAtom(atom);
     return (
-        <label className="w-min whitespace-nowrap flex items-center text-xs space-x-2 select-none" title={tooltip}>
+        <label className="w-min h-6 whitespace-nowrap flex items-center text-xs space-x-2 select-none" title={tooltip}>
             <input
                 type="checkbox" className="rounded text-slate-700 bg-slate-400 focus:ring-slate-900"
                 checked={value}
@@ -113,7 +113,8 @@ function TicksControl2() {
     const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom);
     const bind = useNumberInput(tickInteval, (v: number) => setTickInteval(v));
     return (<>
-        {showGrid &&
+        {showGrid && <>
+            <Checkbox label="Ticks" tooltip="Show ticks" atom={showTicksAtom} />
             <div className="flex items-center ">
                 {showTicks &&
                     <input
@@ -122,6 +123,7 @@ function TicksControl2() {
                     />
                 }
             </div>
+        </>
         }
     </>);
 }
@@ -154,15 +156,19 @@ function ZoomControls() {
 
 export function PanelCanvasControlsInternals() {
     return (
-        <div className="px-1 pt-1 pb-3 bg-slate-400/40 rounded flex items-center space-x-2">
+        <div className="px-1.5 pt-1 pb-3 bg-slate-400/40 rounded flex items-center space-x-2">
             <div className="flex flex-col">
                 {/* ViewBox */}
                 <div className="text-xs">Viewbox</div>
                 <ViewBoxControls />
 
+                <div className="mt-3">
+                    <ZoomControls />
+                </div>
+
                 <div className="flex flex-col">
                     {/* Checkboxes */}
-                    <div className="mt-2 space-y-1.5">
+                    <div className="mt-2">
                         <div className="flex items-center justify-between">
                             <Checkbox label="Snap to Grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
                             <PrecisionInput />
@@ -170,24 +176,25 @@ export function PanelCanvasControlsInternals() {
                         <Checkbox label="Fill" tooltip="Fill path" atom={fillPathAtom} />
                         <Checkbox label="Preview" tooltip="Preview mode" atom={previewAtom} />
                         <Checkbox label="Minify" tooltip="Minify output" atom={minifyOutputAtom} />
-                        <div className="flex items-center space-x-4">
-                            <Checkbox label="Show Grid" tooltip="Show grid" atom={minifyOutputAtom} />
+                        {/* Grid controls */}
+                        <div className="h-6 flex items-center space-x-4">
+                            <Checkbox label="Show Grid" tooltip="Show grid" atom={showGridAtom} />
                             <div className="flex space-x-2">
-                                <Checkbox label="Ticks" tooltip="Show ticks" atom={minifyOutputAtom} />
+                                {/* <Checkbox label="Ticks" tooltip="Show ticks" atom={showTicksAtom} /> */}
                                 <TicksControl2 />
                             </div>
                         </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="mt-3 flex items-center justify-between">
+                    {/* <div className="mt-3 flex items-center justify-between">
                         <ZoomControls />
 
                         <div className="flex">
                             <TicksControl />
                             <Button label="Grid" atom={showGridAtom} />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
