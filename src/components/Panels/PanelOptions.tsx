@@ -154,7 +154,7 @@ export function PanelCanvasControlsInternals() {
     );
 }
 
-export default function PanelOptions() {
+export function PanelOptions() {
     const [open, setOpen] = useAtom(openPanelOptsAtom);
     return (
         <div className="">

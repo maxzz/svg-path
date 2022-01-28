@@ -1,20 +1,16 @@
-import React, { useState } from 'react';
-import { atom, useAtom } from 'jotai';
-import { Accordion } from './components/UI/Accordion';
-import { PathCommandEditor } from './components/Panels/PanelCommandsEditor';
+import React from 'react';
 import { PathCanvas } from './components/Canvas/Canvas';
 import './App.css';
-import { PanelOperations } from './components/Panels/PanelOperations';
-import { PanelPath } from './components/Panels/PanelPath';
-import { PanelCanvasControls } from './components/Panels/PanelCanvasControls';
-import { PanelCommands } from './components/Panels/PanelCommands';
-import PanelOptions from './components/Panels/PanelOptions';
 import { UIScrollbar } from './components/UI/UIScrollbar';
+import { PanelPath } from './components/Panels/PanelPath';
+//import { PanelCanvasControls } from './components/Panels/PanelCanvasControls';
+import { PanelCommands } from './components/Panels/PanelCommands';
+import { PanelOperations } from './components/Panels/PanelOperations';
+import { PanelOptions } from './components/Panels/PanelOptions';
 
 function PanelAllEditors() {
     return (
         <div className="py-1 w-[300px] max-w-[300px] flex flex-col space-y-1 bg-slate-600 border border-slate-900">
-            {/* <p className='text-red-700 font-black'>Ground zero</p> */}
             <div className="flex-1 min-w-0 min-h-0">
                 <UIScrollbar className="overflow-auto w-full h-full">
                     <PanelPath />
@@ -23,9 +19,9 @@ function PanelAllEditors() {
                     <PanelOptions />
                 </UIScrollbar>
             </div>
-            <div className="relative h-24">
+            {/* <div className="relative h-24">
                 <PanelCanvasControls />
-            </div>
+            </div> */}
         </div>
     );
 }
