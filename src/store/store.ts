@@ -295,7 +295,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             (svgItemIdx + 1 < root.edits.length) && updateItem(svgItemIdx + 1);
             updateCompletePath();
         } else if (svgItemIdx === -2) {
-            root.edits.forEach((edit, idx) => updateItem(idx));
+            root.edits.forEach((edit, idx) => updateItem(idx, true));
             updateCompletePath();
         }
     }
@@ -303,24 +303,25 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         svg.setLocation(pt, newXY);
         triggerUpdate(set, svgItemIdx);
     }
-    function doScale(get: Getter, set: Setter, ) {
+    function doScale(get: Getter, set: Setter,) {
         const x = get(operScaleXAtom);
         const y = get(operScaleYAtom);
         root.svg.scale(x, y);
         triggerUpdate(set, -2);
     }
-    function doTrans(get: Getter, set: Setter, ) {
+    function doTrans(get: Getter, set: Setter,) {
         const x = get(operTransXAtom);
         const y = get(operTransYAtom);
         root.svg.translate(x, y);
         triggerUpdate(set, -2);
     }
-    function doRound(get: Getter, set: Setter, ) {
+    function doRound(get: Getter, set: Setter,) {
         const round = get(operRoundAtom);
         set(pathUnsafeAtom, root.svg.asString(round));
     }
     function doSetRelAbs(get: Getter, set: Setter, relOrAbs: boolean) {
-        //TODO: Where to get current value
+        root.svg.setRelative(relOrAbs);
+        triggerUpdate(set, -2);
     }
 }
 
