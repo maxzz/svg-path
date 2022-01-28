@@ -33,10 +33,10 @@ function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string;
 function ViewBoxControls() {
     return (
         <div className="flex space-x-1.5">
-            <ViewboxInput label="x" tooltip="view box" idx={0} />
-            <ViewboxInput label="y" tooltip="view box" idx={1} />
-            <ViewboxInput label="width" tooltip="view box" idx={2} />
-            <ViewboxInput label="height" tooltip="view box" idx={3} />
+            <ViewboxInput label="x" tooltip="view box x" idx={0} />
+            <ViewboxInput label="y" tooltip="view box y" idx={1} />
+            <ViewboxInput label="width" tooltip="view box width" idx={2} />
+            <ViewboxInput label="height" tooltip="view box height" idx={3} />
         </div>
     );
 }
@@ -77,7 +77,7 @@ function Checkbox({ label, tooltip, atom, className, ...rest }: { label: string;
     return (
         <label className={classNames("w-min h-6 whitespace-nowrap flex items-center text-xs space-x-1.5 select-none", className)} title={tooltip} {...rest}>
             <input
-                type="checkbox" className="rounded text-slate-700 bg-slate-400 focus:ring-slate-900"
+                type="checkbox" className="rounded text-slate-500 bg-slate-300 focus:ring-slate-500 focus:ring-offset-1"
                 checked={value}
                 onChange={() => setValue(v => !v)}
             />
