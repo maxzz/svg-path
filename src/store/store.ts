@@ -296,6 +296,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             updateCompletePath();
         } else if (svgItemIdx === -2) {
             root.edits.forEach((edit, idx) => updateItem(idx));
+            updateCompletePath();
         }
     }
     function doUpdatePoint(get: Getter, set: Setter, { pt, newXY, svgItemIdx }: { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }) {
