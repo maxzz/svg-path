@@ -5,6 +5,7 @@ import { Accordion } from "../UI/Accordion";
 import { SectionPane } from "../UI/SectionPane";
 import { useNumberInput } from "../../hooks/useNumberInput";
 import { useUpdateAtom } from "jotai/utils";
+import { IconLock } from "../UI/icons/Icons";
 
 function OperationInput({ label, className = "", atom }: { label: string; className?: string; atom: PrimitiveAtom<number>; }) {
     const [value, setValue] = useAtom(atom);
@@ -26,6 +27,7 @@ function ScaleContols() {
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operScaleXAtom} label="Scale X" />
             <OperationInput atom={operScaleYAtom} label="Scale Y" />
+            <IconLock className="w-4 h-4" fill="red" />
             <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" onClick={doScale}>Scale</button>
         </div>
     );
