@@ -6,13 +6,15 @@ import { SectionPane } from "../UI/SectionPane";
 import { useNumberInput } from "../../hooks/useNumberInput";
 import { useUpdateAtom } from "jotai/utils";
 import { IconLock } from "../UI/icons/Icons";
+import { classNames } from "../../utils/classnames";
 
-function OperationInput({ label, className = "", atom }: { label: string; className?: string; atom: PrimitiveAtom<number>; }) {
+function OperationInput({ label, overlay, className, atom }: { label: string; overlay?: React.ReactNode ;  className?: string; atom: PrimitiveAtom<number>; }) {
     const [value, setValue] = useAtom(atom);
     const bind = useNumberInput(value, (v) => setValue(v));
     return (
-        <label className={`relative w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500 ${className}`}>
+        <label className={classNames("relative w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500", className)}>
             <div className="px-1 -mt-1 absolute text-[.6rem]">{label}</div>
+            {overlay}
             <input
                 className="px-1 pt-3 h-8 w-full border-b-2 text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
                 {...bind}
@@ -25,9 +27,8 @@ function ScaleContols() {
     const doScale = useUpdateAtom(doScaleAtom); //TODO: allow only positive numbers
     return (
         <div className="my-1 flex space-x-1">
-            <OperationInput atom={operScaleXAtom} label="Scale X" />
+            <OperationInput atom={operScaleXAtom} label="Scale X" overlay={<IconLock className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 fill-slate-700" />} />
             <OperationInput atom={operScaleYAtom} label="Scale Y" />
-            <IconLock className="w-4 h-4" fill="red" />
             <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" onClick={doScale}>Scale</button>
         </div>
     );
