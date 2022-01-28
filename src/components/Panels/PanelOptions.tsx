@@ -7,6 +7,7 @@ import { classNames } from '../../utils/classnames';
 import { ViewBox, ViewBoxManual } from '../../svg/svg-utils-viewport';
 import { SectionPane } from '../UI/SectionPane';
 import { Accordion } from '../UI/Accordion';
+import { useKey } from 'react-use';
 
 function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string; idx: number; }) {
     const [viewboxRow, setViewbox] = useAtom(doSetViewBoxAtom);
@@ -57,11 +58,16 @@ function ZoomButton({ label, title, atom, value, className = '' }: { label: stri
 }
 
 function ZoomControls({ className }: { className?: string; }) {
+    const doAction = useUpdateAtom(doSetZoomAtom);
+    useKey(
+        (event) => event.altKey && (event.key === '1' || event.key === '2' || event.key === '3'),
+        (event) => { event.preventDefault(); doAction(event.key === '1' ? 10 : event.key === '3' ? -10 : 0); }
+    );
     return (
         <div className={classNames("flex items-center", className)}>
-            <ZoomButton label="-" title="Zoom Out" atom={doSetZoomAtom} value={10} className="rounded-l border w-8" />
-            <ZoomButton label="Zoom to Fit" title="Zoom to Fit" atom={doSetZoomAtom} value={0} className="border-t border-b px-2" />
-            <ZoomButton label="+" title="Zoom In" atom={doSetZoomAtom} value={-10} className="rounded-r border w-8" />
+            <ZoomButton label="-" title="Zoom Out (Alt+1)" atom={doSetZoomAtom} value={10} className="rounded-l border w-8" />
+            <ZoomButton label="Zoom to Fit" title="Zoom to Fit (Alt+2)" atom={doSetZoomAtom} value={0} className="border-t border-b px-2" />
+            <ZoomButton label="+" title="Zoom In (Alt+3)" atom={doSetZoomAtom} value={-10} className="rounded-r border w-8" />
         </div>
     );
 }
