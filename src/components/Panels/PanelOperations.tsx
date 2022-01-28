@@ -1,6 +1,6 @@
 import React from "react";
 import { PrimitiveAtom, useAtom } from "jotai";
-import { doScaleAtom, openPanelOperAtom, operRoundAtom, operScaleXAtom, operScaleYAtom, operTransXAtom, operTransYAtom } from "../../store/store";
+import { doRoundAtom, doScaleAtom, doSetRelAbsAtom, doTransAtom, openPanelOperAtom, operRoundAtom, operScaleXAtom, operScaleYAtom, operTransXAtom, operTransYAtom } from "../../store/store";
 import { Accordion } from "../UI/Accordion";
 import { SectionPane } from "../UI/SectionPane";
 import { useNumberInput } from "../../hooks/useNumberInput";
@@ -21,7 +21,7 @@ function OperationInput({ label, className = "", atom }: { label: string; classN
 }
 
 function ScaleContols() {
-    const doScale = useUpdateAtom(doScaleAtom);
+    const doScale = useUpdateAtom(doScaleAtom); //TODO: allow only positive numbers
     return (
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operScaleXAtom} label="Scale X" />
@@ -32,22 +32,25 @@ function ScaleContols() {
 }
 
 function TranslateContols() {
+    const doTrans = useUpdateAtom(doTransAtom); //TODO: allow only positive numbers
     return (
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operTransXAtom} label="Translate X" />
             <OperationInput atom={operTransYAtom} label="Translate Y" />
-            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Translate</button>
+            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" onClick={doTrans}>Translate</button>
         </div>
     );
 }
 
 function RoundConvertContols() {
+    const doRound = useUpdateAtom(doRoundAtom); //TODO: allow only positive numbers
+    const doSetRelAbs = useUpdateAtom(doSetRelAbsAtom);
     return (
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operRoundAtom} label="Number of decimals" className="" />
-            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Round all path numbers">Round</button>
-            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Convert to relative">To rel</button>
-            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Convert to absolute">To abs</button>
+            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Round all path numbers" onClick={doRound}>Round</button>
+            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Convert to relative" onClick={() => doSetRelAbs(true)}>To rel</button>
+            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Convert to absolute" onClick={() => doSetRelAbs(false)}>To abs</button>
         </div>
     );
 }
