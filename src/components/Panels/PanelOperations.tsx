@@ -7,14 +7,13 @@ import { useNumberInput } from "../../hooks/useNumberInput";
 
 function OperationInput({ label, className = "", atom }: { label: string; className?: string; atom: PrimitiveAtom<number>; }) {
     const [value, setValue] = useAtom(atom);
-    const bind = useNumberInput(value, setValue);
+    const bind = useNumberInput(value, (v) => setValue(v));
     return (
         <label className={`relative w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500 ${className}`}>
             <div className="px-1 -mt-1 absolute text-[.6rem]">{label}</div>
             <input
                 className="px-1 pt-3 h-8 w-full border-b-2 text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
                 {...bind}
-                value={value}
             />
         </label>
     );
