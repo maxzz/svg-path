@@ -1,9 +1,10 @@
 import React from "react";
-import { atom, PrimitiveAtom, useAtom } from "jotai";
-import { openPanelOperAtom, operRoundAtom, operScaleXAtom, operScaleYAtom, operTransXAtom, operTransYAtom } from "../../store/store";
+import { PrimitiveAtom, useAtom } from "jotai";
+import { doScaleAtom, openPanelOperAtom, operRoundAtom, operScaleXAtom, operScaleYAtom, operTransXAtom, operTransYAtom } from "../../store/store";
 import { Accordion } from "../UI/Accordion";
 import { SectionPane } from "../UI/SectionPane";
 import { useNumberInput } from "../../hooks/useNumberInput";
+import { useUpdateAtom } from "jotai/utils";
 
 function OperationInput({ label, className = "", atom }: { label: string; className?: string; atom: PrimitiveAtom<number>; }) {
     const [value, setValue] = useAtom(atom);
@@ -19,17 +20,13 @@ function OperationInput({ label, className = "", atom }: { label: string; classN
     );
 }
 
-const scaleAtom = atom(null, (get, set,) => {
-    const x = get(operScaleXAtom);
-    const y = get(operScaleYAtom);
-});
-
 function ScaleContols() {
+    const doScale = useUpdateAtom(doScaleAtom);
     return (
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operScaleXAtom} label="Scale X" />
             <OperationInput atom={operScaleYAtom} label="Scale Y" />
-            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Scale</button>
+            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" onClick={doScale}>Scale</button>
         </div>
     );
 }

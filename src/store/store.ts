@@ -189,6 +189,11 @@ export type SvgEditRoot = {
     allowUpdatesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
     doReloadAllValuesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
     doReloadSvgItemIdxAtom: PrimitiveAtom<number>; // if -1 then do nothing
+
+    doScaleAtom: WritableAtom<null, undefined>,
+    doTransAtom: WritableAtom<null, undefined>,
+    doRoundAtom: WritableAtom<null, undefined>,
+    doSetRelAbsAtom: WritableAtom<null, boolean>,
 };
 
 function createSvgEditRoot(svg: Svg): SvgEditRoot {
@@ -200,6 +205,11 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         doReloadAllValuesAtom: atomWithCallback<boolean>(true, doReloadAllValues),
         doReloadSvgItemIdxAtom: atomWithCallback<number>(-1, doReloadSvgItemIdx),
         doUpdatePointAtom: atom(null, doUpdatePoint),
+
+        doScaleAtom: atom(null, doScale),
+        doTransAtom: atom(null, doTrans),
+        doRoundAtom: atom(null, doRound),
+        doSetRelAbsAtom: atom(null, doSetRelAbs),
     };
     updateSubIndecies();
     svg.path.forEach((svgItem, svgItemIdx) => {
@@ -244,7 +254,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         set(root.doReloadSvgItemIdxAtom, -1);
     }
 
-    function reloadAllItemsValues(get: Getter, set: Setter) {
+    function reloadAllItemValues(get: Getter, set: Setter) {
         set(root.allowUpdatesAtom, false);
         root.svg.path.forEach((svgItem, svgItemIdx) => {
             const thisRowAtoms = root.edits[svgItemIdx].valueAtoms;
@@ -260,7 +270,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     // action actoms
 
     function doReloadAllValues({ get, set, nextValue: doUpdate }: { get: Getter, set: Setter, nextValue: boolean; }) {
-        doUpdate && reloadAllItemsValues(get, set);
+        doUpdate && reloadAllItemValues(get, set);
     }
     function doReloadSvgItemIdx({ get, set, nextValue: svgItemIdx }: { get: Getter; set: Setter, nextValue: number; }) {
 
@@ -295,18 +305,43 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     function doScale(get: Getter, set: Setter, ) {
         const x = get(operScaleXAtom);
         const y = get(operScaleYAtom);
+        root.svg.scale(x, y);
+        triggerUpdate(set, -2);
     }
     function doTrans(get: Getter, set: Setter, ) {
         const x = get(operTransXAtom);
         const y = get(operTransYAtom);
+        root.svg.translate(x, y);
+        triggerUpdate(set, -2);
     }
     function doRound(get: Getter, set: Setter, ) {
-        const x = get(operRoundAtom);
+        const round = get(operRoundAtom);
+        set(pathUnsafeAtom, root.svg.asString(round));
     }
     function doSetRelAbs(get: Getter, set: Setter, relOrAbs: boolean) {
         //TODO: Where to get current value
     }
 }
+
+export const doScaleAtom = atom(null, (get, set,) => {
+    const svgEditRoot = get(svgEditRootAtom);
+    set(svgEditRoot.doScaleAtom);
+});
+
+export const doTransAtom = atom(null, (get, set,) => {
+    const svgEditRoot = get(svgEditRootAtom);
+    set(svgEditRoot.doTransAtom);
+});
+
+export const doRoundAtom = atom(null, (get, set,) => {
+    const svgEditRoot = get(svgEditRootAtom);
+    set(svgEditRoot.doRoundAtom);
+});
+
+export const doSetRelAbsAtom = atom(null, (get, set, relOrAbs: boolean) => {
+    const svgEditRoot = get(svgEditRootAtom);
+    set(svgEditRoot.doSetRelAbsAtom, relOrAbs);
+});
 
 export const svgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(getParsedSvg(Storage.initialData.path) || new Svg('')));
 
