@@ -29,8 +29,11 @@ export function PanelPath() {
                     <div className="flex justify-between">
                         <div className="pb-0.5 text-xs tracking-tighter self-end">path</div>
                         <div className="pb-1 flex space-x-1">
-                            <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Open</button>
+                            {/* <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Open</button> */}
                             <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Save</button>
+                            <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Copy</button>
+                            <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Undo</button>
+                            <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Redo</button>
                             <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Clear</button>
                         </div>
                     </div>
@@ -43,3 +46,6 @@ export function PanelPath() {
         </div>
     );
 }
+
+//TODO: scrollbar
+//TODO: undo/redo, save. copy, clear
