@@ -538,9 +538,7 @@ export const doCanvasMouseUpAtom = atom(null, (get, set,) => {
 
 //#endregion canvas drag operations
 
-//#region Option atoms
-
-// new canvas
+//#region Options
 
 export const tickIntevalAtom = atomWithCallback(Storage.initialData.ticks, ({ get }) => Storage.save(get));
 export const precisionAtom = atomWithCallback(Storage.initialData.precision, ({ get }) => Storage.save(get));
@@ -583,7 +581,17 @@ export const openPanelCmdsAtom = atomWithCallback(Storage.initialData.openPanelC
 export const openPanelOperAtom = atomWithCallback(Storage.initialData.openPanelOper, ({ get }) => Storage.save(get));
 export const openPanelOptsAtom = atomWithCallback(Storage.initialData.openPanelOpts, ({ get }) => Storage.save(get));
 
-//#endregion Option atoms
+//#endregion Options
+
+//#region Operations
+
+export const operScaleX = atom(1); // scale
+export const operScaleY = atom(1); // scale
+export const operTransX = atom(0); // translate
+export const operTransY = atom(0); // translate
+export const operRound = atom(1);  // round path numbers
+
+//#endregion Operations
 
 //#region History
 
