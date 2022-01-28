@@ -1,6 +1,6 @@
 import React from "react";
 import { PrimitiveAtom, useAtom } from "jotai";
-import { doRoundAtom, doScaleAtom, doSetRelAbsAtom, doTransAtom, openPanelOperAtom, operRoundAtom, operScaleXAtom, operScaleYAtom, operTransXAtom, operTransYAtom } from "../../store/store";
+import { doRoundAtom, doScaleAtom, doSetRelAbsAtom, doTransAtom, openPanelOperAtom, operRoundAtom, operScaleUniAtom, operScaleXAtom, operScaleYAtom, operTransXAtom, operTransYAtom } from "../../store/store";
 import { Accordion } from "../UI/Accordion";
 import { SectionPane } from "../UI/SectionPane";
 import { useNumberInput } from "../../hooks/useNumberInput";
@@ -8,7 +8,7 @@ import { useUpdateAtom } from "jotai/utils";
 import { IconLock } from "../UI/icons/Icons";
 import { classNames } from "../../utils/classnames";
 
-function OperationInput({ label, overlay, className, atom }: { label: string; overlay?: React.ReactNode ;  className?: string; atom: PrimitiveAtom<number>; }) {
+function OperationInput({ label, overlay, className, atom }: { label: string; overlay?: React.ReactNode; className?: string; atom: PrimitiveAtom<number>; }) {
     const [value, setValue] = useAtom(atom);
     const bind = useNumberInput(value, (v) => setValue(v));
     return (
@@ -25,9 +25,16 @@ function OperationInput({ label, overlay, className, atom }: { label: string; ov
 
 function ScaleContols() {
     const doScale = useUpdateAtom(doScaleAtom); //TODO: allow only positive numbers
+    const [uniScale, setUniScale] = useAtom(operScaleUniAtom);
+    const overlay = <IconLock
+        className={classNames("absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5", `${uniScale ? 'fill-slate-700' : 'fill-slate-400 stroke-slate-400'}`)}
+        strokeWidth={2}
+        onClick={() => setUniScale((v) => !v)}
+        title="lock x and y scales"
+    />;
     return (
         <div className="my-1 flex space-x-1">
-            <OperationInput atom={operScaleXAtom} label="Scale X" overlay={<IconLock className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 fill-slate-700" />} />
+            <OperationInput atom={operScaleXAtom} label="Scale X" overlay={overlay} />
             <OperationInput atom={operScaleYAtom} label="Scale Y" />
             <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" onClick={doScale}>Scale</button>
         </div>

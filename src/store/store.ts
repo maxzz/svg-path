@@ -635,6 +635,7 @@ export const openPanelOptsAtom = atomWithCallback(Storage.initialData.openPanelO
 
 //#region Operations
 
+export const operScaleUniAtom = atom(true); // uniform scale
 export const operScaleXAtom = atom(1); // scale
 export const operScaleYAtom = atom(1); // scale
 export const operTransXAtom = atom(0); // translate
