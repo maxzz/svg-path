@@ -1,6 +1,6 @@
 import React from "react";
-import { PrimitiveAtom, useAtom } from "jotai";
-import { openPanelOperAtom, operRound, operScaleX, operScaleY, operTransX, operTransY } from "../../store/store";
+import { atom, PrimitiveAtom, useAtom } from "jotai";
+import { openPanelOperAtom, operRoundAtom, operScaleXAtom, operScaleYAtom, operTransXAtom, operTransYAtom } from "../../store/store";
 import { Accordion } from "../UI/Accordion";
 import { SectionPane } from "../UI/SectionPane";
 import { useNumberInput } from "../../hooks/useNumberInput";
@@ -19,6 +19,42 @@ function OperationInput({ label, className = "", atom }: { label: string; classN
     );
 }
 
+const scaleAtom = atom(null, (get, set,) => {
+    const x = get(operScaleXAtom);
+    const y = get(operScaleYAtom);
+});
+
+function ScaleContols() {
+    return (
+        <div className="my-1 flex space-x-1">
+            <OperationInput atom={operScaleXAtom} label="Scale X" />
+            <OperationInput atom={operScaleYAtom} label="Scale Y" />
+            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Scale</button>
+        </div>
+    );
+}
+
+function TranslateContols() {
+    return (
+        <div className="my-1 flex space-x-1">
+            <OperationInput atom={operTransXAtom} label="Translate X" />
+            <OperationInput atom={operTransYAtom} label="Translate Y" />
+            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Translate</button>
+        </div>
+    );
+}
+
+function RoundConvertContols() {
+    return (
+        <div className="my-1 flex space-x-1">
+            <OperationInput atom={operRoundAtom} label="Number of decimals" className="" />
+            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Round all path numbers">Round</button>
+            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Convert to relative">To rel</button>
+            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Convert to absolute">To abs</button>
+        </div>
+    );
+}
+
 export function PanelOperations() {
     const [open, setOpen] = useAtom(openPanelOperAtom);
     return (
@@ -28,25 +64,9 @@ export function PanelOperations() {
             </SectionPane>
             <Accordion toggle={open}>
                 <div className="px-1.5 py-0.5 text-sm bg-slate-300 overflow-hidden">
-                    {/* Scale */}
-                    <div className="my-1 flex space-x-1">
-                        <OperationInput atom={operScaleX} label="Scale X" />
-                        <OperationInput atom={operScaleY} label="Scale Y" />
-                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Scale</button>
-                    </div>
-                    {/* Translate */}
-                    <div className="my-1 flex space-x-1">
-                        <OperationInput atom={operTransX} label="Translate X" />
-                        <OperationInput atom={operTransY} label="Translate Y" />
-                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]">Translate</button>
-                    </div>
-                    {/* Round, to rel, to abs */}
-                    <div className="my-1 flex space-x-1">
-                        <OperationInput atom={operRound} label="Number of decimals" className="" />
-                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Round all path numbers">Round</button>
-                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Convert to relative">To rel</button>
-                        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Convert to absolute">To abs</button>
-                    </div>
+                    <ScaleContols />
+                    <TranslateContols />
+                    <RoundConvertContols />
                 </div>
             </Accordion>
         </div>

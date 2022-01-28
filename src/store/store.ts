@@ -292,6 +292,20 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         svg.setLocation(pt, newXY);
         triggerUpdate(set, svgItemIdx);
     }
+    function doScale(get: Getter, set: Setter, ) {
+        const x = get(operScaleXAtom);
+        const y = get(operScaleYAtom);
+    }
+    function doTrans(get: Getter, set: Setter, ) {
+        const x = get(operTransXAtom);
+        const y = get(operTransYAtom);
+    }
+    function doRound(get: Getter, set: Setter, ) {
+        const x = get(operRoundAtom);
+    }
+    function doSetRelAbs(get: Getter, set: Setter, relOrAbs: boolean) {
+        //TODO: Where to get current value
+    }
 }
 
 export const svgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(getParsedSvg(Storage.initialData.path) || new Svg('')));
@@ -584,11 +598,11 @@ export const openPanelOptsAtom = atomWithCallback(Storage.initialData.openPanelO
 
 //#region Operations
 
-export const operScaleX = atom(1); // scale
-export const operScaleY = atom(1); // scale
-export const operTransX = atom(0); // translate
-export const operTransY = atom(0); // translate
-export const operRound = atom(1);  // round path numbers
+export const operScaleXAtom = atom(1); // scale
+export const operScaleYAtom = atom(1); // scale
+export const operTransXAtom = atom(0); // translate
+export const operTransYAtom = atom(0); // translate
+export const operRoundAtom = atom(1);  // round path numbers
 
 //#endregion Operations
 
