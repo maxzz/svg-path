@@ -244,7 +244,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         set(root.doReloadSvgItemIdxAtom, -1);
     }
 
-    function reloadValues(get: Getter, set: Setter) {
+    function reloadAllItemsValues(get: Getter, set: Setter) {
         set(root.allowUpdatesAtom, false);
         root.svg.path.forEach((svgItem, svgItemIdx) => {
             // svgItem.values.forEach((value, idx) => set(root.edits[svgItemIdx].valueAtoms[idx], value));
@@ -261,32 +261,44 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     // action actoms
 
     function doReloadAllValues({ get, set, nextValue: doUpdate }: { get: Getter, set: Setter, nextValue: boolean; }) {
-        doUpdate && reloadValues(get, set);
+        doUpdate && reloadAllItemsValues(get, set);
     }
     function doReloadSvgItemIdx({ get, set, nextValue: svgItemIdx }: { get: Getter; set: Setter, nextValue: number; }) {
-        if (svgItemIdx >= 0) {
+
+        function updateItem(svgItemIdx: number, updateType: boolean = false) {
             const svgEdit = root.edits[svgItemIdx];
             const svgItem = root.svg.path[svgItemIdx];
+
+            updateType && set(svgEdit.typeAtom, svgItem.getType());
+            set(svgEdit.standaloneStringAtom, svgItem.asStandaloneString());
+        }
+
+        if (svgItemIdx >= 0) {
+            updateItem(svgItemIdx, true);
+            // const svgEdit = root.edits[svgItemIdx];
+            // const svgItem = root.svg.path[svgItemIdx];
+
+            // set(svgEdit.typeAtom, svgItem.getType());
+            // set(svgEdit.standaloneStringAtom, svgItem.asStandaloneString());
+
+            if (svgItemIdx - 1 >= 0) {
+                updateItem(svgItemIdx - 1);
+                // const svgEdit = root.edits[svgItemIdx - 1];
+                // const svgItem = root.svg.path[svgItemIdx - 1];
+                // set(svgEdit.standaloneStringAtom, svgItem.asStandaloneString());
+            }
+            if (svgItemIdx + 1 < root.edits.length) {
+                updateItem(svgItemIdx + 1);
+                // const svgEdit = root.edits[svgItemIdx + 1];
+                // const svgItem = root.svg.path[svgItemIdx + 1];
+                // set(svgEdit.standaloneStringAtom, svgItem.asStandaloneString());
+            }
 
             const minify = get(minifyOutputAtom);
             const precision = get(precisionAtom);
 
-            set(svgEdit.typeAtom, svgItem.getType());
-            set(svgEdit.standaloneStringAtom, svgItem.asStandaloneString());
-
             set(root.completePathAtom, root.svg.asString());
             set(_pathUnsafeAtom, svg.asString(precision, minify));
-
-            if (svgItemIdx - 1 >= 0) {
-                const svgEdit = root.edits[svgItemIdx - 1];
-                const svgItem = root.svg.path[svgItemIdx - 1];
-                set(svgEdit.standaloneStringAtom, svgItem.asStandaloneString());
-            }
-            if (svgItemIdx + 1 < root.edits.length) {
-                const svgEdit = root.edits[svgItemIdx + 1];
-                const svgItem = root.svg.path[svgItemIdx + 1];
-                set(svgEdit.standaloneStringAtom, svgItem.asStandaloneString());
-            }
         }
     }
     function doUpdatePoint(get: Getter, set: Setter, { pt, newXY, svgItemIdx }: { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }) {
