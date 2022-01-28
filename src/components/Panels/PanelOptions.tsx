@@ -56,9 +56,9 @@ function ZoomButton({ label, title, atom, value, className = '' }: { label: stri
     );
 }
 
-function ZoomControls() {
+function ZoomControls({ className }: { className?: string; }) {
     return (
-        <div className="flex items-center">
+        <div className={classNames("flex items-center", className)}>
             <ZoomButton label="-" title="Zoom Out" atom={doSetZoomAtom} value={10} className="rounded-l border w-8" />
             <ZoomButton label="Zoom to Fit" title="Zoom to Fit" atom={doSetZoomAtom} value={0} className="border-t border-b px-2" />
             <ZoomButton label="+" title="Zoom In" atom={doSetZoomAtom} value={-10} className="rounded-r border w-8" />
@@ -88,6 +88,7 @@ function PrecisionInput({ className, ...rest }: React.HTMLAttributes<HTMLLabelEl
             <div className="">Precision</div>
             <input
                 className={`w-8 h-[1.375rem] text-xs text-center text-slate-900 bg-slate-200 border-slate-300 rounded border focus:outline-none shadow-sm shadow-slate-800/30`}
+                title="Point precision"
                 {...bind}
             />
         </label>
@@ -107,6 +108,7 @@ function TicksControl({ className, ...rest }: React.HTMLAttributes<HTMLElement>)
                     {showTicks &&
                         <input
                             className={`w-8 h-[1.375rem] text-xs text-center text-slate-900 bg-slate-200 border-slate-300 shadow-slate-800/30 rounded border focus:outline-none shadow-sm focus:ring-0`}
+                            title="Ticks interval"
                             {...bind}
                         />
                     }
@@ -124,10 +126,7 @@ export function PanelCanvasControlsInternals() {
                 {/* ViewBox */}
                 <div className="text-xs">viewbox</div>
                 <ViewBoxControls />
-
-                <div className="mt-3">
-                    <ZoomControls />
-                </div>
+                <ZoomControls className="mt-3" />
 
                 <div className="mt-2 grid grid-cols-[1fr,minmax(6rem,min-content)]">
                     {/* Snap controls */}
@@ -139,54 +138,15 @@ export function PanelCanvasControlsInternals() {
                     <TicksControl className="justify-end" />
 
                     {/* All other */}
-                    <Checkbox label="Show point contols" tooltip="Preview mode" atom={showCPsAtom} />
+                    <Checkbox label="Show point contols" tooltip="Show SVG point contols" atom={showCPsAtom} />
                     <Checkbox label="Fill path" tooltip="Fill path" className="" atom={fillPathAtom} />
 
-                    <Checkbox label="Minify output" tooltip="Minify output" className="col-span-full" atom={minifyOutputAtom} />
+                    <Checkbox label="Minify output" tooltip="Minify output path" className="col-span-full" atom={minifyOutputAtom} />
                 </div>
             </div>
         </div>
     );
 }
-
-// export function PanelCanvasControlsInternals() {
-//     return (
-//         <div className="px-1.5 pt-1 pb-3 bg-slate-400/40 rounded flex items-center space-x-2">
-//             <div className="flex flex-col">
-//                 {/* ViewBox */}
-//                 <div className="text-xs">viewbox</div>
-//                 <ViewBoxControls />
-
-//                 <div className="mt-3">
-//                     <ZoomControls />
-//                 </div>
-
-//                 <div className="flex flex-col">
-//                     {/* Checkboxes */}
-//                     <div className="mt-2">
-//                         {/* Snap controls */}
-//                         <div className="flex items-center justify-between">
-//                             <Checkbox label="Snap to grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
-//                             <PrecisionInput className="w-24 justify-end" />
-//                         </div>
-//                         {/* Show grid and tick controls */}
-//                         <div className="h-6 flex items-center justify-between">
-//                             <Checkbox label="Show grid" tooltip="Show grid" atom={showGridAtom} />
-
-//                             <TicksControl className="w-24 justify-end" />
-//                         </div>
-//                         {/* All other */}
-//                         <div className="flex items-center justify-between">
-//                             <Checkbox label="Show point contols" tooltip="Preview mode" atom={showCPsAtom} />
-//                             <Checkbox label="Fill path" tooltip="Fill path" className="w-24" atom={fillPathAtom} />
-//                         </div>
-//                         <Checkbox label="Minify output" tooltip="Minify output" atom={minifyOutputAtom} />
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// }
 
 export default function PanelOptions() {
     const [open, setOpen] = useAtom(openPanelOptsAtom);
