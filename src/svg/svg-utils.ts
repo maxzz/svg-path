@@ -44,7 +44,7 @@ const valueToPoint: { [key: string]: number[]; } = { // -1 point and >= 0 for co
     a: [0, 0, -1, -1, -1, -1, -1],
 };
 
-export function getvalueToPoint(command: string, idx: number): number {
+export function getValueToPoint(command: string, idx: number): number {
     //console.log('getvalueToPoint', command, idx, valueToPoint[command]?.[idx] ?? -1);
     return valueToPoint[command]?.[idx] ?? -1;
 }
