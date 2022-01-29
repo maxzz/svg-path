@@ -32,15 +32,22 @@ function ValueArcOption({ atom, isFirstRow, isActiveRow, isHoverRow, editorIdx, 
     tooltip: string;
 }) {
     const [value, setValue] = useAtom(atom);
-    return (<>
-        <input type="checkbox" value={value} onClick={() => setValue((v) => v ? 0 : 1)} title={tooltip} />
-        {/* tooltip */}
-        {isActiveRow &&/* isHovering &&*/
-            <div className={`mini-tooltip ${isFirstRow ? 'tooltip-up' : 'tooltip-down'} absolute min-w-[1.75rem] py-0.5 left-1/2 -translate-x-1/2 ${isFirstRow ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} text-xs text-center text-slate-100 bg-slate-400 rounded z-10`}>
-                {tooltip}
-            </div>
-        }
-    </>
+
+    const setState = useUpdateAtom(doSetStateAtom);
+    const editContainerRef = React.useRef(null);
+    const isHovering = useHoverDirty(editContainerRef);
+    React.useEffect(() => setState({ atom: stateAtom, states: { hoverEd: isHovering ? editorIdx[1] : -1 } }), [isHovering]);
+
+    return (
+        <div className="relative">
+            <input type="checkbox" ref={editContainerRef} checked={!!value} onChange={() => setValue(value ? 0 : 1)} />
+            {/* tooltip */}
+            {isActiveRow && isHovering &&
+                <div className={`mini-tooltip ${isFirstRow ? 'tooltip-down' : 'tooltip-up'} text-xs text-slate-100 bg-slate-400 rounded z-10`}>
+                    {tooltip}
+                </div>
+            }
+        </div>
     );
 }
 
@@ -56,7 +63,7 @@ function ValueArcOptions(props: {
     const { atomA, atomB, ...rest } = props;
     const { isFirstRow, isActiveRow, isHoverRow, svgItemIdx, stateAtom } = rest;
     return (
-        <div className="flex items-center">
+        <label className="flex items-center">
             <ValueArcOption
                 atom={atomA}
                 debugIdx={3}
@@ -71,7 +78,7 @@ function ValueArcOptions(props: {
                 tooltip={getTooltip('a', 4)}
                 {...rest}
             />
-        </div>
+        </label>
     );
 }
 
@@ -120,7 +127,7 @@ function ValueInput({ atom, isFirstRow, isActiveRow, isHoverRow, editorIdx, debu
             />
             {/* tooltip */}
             {isActiveRow && isHovering &&
-                <div className={`mini-tooltip ${isFirstRow ? 'tooltip-up' : 'tooltip-down'} absolute min-w-[1.75rem] py-0.5 left-1/2 -translate-x-1/2 ${isFirstRow ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} text-xs text-center text-slate-100 bg-slate-400 rounded z-10`}>
+                <div className={`mini-tooltip ${isFirstRow ? 'tooltip-down' : 'tooltip-up'} text-xs text-slate-100 bg-slate-400 rounded z-10`}>
                     {tooltip}
                 </div>
             }
