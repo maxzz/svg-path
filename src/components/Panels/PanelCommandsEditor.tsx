@@ -138,76 +138,6 @@ function ValueInput({ atom, isFirstRow, isActiveRow, isHoverRow, editorIdx, debu
     );
 }
 
-// function ValueInput({ atom, isFirstRow, isActivePt, isHoverPt, editorIdx, debugIdx, stateAtom, tooltip }: {
-//     atom: PrimitiveAtom<number>;
-//     isFirstRow: boolean;
-//     isActivePt: boolean;
-//     isHoverPt: boolean;
-//     editorIdx: [number, number];
-//     debugIdx: number;
-//     stateAtom: PrimitiveAtom<SvgItemEditState>;
-//     tooltip: string;
-// }) {
-//     doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] enter`, 'color: #bbf5');
-
-//     const [value, setValue] = useAtom(atom);
-//     const [local, setLocal] = React.useState('' + value);
-//     React.useEffect(() => setLocal('' + value), [value]);
-
-//     const setState = useUpdateAtom(doSetStateAtom);
-
-//     const editContainerRef = React.useRef(null);
-//     const isHovering = useHoverDirty(editContainerRef);
-
-//     React.useEffect(() => {
-//         //if (editContainerRef.current) {
-//         doTrace && console.log(`%cValueInput useEffect[isHovering] [${editorIdx}].[${debugIdx}]  single edit hovering=${isHovering} labelRef=${editContainerRef.current ? 'exist' : 'null'}`, 'color: #bbf5');
-
-//         setState({ atom: stateAtom, states: { hoverEd: isHovering ? editorIdx[1] : -1 } });
-//         //}
-//     }, [isHovering]);
-
-//     function onBlur() {
-//         resetInvalid();
-//         setState({ atom: stateAtom, states: { activeEd: -1 } });
-//     }
-
-//     doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] done: hovering=${isHovering} labelRef=${editContainerRef.current ? 'exist' : 'null'} value=${value}`, 'color: #bbf5');
-
-//     return (
-//         <label
-//             className={`relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${isActivePt ? 'bg-blue-300' : isHoverPt ? 'bg-slate-400/40' : ''}`}
-//             ref={editContainerRef}
-//         >
-//             {doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] %c..... from render tree`, 'color: #bbf1', 'color: #bbf1')}
-//             {/* value */}
-//             <input
-//                 className={`px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none ${isActivePt ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverPt ? 'bg-slate-200 border-slate-400/40' : ''} border-b-2 focus:border-blue-500  cursor-default focus:cursor-text`}
-//                 value={local}
-//                 onChange={(event) => convertToNumber(event.target.value)}
-//                 onFocus={() => setState({ atom: stateAtom, states: { activeEd: editorIdx[1] } })}
-//                 onBlur={onBlur}
-//             />
-//             {/* tooltip */}
-//             {isActivePt && isHovering &&
-//                 <div className={`mini-tooltip ${isFirstRow ? 'tooltip-up' : 'tooltip-down'} absolute min-w-[1.75rem] py-0.5 left-1/2 -translate-x-1/2 ${isFirstRow ? 'top-[calc(100%+4px)]' : '-top-[calc(100%+4px)]'} text-xs text-center text-slate-100 bg-slate-400 rounded z-10`}>
-//                     {tooltip}
-//                 </div>
-//             }
-//         </label>
-//     );
-
-//     function convertToNumber(s: string) {
-//         s = cleanupValueFloat(s);
-//         setLocal(s);
-//         const v = +s;
-//         s && !isNaN(v) && setValue(v);
-//     }
-//     function resetInvalid() {
-//         (!local || isNaN(+local)) && setLocal('' + value);
-//     }
-// }
-
 function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
 
     const svgItemIdx = svgItemEdit.svgItemIdx;
@@ -252,34 +182,9 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
                 <RowCommandName svgItemEdit={svgItemEdit} />
 
                 {svgItemEdit.valueAtoms.map((atom, idx) => {
-
-                    let typeKey = (svgItemEdit.svgItem.constructor as any).key as string;
-                    if (typeKey === 'A') {
-                        return idx === 3
-                            ? null
-                            : idx === 4
-                                ? <ValueArcOptions
-                                    atomA={svgItemEdit.valueAtoms[3]}
-                                    atomB={atom}
-                                    isFirstRow={svgItemIdx === 0}
-                                    isActiveRow={isActiveRow}
-                                    isHoverRow={isHoverRow}
-                                    svgItemIdx={svgItemIdx}
-                                    stateAtom={stateAtom}
-                                    key={idx}
-                                />
-                                : <ValueInput
-                                    atom={atom}
-                                    isFirstRow={svgItemIdx === 0}
-                                    isActiveRow={isActiveRow}
-                                    isHoverRow={isHoverRow}
-                                    editorIdx={[svgItemIdx, getValueToPoint(itemType, idx)]}
-                                    debugIdx={idx}
-                                    stateAtom={stateAtom}
-                                    tooltip={getTooltip(itemType, idx)}
-                                    key={idx}
-                                />;
-                    } else {
+                    const typeKey = (svgItemEdit.svgItem.constructor as any).key as string;
+                    const how = typeKey === 'A' ? idx === 3 ? 0 : idx === 4 ? 2 : 1 : 1;
+                    if (how === 1) {
                         return <ValueInput
                             atom={atom}
                             isFirstRow={svgItemIdx === 0}
@@ -291,6 +196,19 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
                             tooltip={getTooltip(itemType, idx)}
                             key={idx}
                         />;
+                    } else if (how === 2) {
+                        return <ValueArcOptions
+                            atomA={svgItemEdit.valueAtoms[3]}
+                            atomB={atom}
+                            isFirstRow={svgItemIdx === 0}
+                            isActiveRow={isActiveRow}
+                            isHoverRow={isHoverRow}
+                            svgItemIdx={svgItemIdx}
+                            stateAtom={stateAtom}
+                            key={idx}
+                        />;
+                    } else {
+                        return null;
                     }
                 }
                 )}
