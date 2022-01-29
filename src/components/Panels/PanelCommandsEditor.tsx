@@ -55,7 +55,7 @@ function ValueArcOption({ atom, isFirstRow, isActiveRow, isHoverRow, svgItemIdx,
         <div className="relative pb-1">
             <input
                 type="checkbox"
-                className={`w-3 h-3 rounded text-slate-500 bg-slate-300 focus:ring-slate-500 focus:ring-offset-1 focus:ring-1 focus:outline-none`}
+                className={`w-3 h-3 rounded text-slate-400 bg-slate-200 focus:ring-slate-500 focus:ring-offset-1 focus:ring-1 focus:outline-none`}
                 ref={editContainerRef}
                 checked={!!value}
                 onChange={() => setValue(value ? 0 : 1)}
