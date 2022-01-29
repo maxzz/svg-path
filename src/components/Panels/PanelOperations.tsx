@@ -4,11 +4,17 @@ import { doRoundAtom, doScaleAtom, doSetRelAbsAtom, doTransAtom, openPanelOperAt
 import { Accordion } from "../UI/Accordion";
 import { SectionPane } from "../UI/SectionPane";
 import { cleanupValueUFloat, cleanupValueUInt, useNumberInput } from "../../hooks/useNumberInput";
-import { useUpdateAtom } from "jotai/utils";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { IconLock } from "../UI/icons/Icons";
 import { classNames } from "../../utils/classnames";
 
-function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueUFloat }: { label: string; overlay?: React.ReactNode; className?: string; atom: PrimitiveAtom<number>; cleanup?: (s: string) => string; }) {
+function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueUFloat }: {
+    label: string;
+    overlay?: React.ReactNode;
+    className?: string;
+    atom: PrimitiveAtom<number>;
+    cleanup?: (s: string) => string;
+}) {
     const [value, setValue] = useAtom(atom);
     const bind = useNumberInput(value, (v) => setValue(v), cleanup);
     return (
@@ -23,19 +29,26 @@ function OperationInput({ label, overlay, className, atom, cleanup = cleanupValu
     );
 }
 
+function LockControl() {
+    const [uniScale, setUniScale] = useAtom(operScaleUniAtom);
+    return (
+        <IconLock
+            className={classNames("absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5", `${uniScale ? 'fill-slate-700' : 'fill-slate-400 stroke-slate-400'}`)}
+            strokeWidth={2}
+            onClick={() => setUniScale((v) => !v)}
+            title="lock x and y scales"
+        />
+    );
+}
+
 function ScaleContols() {
     const doScale = useUpdateAtom(doScaleAtom); //TODO: allow only positive numbers
-    const [uniScale, setUniScale] = useAtom(operScaleUniAtom);
-    const overlay = <IconLock
-        className={classNames("absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5", `${uniScale ? 'fill-slate-700' : 'fill-slate-400 stroke-slate-400'}`)}
-        strokeWidth={2}
-        onClick={() => setUniScale((v) => !v)}
-        title="lock x and y scales"
-    />;
+    const uniScale = useAtomValue(operScaleUniAtom);
+    //function setScale() {}
     return (
         <div className="my-1 flex space-x-1">
-            <OperationInput atom={operScaleXAtom} label="Scale X" overlay={overlay} />
-            <OperationInput atom={operScaleYAtom} label="Scale Y" />
+            <OperationInput atom={operScaleXAtom} label="Scale X" overlay={<LockControl />} />
+            <OperationInput atom={operScaleYAtom} label="Scale Y" className={uniScale ? 'opacity-50' : ''} />
             <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" onClick={doScale}>Scale</button>
         </div>
     );

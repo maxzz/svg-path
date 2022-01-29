@@ -636,18 +636,18 @@ export const openPanelOptsAtom = atomWithCallback(Storage.initialData.openPanelO
 //#region Operations
 
 const _operScaleUniAtom = atom(true); // uniform scale
-export const operScaleUniAtom = atom((get) => get(_operScaleUniAtom), (get, set, value: boolean) => {
+export const operScaleUniAtom = atom((get) => get(_operScaleUniAtom), (get, set, value: SetStateAction<boolean>) => {
     set(_operScaleUniAtom, value);
-    if (value) {
+    if (get(_operScaleUniAtom)) {
         set(operScaleYAtom, get(_operScaleXAtom));
     }
 });
 
 const _operScaleXAtom = atom(1); // scale
-export const operScaleXAtom = atom((get) => get(_operScaleXAtom), (get, set, value: number) => {
+export const operScaleXAtom = atom((get) => get(_operScaleXAtom), (get, set, value: SetStateAction<number>) => {
     set(_operScaleXAtom, value);
     if (get(operScaleUniAtom)) {
-        set(operScaleYAtom, value);
+        set(operScaleYAtom, get(_operScaleXAtom));
     }
 });
 

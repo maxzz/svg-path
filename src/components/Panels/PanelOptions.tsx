@@ -125,7 +125,7 @@ function TicksControl({ className, ...rest }: React.HTMLAttributes<HTMLElement>)
     </>);
 }
 
-export function PanelCanvasControlsInternals() {
+function PanelBody() {
     return (
         <div className="px-1.5 pt-1 pb-3 bg-slate-400/40 rounded flex items-center space-x-2">
             <div className="flex flex-col">
@@ -163,7 +163,7 @@ export function PanelOptions() {
             </SectionPane>
             <Accordion toggle={open}>
                 <div className="text-sm bg-slate-300 overflow-hidden">
-                    <PanelCanvasControlsInternals />
+                    <PanelBody />
                 </div>
             </Accordion>
         </div>
