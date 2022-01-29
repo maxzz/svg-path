@@ -8,6 +8,7 @@ import { getTooltip, getValueToPoint } from "../../svg/svg-utils";
 import { useNumberInput } from "../../hooks/useNumberInput";
 import { doTrace } from "../../utils/debugging";
 import "../UI/pathcommands-tooltip.scss";
+import { classNames } from "../../utils/classnames";
 
 function RowCommandName({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     const itemType = useAtomValue(svgItemEdit.typeAtom);
@@ -30,17 +31,20 @@ function MiniTooltip({ tooltip, isFirstRow }: { tooltip: string, isFirstRow: boo
     );
 }
 
-function ValueArcOption({ atom, isFirstRow, isActiveRow, isHoverRow, editorIdx, debugIdx, stateAtom, tooltip }: {
+function ValueArcOption({ atom, isFirstRow, isActiveRow, isHoverRow, svgItemIdx, debugIdx, stateAtom }: {
     atom: PrimitiveAtom<number>;
+
     isFirstRow: boolean;
     isActiveRow: boolean;
     isHoverRow: boolean;
-    editorIdx: [number, number];
-    debugIdx: number;
+
+    svgItemIdx: number;
     stateAtom: PrimitiveAtom<SvgItemEditState>;
-    tooltip: string;
+    debugIdx: number;
 }) {
     const [value, setValue] = useAtom(atom);
+
+    const editorIdx = [svgItemIdx, getValueToPoint('a', debugIdx)];
 
     const setState = useUpdateAtom(doSetStateAtom);
     const editContainerRef = React.useRef(null);
@@ -48,15 +52,16 @@ function ValueArcOption({ atom, isFirstRow, isActiveRow, isHoverRow, editorIdx, 
     React.useEffect(() => setState({ atom: stateAtom, states: { hoverEd: isHovering ? editorIdx[1] : -1 } }), [isHovering]);
 
     return (
-        <div className="relative">
+        <div className="relative pb-1">
             <input
                 type="checkbox"
+                className={`w-3 h-3 rounded text-slate-500 bg-slate-300 focus:ring-slate-500 focus:ring-offset-1 focus:ring-1 focus:outline-none`}
                 ref={editContainerRef}
                 checked={!!value}
                 onChange={() => setValue(value ? 0 : 1)}
             />
             {/* tooltip */}
-            {isActiveRow && isHovering && <MiniTooltip tooltip={tooltip} isFirstRow={isFirstRow} />}
+            {isActiveRow && isHovering && <MiniTooltip tooltip={getTooltip('a', debugIdx)} isFirstRow={isFirstRow} />}
         </div>
     );
 }
@@ -64,30 +69,19 @@ function ValueArcOption({ atom, isFirstRow, isActiveRow, isHoverRow, editorIdx, 
 function ValueArcOptions(props: {
     atomA: PrimitiveAtom<number>;
     atomB: PrimitiveAtom<number>;
+
     isFirstRow: boolean;
     isActiveRow: boolean;
     isHoverRow: boolean;
+
     svgItemIdx: number;
     stateAtom: PrimitiveAtom<SvgItemEditState>;
 }) {
     const { atomA, atomB, ...rest } = props;
-    const { isFirstRow, isActiveRow, isHoverRow, svgItemIdx, stateAtom } = rest;
     return (
-        <label className="flex items-center">
-            <ValueArcOption
-                atom={atomA}
-                debugIdx={3}
-                editorIdx={[svgItemIdx, getValueToPoint('a', 3)]}
-                tooltip={getTooltip('a', 3)}
-                {...rest}
-            />
-            <ValueArcOption
-                atom={atomB}
-                debugIdx={4}
-                editorIdx={[svgItemIdx, getValueToPoint('a', 3)]}
-                tooltip={getTooltip('a', 4)}
-                {...rest}
-            />
+        <label className="px-0.5 flex items-center space-x-0.5">
+            <ValueArcOption atom={atomA} {...rest} debugIdx={3} />
+            <ValueArcOption atom={atomB} {...rest} debugIdx={4} />
         </label>
     );
 }
@@ -124,10 +118,13 @@ function ValueInput({ atom, isFirstRow, isActiveRow, isHoverRow, editorIdx, debu
 
     return (
         <label
-            className={`relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex ${isActiveRow ? 'bg-blue-300' : isHoverRow ? 'bg-slate-400/40' : ''}`}
+            className={classNames(
+                `relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex`,
+                `${isActiveRow ? 'bg-blue-300' : isHoverRow ? 'bg-slate-400/40' : ''}`,
+            )}
             ref={editContainerRef}
         >
-            {doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] %c..... from render tree`, 'color: #bbf1', 'color: #bbf1')}
+            {doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] %c..... from render tree`, 'color: 1#bbf1', 'color: #bbf1')}
             {/* value */}
             <input
                 className={`px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none ${isActiveRow ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverRow ? 'bg-slate-200 border-slate-400/40' : ''} border-b-2 focus:border-blue-500  cursor-default focus:cursor-text`}
