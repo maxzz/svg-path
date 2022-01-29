@@ -169,3 +169,5 @@ export function PanelOptions() {
         </div>
     );
 }
+
+//TODO: animated lock https://codepen.io/richardwestenra/pen/MWOYvPz

@@ -140,4 +140,7 @@ export function ControlPoint({ svgItemEdit, cpIdx }: { svgItemEdit: SvgItemEdit;
     </>);
 }
 
-//TODO: z command not following first m command.
+//TODO: z command 
+//  * not following first m command (as asString is not triggering updates). 
+//  * there can be two z commands
+//  * z coomand should highlight corresponding first command in case of compound path
