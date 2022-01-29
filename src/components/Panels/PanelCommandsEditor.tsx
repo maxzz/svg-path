@@ -15,10 +15,13 @@ function RowCommandName({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     const [isRel, setIsRel] = useAtom(svgItemEdit.isRelAtom);
     return (
         <label
-            className={`flex-0 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 ${!isRel ? 'bg-slate-500' : 'bg-slate-400'} cursor-pointer select-none`}
+            className={classNames(
+                `flex-0 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 cursor-pointer select-none`,
+                !isRel ? 'bg-slate-500' : 'bg-slate-400'
+            )}
             onClick={() => setIsRel(v => !v)}
         >
-            <div className="">{itemType}</div>
+            <div>{itemType}</div>
         </label>
     );
 }
@@ -119,7 +122,7 @@ function ValueInput({ atom, isFirstRow, isActiveRow, isHoverRow, editorIdx, debu
     return (
         <label
             className={classNames(
-                `relative flex-1 w-[2.4rem] h-5 rounded-tl-sm bg-slate-200 text-slate-900 focus-within:text-blue-500 flex`,
+                `relative flex-1 flex w-[2.4rem] h-5 bg-slate-200 text-slate-900 focus-within:text-blue-500 rounded-tl-sm`,
                 `${isActiveRow ? 'bg-blue-300' : isHoverRow ? 'bg-slate-400/40' : ''}`,
             )}
             ref={editContainerRef}
@@ -127,7 +130,11 @@ function ValueInput({ atom, isFirstRow, isActiveRow, isHoverRow, editorIdx, debu
             {doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] %c..... from render tree`, 'color: 1#bbf1', 'color: #bbf1')}
             {/* value */}
             <input
-                className={`px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter focus:outline-none ${isActiveRow ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverRow ? 'bg-slate-200 border-slate-400/40' : ''} border-b-2 focus:border-blue-500  cursor-default focus:cursor-text`}
+                className={classNames(
+                    `px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter border-b-2`,
+                    `focus:border-blue-500 cursor-default focus:cursor-text focus:outline-none`,
+                    isActiveRow ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverRow ? 'bg-slate-200 border-slate-400/40' : '',
+                )}
                 {...bindRest}
                 onFocus={() => setState({ atom: stateAtom, states: { activeEd: editorIdx[1] } })}
                 onBlur={() => (onBlurInput(), setState({ atom: stateAtom, states: { activeEd: -1 } }))}
@@ -147,7 +154,6 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
 
     const setState = useUpdateAtom(doSetStateAtom);
     const state = useAtomValue(stateAtom);
-
     const isActiveRow = state.activeRow;
     const isHoverRow = state.hoverRow;
 
@@ -210,8 +216,7 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
                     } else {
                         return null;
                     }
-                }
-                )}
+                })}
             </div>
 
             {/* Menu */}
@@ -235,5 +240,4 @@ export function PathCommandEditor() {
     );
 }
 
-//TODO: arc
 //TODO: z point overlaps prev point and makes prev point unselectable
