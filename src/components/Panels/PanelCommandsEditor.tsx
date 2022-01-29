@@ -5,8 +5,9 @@ import { doSetStateAtom, svgEditRootAtom, SvgItemEdit, SvgItemEditState } from "
 import { useDebounce, useHoverDirty } from "react-use";
 import { IconMenu } from "../UI/icons/Icons";
 import { getTooltip, getValueToPoint } from "../../svg/svg-utils";
+import { useNumberInput } from "../../hooks/useNumberInput";
 import { doTrace } from "../../utils/debugging";
-import { cleanupValueFloat, useNumberInput } from "../../hooks/useNumberInput";
+import "../UI/pathcommands-tooltip.scss";
 
 function RowCommandName({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     const itemType = useAtomValue(svgItemEdit.typeAtom);
@@ -18,6 +19,14 @@ function RowCommandName({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
         >
             <div className="">{itemType}</div>
         </label>
+    );
+}
+
+function MiniTooltip({ tooltip, isFirstRow }: { tooltip: string, isFirstRow: boolean; }) {
+    return (
+        <div className={`mini-tooltip ${isFirstRow ? 'tooltip-down' : 'tooltip-up'} text-xs text-slate-100 bg-slate-400 rounded z-10`}>
+            {tooltip}
+        </div>
     );
 }
 
@@ -40,13 +49,14 @@ function ValueArcOption({ atom, isFirstRow, isActiveRow, isHoverRow, editorIdx, 
 
     return (
         <div className="relative">
-            <input type="checkbox" ref={editContainerRef} checked={!!value} onChange={() => setValue(value ? 0 : 1)} />
+            <input
+                type="checkbox"
+                ref={editContainerRef}
+                checked={!!value}
+                onChange={() => setValue(value ? 0 : 1)}
+            />
             {/* tooltip */}
-            {isActiveRow && isHovering &&
-                <div className={`mini-tooltip ${isFirstRow ? 'tooltip-down' : 'tooltip-up'} text-xs text-slate-100 bg-slate-400 rounded z-10`}>
-                    {tooltip}
-                </div>
-            }
+            {isActiveRow && isHovering && <MiniTooltip tooltip={tooltip} isFirstRow={isFirstRow} />}
         </div>
     );
 }
@@ -126,11 +136,7 @@ function ValueInput({ atom, isFirstRow, isActiveRow, isHoverRow, editorIdx, debu
                 onBlur={() => (onBlurInput(), setState({ atom: stateAtom, states: { activeEd: -1 } }))}
             />
             {/* tooltip */}
-            {isActiveRow && isHovering &&
-                <div className={`mini-tooltip ${isFirstRow ? 'tooltip-down' : 'tooltip-up'} text-xs text-slate-100 bg-slate-400 rounded z-10`}>
-                    {tooltip}
-                </div>
-            }
+            {isActiveRow && isHovering && <MiniTooltip tooltip={tooltip} isFirstRow={isFirstRow} />}
         </label>
     );
 }
