@@ -252,30 +252,46 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
                 <RowCommandName svgItemEdit={svgItemEdit} />
 
                 {svgItemEdit.valueAtoms.map((atom, idx) => {
-                    return idx === 3
-                        ? null
-                        : idx === 4
-                            ? <ValueArcOptions
-                                atomA={svgItemEdit.valueAtoms[3]}
-                                atomB={atom}
-                                isFirstRow={svgItemIdx === 0}
-                                isActiveRow={isActiveRow}
-                                isHoverRow={isHoverRow}
-                                svgItemIdx={svgItemIdx}
-                                stateAtom={stateAtom}
-                                key={idx}
-                            />
-                            : <ValueInput
-                                atom={atom}
-                                isFirstRow={svgItemIdx === 0}
-                                isActiveRow={isActiveRow}
-                                isHoverRow={isHoverRow}
-                                editorIdx={[svgItemIdx, getValueToPoint(itemType, idx)]}
-                                debugIdx={idx}
-                                stateAtom={stateAtom}
-                                tooltip={getTooltip(itemType, idx)}
-                                key={idx}
-                            />;
+
+                    let typeKey = (svgItemEdit.svgItem.constructor as any).key as string;
+                    if (typeKey === 'A') {
+                        return idx === 3
+                            ? null
+                            : idx === 4
+                                ? <ValueArcOptions
+                                    atomA={svgItemEdit.valueAtoms[3]}
+                                    atomB={atom}
+                                    isFirstRow={svgItemIdx === 0}
+                                    isActiveRow={isActiveRow}
+                                    isHoverRow={isHoverRow}
+                                    svgItemIdx={svgItemIdx}
+                                    stateAtom={stateAtom}
+                                    key={idx}
+                                />
+                                : <ValueInput
+                                    atom={atom}
+                                    isFirstRow={svgItemIdx === 0}
+                                    isActiveRow={isActiveRow}
+                                    isHoverRow={isHoverRow}
+                                    editorIdx={[svgItemIdx, getValueToPoint(itemType, idx)]}
+                                    debugIdx={idx}
+                                    stateAtom={stateAtom}
+                                    tooltip={getTooltip(itemType, idx)}
+                                    key={idx}
+                                />;
+                    } else {
+                        return <ValueInput
+                            atom={atom}
+                            isFirstRow={svgItemIdx === 0}
+                            isActiveRow={isActiveRow}
+                            isHoverRow={isHoverRow}
+                            editorIdx={[svgItemIdx, getValueToPoint(itemType, idx)]}
+                            debugIdx={idx}
+                            stateAtom={stateAtom}
+                            tooltip={getTooltip(itemType, idx)}
+                            key={idx}
+                        />;
+                    }
                 }
                 )}
             </div>
