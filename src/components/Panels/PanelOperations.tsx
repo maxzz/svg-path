@@ -95,3 +95,13 @@ export function PanelOperations() {
         </div>
     );
 }
+
+//TODO: handle enter key (on first control or both)
+//TODO: scale 0:0 produces NaN
+
+//TBD: do scale as slider(s) or replace second scalce Y with slider!!
+//TBD: do we need to reset after scale to 1:1 <- NO
+//TBD: do we need to disable scale button when scale is 1:1
+//TBD: do we need to disable translate button when translate is 0:0
+
+//TODO: undo/redo
