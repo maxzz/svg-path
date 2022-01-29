@@ -1,4 +1,4 @@
-import { Atom, PrimitiveAtom, useAtom } from "jotai";
+import React from "react";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { canvasStrokeAtom, doSetStateAtom, CanvasDragEvent, SvgItemEditState, doCanvasPointClkAtom, SvgItemEdit } from "../../store/store";
 import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg/svg";
@@ -19,7 +19,9 @@ export function TargetPoint({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     const stateAtom = svgItemEdit.stateAtom;
 
     const pt: SvgPoint = svgItemEdit.svgItem.targetLocation();
-    const isMCommand = pt.itemReference.getType().toUpperCase() === 'M';
+    const ptType = pt.itemReference.getType().toUpperCase();
+    const isMCommand = ptType === 'M';
+    const isZCommand = ptType === 'Z';
 
     const state = useAtomValue(stateAtom);
     const activeEd = state.activeRow && state.activeEd === -1;
@@ -42,20 +44,25 @@ export function TargetPoint({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
         {/* Path point as circle */}
         <circle
             className="cursor-pointer"
-            style={isMCommand
-                ? { stroke: pointColor(state.activeRow, state.hoverRow), fill: '#fff3', strokeWidth: stroke * 1.2, }
-                : { stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow), strokeWidth: stroke * 12, }
+            style={
+                isMCommand
+                    ? { stroke: pointColor(state.activeRow, state.hoverRow), fill: '#fff3', strokeWidth: stroke * 1.2, } :
+                    isZCommand ?
+                        { stroke: pointColor(state.activeRow, state.hoverRow), fill: 'transparent', strokeWidth: stroke * 1.2, pointerEvents: 'none' } :
+                        { stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow), strokeWidth: stroke * 12, }
             }
             cx={pt.x} cy={pt.y} r={isMCommand ? stroke * 5 : stroke * 3}
-            // r={stroke * 3} 
+            // r={stroke * 3}
             // strokeWidth={stroke * 12}
 
             onMouseEnter={() => setState({ atom: stateAtom, states: { hoverRow: true } })}
             onMouseLeave={() => setState({ atom: stateAtom, states: { hoverRow: false } })}
             onMouseDown={(event) => {
-                event.stopPropagation();
-                setState({ atom: stateAtom, states: { activeRow: true } });
-                doCanvasPointClk({ mdownEvent: event, mdownPt: pt, svgItemIdx });
+                if (!isZCommand) {
+                    event.stopPropagation();
+                    setState({ atom: stateAtom, states: { activeRow: true } });
+                    doCanvasPointClk({ mdownEvent: event, mdownPt: pt, svgItemIdx });
+                }
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
@@ -132,3 +139,5 @@ export function ControlPoint({ svgItemEdit, cpIdx }: { svgItemEdit: SvgItemEdit;
         </rect>
     </>);
 }
+
+//TODO: z command not following first m command.
