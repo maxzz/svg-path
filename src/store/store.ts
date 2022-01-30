@@ -1,7 +1,8 @@
 import { atom, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom } from "jotai";
-import { toast } from "../components/UI/UIToast";
+import { toast, toastSVGParse } from "../components/UI/UIToast";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg/svg";
+import { getSvgItemAbsType } from "../svg/svg-utils";
 import { getCanvasStroke, getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
 import debounce from "../utils/debounce";
 import { unexpected, _fViewBox, _ViewBox } from "../utils/debugging";
@@ -78,8 +79,24 @@ namespace Storage {
 
 function getParsedSvg(path: string): Svg | undefined {
     try {
-        return new Svg(path);
+        const svg = new Svg(path);
+        if (svg.path.length) {
+            const first = getSvgItemAbsType(svg.path[0]);
+            if (first !== 'M') {
+                throw new Error("The path must start with moveto command (('M' or 'm')");
+            }
+        }
+        return svg;
     } catch (error) {
+        if (typeof error === 'string') {
+            toastSVGParse(error);
+        } else if (error instanceof Error) {
+            if (/^malformed path /.test(error.message)) {
+                toastSVGParse(`tm mal: ${error}`);
+            } else {
+                toast((error as Error).message);
+            }
+        }
     }
 }
 
@@ -746,4 +763,3 @@ export const disableHistoryAtom = atom(null, // During point drag operation on c
 
 //TODO: calc first points in compound path
 
-//TODO: add scale in % insted of abstract numbers as it is now.
