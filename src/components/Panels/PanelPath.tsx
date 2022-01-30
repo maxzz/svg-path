@@ -17,6 +17,17 @@ function PathEditor() {
     );
 }
 
+function Button({ label, ...rest }: { label: string; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
+    return (
+        <button
+            className="px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm active:scale-[.97] select-none"
+            {...rest}
+        >
+            {label}
+        </button>
+    );
+}
+
 export function PanelPath() {
     const [open, setOpen] = useAtom(openPanelPathAtom);
     return (
@@ -28,13 +39,13 @@ export function PanelPath() {
                 <div className="px-1.5 pt-1.5 pb-0.5 text-sm bg-slate-300 overflow-hidden">
                     <div className="flex justify-between">
                         <div className="pb-0.5 text-xs tracking-tighter self-end">path</div>
-                        <div className="pb-1 flex space-x-1">
-                            {/* <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Open</button> */}
-                            <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Save</button>
-                            <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Copy</button>
-                            <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Undo</button>
-                            <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Redo</button>
-                            <button className="px-1 pt-0.5 pb-1 bg-slate-400/40 border-slate-400 border rounded shadow-sm active:scale-[.97]">Clear</button>
+                        <div className="pb-2 flex space-x-1">
+                            {/* <Button label="Open" onClick={() => {}} /> */}
+                            <Button label="Save" onClick={() => {}} />
+                            <Button label="Copy" onClick={() => {}} />
+                            <Button label="Undo" onClick={() => {}} />
+                            <Button label="Redo" onClick={() => {}} />
+                            <Button label="Clear" onClick={() => {}} />
                         </div>
                     </div>
 
