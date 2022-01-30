@@ -46,6 +46,14 @@ function LockControl() {
     );
 }
 
+function Button({ label, ...rest }: { label: string; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
+    return (
+        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" {...rest}>
+            {label}
+        </button>
+    );
+}
+
 function ScaleContols() {
     const uniScale = useAtomValue(operScaleUniAtom);
     const doScale = useUpdateAtom(doScaleAtom);
@@ -53,7 +61,7 @@ function ScaleContols() {
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<LockControl />} onEnter={doScale} />
             {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className={uniScale ? 'opacity-50' : ''} onEnter={doScale} />}
-            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" style={{transition: 'all 2s'}} onClick={doScale}>Scale</button>
+            <Button onClick={doScale} label="Scale" />
         </div>
     );
 }
@@ -64,7 +72,7 @@ function TranslateContols() {
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operTransXAtom} label="Translate X" onEnter={doTrans} />
             <OperationInput atom={operTransYAtom} label="Translate Y" onEnter={doTrans} />
-            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" onClick={doTrans}>Translate</button>
+            <Button onClick={doTrans} label="Translate" />
         </div>
     );
 }
@@ -75,9 +83,9 @@ function RoundConvertContols() {
     return (
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operRoundAtom} label="Number of decimals" cleanup={cleanupValueUInt} className="" />
-            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Round all path numbers" onClick={doRound}>Round</button>
-            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Convert to relative" onClick={() => doSetRelAbs(true)}>To rel</button>
-            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" title="Convert to absolute" onClick={() => doSetRelAbs(false)}>To abs</button>
+            <Button title="Round all path numbers" onClick={doRound} label="Round" />
+            <Button title="Convert to relative" onClick={() => doSetRelAbs(true)} label="To rel" />
+            <Button title="Convert to absolute" onClick={() => doSetRelAbs(false)} label="To abs" />
         </div>
     );
 }
