@@ -171,3 +171,4 @@ export function PanelOptions() {
 }
 
 //TODO: animated lock https://codepen.io/richardwestenra/pen/MWOYvPz
+//https://www.smashingmagazine.com/2021/12/create-custom-range-input-consistent-browsers

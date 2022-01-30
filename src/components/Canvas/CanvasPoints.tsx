@@ -29,6 +29,10 @@ export function TargetPoint({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
 
     doTrace && console.log(`%c--PT-- [${svgItemIdx}. ] re-rendder, state`, 'color: #bbb', state);
 
+    if (isZCommand) {
+        return null;
+    }
+
     return (<>
         {/* A piece of path */}
         {(state.activeRow || state.hoverRow) &&
