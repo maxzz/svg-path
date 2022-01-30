@@ -47,9 +47,8 @@ function LockControl() {
 }
 
 function ScaleContols() {
-    const doScale = useUpdateAtom(doScaleAtom); //TODO: allow only positive numbers
     const uniScale = useAtomValue(operScaleUniAtom);
-    //function setScale() {}
+    const doScale = useUpdateAtom(doScaleAtom);
     return (
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<LockControl />} onEnter={doScale} />

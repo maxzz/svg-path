@@ -308,6 +308,10 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     function doScale(get: Getter, set: Setter,) {
         const x = get(operScaleXAtom);
         const y = get(operScaleYAtom);
+        if (x <= 0 || y <= 0) {
+            //TODO: set atom to add message to the list of errors popup
+            return;
+        }
         root.svg.scale(x, y);
         triggerUpdate(set, -2);
     }
@@ -735,3 +739,8 @@ export const disableHistoryAtom = atom(null, // During point drag operation on c
 //
 
 //#endregion History
+
+//TODO: add list of popup messages
+//TODO: show error messages from SVG parser
+
+//TODO: calc first points in compound path
