@@ -290,9 +290,11 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         }
 
         if (svgItemIdx >= 0) {
-            updateItem(svgItemIdx, true);
-            (svgItemIdx - 1 >= 0) && updateItem(svgItemIdx - 1);
-            (svgItemIdx + 1 < root.edits.length) && updateItem(svgItemIdx + 1);
+            //Fix for problem w/ absolute /relative commands: M 5 25 m 13 2 v 10 h 10 Z
+                //updateItem(svgItemIdx, true);
+                // (svgItemIdx - 1 >= 0) && updateItem(svgItemIdx - 1);
+                // (svgItemIdx + 1 < root.edits.length) && updateItem(svgItemIdx + 1);
+            root.edits.forEach((edit, idx) => updateItem(idx, true));
             updateCompletePath();
         } else if (svgItemIdx === -2) {
             root.edits.forEach((edit, idx) => updateItem(idx, true));
