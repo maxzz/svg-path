@@ -7,6 +7,7 @@ import { cleanupValueUFloat, cleanupValueUInt, useNumberInput } from "../../hook
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { IconLock } from "../UI/icons/Icons";
 import { classNames } from "../../utils/classnames";
+import { useKey } from "react-use";
 
 function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueUFloat }: {
     label: string;
@@ -17,12 +18,17 @@ function OperationInput({ label, overlay, className, atom, cleanup = cleanupValu
 }) {
     const [value, setValue] = useAtom(atom);
     const bind = useNumberInput(value, (v) => setValue(v), cleanup);
+    const inputRef = React.useRef(null);
+    useKey('Enter', (event) => {
+        console.log('enter');
+    }, {target: inputRef.current}, [inputRef.current]);
     return (
         <label className={classNames("relative w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500", className)}>
             <div className="px-1 -mt-1 absolute text-[.6rem]">{label}</div>
             {overlay}
             <input
                 className="px-1 pt-3 h-8 w-full border-b-2 text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
+                ref={inputRef}
                 {...bind}
             />
         </label>
@@ -47,8 +53,8 @@ function ScaleContols() {
     //function setScale() {}
     return (
         <div className="my-1 flex space-x-1">
-            <OperationInput atom={operScaleXAtom} label="Scale X" overlay={<LockControl />} />
-            <OperationInput atom={operScaleYAtom} label="Scale Y" className={uniScale ? 'opacity-50' : ''} />
+            <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<LockControl />} />
+            {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className={uniScale ? 'opacity-50' : ''} />}
             <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" onClick={doScale}>Scale</button>
         </div>
     );
