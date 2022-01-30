@@ -48,7 +48,10 @@ function LockControl() {
 
 function Button({ label, ...rest }: { label: string; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
     return (
-        <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" {...rest}>
+        <button
+            className="px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/50 border rounded-sm active:scale-[.97] select-none"
+            {...rest}
+        >
             {label}
         </button>
     );
