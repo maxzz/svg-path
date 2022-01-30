@@ -1,4 +1,5 @@
 import { atom, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom } from "jotai";
+import { toast } from "../components/UI/UIToast";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg/svg";
 import { getCanvasStroke, getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
@@ -291,9 +292,9 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 
         if (svgItemIdx >= 0) {
             //Fix for problem w/ absolute/relative commands: M 5 25 m 13 2 v 10 h 10 Z
-                //updateItem(svgItemIdx, true);
-                // (svgItemIdx - 1 >= 0) && updateItem(svgItemIdx - 1);
-                // (svgItemIdx + 1 < root.edits.length) && updateItem(svgItemIdx + 1);
+            //updateItem(svgItemIdx, true);
+            // (svgItemIdx - 1 >= 0) && updateItem(svgItemIdx - 1);
+            // (svgItemIdx + 1 < root.edits.length) && updateItem(svgItemIdx + 1);
             root.edits.forEach((edit, idx) => updateItem(idx, true));
             updateCompletePath();
         } else if (svgItemIdx === -2) {
@@ -309,7 +310,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         const x = get(operScaleXAtom);
         const y = get(operScaleYAtom);
         if (x === 0 || y === 0) {
-            //TODO: set atom to add message to the list of errors popup
+            toast(`Can't scale to zero`);
             return;
         }
         root.svg.scale(x, y);
