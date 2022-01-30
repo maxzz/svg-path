@@ -53,7 +53,7 @@ function ScaleContols() {
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<LockControl />} onEnter={doScale} />
             {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className={uniScale ? 'opacity-50' : ''} onEnter={doScale} />}
-            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" onClick={doScale}>Scale</button>
+            <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" style={{transition: 'all 2s'}} onClick={doScale}>Scale</button>
         </div>
     );
 }
@@ -62,8 +62,8 @@ function TranslateContols() {
     const doTrans = useUpdateAtom(doTransAtom); //TODO: allow only positive numbers
     return (
         <div className="my-1 flex space-x-1">
-            <OperationInput atom={operTransXAtom} label="Translate X" />
-            <OperationInput atom={operTransYAtom} label="Translate Y" />
+            <OperationInput atom={operTransXAtom} label="Translate X" onEnter={doTrans} />
+            <OperationInput atom={operTransYAtom} label="Translate Y" onEnter={doTrans} />
             <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" onClick={doTrans}>Translate</button>
         </div>
     );
