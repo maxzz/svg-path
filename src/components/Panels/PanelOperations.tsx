@@ -3,13 +3,13 @@ import { PrimitiveAtom, useAtom } from "jotai";
 import { doRoundAtom, doScaleAtom, doSetRelAbsAtom, doTransAtom, openPanelOperAtom, operRoundAtom, operScaleUniAtom, operScaleXAtom, operScaleYAtom, operTransXAtom, operTransYAtom } from "../../store/store";
 import { Accordion } from "../UI/Accordion";
 import { SectionPane } from "../UI/SectionPane";
-import { cleanupValueUFloat, cleanupValueUInt, useNumberInput } from "../../hooks/useNumberInput";
+import { cleanupValueFloat, cleanupValueUInt, useNumberInput } from "../../hooks/useNumberInput";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { IconLock } from "../UI/icons/Icons";
 import { classNames } from "../../utils/classnames";
 import { useKey } from "react-use";
 
-function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueUFloat, onEnter }: {
+function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueFloat, onEnter }: {
     label: string;
     overlay?: React.ReactNode;
     className?: string;
