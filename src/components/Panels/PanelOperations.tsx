@@ -9,19 +9,18 @@ import { IconLock } from "../UI/icons/Icons";
 import { classNames } from "../../utils/classnames";
 import { useKey } from "react-use";
 
-function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueUFloat }: {
+function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueUFloat, onEnter }: {
     label: string;
     overlay?: React.ReactNode;
     className?: string;
     atom: PrimitiveAtom<number>;
     cleanup?: (s: string) => string;
+    onEnter?: () => void;
 }) {
     const [value, setValue] = useAtom(atom);
     const bind = useNumberInput(value, (v) => setValue(v), cleanup);
     const inputRef = React.useRef(null);
-    useKey('Enter', (event) => {
-        console.log('enter');
-    }, {target: inputRef.current}, [inputRef.current]);
+    useKey('Enter', () => onEnter && onEnter(), { target: inputRef.current }, [inputRef.current]);
     return (
         <label className={classNames("relative w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500", className)}>
             <div className="px-1 -mt-1 absolute text-[.6rem]">{label}</div>
@@ -53,8 +52,8 @@ function ScaleContols() {
     //function setScale() {}
     return (
         <div className="my-1 flex space-x-1">
-            <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<LockControl />} />
-            {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className={uniScale ? 'opacity-50' : ''} />}
+            <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<LockControl />} onEnter={doScale} />
+            {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className={uniScale ? 'opacity-50' : ''} onEnter={doScale} />}
             <button className="px-1 flex-1 py-0.5 mx-auto border rounded border-slate-400 active:scale-[.97]" onClick={doScale}>Scale</button>
         </div>
     );
