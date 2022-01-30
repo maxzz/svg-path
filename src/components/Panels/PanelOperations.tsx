@@ -108,4 +108,6 @@ export function PanelOperations() {
 //TBD: do we need to disable scale button when scale is 1:1
 //TBD: do we need to disable translate button when translate is 0:0
 
+//TODO: add scale in % insted of abstract numbers as it is now.
+
 //TODO: undo/redo

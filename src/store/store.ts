@@ -89,10 +89,15 @@ function getParsedSvg(path: string): Svg | undefined {
         return svg;
     } catch (error) {
         if (typeof error === 'string') {
-            toastSVGParse(error);
+            if (/^Invalid path/.test(error)) {
+                toastSVGParse(`tm path: ${error}`);
+            } else {
+                toastSVGParse(error);
+            }
         } else if (error instanceof Error) {
-            if (/^malformed path /.test(error.message)) {
-                toastSVGParse(`tm mal: ${error}`);
+            const m = /^malformed path \(first error at (\d+)\)/.exec(error.message);
+            if (m) {
+                toastSVGParse(`tm mal: ${error.message} at pos ${m[1]}`);
             } else {
                 toast((error as Error).message);
             }

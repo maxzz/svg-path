@@ -49,10 +49,10 @@ function RenderPath() {
             : fill
                 ? '#94a3b830'
                 : 'none'
-            ;
-    return (
-        <path d={completePath} fill={fillColor} stroke="white" strokeWidth={stroke} />
-    );
+        ;
+    return (<>
+        {completePath && <path d={completePath} fill={fillColor} stroke="white" strokeWidth={stroke} />}
+    </>);
 }
 
 function RenderTargetPoints() {
