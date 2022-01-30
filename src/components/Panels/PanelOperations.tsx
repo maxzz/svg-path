@@ -49,7 +49,7 @@ function LockControl() {
 function Button({ label, ...rest }: { label: string; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
     return (
         <button
-            className="px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/50 border rounded-sm active:scale-[.97] select-none"
+            className="px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm active:scale-[.97] select-none"
             {...rest}
         >
             {label}
@@ -64,7 +64,7 @@ function ScaleContols() {
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<LockControl />} onEnter={doScale} />
             {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className={uniScale ? 'opacity-50' : ''} onEnter={doScale} />}
-            <Button onClick={doScale} label="Scale" />
+            <Button onClick={doScale} label="Scale" style={{ transition: 'all .2s', flexGrow: !uniScale ? 0.001 : 1 }} />
         </div>
     );
 }
