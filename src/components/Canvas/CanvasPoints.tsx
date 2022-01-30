@@ -3,6 +3,7 @@ import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { canvasStrokeAtom, doSetStateAtom, CanvasDragEvent, SvgItemEditState, doCanvasPointClkAtom, SvgItemEdit } from "../../store/store";
 import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg/svg";
 import { doTrace } from "../../utils/debugging";
+import { getSvgItemAbsType } from "../../svg/svg-utils";
 
 type CanvasDragHandler = (event: CanvasDragEvent) => void;
 
@@ -19,7 +20,7 @@ export function TargetPoint({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     const stateAtom = svgItemEdit.stateAtom;
 
     const pt: SvgPoint = svgItemEdit.svgItem.targetLocation();
-    const ptType = pt.itemReference.getType().toUpperCase();
+    const ptType = getSvgItemAbsType(svgItemEdit.svgItem);
     const isMCommand = ptType === 'M';
     const isZCommand = ptType === 'Z';
 
@@ -32,7 +33,6 @@ export function TargetPoint({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     if (isZCommand) {
         return null;
     }
-
     return (<>
         {/* A piece of path */}
         {(state.activeRow || state.hoverRow) &&

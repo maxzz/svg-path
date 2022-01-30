@@ -68,6 +68,9 @@ export default App;
 //Two z commands
 //M 10 4 C 14 -3 16.6 6.2 20 10.1 c 3.5 3.9 5.2 6.9 9.4 6.8 c 4.3 -0.1 6.3 -2.8 6.3 -6.3 c 0 -3.6 -1.8 -6.5 -6.3 -6.3 c -4.5 0.1 -7.5 2.1 -11 5.9 c -3.5 3.8 -5.1 8.7 -11.1 8.7 C 2 16 0.1 11.2 0.1 7.7 C 0.1 4.1 2 0 6 0 z M 6 7 m 8 2 v 10 h 10 z
 
+//Two z commands and absolute/relative commands
+//m 6 10 C 14 -3 16.6 6.2 20 10.1 c 3.5 3.9 5.2 6.9 9.4 6.8 c 4.3 -0.1 6.3 -2.8 6.3 -6.3 c 0 -3.6 -1.8 -6.5 -6.3 -6.3 c -4.5 0.1 -7.5 2.1 -11 5.9 c -3.5 3.8 -5.1 8.7 -11.1 8.7 C 2 16 0.1 11.2 0.1 7.7 C 0.1 4.1 2 0 6 0 Z M 7 20 m 3 0 v 10 H 26 Z
+
 // drag not working
 // lost last target point render
 // zoom to fit not working

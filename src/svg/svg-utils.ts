@@ -1,3 +1,5 @@
+import { SvgItem } from "./svg";
+
 const commandAttrs: { [key: string]: string[]; } = {
     M: ['x', 'y'],
     m: ['dx', 'dy'],
@@ -47,4 +49,8 @@ const valueToPoint: { [key: string]: number[]; } = { // -1 point and >= 0 for co
 export function getValueToPoint(command: string, idx: number): number {
     //console.log('getvalueToPoint', command, idx, valueToPoint[command]?.[idx] ?? -1);
     return valueToPoint[command]?.[idx] ?? -1;
+}
+
+export function getSvgItemAbsType(svgItem: SvgItem) {
+    return (svgItem.constructor as any).key as string;
 }

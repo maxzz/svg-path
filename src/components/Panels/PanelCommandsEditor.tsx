@@ -4,7 +4,7 @@ import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { doSetStateAtom, svgEditRootAtom, SvgItemEdit, SvgItemEditState } from "../../store/store";
 import { useDebounce, useHoverDirty } from "react-use";
 import { IconMenu } from "../UI/icons/Icons";
-import { getTooltip, getValueToPoint } from "../../svg/svg-utils";
+import { getSvgItemAbsType, getTooltip, getValueToPoint } from "../../svg/svg-utils";
 import { useNumberInput } from "../../hooks/useNumberInput";
 import { doTrace } from "../../utils/debugging";
 import "../UI/pathcommands-tooltip.scss";
@@ -188,8 +188,7 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
                 <RowCommandName svgItemEdit={svgItemEdit} />
 
                 {svgItemEdit.valueAtoms.map((atom, idx) => {
-                    const typeKey = (svgItemEdit.svgItem.constructor as any).key as string;
-                    const how = typeKey === 'A' ? idx === 3 ? 0 : idx === 4 ? 2 : 1 : 1;
+                    const how = getSvgItemAbsType(svgItemEdit.svgItem) === 'A' ? idx === 3 ? 0 : idx === 4 ? 2 : 1 : 1;
                     if (how === 1) {
                         return <ValueInput
                             atom={atom}
