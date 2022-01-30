@@ -15,26 +15,26 @@ export function TargetPoint({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     const asString = useAtomValue(svgItemEdit.standaloneStringAtom); // The main purpose is to trigger update
     const stroke = useAtomValue(canvasStrokeAtom);
     const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
-    const setState = useUpdateAtom(doSetStateAtom);
+
     const svgItemIdx = svgItemEdit.svgItemIdx;
     const stateAtom = svgItemEdit.stateAtom;
 
     const pt: SvgPoint = svgItemEdit.svgItem.targetLocation();
     const ptType = getSvgItemAbsType(svgItemEdit.svgItem);
     const isMCommand = ptType === 'M';
-    const isZCommand = ptType === 'Z';
 
+    const setState = useUpdateAtom(doSetStateAtom);
     const state = useAtomValue(stateAtom);
     const activeEd = state.activeRow && state.activeEd === -1;
     const hoverEd = state.hoverRow && state.hoverEd === -1;
 
-    doTrace && console.log(`%c--PT-- [${svgItemIdx}. ] re-rendder, state`, 'color: #bbb', state);
+    doTrace && console.log(`%c--PT-- [${svgItemEdit.svgItemIdx}. ] re-rendder, state`, 'color: #bbb', state);
 
-    if (isZCommand) {
+    if (ptType === 'Z') {
         return null;
     }
     return (<>
-        {/* A piece of path */}
+        {/* A piece of this point path */}
         {(state.activeRow || state.hoverRow) &&
             <path style={{ stroke: pointColor(state.activeRow, state.hoverRow), fill: 'none' }} strokeWidth={stroke} d={asString} />
         }
@@ -47,26 +47,20 @@ export function TargetPoint({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
         }
         {/* Path point as circle */}
         <circle
-            className="cursor-pointer"
+            cx={pt.x} cy={pt.y} r={isMCommand ? stroke * 5 : stroke * 3}
             style={
                 isMCommand
-                    ? { stroke: pointColor(state.activeRow, state.hoverRow), fill: '#fff3', strokeWidth: stroke * 1.2, } :
-                    isZCommand ?
-                        { stroke: pointColor(state.activeRow, state.hoverRow), fill: 'transparent', strokeWidth: stroke * 1.2, pointerEvents: 'none' } :
-                        { stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow), strokeWidth: stroke * 12, }
+                    ? { stroke: pointColor(state.activeRow, state.hoverRow), fill: '#fff3', strokeWidth: stroke * 1.2, }
+                    : { stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow), strokeWidth: stroke * 12, }
             }
-            cx={pt.x} cy={pt.y} r={isMCommand ? stroke * 5 : stroke * 3}
-            // r={stroke * 3}
-            // strokeWidth={stroke * 12}
+            className="cursor-pointer"
 
             onMouseEnter={() => setState({ atom: stateAtom, states: { hoverRow: true } })}
             onMouseLeave={() => setState({ atom: stateAtom, states: { hoverRow: false } })}
             onMouseDown={(event) => {
-                if (!isZCommand) {
-                    event.stopPropagation();
-                    setState({ atom: stateAtom, states: { activeRow: true } });
-                    doCanvasPointClk({ mdownEvent: event, mdownPt: pt, svgItemIdx });
-                }
+                event.stopPropagation();
+                setState({ atom: stateAtom, states: { activeRow: true } });
+                doCanvasPointClk({ mdownEvent: event, mdownPt: pt, svgItemIdx });
             }}
         >
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
@@ -111,9 +105,9 @@ export function ControlPoint({ svgItemEdit, cpIdx }: { svgItemEdit: SvgItemEdit;
         }
         {/* Control point as square */}
         <rect
-            className="cursor-pointer"
-            style={{ stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow) }}
             x={pt.x - 3 * stroke} y={pt.y - 3 * stroke} width={stroke * 6} height={stroke * 6} strokeWidth={stroke * 12}
+            style={{ stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow) }}
+            className="cursor-pointer"
 
             onMouseEnter={() => {
                 doTrace && console.log(`%c       [${svgItemIdx}.${pt.subIndex}] cp mouse enter`, 'color: limegreen');
@@ -144,7 +138,7 @@ export function ControlPoint({ svgItemEdit, cpIdx }: { svgItemEdit: SvgItemEdit;
     </>);
 }
 
-//TODO: z command 
-//  * not following first m command (as asString is not triggering updates). 
-//  * there can be two z commands
-//  * z coomand should highlight corresponding first command in case of compound path
+//TODO: z command
+//  * not following first m command (as asString is not triggering updates). - done
+//  * there can be two z commands - done
+//  * z coomand should highlight corresponding first command in case of compound path - will not do
