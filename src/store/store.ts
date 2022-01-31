@@ -34,7 +34,7 @@ namespace Storage {
         ticks: 5,
         precision: 3,
         snapToGrid: false,
-        showCPs: false,
+        showCPs: true,
         fillPath: true,
         minifyOutput: false,
         openPanelPath: true,
@@ -331,6 +331,9 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     function doScale(get: Getter, set: Setter,) {
         const x = get(operScaleXAtom);
         const y = get(operScaleYAtom);
+        if (x === 1 || y === 1) {
+            return;
+        }
         if (x === 0 || y === 0) {
             toast(`Can't scale to zero`);
             return;
