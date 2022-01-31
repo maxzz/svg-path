@@ -60,3 +60,4 @@ export function PanelPath() {
 
 //TODO: scrollbar
 //TODO: undo/redo, save. copy, clear
+//TODO: add info sub-panel in header to show number of characters (bytes, KB)
