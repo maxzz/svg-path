@@ -331,7 +331,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     function doScale(get: Getter, set: Setter,) {
         const x = get(operScaleXAtom);
         const y = get(operScaleYAtom);
-        if (x === 1 || y === 1) {
+        if (x === 1 && y === 1) {
             return;
         }
         if (x === 0 || y === 0) {
