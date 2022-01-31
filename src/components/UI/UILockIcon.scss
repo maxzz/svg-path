@@ -16,8 +16,7 @@
         content: "Locked";
     }
 
-    // Keyboard-only focus-styles
-    // https://css-tricks.com/keyboard-only-focus-styles/
+    // Keyboard-only focus-styles https://css-tricks.com/keyboard-only-focus-styles/
     input:focus-visible + & {
         box-shadow: 0 0 0 5px lightblue;
     }
@@ -29,8 +28,7 @@
 }
 
 .inclusively-hidden {
-    // Hide things visually but keep them readable by screenreaders
-    // https://css-tricks.com/inclusively-hidden/
+    // Hide things visually but keep them readable by screenreaders https://css-tricks.com/inclusively-hidden/
     position: absolute;
     width: 1px;
     height: 1px;
@@ -40,7 +38,7 @@
     clip-path: inset(50%);
 }
 
-svg {
+.lock-icon {
     display: inline-block;
     vertical-align: middle;
     width: 0.9em;
