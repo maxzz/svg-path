@@ -33,7 +33,7 @@ function OperationInput({ label, overlay, className, atom, cleanup = cleanupValu
     );
 }
 
-function LockControl() {
+function UniformScaleControl() {
     const [uniScale, setUniScale] = useAtom(operScaleUniAtom);
     return (
         <IconLock
@@ -41,6 +41,7 @@ function LockControl() {
             strokeWidth={2}
             onClick={() => setUniScale((v) => !v)}
             title="lock x and y scales"
+            onMouseDown={((event) => event.preventDefault())}
         />
     );
 }
@@ -61,7 +62,7 @@ function ScaleContols() {
     const doScale = useUpdateAtom(doScaleAtom);
     return (
         <div className="my-1 flex space-x-1">
-            <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<LockControl />} className="flex-none" onEnter={doScale} />
+            <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<UniformScaleControl />} className="flex-none" onEnter={doScale} />
             {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className="flex-none" onEnter={doScale} />}
             <Button onClick={doScale} label="Scale" style={{ transition: 'flex-basis .2s', flexBasis: !uniScale ? '30%' : '100%' }}
             // onTransitionEnd={(...args) => { console.log('end', ...args); }} 
