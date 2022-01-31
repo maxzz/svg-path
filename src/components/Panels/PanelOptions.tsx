@@ -8,6 +8,7 @@ import { ViewBox, ViewBoxManual } from '../../svg/svg-utils-viewport';
 import { SectionPane } from '../UI/SectionPane';
 import { Accordion } from '../UI/Accordion';
 import { useKey } from 'react-use';
+import { UILockIcon } from '../UI/UILockIcon';
 
 function Button({ label, className, ...rest }: { label: string; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
     return (
@@ -161,6 +162,8 @@ function PanelBody() {
                     <Checkbox label="Fill path" tooltip="Fill path" className="" atom={fillPathAtom} />
 
                     <Checkbox label="Minify output" tooltip="Minify output path" className="col-span-full" atom={minifyOutputAtom} />
+
+                    <UILockIcon />
                 </div>
             </div>
         </div>
@@ -182,6 +185,3 @@ export function PanelOptions() {
         </div>
     );
 }
-
-//TODO: animated lock https://codepen.io/richardwestenra/pen/MWOYvPz
-//https://www.smashingmagazine.com/2021/12/create-custom-range-input-consistent-browsers
