@@ -62,9 +62,11 @@ function ScaleContols() {
     const doScale = useUpdateAtom(doScaleAtom);
     return (
         <div className="my-1 flex space-x-1">
-            <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<LockControl />} onEnter={doScale} />
+            <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<LockControl />} className="flex-none" onEnter={doScale} />
             {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className={uniScale ? 'opacity-50' : ''} onEnter={doScale} />}
-            <Button onClick={doScale} label="Scale" style={{ transition: 'all .2s', flexGrow: !uniScale ? 0.001 : 1 }} />
+            <Button onClick={doScale} label="Scale" style={{ transition: 'all .2s', flexBasis: !uniScale ? '50%' : '100%' }} />
+            {/* <Button onClick={doScale} label="Scale" style={{ transition: 'all .2s', flexGrow: !uniScale ? 0.001 : 1, flexBasis: !uniScale ? '50%' : '100%' }} /> */}
+            {/* <Button onClick={doScale} label="Scale" style={{ transition: 'all .2s', flexGrow: !uniScale ? 0.001 : 1 }} /> */}
         </div>
     );
 }
