@@ -8,13 +8,13 @@
     border-radius: 2em;
     user-select: none;
 
-    &:after {
-        content: "Unlocked";
-    }
+    // &:after {
+    //     content: "Unlocked";
+    // }
 
-    input:checked + &:after {
-        content: "Locked";
-    }
+    // input:checked + &:after {
+    //     content: "Locked";
+    // }
 
     // Keyboard-only focus-styles https://css-tricks.com/keyboard-only-focus-styles/
     input:focus-visible + & {

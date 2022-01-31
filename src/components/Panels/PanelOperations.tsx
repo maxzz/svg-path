@@ -121,6 +121,7 @@ export function PanelOperations() {
 //TODO: add scale in % insted of abstract numbers as it is now.
 //TBD: do scale as slider(s) or replace second scalce Y with slider!!
 //TODO: undo/redo on cnavs path operation
+//TODO: auto zoom verticaly center
 
 //TODO: reset translate to 0:0 after translate      <- done
 //TODO: handle enter key (on first control or both) <- done
