@@ -363,12 +363,17 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 export const doScaleAtom = atom(null, (get, set,) => {
     const svgEditRoot = get(svgEditRootAtom);
     set(svgEditRoot.doScaleAtom);
-    set(doAutoZoomAtom);
+    if (get(autoZoomAtom)) {
+        set(doAutoZoomAtom);
+    }
 });
 
 export const doTransAtom = atom(null, (get, set,) => {
     const svgEditRoot = get(svgEditRootAtom);
     set(svgEditRoot.doTransAtom);
+    if (get(autoZoomAtom)) {
+        set(doAutoZoomAtom);
+    }
 });
 
 export const doRoundAtom = atom(null, (get, set,) => {
