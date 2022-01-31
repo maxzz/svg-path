@@ -349,6 +349,8 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         const y = get(operTransYAtom);
         root.svg.translate(x, y);
         triggerUpdate(set, -2);
+        set(operTransXAtom, 0);
+        set(operTransYAtom, 0);
     }
     function doRound(get: Getter, set: Setter,) {
         const round = get(operRoundAtom);

@@ -118,14 +118,15 @@ export function PanelOperations() {
     );
 }
 
-//TODO: handle enter key (on first control or both) - done
-//TODO: scale 0:0 produces NaN - done
-
-//TBD: do scale as slider(s) or replace second scalce Y with slider!!
-//TBD: do we need to reset after scale to 1:1 <- NO <- fixed in store atom
-//TBD: do we need to disable scale button when scale is 1:1 <- done
-//TBD: do we need to disable translate button when translate is 0:0 <- done
-
 //TODO: add scale in % insted of abstract numbers as it is now.
+//TBD: do scale as slider(s) or replace second scalce Y with slider!!
+//TODO: undo/redo on cnavs path operation
 
-//TODO: undo/redo
+//TODO: reset translate to 0:0 after translate      <- done
+//TODO: handle enter key (on first control or both) <- done
+//TODO: scale 0:0 produces NaN                      <- done
+
+//TBD: do we need to reset scale to 1:1 after scale                 <- NO
+//TBD: do we need to disable scale button when scale is 0|0         <- fixed in store atom
+//TBD: do we need to disable translate button when translate is 0:0 <- fixed in store atom
+//TBD: do we need to disable scale button when scale is 1:1         <- fixed in store atom
