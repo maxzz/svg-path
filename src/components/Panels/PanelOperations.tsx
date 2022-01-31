@@ -9,20 +9,21 @@ import { IconLock } from "../UI/icons/Icons";
 import { classNames } from "../../utils/classnames";
 import { useKey } from "react-use";
 
-function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueFloat, onEnter }: {
+function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueFloat, onEnter, style }: {
     label: string;
     overlay?: React.ReactNode;
     className?: string;
     atom: PrimitiveAtom<number>;
     cleanup?: (s: string) => string;
     onEnter?: () => void;
+    style?: React.CSSProperties;
 }) {
     const [value, setValue] = useAtom(atom);
     const bind = useNumberInput(value, (v) => setValue(v), cleanup);
     const inputRef = React.useRef(null);
     useKey('Enter', () => onEnter && onEnter(), { target: inputRef.current }, [inputRef.current]);
     return (
-        <label className={classNames("relative w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500", className)}>
+        <label className={classNames("relative w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500", className)} style={style}>
             <div className="px-1 -mt-1 absolute text-[.6rem]">{label}</div>
             {overlay}
             <input
@@ -63,10 +64,8 @@ function ScaleContols() {
     return (
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<LockControl />} className="flex-none" onEnter={doScale} />
-            {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className={uniScale ? 'opacity-50' : ''} onEnter={doScale} />}
-            <Button onClick={doScale} label="Scale" style={{ transition: 'all .2s', flexBasis: !uniScale ? '50%' : '100%' }} />
-            {/* <Button onClick={doScale} label="Scale" style={{ transition: 'all .2s', flexGrow: !uniScale ? 0.001 : 1, flexBasis: !uniScale ? '50%' : '100%' }} /> */}
-            {/* <Button onClick={doScale} label="Scale" style={{ transition: 'all .2s', flexGrow: !uniScale ? 0.001 : 1 }} /> */}
+            {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className={uniScale ? 'opacity-50' : ''} style={{ transition: 'opacity 2.2s' }} onEnter={doScale} />}
+            <Button onClick={doScale} label="Scale" style={{ transition: 'flex-basis .2s', flexBasis: !uniScale ? '50%' : '100%' }} />
         </div>
     );
 }
