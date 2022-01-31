@@ -22,7 +22,7 @@ function OperationInput({ label, overlay, className, atom, cleanup = cleanupValu
     useKey('Enter', () => onEnter && onEnter(), { target: inputRef.current }, [inputRef.current]);
     return (
         <label className={classNames("relative w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500", className)} style={style}>
-            <div className="px-1 -mt-1 absolute text-[.6rem]">{label}</div>
+            <div className="px-1 -mt-1 absolute text-[.6rem] select-none">{label}</div>
             {overlay}
             <input
                 className="px-1 pt-3 h-8 w-full border-b-2 text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
@@ -45,10 +45,10 @@ function LockControl() {
     );
 }
 
-function Button({ label, ...rest }: { label: string; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
+function Button({ label, className, ...rest }: { label: string; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
     return (
         <button
-            className="px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm active:scale-[.97] select-none"
+            className={classNames("px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm active:scale-[.97] select-none", className)}
             {...rest}
         >
             {label}

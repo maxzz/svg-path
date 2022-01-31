@@ -1,13 +1,24 @@
 import React from 'react';
 import { PrimitiveAtom, useAtom, WritableAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { doSetViewBoxAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, openPanelOptsAtom, precisionAtom, showCPsAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom } from '../../store/store';
+import { autoZoomAtom, doSetViewBoxAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, openPanelOptsAtom, precisionAtom, showCPsAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom } from '../../store/store';
 import { useNumberInput } from '../../hooks/useNumberInput';
 import { classNames } from '../../utils/classnames';
 import { ViewBox, ViewBoxManual } from '../../svg/svg-utils-viewport';
 import { SectionPane } from '../UI/SectionPane';
 import { Accordion } from '../UI/Accordion';
 import { useKey } from 'react-use';
+
+function Button({ label, className, ...rest }: { label: string; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
+    return (
+        <button
+            className={classNames("px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm active:scale-[.97] select-none", className)}
+            {...rest}
+        >
+            {label}
+        </button>
+    );
+}
 
 function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string; idx: number; }) {
     const [viewboxRow, setViewbox] = useAtom(doSetViewBoxAtom);
@@ -31,12 +42,14 @@ function ViewboxInput({ label, tooltip, idx }: { label: string; tooltip: string;
 }
 
 function ViewBoxControls() {
+    const [autoZoom, setAutoZoom] = useAtom(autoZoomAtom);
     return (
         <div className="flex space-x-1.5">
             <ViewboxInput label="x" tooltip="view box x" idx={0} />
             <ViewboxInput label="y" tooltip="view box y" idx={1} />
             <ViewboxInput label="width" tooltip="view box width" idx={2} />
             <ViewboxInput label="height" tooltip="view box height" idx={3} />
+            <Button label={autoZoom ? "Unlo" : "Lock"} onClick={()=>{setAutoZoom((v) => !v)}} className="w-10" />
         </div>
     );
 }
