@@ -9,14 +9,12 @@ import { IconLock } from "../UI/icons/Icons";
 import { classNames } from "../../utils/classnames";
 import { useKey } from "react-use";
 
-function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueFloat, onEnter, style }: {
+function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueFloat, onEnter, style }: React.HTMLAttributes<HTMLLabelElement> & {
     label: string;
     overlay?: React.ReactNode;
-    className?: string;
     atom: PrimitiveAtom<number>;
     cleanup?: (s: string) => string;
     onEnter?: () => void;
-    style?: React.CSSProperties;
 }) {
     const [value, setValue] = useAtom(atom);
     const bind = useNumberInput(value, (v) => setValue(v), cleanup);
@@ -64,14 +62,16 @@ function ScaleContols() {
     return (
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<LockControl />} className="flex-none" onEnter={doScale} />
-            {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className={uniScale ? 'opacity-50' : ''} style={{ transition: 'opacity 2.2s' }} onEnter={doScale} />}
-            <Button onClick={doScale} label="Scale" style={{ transition: 'flex-basis .2s', flexBasis: !uniScale ? '50%' : '100%' }} />
+            {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className="flex-none" onEnter={doScale} />}
+            <Button onClick={doScale} label="Scale" style={{ transition: 'flex-basis .2s', flexBasis: !uniScale ? '30%' : '100%' }}
+            // onTransitionEnd={(...args) => { console.log('end', ...args); }} 
+            />
         </div>
     );
 }
 
 function TranslateContols() {
-    const doTrans = useUpdateAtom(doTransAtom); //TODO: allow only positive numbers
+    const doTrans = useUpdateAtom(doTransAtom);
     return (
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operTransXAtom} label="Translate X" onEnter={doTrans} />
@@ -82,11 +82,11 @@ function TranslateContols() {
 }
 
 function RoundConvertContols() {
-    const doRound = useUpdateAtom(doRoundAtom); //TODO: allow only positive numbers
+    const doRound = useUpdateAtom(doRoundAtom);
     const doSetRelAbs = useUpdateAtom(doSetRelAbsAtom);
     return (
         <div className="my-1 flex space-x-1">
-            <OperationInput atom={operRoundAtom} label="Number of decimals" cleanup={cleanupValueUInt} className="" />
+            <OperationInput atom={operRoundAtom} label="Number of decimals" cleanup={cleanupValueUInt} />
             <Button title="Round all path numbers" onClick={doRound} label="Round" />
             <Button title="Convert to relative" onClick={() => doSetRelAbs(true)} label="To rel" />
             <Button title="Convert to absolute" onClick={() => doSetRelAbs(false)} label="To abs" />
@@ -112,13 +112,13 @@ export function PanelOperations() {
     );
 }
 
-//TODO: handle enter key (on first control or both)
-//TODO: scale 0:0 produces NaN
+//TODO: handle enter key (on first control or both) - done
+//TODO: scale 0:0 produces NaN - done
 
 //TBD: do scale as slider(s) or replace second scalce Y with slider!!
-//TBD: do we need to reset after scale to 1:1 <- NO
-//TBD: do we need to disable scale button when scale is 1:1
-//TBD: do we need to disable translate button when translate is 0:0
+//TBD: do we need to reset after scale to 1:1 <- NO <- fixed in store atom
+//TBD: do we need to disable scale button when scale is 1:1 <- done
+//TBD: do we need to disable translate button when translate is 0:0 <- done
 
 //TODO: add scale in % insted of abstract numbers as it is now.
 
