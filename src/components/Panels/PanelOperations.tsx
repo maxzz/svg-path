@@ -22,7 +22,9 @@ function OperationInput({ label, overlay, className, atom, cleanup = cleanupValu
     useKey('Enter', () => onEnter && onEnter(), { target: inputRef.current }, [inputRef.current]);
     return (
         <label className={classNames("relative w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500", className)} style={style}>
-            <div className="px-1 -mt-1 absolute text-[.6rem] select-none">{label}</div>
+            <div className="px-1 -mt-1 absolute text-[.6rem] select-none pointer-events-none">
+                {label}
+            </div>
             {overlay}
             <input
                 className="px-1 pt-3 h-8 w-full border-b-2 text-slate-900 focus:border-blue-500 bg-slate-200 focus:outline-none"
@@ -37,10 +39,13 @@ function UniformScaleControl() {
     const [uniScale, setUniScale] = useAtom(operScaleUniAtom);
     return (
         <IconLock
-            className={classNames("absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5", `${uniScale ? 'fill-slate-700' : 'fill-slate-400 stroke-slate-400'}`)}
+            className={classNames(
+                "absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 cursor-pointer",
+                `${uniScale ? 'fill-slate-700' : 'fill-slate-400 stroke-slate-400'}`
+            )}
             strokeWidth={2}
             onClick={() => setUniScale((v) => !v)}
-            title="lock x and y scales"
+            title="lock/unlock x and y scales"
             onMouseDown={((event) => event.preventDefault())}
         />
     );
