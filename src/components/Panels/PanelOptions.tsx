@@ -10,13 +10,17 @@ import { Accordion } from '../UI/Accordion';
 import { useKey } from 'react-use';
 import { UILockIcon } from '../UI/UILockIcon';
 
-function Button({ label, className, ...rest }: { label: string; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
+function Button({ scale = true, children, className, ...rest }: { scale?: boolean; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
     return (
         <button
-            className={classNames("px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm active:scale-[.97] select-none", className)}
+            className={classNames(
+                "px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm select-none",
+                `${scale ? 'active:scale-[.97]':''}`,
+                className
+            )}
             {...rest}
         >
-            {label}
+            {children}
         </button>
     );
 }
@@ -50,7 +54,10 @@ function ViewBoxControls() {
             <ViewboxInput label="y" tooltip="view box y" idx={1} />
             <ViewboxInput label="width" tooltip="view box width" idx={2} />
             <ViewboxInput label="height" tooltip="view box height" idx={3} />
-            <Button label={autoZoom ? "Unlo" : "Lock"} onClick={()=>{setAutoZoom((v) => !v)}} className="w-10" />
+
+            <Button onClick={() => { setAutoZoom((v) => !v); }} scale={false} title={!autoZoom ? 'viewBox is locked' : 'viewBox is unlocked'}>
+                <UILockIcon className={`w-5 h-5 mx-0.5 ${autoZoom ? 'text-slate-700 fill-current' : 'text-slate-700 fill-current'}`} locked={!autoZoom} />
+            </Button>
         </div>
     );
 }
@@ -162,8 +169,6 @@ function PanelBody() {
                     <Checkbox label="Fill path" tooltip="Fill path" className="" atom={fillPathAtom} />
 
                     <Checkbox label="Minify output" tooltip="Minify output path" className="col-span-full" atom={minifyOutputAtom} />
-
-                    <UILockIcon />
                 </div>
             </div>
         </div>
