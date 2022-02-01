@@ -1,34 +1,14 @@
 import React from 'react';
-import './UILockIcon.scss';
-
-function LockIcon(props: React.SVGAttributes<SVGSVGElement>) {
-    return (
-        <svg viewBox="0 0 11 16.5" {...props}>
-            <path d="m5.5008594 2.0664843c-1.9 0-3.4394531 1.5000782-3.4394531 3.3300782v1.2734375h1.3085937v-1.2734375c0-1.14.9508594-2.0605469 2.1308594-2.0605469s2.1308594.9205469 2.1308594 2.0605469v2.4860889h1.2988282v-2.4860889c.01-1.83-1.5296876-3.3300782-3.4296876-3.3300782z" />
-            <path d="m7.6308594 5.25c.0000227.011025 0 .022153 0 .033203v1.3867189h-6.2597656c-.74000005 0-1.36914067.6000781-1.36914067 1.3300781v6.669922c0 .73.61890625 1.330078 1.37890627 1.330078h8.25c.7499996 0 1.3710936-.600078 1.3710936-1.330078v-6.669922c0-.7268371-.615604-1.3249101-1.3710936-1.3300781h-.7011719v-1.3867188c.0000215-.011025-.0000072-.022181 0-.033203zm-6.25 2.75h8.25l-.00977 6.669922h-8.24023zm4.1210937 2c-.750001 0-1.3808594.600078-1.3808593 1.330078 0 .74.6208583 1.339844 1.3808593 1.339844.76 0 1.3789063-.599844 1.3789063-1.339844 0-.73-.6289063-1.330078-1.3789063-1.330078z" />
-        </svg>
-    );
-}
 
 function LockIconComp({ locked, ...rest }: { locked: boolean; } & React.SVGAttributes<SVGSVGElement>) {
     return (
         <svg viewBox="0 0 11 16.5" {...rest}>
             <path
-                style={
-                    {
-                        transition: 'all ease .2s',
-                        transform: locked ? 'translateY(-2px)': '',
-                    }
-                }
+                style={{ transition: 'all ease .2s', transform: locked ? 'translateY(-2px)' : '', }}
                 d="m5.5008594 2.0664843c-1.9 0-3.4394531 1.5000782-3.4394531 3.3300782v1.2734375h1.3085937v-1.2734375c0-1.14.9508594-2.0605469 2.1308594-2.0605469s2.1308594.9205469 2.1308594 2.0605469v2.4860889h1.2988282v-2.4860889c.01-1.83-1.5296876-3.3300782-3.4296876-3.3300782z"
             />
             <path
-                style={
-                    {
-                        transition: 'all ease .2s',
-                        transform: locked ? 'translateY(.5px)': '',
-                    }
-                }
+                style={{ transition: 'all ease .2s', transform: locked ? 'translateY(.5px)' : '', }}
                 d="m7.6308594 5.25c.0000227.011025 0 .022153 0 .033203v1.3867189h-6.2597656c-.74000005 0-1.36914067.6000781-1.36914067 1.3300781v6.669922c0 .73.61890625 1.330078 1.37890627 1.330078h8.25c.7499996 0 1.3710936-.600078 1.3710936-1.330078v-6.669922c0-.7268371-.615604-1.3249101-1.3710936-1.3300781h-.7011719v-1.3867188c.0000215-.011025-.0000072-.022181 0-.033203zm-6.25 2.75h8.25l-.00977 6.669922h-8.24023zm4.1210937 2c-.750001 0-1.3808594.600078-1.3808593 1.330078 0 .74.6208583 1.339844 1.3808593 1.339844.76 0 1.3789063-.599844 1.3789063-1.339844 0-.73-.6289063-1.330078-1.3789063-1.330078z"
             />
         </svg>
@@ -38,16 +18,8 @@ function LockIconComp({ locked, ...rest }: { locked: boolean; } & React.SVGAttri
 export function UILockIcon() {
     const [locked, setLocked] = React.useState(false);
     return (
-        <>
-            <div>
-                <input type="checkbox" className="inclusively-hidden" name="lock" id="lock" />
-                <label className="label" htmlFor="lock">
-                    <LockIcon className="svg-lock-icon" />
-                </label>
-            </div>
-            <div className="w-5 h-5">
-                <LockIconComp locked={locked} onClick={() => setLocked((v) => !v)} />
-            </div>
-        </>
+        <div className="w-5 h-5">
+            <LockIconComp locked={locked} onClick={() => setLocked((v) => !v)} />
+        </div>
     );
 }
