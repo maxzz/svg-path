@@ -9,7 +9,7 @@ import { SectionPane } from '../UI/SectionPane';
 import { Accordion } from '../UI/Accordion';
 import { useKey } from 'react-use';
 import { UILockIcon } from '../UI/UILockIcon';
-import { a, useSpring } from '@react-spring/web';
+import { a, easings, useSpring } from '@react-spring/web';
 
 function Button({ scale = true, children, className, ...rest }: { scale?: boolean; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
     return (
@@ -112,7 +112,7 @@ function PrecisionInput({ className, ...rest }: React.HTMLAttributes<HTMLLabelEl
     const snapToGrid = useAtomValue(snapToGridAtom);
     const [precision, setPrecision] = useAtom(precisionAtom);
     const bind = useNumberInput(precision, (v: number) => setPrecision(v));
-    const styles = useSpring({ opacity: snapToGrid ? 0 : 1, config: { duration: 2300 } });
+    const styles = useSpring({ opacity: snapToGrid ? 0 : 1, config: { easing: easings.easeInOutQuart,  duration: 300 } });
     return (
         <a.label style={styles} className={classNames("flex items-center text-xs space-x-1 select-none", className)} {...rest}>
             {!snapToGrid && <>
@@ -132,8 +132,9 @@ function TicksControl({ className, ...rest }: React.HTMLAttributes<HTMLElement>)
     const showTicks = useAtomValue(showTicksAtom);
     const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom);
     const bind = useNumberInput(tickInteval, (v: number) => setTickInteval(v));
+    const styles = useSpring({ opacity: !showGrid ? 0 : 1, config: { easing: easings.easeInOutQuart,  duration: 300 } });
     return (<>
-        <div className={classNames("flex justify-between", className)} {...rest}>
+        <a.div style={styles} className={classNames("flex justify-between", className)} {...rest}>
             {showGrid && <>
                 <Checkbox label="Ticks" tooltip="Show ticks" atom={showTicksAtom} />
                 <div className="flex items-center ">
@@ -147,7 +148,7 @@ function TicksControl({ className, ...rest }: React.HTMLAttributes<HTMLElement>)
                 </div>
             </>
             }
-        </div>
+        </a.div>
     </>);
 }
 
