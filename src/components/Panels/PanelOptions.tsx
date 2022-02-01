@@ -9,6 +9,7 @@ import { SectionPane } from '../UI/SectionPane';
 import { Accordion } from '../UI/Accordion';
 import { useKey } from 'react-use';
 import { UILockIcon } from '../UI/UILockIcon';
+import { a, useSpring } from '@react-spring/web';
 
 function Button({ scale = true, children, className, ...rest }: { scale?: boolean; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
     return (
@@ -111,8 +112,9 @@ function PrecisionInput({ className, ...rest }: React.HTMLAttributes<HTMLLabelEl
     const snapToGrid = useAtomValue(snapToGridAtom);
     const [precision, setPrecision] = useAtom(precisionAtom);
     const bind = useNumberInput(precision, (v: number) => setPrecision(v));
+    const styles = useSpring({ opacity: snapToGrid ? 0 : 1, config: { duration: 2300 } });
     return (
-        <label className={classNames("flex items-center text-xs space-x-1 select-none", className)} {...rest}>
+        <a.label style={styles} className={classNames("flex items-center text-xs space-x-1 select-none", className)} {...rest}>
             {!snapToGrid && <>
                 <div className="">Precision</div>
                 <input
@@ -121,7 +123,7 @@ function PrecisionInput({ className, ...rest }: React.HTMLAttributes<HTMLLabelEl
                     {...bind}
                 />
             </>}
-        </label>
+        </a.label>
     );
 }
 
