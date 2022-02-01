@@ -8,6 +8,7 @@ import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { IconLock } from "../UI/icons/Icons";
 import { classNames } from "../../utils/classnames";
 import { useKey } from "react-use";
+import { a, config, useTransition } from "@react-spring/web";
 
 function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueFloat, onEnter, style }: React.HTMLAttributes<HTMLLabelElement> & {
     label: string;
@@ -56,7 +57,7 @@ function Button({ scale = true, children, className, ...rest }: { scale?: boolea
         <button
             className={classNames(
                 "px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm select-none",
-                `${scale ? 'active:scale-[.97]':''}`,
+                `${scale ? 'active:scale-[.97]' : ''}`,
                 className
             )}
             {...rest}
@@ -104,6 +105,54 @@ function RoundConvertContols() {
     );
 }
 
+function Toggle() {
+    const [toggle, set] = React.useState(false);
+    const transitions = useTransition(toggle, {
+        from: { position: 'absolute', opacity: 0 },
+        enter: { opacity: 1 },
+        leave: { opacity: 0 },
+        reverse: toggle,
+        delay: 200,
+        config: config.molasses,
+        onRest: () => set(!toggle),
+    });
+    return transitions(({ opacity }, item) =>
+        item ? (
+            <a.div
+                style={{
+                    position: 'absolute',
+                    opacity: opacity.to({ range: [0.0, 1.0], output: [0, 1] }),
+                }}>
+                1😄
+            </a.div>
+        ) : (
+            <a.div
+                style={{
+                    position: 'absolute',
+                    opacity: opacity.to({ range: [1.0, 0.0], output: [1, 0] }),
+                }}>
+                2🤪
+            </a.div>
+        )
+    );
+}
+
+function Mount() {
+    const [show, set] = React.useState(false);
+    const transitions = useTransition(show, {
+        from: { opacity: 0 },
+        enter: { opacity: 1 },
+        leave: { opacity: 0 },
+        reverse: show,
+        delay: 200,
+        config: config.molasses,
+        onRest: () => set(!show),
+    });
+    return transitions(
+        (styles, item) => item && <a.div style={styles}>✌️</a.div>
+    );
+}
+
 export function PanelOperations() {
     const [open, setOpen] = useAtom(openPanelOperAtom);
     return (
@@ -116,6 +165,8 @@ export function PanelOperations() {
                     <ScaleContols />
                     <TranslateContols />
                     <RoundConvertContols />
+                    {/* <Mount />
+                    <Toggle /> */}
                 </div>
             </Accordion>
         </div>
