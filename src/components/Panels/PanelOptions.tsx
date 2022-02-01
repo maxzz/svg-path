@@ -15,7 +15,7 @@ function Button({ scale = true, children, className, ...rest }: { scale?: boolea
         <button
             className={classNames(
                 "px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm select-none",
-                `${scale ? 'active:scale-[.97]':''}`,
+                `${scale ? 'active:scale-[.97]' : ''}`,
                 className
             )}
             {...rest}
@@ -108,16 +108,19 @@ function Checkbox({ label, tooltip, atom, className, ...rest }: { label: string;
 }
 
 function PrecisionInput({ className, ...rest }: React.HTMLAttributes<HTMLLabelElement>) {
+    const snapToGrid = useAtomValue(snapToGridAtom);
     const [precision, setPrecision] = useAtom(precisionAtom);
     const bind = useNumberInput(precision, (v: number) => setPrecision(v));
     return (
         <label className={classNames("flex items-center text-xs space-x-1 select-none", className)} {...rest}>
-            <div className="">Precision</div>
-            <input
-                className={`w-8 h-[1.375rem] text-xs text-center text-slate-900 bg-slate-200 border-slate-300 rounded border focus:outline-none shadow-sm shadow-slate-800/30`}
-                title="Point precision"
-                {...bind}
-            />
+            {!snapToGrid && <>
+                <div className="">Precision</div>
+                <input
+                    className={`w-8 h-[1.375rem] text-xs text-center text-slate-900 bg-slate-200 border-slate-300 rounded border focus:outline-none shadow-sm shadow-slate-800/30`}
+                    title="Point precision"
+                    {...bind}
+                />
+            </>}
         </label>
     );
 }
