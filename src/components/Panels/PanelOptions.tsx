@@ -108,11 +108,13 @@ function Checkbox({ label, tooltip, atom, className, ...rest }: { label: string;
     );
 }
 
+const showElementAnimConfig = { easing: easings.easeInOutQuart,  duration: 200 };
+
 function PrecisionInput({ className, ...rest }: React.HTMLAttributes<HTMLLabelElement>) {
     const snapToGrid = useAtomValue(snapToGridAtom);
     const [precision, setPrecision] = useAtom(precisionAtom);
     const bind = useNumberInput(precision, (v: number) => setPrecision(v));
-    const styles = useSpring({ opacity: snapToGrid ? 0 : 1, config: { easing: easings.easeInOutQuart,  duration: 300 } });
+    const styles = useSpring({ opacity: snapToGrid ? 0 : 1, config: showElementAnimConfig });
     return (
         <a.label style={styles} className={classNames("flex items-center text-xs space-x-1 select-none", className)} {...rest}>
             {!snapToGrid && <>
@@ -132,12 +134,13 @@ function TicksControl({ className, ...rest }: React.HTMLAttributes<HTMLElement>)
     const showTicks = useAtomValue(showTicksAtom);
     const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom);
     const bind = useNumberInput(tickInteval, (v: number) => setTickInteval(v));
-    const styles = useSpring({ opacity: !showGrid ? 0 : 1, config: { easing: easings.easeInOutQuart,  duration: 300 } });
+    const stylesA = useSpring({ opacity: !showGrid ? 0 : 1, config: showElementAnimConfig });
+    const stylesB = useSpring({ opacity: !showTicks ? 0 : 1, config: showElementAnimConfig });
     return (<>
-        <a.div style={styles} className={classNames("flex justify-between", className)} {...rest}>
+        <a.div style={stylesA} className={classNames("flex justify-between", className)} {...rest}>
             {showGrid && <>
                 <Checkbox label="Ticks" tooltip="Show ticks" atom={showTicksAtom} />
-                <div className="flex items-center ">
+                <a.div style={stylesB} className="flex items-center ">
                     {showTicks &&
                         <input
                             className={`w-8 h-[1.375rem] text-xs text-center text-slate-900 bg-slate-200 border-slate-300 shadow-slate-800/30 rounded border focus:outline-none shadow-sm focus:ring-0`}
@@ -145,7 +148,7 @@ function TicksControl({ className, ...rest }: React.HTMLAttributes<HTMLElement>)
                             {...bind}
                         />
                     }
-                </div>
+                </a.div>
             </>
             }
         </a.div>
