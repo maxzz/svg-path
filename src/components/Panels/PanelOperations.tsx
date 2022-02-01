@@ -51,13 +51,17 @@ function UniformScaleControl() {
     );
 }
 
-function Button({ label, className, ...rest }: { label: string; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
+function Button({ scale = true, children, className, ...rest }: { scale?: boolean; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
     return (
         <button
-            className={classNames("px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm active:scale-[.97] select-none", className)}
+            className={classNames(
+                "px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm select-none",
+                `${scale ? 'active:scale-[.97]':''}`,
+                className
+            )}
             {...rest}
         >
-            {label}
+            {children}
         </button>
     );
 }
@@ -69,9 +73,9 @@ function ScaleContols() {
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<UniformScaleControl />} className="flex-none" onEnter={doScale} />
             {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className="flex-none" onEnter={doScale} />}
-            <Button onClick={doScale} label="Scale" style={{ transition: 'flex-basis .2s', flexBasis: !uniScale ? '30%' : '100%' }}
+            <Button onClick={doScale} style={{ transition: 'flex-basis .2s', flexBasis: !uniScale ? '30%' : '100%' }}
             // onTransitionEnd={(...args) => { console.log('end', ...args); }} 
-            />
+            >Scale</Button>
         </div>
     );
 }
@@ -82,7 +86,7 @@ function TranslateContols() {
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operTransXAtom} label="Translate X" onEnter={doTrans} />
             <OperationInput atom={operTransYAtom} label="Translate Y" onEnter={doTrans} />
-            <Button onClick={doTrans} label="Translate" />
+            <Button onClick={doTrans}>Translate</Button>
         </div>
     );
 }
@@ -93,9 +97,9 @@ function RoundConvertContols() {
     return (
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operRoundAtom} label="Number of decimals" cleanup={cleanupValueUInt} />
-            <Button title="Round all path numbers" onClick={doRound} label="Round" />
-            <Button title="Convert to relative" onClick={() => doSetRelAbs(true)} label="To rel" />
-            <Button title="Convert to absolute" onClick={() => doSetRelAbs(false)} label="To abs" />
+            <Button title="Round all path numbers" onClick={doRound}>Round</Button>
+            <Button title="Convert all commands to relative" onClick={() => doSetRelAbs(true)}>To rel</Button>
+            <Button title="Convert all commands to absolute" onClick={() => doSetRelAbs(false)}>To abs</Button>
         </div>
     );
 }
