@@ -46,9 +46,20 @@ export function IconSave(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<S
 export function IconCopy(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
+        <svg fill="currentColor" viewBox="0 0 24 24" {...rest}>
+            {title && <title>{title}</title>}
+            <path d="M 5.086 6.237 V 17.601 a 4.429 4.429 90 0 0 4.138 4.42 L 9.515 22.03 h 7.82 A 2.657 2.657 90 0 1 14.83 23.802 H 8.629 a 5.315 5.315 90 0 1 -5.315 -5.315 V 8.744 a 2.657 2.657 90 0 1 1.772 -2.507 z M 18.373 2.543 A 2.657 2.657 90 0 1 21.03 5.2 v 12.401 a 2.657 2.657 90 0 1 -2.657 2.657 h -8.858 A 2.657 2.657 90 0 1 6.858 17.601 v -12.401 A 2.657 2.657 90 0 1 9.515 2.543 h 8.858 z m 0 1.772 h -8.858 a 0.886 0.886 90 0 0 -0.886 0.886 v 12.401 a 0.886 0.886 90 0 0 0.886 0.886 h 8.858 a 0.886 0.886 90 0 0 0.886 -0.886 v -12.401 a 0.886 0.886 90 0 0 -0.886 -0.886 z" />
+        </svg>
+    );
+}
+
+export function IconCopy16(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
+    const { title, ...rest } = props;
+    return (
         <svg fill="currentColor" viewBox="0 0 16 16" {...rest}>
             {title && <title>{title}</title>}
-            <path d="M4 4.085V10.5a2.5 2.5 0 0 0 2.336 2.495L6.5 13h4.414A1.5 1.5 0 0 1 9.5 14H6a3 3 0 0 1-3-3V5.5a1.5 1.5 0 0 1 1-1.415zM11.5 2A1.5 1.5 0 0 1 13 3.5v7a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 5 10.5v-7A1.5 1.5 0 0 1 6.5 2h5zm0 1h-5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5z" />
+            <path d="M4 4.1V10.5a2.5 2.5 0 002.3 2.5L6.5 13h4.4A1.5 1.5 0 019.5 14H6a3 3 0 01-3-3V5.5a1.5 1.5 0 011-1.4zM11.5 2A1.5 1.5 0 0113 3.5v7a1.5 1.5 0 01-1.5 1.5h-5A1.5 1.5 0 015 10.5v-7A1.5 1.5 0 016.5 2h5zm0 1h-5a.5.5 0 00-.5.5v7a.5.5 0 00.5.5h5a.5.5 0 00.5-.5v-7a.5.5 0 00-.5-.5z" />
+            {/* <path d="M4 4.085V10.5a2.5 2.5 0 0 0 2.336 2.495L6.5 13h4.414A1.5 1.5 0 0 1 9.5 14H6a3 3 0 0 1-3-3V5.5a1.5 1.5 0 0 1 1-1.415zM11.5 2A1.5 1.5 0 0 1 13 3.5v7a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 5 10.5v-7A1.5 1.5 0 0 1 6.5 2h5zm0 1h-5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5z" /> */}
         </svg>
     );
 }

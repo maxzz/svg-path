@@ -71,3 +71,7 @@ export function PanelPath() {
 //TODO: undo/redo, save. copy, clear
 //TODO: add info sub-panel in header to show number of characters (bytes, KB)
 //TODO: codemirror
+//TODO: add list of pathes and select one of them
+//TODO: split path to sub-pathes or somehow isolate them
+//TODO: realy need undo/redo
+//TODO: need to handle arc editing better
