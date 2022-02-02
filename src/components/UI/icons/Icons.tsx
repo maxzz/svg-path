@@ -1,9 +1,9 @@
 import React, { SVGProps } from "react";
 
-export function IconChevronDown(props: SVGProps<SVGSVGElement> & { title?: string; }) {
+export function IconChevronDown(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
-        <svg viewBox="0 0 24 24" fill="currentColor" {...rest}>
+        <svg fill="currentColor" viewBox="0 0 24 24" {...rest}>
             {title && <title>{title}</title>}
             <path d="M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6l-6-6l1.41-1.42z" />
         </svg>
@@ -11,7 +11,7 @@ export function IconChevronDown(props: SVGProps<SVGSVGElement> & { title?: strin
 }
 
 
-export function IconMenu(props: SVGProps<SVGSVGElement> & { title?: string; }) {
+export function IconMenu(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
         <svg fill="currentColor" viewBox="0 0 24 24" {...rest}>
@@ -21,7 +21,7 @@ export function IconMenu(props: SVGProps<SVGSVGElement> & { title?: string; }) {
     );
 }
 
-export function IconLock(props: SVGProps<SVGSVGElement> & { title?: string; }) {
+export function IconLock(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
         <svg fill="currentColor" viewBox="0 0 100 100" {...rest}>
@@ -32,10 +32,21 @@ export function IconLock(props: SVGProps<SVGSVGElement> & { title?: string; }) {
 }
 
 
+export function IconSave(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
+    const { title, ...rest } = props;
+    return (
+        <svg fill="currentColor" viewBox="0 0 24 24" {...rest}>
+            {title && <title>{title}</title>}
+            <path d="M6 4h10.586L20 7.414V18a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3zm0 1a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7.914L16.086 5H15v5H6V5zm1 0v4h7V5H7zm5 7a3 3 0 1 1 0 6a3 3 0 0 1 0-6zm0 1a2 2 0 1 0 0 4a2 2 0 0 0 0-4z" />
+        </svg>
+    );
+}
+
+
 export function IconUndo(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
-        <svg strokeWidth="1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" {...rest}>
+        <svg fill="none" strokeWidth="1.5" stroke="currentColor" viewBox="0 0 24 24" {...rest}>
             {title && <title>{title}</title>}
             <path d="M5 7v5" />
             <path d="M7.875 9.5h7c5.5 0 5.5 8.5 0 8.5h-10" />
@@ -47,7 +58,7 @@ export function IconUndo(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<S
 export function IconRedo(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
-        <svg strokeWidth="1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" {...rest }>
+        <svg fill="none" strokeWidth="1.5" stroke="currentColor" viewBox="0 0 24 24" {...rest}>
             {title && <title>{title}</title>}
             <path d="M19 7v5" />
             <path d="M16 9.5H9C3.5 9.5 3.5 18 9 18h10" />
