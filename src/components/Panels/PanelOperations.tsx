@@ -186,3 +186,5 @@ export function PanelOperations() {
 //TBD: do we need to disable scale button when scale is 0|0         <- fixed in store atom
 //TBD: do we need to disable translate button when translate is 0:0 <- fixed in store atom
 //TBD: do we need to disable scale button when scale is 1:1         <- fixed in store atom
+
+//TODO: scale only current sub-path vs. all svg sub-paths
