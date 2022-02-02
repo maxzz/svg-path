@@ -4,6 +4,7 @@ import { openPanelPathAtom, pathUnsafeAtom } from '../../store/store';
 import { Accordion } from '../UI/Accordion';
 import { SectionPane } from '../UI/SectionPane';
 import { classNames } from '../../utils/classnames';
+import { IconRedo, IconUndo } from '../UI/icons/Icons';
 
 function PathEditor() {
     const [path, setPath] = useAtom(pathUnsafeAtom);
@@ -58,11 +59,11 @@ export function PanelPath() {
                         <div className="pb-2 flex space-x-1">
                             {/* <Button label="Open" onClick={() => {}} /> */}
 
-                            <Button onClick={() => {}}>Save</Button>
-                            <Button onClick={() => {}}>Copy</Button>
-                            <Button onClick={() => {}}>Undo</Button>
-                            <Button onClick={() => {}}>Redo</Button>
-                            <Button onClick={() => {}}>Clear</Button>
+                            <Button onClick={() => { }}>Save</Button>
+                            <Button onClick={() => { }}>Copy</Button>
+                            <Button onClick={() => { }}><IconUndo className="w-5 h-5" title="Undo" /></Button>
+                            <Button onClick={() => { }}><IconRedo className="w-5 h-5" title="Redo" /></Button>
+                            <Button onClick={() => { }}>Clear</Button>
 
                             {/* <Button label="Save" onClick={() => {}} />
                             <Button label="Copy" onClick={() => {}} />
