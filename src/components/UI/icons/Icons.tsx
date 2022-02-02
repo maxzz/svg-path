@@ -58,8 +58,17 @@ export function IconCopy16(props: SVGProps<SVGSVGElement> & React.HTMLAttributes
     return (
         <svg fill="currentColor" viewBox="0 0 16 16" {...rest}>
             {title && <title>{title}</title>}
-            <path d="M4 4.1V10.5a2.5 2.5 0 002.3 2.5L6.5 13h4.4A1.5 1.5 0 019.5 14H6a3 3 0 01-3-3V5.5a1.5 1.5 0 011-1.4zM11.5 2A1.5 1.5 0 0113 3.5v7a1.5 1.5 0 01-1.5 1.5h-5A1.5 1.5 0 015 10.5v-7A1.5 1.5 0 016.5 2h5zm0 1h-5a.5.5 0 00-.5.5v7a.5.5 0 00.5.5h5a.5.5 0 00.5-.5v-7a.5.5 0 00-.5-.5z" />
-            {/* <path d="M4 4.085V10.5a2.5 2.5 0 0 0 2.336 2.495L6.5 13h4.414A1.5 1.5 0 0 1 9.5 14H6a3 3 0 0 1-3-3V5.5a1.5 1.5 0 0 1 1-1.415zM11.5 2A1.5 1.5 0 0 1 13 3.5v7a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 5 10.5v-7A1.5 1.5 0 0 1 6.5 2h5zm0 1h-5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5z" /> */}
+            <path d="M4 4.085V10.5a2.5 2.5 0 0 0 2.336 2.495L6.5 13h4.414A1.5 1.5 0 0 1 9.5 14H6a3 3 0 0 1-3-3V5.5a1.5 1.5 0 0 1 1-1.415zM11.5 2A1.5 1.5 0 0 1 13 3.5v7a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 5 10.5v-7A1.5 1.5 0 0 1 6.5 2h5zm0 1h-5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5z" />
+        </svg>
+    );
+}
+
+export function IconTrash(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
+    const { title, ...rest } = props;
+    return (
+        <svg fill="currentColor" viewBox="0 0 16 16" {...rest}>
+            {title && <title>{title}</title>}
+            <path fillRule="evenodd" clipRule="evenodd" d="M10 3h3v1h-1v9l-1 1H4l-1-1V4H2V3h3V2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1zM9 2H6v1h3V2zM4 13h7V4H4v9zm2-8H5v7h1V5zm1 0h1v7H7V5zm2 0h1v7H9V5z"/>
         </svg>
     );
 }

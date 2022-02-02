@@ -4,7 +4,7 @@ import { openPanelPathAtom, pathUnsafeAtom } from '../../store/store';
 import { Accordion } from '../UI/Accordion';
 import { SectionPane } from '../UI/SectionPane';
 import { classNames } from '../../utils/classnames';
-import { IconCopy, IconRedo, IconSave, IconUndo } from '../UI/icons/Icons';
+import { IconCopy, IconRedo, IconSave, IconTrash, IconUndo } from '../UI/icons/Icons';
 
 function PathEditor() {
     const [path, setPath] = useAtom(pathUnsafeAtom);
@@ -54,7 +54,7 @@ export function PanelPath() {
                             <Button onClick={() => { }}><IconCopy className="w-5 h-5" title="Copy"/></Button>
                             <Button onClick={() => { }} disabled={false}><IconUndo className="w-5 h-5" title="Undo" /></Button>
                             <Button onClick={() => { }} disabled={true}><IconRedo className="w-5 h-5" title="Redo" /></Button>
-                            <Button onClick={() => { }}>Clear</Button>
+                            <Button onClick={() => { }}><IconTrash className="w-5 h-5 pt-0.5" title="Clear path"/></Button>
                         </div>
                     </div>
                     {/* Editor */}
