@@ -19,15 +19,15 @@ function PathEditor() {
     );
 }
 
-function Button({ scale = true, enabled = true, children, className, ...rest }: { scale?: boolean; enabled?: boolean; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
+function Button({ scale = true, disabled = false, children, className, ...rest }: { scale?: boolean; onClick: () => void; } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     return (
         <button
             className={classNames(
                 "px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm select-none",
-                scale ? 'active:scale-[.97]' : '',
-                enabled ? '' : 'opacity-50',
+                disabled ? 'opacity-50' : scale ? 'active:scale-[.97]' : '',
                 className
             )}
+            disabled={disabled}
             {...rest}
         >
             {children}
@@ -62,8 +62,8 @@ export function PanelPath() {
 
                             <Button onClick={() => { }}>Save</Button>
                             <Button onClick={() => { }}>Copy</Button>
-                            <Button onClick={() => { }} enabled={false}><IconUndo className="w-5 h-5" title="Undo" /></Button>
-                            <Button onClick={() => { }} enabled={false}><IconRedo className="w-5 h-5" title="Redo" /></Button>
+                            <Button onClick={() => { }} disabled={true}><IconUndo className="w-5 h-5" title="Undo" /></Button>
+                            <Button onClick={() => { }} disabled={true}><IconRedo className="w-5 h-5" title="Redo" /></Button>
                             <Button onClick={() => { }}>Clear</Button>
 
                             {/* <Button label="Save" onClick={() => {}} />
