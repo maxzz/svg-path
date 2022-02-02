@@ -15,10 +15,6 @@ export function SectionPane({ children, open = true, ...rest }: { open?: boolean
             {/* Open/Close icon */}
             <svg className="w-6 h-6 p-1 stroke-current stroke-[.6rem] fill-none" viewBox="0 0 100 100">
                 <a.path d={styles.open.to({ range: [0, .3, 1], output: ["M 50 13 L 80 43 L 50 72", "M 50 13 L 50 42 L 50 72", "M 80 35 L 50 65 L 20 35"] })} />
-                {/* <a.path d={styles.open.to({ range: [0, 1], output: ["M 50 72 L 80 43 L 50 13", "M 80 35 L 50 65 L 20 35"] })} /> */}
-                {/* <a.path d={styles.open.to({ range: [0, 1], output: ["M 20 12 L 50 42 L 20 72", "M 80 35 L 50 65 L 20 35"] })} /> */}
-                {/* <a.path d={styles.open.to({ range: [0, 1], output: ["M 50 35 L 80 65 L 50 95", "M 20,65 50,35 80,65"] })} /> */}
-                {/* <a.path d={styles.open.to({ range: [0, 1], output: ["M 20,65 50,35 80,65", "M 20,35 50,65 80,35"] })} /> */}
             </svg>
         </div>
     );
