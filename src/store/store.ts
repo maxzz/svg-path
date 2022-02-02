@@ -1,5 +1,5 @@
 import { atom, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom } from "jotai";
-import { toast, toastSVGParse } from "../components/UI/UIToast";
+import { toast, toastSVGParse } from "../components/UI/UiToaster";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg/svg";
 import { getSvgItemAbsType } from "../svg/svg-utils";

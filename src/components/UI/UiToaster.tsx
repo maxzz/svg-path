@@ -1,5 +1,5 @@
 import React from 'react';
-import toast, { Toaster as OrgToaster } from 'react-hot-toast';
+import { toast as orgToast, Toaster as OrgToaster } from 'react-hot-toast';
 
 export function UIToaster() {
     return (
@@ -32,8 +32,20 @@ export function UIToaster() {
     );
 }
 
-export const toastWarning: typeof toast.custom = (message, options) => {
-    return toast(message,
+export const toastWarning: typeof orgToast.custom = (message, options) => {
+    return orgToast(message,
         {...{ style: { backgroundColor: 'tomato' } }, ...options}
     );
 };
+
+export function toast(message: string) {
+    console.log(`%c${message}`, 'color: orange');
+    toastWarning(message);
+}
+
+export function toastSVGParse(message: string) {
+    console.log(`%c${message}`, 'color: pink');
+    toastWarning(message);
+}
+
+//TODO: set atom to add message to the list of errors popup
