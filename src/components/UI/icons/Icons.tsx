@@ -30,3 +30,24 @@ export function IconLock(props: SVGProps<SVGSVGElement> & { title?: string; }) {
         </svg>
     );
 }
+
+
+export function IconUndo(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg strokeWidth="1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path d="M5 7v5" />
+            <path d="M7.875 9.5h7c5.5 0 5.5 8.5 0 8.5h-10" />
+            <path d="M11.375 13l-3.5-3.5l3.5-3.5" />
+        </svg>
+    );
+}
+
+export function IconRedo(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg strokeWidth="1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path d="M19 7v5" />
+            <path d="M16 9.5H9C3.5 9.5 3.5 18 9 18h10" />
+            <path d="M12.5 13L16 9.5L12.5 6" />
+        </svg>
+    );
+}
