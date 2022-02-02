@@ -7,6 +7,7 @@ import { PanelPath } from './components/Panels/PanelPath';
 import { PanelCommands } from './components/Panels/PanelCommands';
 import { PanelOperations } from './components/Panels/PanelOperations';
 import { PanelOptions } from './components/Panels/PanelOptions';
+import { UIToaster } from './components/UI/UiToaster';
 
 function PanelAllEditors() {
     return (
@@ -36,12 +37,13 @@ function PanelSvgCanvas() {
 }
 
 function App() {
-    return (
+    return (<>
+        <UIToaster />
         <div className="h-screen flex overflow-hidden">
             <PanelAllEditors />
             <PanelSvgCanvas />
         </div>
-    );
+    </>);
 }
 
 export default App;
