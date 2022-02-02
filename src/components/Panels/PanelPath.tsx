@@ -3,6 +3,7 @@ import { useAtom } from 'jotai';
 import { openPanelPathAtom, pathUnsafeAtom } from '../../store/store';
 import { Accordion } from '../UI/Accordion';
 import { SectionPane } from '../UI/SectionPane';
+import { classNames } from '../../utils/classnames';
 
 function PathEditor() {
     const [path, setPath] = useAtom(pathUnsafeAtom);
@@ -17,16 +18,31 @@ function PathEditor() {
     );
 }
 
-function Button({ label, ...rest }: { label: string; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
+function Button({ scale = true, children, className, ...rest }: { scale?: boolean; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
     return (
         <button
-            className="px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm active:scale-[.97] select-none"
+            className={classNames(
+                "px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm select-none",
+                `${scale ? 'active:scale-[.97]' : ''}`,
+                className
+            )}
             {...rest}
         >
-            {label}
+            {children}
         </button>
     );
 }
+
+// function Button({ label, ...rest }: { label: string; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
+//     return (
+//         <button
+//             className="px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm active:scale-[.97] select-none"
+//             {...rest}
+//         >
+//             {label}
+//         </button>
+//     );
+// }
 
 export function PanelPath() {
     const [open, setOpen] = useAtom(openPanelPathAtom);
@@ -41,11 +57,18 @@ export function PanelPath() {
                         <div className="pb-0.5 text-xs tracking-tighter self-end">path</div>
                         <div className="pb-2 flex space-x-1">
                             {/* <Button label="Open" onClick={() => {}} /> */}
-                            <Button label="Save" onClick={() => {}} />
+
+                            <Button onClick={() => {}}>Save</Button>
+                            <Button onClick={() => {}}>Copy</Button>
+                            <Button onClick={() => {}}>Undo</Button>
+                            <Button onClick={() => {}}>Redo</Button>
+                            <Button onClick={() => {}}>Clear</Button>
+
+                            {/* <Button label="Save" onClick={() => {}} />
                             <Button label="Copy" onClick={() => {}} />
                             <Button label="Undo" onClick={() => {}} />
                             <Button label="Redo" onClick={() => {}} />
-                            <Button label="Clear" onClick={() => {}} />
+                            <Button label="Clear" onClick={() => {}} /> */}
                         </div>
                     </div>
 
