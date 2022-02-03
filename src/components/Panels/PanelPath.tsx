@@ -1,10 +1,11 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { openPanelPathAtom, pathUnsafeAtom } from '../../store/store';
+import { doClearPathAtom, doCopyPathAtom, doRedoPathAtom, doSavePathAtom, doUndoPathAtom, openPanelPathAtom, pathUnsafeAtom } from '../../store/store';
 import { Accordion } from '../UI/Accordion';
 import { SectionPane } from '../UI/SectionPane';
 import { classNames } from '../../utils/classnames';
 import { IconCopy, IconRedo, IconSave, IconTrash, IconUndo } from '../UI/icons/Icons';
+import { useUpdateAtom } from 'jotai/utils';
 
 function PathEditor() {
     const [path, setPath] = useAtom(pathUnsafeAtom);
@@ -35,6 +36,21 @@ function Button({ scale = true, disabled = false, children, className, ...rest }
     );
 }
 
+function Buttons() {
+    const doSave = useUpdateAtom(doSavePathAtom);
+    const doCopy = useUpdateAtom(doCopyPathAtom);
+    const doUndo = useUpdateAtom(doUndoPathAtom);
+    const doRedo = useUpdateAtom(doRedoPathAtom);
+    const doClear = useUpdateAtom(doClearPathAtom);
+    return (<>
+        <Button onClick={doSave}><IconSave className="w-5 h-5" title="Save" /></Button>
+        <Button onClick={doCopy}><IconCopy className="w-5 h-5" title="Copy" /></Button>
+        <Button onClick={doUndo} disabled={false}><IconUndo className="w-5 h-5" title="Undo" /></Button>
+        <Button onClick={doRedo} disabled={true}><IconRedo className="w-5 h-5" title="Redo" /></Button>
+        <Button onClick={doClear}><IconTrash className="w-5 h-5 pt-0.5" title="Clear path" /></Button>
+    </>);
+}
+
 export function PanelPath() {
     const [open, setOpen] = useAtom(openPanelPathAtom);
     return (
@@ -49,12 +65,7 @@ export function PanelPath() {
                         <div className="pb-0.5 text-xs tracking-tighter self-end">path</div>
                         <div className="pb-2 flex space-x-1">
                             {/* <Button label="Open" onClick={() => {}} /> */}
-
-                            <Button onClick={() => { }}><IconSave className="w-5 h-5" title="Save"/></Button>
-                            <Button onClick={() => { }}><IconCopy className="w-5 h-5" title="Copy"/></Button>
-                            <Button onClick={() => { }} disabled={false}><IconUndo className="w-5 h-5" title="Undo" /></Button>
-                            <Button onClick={() => { }} disabled={true}><IconRedo className="w-5 h-5" title="Redo" /></Button>
-                            <Button onClick={() => { }}><IconTrash className="w-5 h-5 pt-0.5" title="Clear path"/></Button>
+                            <Buttons />
                         </div>
                     </div>
                     {/* Editor */}
@@ -67,11 +78,14 @@ export function PanelPath() {
     );
 }
 
-//TODO: scrollbar
+//TODO: scrollbar <- done
 //TODO: undo/redo, save. copy, clear
+
 //TODO: add info sub-panel in header to show number of characters (bytes, KB)
+
 //TODO: codemirror
 //TODO: add list of pathes and select one of them
 //TODO: split path to sub-pathes or somehow isolate them
+
 //TODO: realy need undo/redo
-//TODO: need to handle arc editing better
+//TODO: need to handle arc editing better <- done

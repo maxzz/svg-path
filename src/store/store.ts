@@ -702,6 +702,32 @@ export const operRoundAtom = atom(1);  // round path numbers
 
 //#endregion Operations
 
+//#region PathOperations
+
+export const doSavePathAtom = atom(null, (get, set,) => {
+
+});
+
+export const doCopyPathAtom = atom(null, (get, set,) => {
+
+});
+
+export const doUndoPathAtom = atom(null, (get, set,) => {
+
+});
+
+export const doRedoPathAtom = atom(null, (get, set,) => {
+
+});
+
+export const doClearPathAtom = atom(null, (get, set,) => {
+    if (get(pathUnsafeAtom).length) {
+        set(pathUnsafeAtom, '');
+    }
+});
+
+//#endregion PathOperations
+
 //#region History
 
 // history
