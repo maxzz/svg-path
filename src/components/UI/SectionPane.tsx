@@ -9,7 +9,7 @@ export function SectionPane({ children, open = true, ...rest }: { open?: boolean
             {...rest}
         >
             {/* Section name */}
-            <div className="pr-1 pt-1">
+            <div className="pr-1 pt-1 flex-1">
                 {children}
             </div>
             {/* Open/Close icon */}

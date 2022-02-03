@@ -56,7 +56,10 @@ export function PanelPath() {
     return (
         <div className="">
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
-                Path
+                <div className='flex items-center justify-between'>
+                    <div className="">Path</div>
+                    {/* <div className="">11</div> */}
+                </div>
             </SectionPane>
             <Accordion toggle={open}>
                 <div className="px-1.5 pt-1.5 pb-0.5 text-sm bg-slate-300 overflow-hidden">
