@@ -108,7 +108,7 @@ function Checkbox({ label, tooltip, atom, className, ...rest }: { label: string;
     );
 }
 
-const showElementAnimConfig = { easing: easings.easeInOutQuart,  duration: 200 };
+const showElementAnimConfig = { easing: easings.easeInOutQuart, duration: 200 };
 
 function PrecisionInput({ className, ...rest }: React.HTMLAttributes<HTMLLabelElement>) {
     const snapToGrid = useAtomValue(snapToGridAtom);
@@ -189,7 +189,9 @@ export function PanelOptions() {
     return (
         <div className="">
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
-                Options
+                <div className="pr-1 pt-1 flex-1">
+                    Options
+                </div>
             </SectionPane>
             <Accordion toggle={open}>
                 <div className="text-sm bg-slate-300 overflow-hidden">

@@ -10,7 +10,9 @@ export function PanelCommands() {
     return (
         <div className="">
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
-                Path Commands
+                <div className="pr-1 pt-1 flex-1">
+                    Path Commands
+                </div>
             </SectionPane>
             <Accordion toggle={open}>
                 <div className="text-sm bg-slate-300 overflow-hidden">

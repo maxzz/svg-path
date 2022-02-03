@@ -158,7 +158,9 @@ export function PanelOperations() {
     return (
         <div className="">
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
-                Path Operations
+                <div className="pr-1 pt-1 flex-1">
+                    Path Operations
+                </div>
             </SectionPane>
             <Accordion toggle={open}>
                 <div className="px-1.5 py-0.5 text-sm bg-slate-300 overflow-hidden">
