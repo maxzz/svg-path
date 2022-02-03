@@ -1,11 +1,11 @@
 import React from 'react';
 import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { doClearPathAtom, doCopyPathAtom, doRedoPathAtom, doSavePathAtom, doUndoPathAtom, openPanelPathAtom, pathUnsafeAtom } from '../../store/store';
 import { Accordion } from '../UI/Accordion';
 import { SectionPane } from '../UI/SectionPane';
 import { classNames } from '../../utils/classnames';
 import { IconCopy, IconRedo, IconSave, IconTrash, IconUndo } from '../UI/icons/Icons';
-import { useUpdateAtom } from 'jotai/utils';
 
 function PathEditor() {
     const [path, setPath] = useAtom(pathUnsafeAtom);
@@ -24,7 +24,7 @@ function Button({ scale = true, disabled = false, children, className, ...rest }
     return (
         <button
             className={classNames(
-                "px-1 flex-1 py-0.5 mx-auto text-slate-900 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm select-none",
+                "px-1 flex-1 py-0.5 mx-auto text-slate-700 bg-slate-400 border-slate-500 shadow-sm shadow-slate-800/40 border rounded-sm select-none",
                 disabled ? 'opacity-50' : scale ? 'active:scale-[.97]' : '',
                 className
             )}
@@ -51,6 +51,15 @@ function Buttons() {
     </>);
 }
 
+function SectionGadgets() {
+    const length = useAtomValue(pathUnsafeAtom);
+    return (
+        <div className="text-xs text-slate-300">
+            {length.length}
+        </div>
+    );
+}
+
 export function PanelPath() {
     const [open, setOpen] = useAtom(openPanelPathAtom);
     return (
@@ -58,7 +67,8 @@ export function PanelPath() {
             <SectionPane open={open} onClick={() => setOpen(v => !v)}>
                 <div className='flex items-center justify-between'>
                     <div className="">Path</div>
-                    {/* <div className="">11</div> */}
+                    <div className="flex"><Buttons /></div>
+                    <SectionGadgets />
                 </div>
             </SectionPane>
             <Accordion toggle={open}>
