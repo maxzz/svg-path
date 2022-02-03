@@ -2,7 +2,7 @@ import { atom, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom } fro
 import { toast, toastSVGParse } from "../components/UI/UiToaster";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg/svg";
-import { getSvgItemAbsType, updatePathSections } from "../svg/svg-utils";
+import { getSvgItemAbsType, initPathSections } from "../svg/svg-utils";
 import { getCanvasStroke, getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
 import debounce from "../utils/debounce";
 import { unexpected, _fViewBox, _ViewBox } from "../utils/debugging";
@@ -202,6 +202,7 @@ export type SvgItemEdit = {
     valueAtoms: SvgItemEditValueAtom[];
     standaloneStringAtom: PrimitiveAtom<string>;
     stateAtom: PrimitiveAtom<SvgItemEditState>;
+    sectionIgonoreAtom?: PrimitiveAtom<boolean>; // created only for sections w/ section member !== -1
 };
 
 export type SvgEditPoints = {
@@ -221,6 +222,8 @@ export type SvgEditRoot = {
     doTransAtom: WritableAtom<null, undefined>,
     doRoundAtom: WritableAtom<null, undefined>,
     doSetRelAbsAtom: WritableAtom<null, boolean>,
+
+    ignoreAllAtom: PrimitiveAtom<boolean>,
 };
 
 function createSvgEditRoot(svg: Svg): SvgEditRoot {
@@ -237,6 +240,14 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         doTransAtom: atom(null, doTrans),
         doRoundAtom: atom(null, doRound),
         doSetRelAbsAtom: atom(null, doSetRelAbs),
+
+        ignoreAllAtom: atom(
+            (get) => {
+                return root.edits.some((edit) => edit.sectionIgonoreAtom && get(edit.sectionIgonoreAtom));
+            },
+            (get, set, value: SetStateAction<boolean>) => {
+                root.edits.forEach((edit) => edit.sectionIgonoreAtom && set(edit.sectionIgonoreAtom, value))
+            }),
     };
     updateSubIndecies();
     svg.path.forEach((svgItem, svgItemIdx) => {
@@ -263,7 +274,8 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         };
         root.edits.push(newSvgEdit);
     });
-    updatePathSections(root.edits);
+    initPathSections(root.edits);
+    root.edits.forEach((edit) => edit.section !== -1 && (edit.sectionIgonoreAtom = atom<boolean>(false)));
     return root;
 
     function updateSubIndecies() {
@@ -296,7 +308,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         set(root.allowUpdatesAtom, true);
     }
 
-    // action actoms
+    // action atoms
 
     function doReloadAllValues({ get, set, nextValue: doUpdate }: { get: Getter, set: Setter, nextValue: boolean; }) {
         doUpdate && reloadAllItemValues(get, set);
