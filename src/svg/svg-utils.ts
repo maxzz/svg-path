@@ -1,7 +1,7 @@
 import { SvgItemEdit } from "../store/store";
 import { SvgItem } from "./svg";
 
-const commandAttrs: { [key: string]: string[]; } = {
+const COMMAND_ATTRS: { [key: string]: string[]; } = {
     M: ['x', 'y'],
     m: ['dx', 'dy'],
     L: ['x', 'y'],
@@ -23,10 +23,10 @@ const commandAttrs: { [key: string]: string[]; } = {
 };
 
 export function getTooltip(command: string, idx: number): string {
-    return commandAttrs[command]?.[idx] || '';
+    return COMMAND_ATTRS[command]?.[idx] || '';
 }
 
-const valueToPoint: { [key: string]: number[]; } = { // -1 point and >= 0 for control point
+const VALUE_TO_POINT: { [key: string]: number[]; } = { // -1 point and >= 0 for control point
     M: [-1, -1],
     m: [-1, -1],
     L: [-1, -1],
@@ -48,8 +48,7 @@ const valueToPoint: { [key: string]: number[]; } = { // -1 point and >= 0 for co
 };
 
 export function getValueToPoint(command: string, idx: number): number {
-    //console.log('getvalueToPoint', command, idx, valueToPoint[command]?.[idx] ?? -1);
-    return valueToPoint[command]?.[idx] ?? -1;
+    return VALUE_TO_POINT[command]?.[idx] ?? -1;
 }
 
 export function getSvgItemAbsType(svgItem: SvgItem): string {
@@ -59,4 +58,5 @@ export function getSvgItemAbsType(svgItem: SvgItem): string {
 export function updatePathSections(edits: SvgItemEdit[]): void {
     let idx = 0;
     edits.forEach((edit) => getSvgItemAbsType(edit.svgItem) === 'M' && (edit.section = idx++));
+    (idx === 1) && (edits[0].section = -1);
 }
