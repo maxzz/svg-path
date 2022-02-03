@@ -222,8 +222,6 @@ export type SvgEditRoot = {
     doTransAtom: WritableAtom<null, undefined>,
     doRoundAtom: WritableAtom<null, undefined>,
     doSetRelAbsAtom: WritableAtom<null, boolean>,
-
-    ignoreAllAtom: PrimitiveAtom<boolean>,
 };
 
 function createSvgEditRoot(svg: Svg): SvgEditRoot {
@@ -240,14 +238,6 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         doTransAtom: atom(null, doTrans),
         doRoundAtom: atom(null, doRound),
         doSetRelAbsAtom: atom(null, doSetRelAbs),
-
-        ignoreAllAtom: atom(
-            (get) => {
-                return root.edits.some((edit) => edit.sectionIgonoreAtom && get(edit.sectionIgonoreAtom));
-            },
-            (get, set, value: SetStateAction<boolean>) => {
-                root.edits.forEach((edit) => edit.sectionIgonoreAtom && set(edit.sectionIgonoreAtom, value))
-            }),
     };
     updateSubIndecies();
     svg.path.forEach((svgItem, svgItemIdx) => {
@@ -376,6 +366,17 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         triggerUpdate(set, -2);
     }
 }
+
+export const ignoreAllAtom = atom(
+    (get) => {
+        const svgEditRoot = get(svgEditRootAtom);
+        return svgEditRoot.edits.some((edit) => edit.sectionIgonoreAtom && get(edit.sectionIgonoreAtom));
+    },
+    (get, set, value: SetStateAction<boolean>) => {
+        const svgEditRoot = get(svgEditRootAtom);
+        svgEditRoot.edits.forEach((edit) => edit.sectionIgonoreAtom && set(edit.sectionIgonoreAtom, value));
+    }
+);
 
 export const doScaleAtom = atom(null, (get, set,) => {
     const svgEditRoot = get(svgEditRootAtom);

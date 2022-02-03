@@ -1,7 +1,7 @@
 import React from "react";
 import { PrimitiveAtom, useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { doSetStateAtom, svgEditRootAtom, SvgItemEdit, SvgItemEditState } from "../../store/store";
+import { doSetStateAtom, ignoreAllAtom, svgEditRootAtom, SvgItemEdit, SvgItemEditState } from "../../store/store";
 import { useDebounce, useHoverDirty } from "react-use";
 import { IconMenu } from "../UI/icons/Icons";
 import { getSvgItemAbsType, getTooltip, getValueToPoint } from "../../svg/svg-utils";
@@ -237,8 +237,7 @@ function SubPathRaiobutton({ checked, tooltip, onClick }: { checked: boolean, to
 }
 
 function CompoundPathHeader() {
-    const SvgEditRoot = useAtomValue(svgEditRootAtom);
-    const [ignoreAll, setIgnoreAll] = useAtom(SvgEditRoot.ignoreAllAtom);
+    const [ignoreAll, setIgnoreAll] = useAtom(ignoreAllAtom);
     return (
         <div className="px-2 text-xs flex items-center justify-between ">
             <div className="">Compound path</div>
