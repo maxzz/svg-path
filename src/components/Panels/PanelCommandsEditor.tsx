@@ -232,8 +232,16 @@ export function PathCommandEditor() {
     doTrace && console.log('=============== PathCommandEditor render rows (only on SvgEditRoot change) ===============');
     return (
         <div className="my-1 py-0.5 space-y-0.5">
-            {edits.map((svgItemEdit, idx) => (
-                <CommandRow svgItemEdit={svgItemEdit} key={idx} />
+            {edits.map((edit, idx) => (
+                <React.Fragment key={idx}>
+                    {edit.section !== -1 &&
+                        <div className="px-2 flex justify-between text-[.65rem] leading-3 bg-lime-100">
+                            <div className="">section</div>
+                            <div className="">isolate</div>
+                        </div>
+                    }
+                    <CommandRow svgItemEdit={edit} />
+                </React.Fragment>
             ))}
         </div >
     );
