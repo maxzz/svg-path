@@ -1,3 +1,4 @@
+import { SvgItemEdit } from "../store/store";
 import { SvgItem } from "./svg";
 
 const commandAttrs: { [key: string]: string[]; } = {
@@ -51,6 +52,11 @@ export function getValueToPoint(command: string, idx: number): number {
     return valueToPoint[command]?.[idx] ?? -1;
 }
 
-export function getSvgItemAbsType(svgItem: SvgItem) {
+export function getSvgItemAbsType(svgItem: SvgItem): string {
     return (svgItem.constructor as any).key as string;
+}
+
+export function updatePathSections(edits: SvgItemEdit[]): void {
+    let idx = 0;
+    edits.forEach((edit) => getSvgItemAbsType(edit.svgItem) === 'M' && (edit.section = idx++));
 }

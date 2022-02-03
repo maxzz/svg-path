@@ -72,4 +72,4 @@ export function CanvasTicks() {
 }
 
 //TODO: font-mono allows align by number of chars.
-//TODO: tailwind: tabular-nums
+//TODO: tailwind: tabular-nums <- font should support OpenType values tnum like Mozilla's 'Fira Sans'.

@@ -2,7 +2,7 @@ import { atom, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom } fro
 import { toast, toastSVGParse } from "../components/UI/UiToaster";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg/svg";
-import { getSvgItemAbsType } from "../svg/svg-utils";
+import { getSvgItemAbsType, updatePathSections } from "../svg/svg-utils";
 import { getCanvasStroke, getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
 import debounce from "../utils/debounce";
 import { unexpected, _fViewBox, _ViewBox } from "../utils/debugging";
@@ -194,8 +194,9 @@ export type SvgItemEditValueAtom = PrimitiveAtom<number>;
 
 export type SvgItemEdit = {
     id: string;
+    section: number;    // sub-path section index or -1 if none
     svgItemIdx: number;
-    svgItem: SvgItem; // back reference to item from svg.path array.
+    svgItem: SvgItem;   // back reference to item from svg.path array.
     typeAtom: PrimitiveAtom<string>;
     isRelAtom: SvgItemEditIsRelAtom;
     valueAtoms: SvgItemEditValueAtom[];
@@ -241,6 +242,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     svg.path.forEach((svgItem, svgItemIdx) => {
         const newSvgEdit: SvgItemEdit = {
             id: uuid(),
+            section: -1,
             svgItemIdx,
             svgItem,
             typeAtom: atom(svgItem.getType()),
@@ -261,6 +263,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         };
         root.edits.push(newSvgEdit);
     });
+    updatePathSections(root.edits);
     return root;
 
     function updateSubIndecies() {
@@ -702,7 +705,7 @@ export const operRoundAtom = atom(1);  // round path numbers
 
 //#endregion Operations
 
-//#region PathOperations
+//#region Path Operations
 
 export const doSavePathAtom = atom(null, (get, set,) => {
 
@@ -726,7 +729,7 @@ export const doClearPathAtom = atom(null, (get, set,) => {
     }
 });
 
-//#endregion PathOperations
+//#endregion Path Operations
 
 //#region History
 

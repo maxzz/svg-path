@@ -69,9 +69,9 @@ export function PanelPath() {
                     <div className='flex items-center justify-between'>
                         <div className="pr-1 pt-1 ">Path</div>
                         <div className="flex items-center space-x-2">
-                            <div className="justify-end flex items-center">
+                            {/* <div className="justify-end flex items-center">
                                 <Buttons />
-                            </div>
+                            </div> */}
                             <SectionGadgets />
                         </div>
                     </div>
