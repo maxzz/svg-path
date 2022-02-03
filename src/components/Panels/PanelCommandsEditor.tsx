@@ -219,27 +219,50 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
             </div>
 
             {/* Menu */}
-            <button className="flex-0 mt-0.5 active:scale-[.97]" tabIndex={-1} aria-label="sub-menu">
+            {/* <button className="flex-0 mt-0.5 active:scale-[.97]" tabIndex={-1} aria-label="sub-menu">
                 <IconMenu className="w-4 h-4" />
-            </button>
+            </button> */}
         </div>
     </>);
+}
+
+function SubPathRaiobutton() {
+    return (
+        <div className="w-3 h-3 bg-slate-500 rounded-full flex items-center justify-center">
+            <div className="w-2 h-2 bg-slate-200 rounded-full"></div>
+        </div>
+    );
+}
+
+function CompoundPathHeader() {
+    return (
+        <div className="px-2 text-xs flex items-center justify-between bg-slate-200">
+            <div className="">Compound path</div>
+            <SubPathRaiobutton />
+        </div>
+    );
+}
+
+function SubPathHeader() {
+    return (
+        <div className="px-2 flex justify-between text-[.65rem] leading-3 bg-slate-200">
+            <div className="">sub-path</div>
+            <SubPathRaiobutton />
+        </div>
+    );
 }
 
 export function PathCommandEditor() {
     const SvgEditRoot = useAtomValue(svgEditRootAtom);
     const edits = SvgEditRoot.edits;
+    const isCompoundPath = edits[0]?.section !== -1;
     doTrace && console.log('=============== PathCommandEditor render rows (only on SvgEditRoot change) ===============');
     return (
         <div className="my-1 py-0.5 space-y-0.5">
+            {isCompoundPath && <CompoundPathHeader />}
             {edits.map((edit, idx) => (
                 <React.Fragment key={idx}>
-                    {edit.section !== -1 &&
-                        <div className="px-2 flex justify-between text-[.65rem] leading-3 bg-lime-100">
-                            <div className="">section</div>
-                            <div className="">isolate</div>
-                        </div>
-                    }
+                    {edit.section !== -1 && <SubPathHeader />}
                     <CommandRow svgItemEdit={edit} />
                 </React.Fragment>
             ))}
