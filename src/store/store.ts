@@ -204,7 +204,7 @@ export type SvgItemEdit = {
     stateAtom: PrimitiveAtom<SvgItemEditState>;
 
     sectionIgonoreAtom?: PrimitiveAtom<boolean>; // created only for sections w/ section member !== -1
-    //sectionBlockedAtom: PrimitiveAtom<boolean>;
+    sectionIgnRefAtom: PrimitiveAtom<boolean>;
     sectionEnabledAtom: Atom<boolean>;
 };
 
@@ -226,6 +226,8 @@ export type SvgEditRoot = {
     doRoundAtom: WritableAtom<null, undefined>,
     doSetRelAbsAtom: WritableAtom<null, boolean>,
 };
+
+const AllwaysEnabledAtom = atom(true);
 
 function createSvgEditRoot(svg: Svg): SvgEditRoot {
     const root: SvgEditRoot = {
@@ -264,7 +266,8 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             })(idx))),
             standaloneStringAtom: atom(svgItem.asStandaloneString()),
             stateAtom: atom<SvgItemEditState>({ activeRow: false, hoverRow: false, activeEd: -1, hoverEd: -1, }),
-            sectionEnabledAtom: atom<boolean>((get) => !newSvgEdit.sectionIgonoreAtom || !get(newSvgEdit.sectionIgonoreAtom)),
+            sectionIgnRefAtom: AllwaysEnabledAtom,
+            sectionEnabledAtom: atom<boolean>((get) => !newSvgEdit.sectionIgnRefAtom || !get(newSvgEdit.sectionIgnRefAtom)),
         };
         root.edits.push(newSvgEdit);
     });
@@ -287,10 +290,12 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 
         let prevAtom: PrimitiveAtom<boolean> | undefined;
         edits.forEach((edit) => {
-            if (!edit.sectionIgonoreAtom) {
-                edit.sectionIgonoreAtom = prevAtom;
+            if (edit.sectionIgonoreAtom) {
+                prevAtom = edit.sectionIgonoreAtom;
             }
-            prevAtom = edit.sectionIgonoreAtom;
+            if (prevAtom) {
+                edit.sectionIgnRefAtom = prevAtom;
+            }
         });
     }
 
@@ -389,11 +394,11 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 export const ignoreAllAtom = atom(
     (get) => {
         const svgEditRoot = get(svgEditRootAtom);
-        return svgEditRoot.edits.some((edit) => edit.section !== -1 && get(edit.sectionIgonoreAtom!));
+        return svgEditRoot.edits.some((edit) => edit.sectionIgonoreAtom && get(edit.sectionIgonoreAtom));
     },
     (get, set, value: SetStateAction<boolean>) => {
         const svgEditRoot = get(svgEditRootAtom);
-        svgEditRoot.edits.forEach((edit) => edit.section !== -1 && set(edit.sectionIgonoreAtom!, value));
+        svgEditRoot.edits.forEach((edit) => edit.sectionIgonoreAtom && set(edit.sectionIgonoreAtom, value));
     }
 );
 
