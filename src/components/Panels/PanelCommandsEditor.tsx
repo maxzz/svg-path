@@ -226,33 +226,32 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     </>);
 }
 
-function SubPathRaiobutton({ checked, tooltip, onClick }: { checked: boolean, tooltip?: string; onClick: () => void; }) {
+function SubPathRaiobutton({ tooltip, ignoreAtom }: { tooltip?: string; ignoreAtom: PrimitiveAtom<boolean>; }) {
+    const [checked, onClick] = useAtom(ignoreAtom);
     return (
-        <div className="w-3 h-3 bg-slate-500 border rounded-full flex items-center justify-center cursor-pointer" title={tooltip} onClick={onClick}>
+        <div className="w-3 h-3 bg-slate-500 border rounded-full flex items-center justify-center cursor-pointer" title={tooltip} onClick={() => onClick((v) => !v)}>
             <div className="w-2 h-2 bg-slate-200 rounded-full flex items-center justify-center">
-                {checked && <div className="w-2 h-2 bg-slate-400 border rounded-full"></div>}
+                {!checked && <div className="w-2 h-2 bg-slate-400 border rounded-full"></div>}
             </div>
         </div>
     );
 }
 
 function CompoundPathHeader() {
-    const [ignoreAll, setIgnoreAll] = useAtom(ignoreAllAtom);
     return (
         <div className="px-2 text-xs flex items-center justify-between ">
             <div className="">Compound path</div>
-            <SubPathRaiobutton checked={!ignoreAll} onClick={() => setIgnoreAll((v) => !v)} />
+            <SubPathRaiobutton ignoreAtom={ignoreAllAtom} />
         </div>
     );
 }
 
 function SubPathHeader({ ignoreAtom }: { ignoreAtom: PrimitiveAtom<boolean>; }) {
-    const [ignore, setIgnore] = useAtom(ignoreAtom);
     return (
         <div className="px-2 flex justify-between text-[.65rem] leading-3 ">
             <div className=""></div>
             <div className="flex-1 mr-1 self-center h-px bg-slate-500"></div>
-            <SubPathRaiobutton checked={!ignore} onClick={() => setIgnore((v) => !v)} />
+            <SubPathRaiobutton ignoreAtom={ignoreAtom} />
         </div>
     );
 }
