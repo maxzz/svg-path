@@ -204,7 +204,7 @@ export type SvgItemEdit = {
     stateAtom: PrimitiveAtom<SvgItemEditState>;
 
     sectionIgonoreAtom?: PrimitiveAtom<boolean>; // created only for sections w/ section member !== -1
-    sectionIgnRefAtom: PrimitiveAtom<boolean>;
+    sectionIgnRefAtom: PrimitiveAtom<boolean>; // ref to the start section sectionIgonoreAtom or AllwaysEnabledAtom (internal used by sectionEnabledAtom)
     sectionEnabledAtom: Atom<boolean>;
 };
 
@@ -394,11 +394,22 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 export const ignoreAllAtom = atom(
     (get) => {
         const svgEditRoot = get(svgEditRootAtom);
-        return svgEditRoot.edits.some((edit) => edit.sectionIgonoreAtom && get(edit.sectionIgonoreAtom));
+        const res = svgEditRoot.edits.some((edit) => edit.sectionIgonoreAtom && get(edit.sectionIgonoreAtom));
+        console.log(`get ignoreAllAtom = ${res}`);
+        return res;
     },
+    // (get) => {
+    //     const svgEditRoot = get(svgEditRootAtom);
+    //     return svgEditRoot.edits.some((edit) => edit.sectionIgonoreAtom && get(edit.sectionIgonoreAtom));
+    // },
     (get, set, value: SetStateAction<boolean>) => {
         const svgEditRoot = get(svgEditRootAtom);
-        svgEditRoot.edits.forEach((edit) => edit.sectionIgonoreAtom && set(edit.sectionIgonoreAtom, value));
+        const val = typeof value === 'function' ? value(get(ignoreAllAtom)) : value;
+        svgEditRoot.edits.forEach((edit) => edit.sectionIgonoreAtom && set(edit.sectionIgonoreAtom, val));
+        
+        // console.log(`set ignoreAllAtom 1 = ${value}       -> func=${val}    now=${get(ignoreAllAtom)}`);
+        // svgEditRoot.edits.forEach((edit) => edit.sectionIgonoreAtom && set(edit.sectionIgonoreAtom, value));
+        // console.log(`set ignoreAllAtom 2 = ${value}       -> func=${val}    now=${get(ignoreAllAtom)}`);
     }
 );
 
