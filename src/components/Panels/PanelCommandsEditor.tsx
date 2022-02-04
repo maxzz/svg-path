@@ -269,7 +269,7 @@ export function PathCommandEditor() {
             {isCompoundPath && <CompoundPathHeader />}
             {edits.map((edit, idx) => (
                 <React.Fragment key={idx}>
-                    {edit.sectionIgonoreAtom && <SubPathHeader ignoreAtom={edit.sectionIgonoreAtom} />}
+                    {edit.section !== -1 && <SubPathHeader ignoreAtom={edit.sectionIgonoreAtom!} />}
                     <CommandRow svgItemEdit={edit} />
                 </React.Fragment>
             ))}

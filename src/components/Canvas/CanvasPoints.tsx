@@ -1,5 +1,5 @@
 import React from "react";
-import { PrimitiveAtom } from "jotai";
+import { Atom, PrimitiveAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { canvasStrokeAtom, doSetStateAtom, CanvasDragEvent, SvgItemEditState, doCanvasPointClkAtom, SvgItemEdit } from "../../store/store";
 import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg/svg";
@@ -8,12 +8,13 @@ import { getSvgItemAbsType } from "../../svg/svg-utils";
 
 type CanvasDragHandler = (event: CanvasDragEvent) => void;
 
-const pointColor = (active: boolean, hover: boolean): string => active ? '#009cff' : hover ? '#ff4343' : 'white';
-const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : 'white';
-const stokeCpLineColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : '#fff5';
+const pointColor = (active: boolean, hover: boolean, sectionEnabled: boolean): string => !sectionEnabled ? '#0f0' : active ? '#009cff' : hover ? '#ff4343' : 'white';
+const editorColor = (active: boolean, hover: boolean, sectionEnabled: boolean): string => !sectionEnabled ? '#0f0' : active ? '#9c00ffa0' : hover ? '#ffad40' : 'white';
+const stokeCpLineColor = (active: boolean, hover: boolean, sectionEnabled: boolean): string => !sectionEnabled ? '#0f0' : active ? '#9c00ffa0' : hover ? '#ffad40' : '#fff5';
 
-export function TargetPoint({ svgItemEdit, ignoreAtom }: { svgItemEdit: SvgItemEdit; ignoreAtom: PrimitiveAtom<boolean> | undefined; }) {
+export function TargetPoint({ svgItemEdit, sectionEnabledAtom }: { svgItemEdit: SvgItemEdit; sectionEnabledAtom: Atom<boolean>; }) {
     const asString = useAtomValue(svgItemEdit.standaloneStringAtom); // The main purpose is to trigger update
+    const sectionEnabled = useAtomValue(sectionEnabledAtom);
     const stroke = useAtomValue(canvasStrokeAtom);
     const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
 
@@ -37,12 +38,12 @@ export function TargetPoint({ svgItemEdit, ignoreAtom }: { svgItemEdit: SvgItemE
     return (<>
         {/* A piece of this point path */}
         {(state.activeRow || state.hoverRow) &&
-            <path style={{ stroke: pointColor(state.activeRow, state.hoverRow), fill: 'none' }} strokeWidth={stroke} d={asString} />
+            <path style={{ stroke: pointColor(state.activeRow, state.hoverRow, sectionEnabled), fill: 'none' }} strokeWidth={stroke} d={asString} />
         }
         {/* Active or hover circle marker */}
         {(activeEd || hoverEd) &&
             <circle
-                style={{ stroke: '#9c00ff63', fill: editorColor(activeEd, hoverEd) }}
+                style={{ stroke: '#9c00ff63', fill: editorColor(activeEd, hoverEd, sectionEnabled) }}
                 cx={pt.x} cy={pt.y} r={stroke * 8} strokeWidth={stroke * 16}
             />
         }
@@ -51,8 +52,8 @@ export function TargetPoint({ svgItemEdit, ignoreAtom }: { svgItemEdit: SvgItemE
             cx={pt.x} cy={pt.y} r={isMCommand ? stroke * 5 : stroke * 3}
             style={
                 isMCommand
-                    ? { stroke: pointColor(state.activeRow, state.hoverRow), fill: '#fff3', strokeWidth: stroke * 1.2, }
-                    : { stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow), strokeWidth: stroke * 12, }
+                    ? { stroke: pointColor(state.activeRow, state.hoverRow, sectionEnabled), fill: '#fff3', strokeWidth: stroke * 1.2, }
+                    : { stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow, sectionEnabled), strokeWidth: stroke * 12, }
             }
             className="cursor-pointer"
 
@@ -69,8 +70,9 @@ export function TargetPoint({ svgItemEdit, ignoreAtom }: { svgItemEdit: SvgItemE
     </>);
 }
 
-export function ControlPoint({ svgItemEdit, cpIdx }: { svgItemEdit: SvgItemEdit; cpIdx: number; }) {
+export function ControlPoint({ svgItemEdit, cpIdx, sectionEnabledAtom }: { svgItemEdit: SvgItemEdit; cpIdx: number; sectionEnabledAtom: Atom<boolean>; }) {
     const asString = useAtomValue(svgItemEdit.standaloneStringAtom); // The main purpose is to trigger update
+    const sectionEnabled = useAtomValue(sectionEnabledAtom);
     const stroke = useAtomValue(canvasStrokeAtom);
     const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);
     const setState = useUpdateAtom(doSetStateAtom);
@@ -91,7 +93,7 @@ export function ControlPoint({ svgItemEdit, cpIdx }: { svgItemEdit: SvgItemEdit;
         {pt.relations.map((rel, idx) => (
             <line
                 //style={{ stroke: stokeCpLineColor(activeEd, hoverEd), strokeDasharray: `${stroke * 3} ${stroke * 5}` }}
-                style={{ stroke: stokeCpLineColor(state.activeRow, state.hoverRow), strokeWidth: stroke * 1.5, strokeDasharray: `${stroke * 3} ${stroke * 5}` }}
+                style={{ stroke: stokeCpLineColor(state.activeRow, state.hoverRow, sectionEnabled), strokeWidth: stroke * 1.5, strokeDasharray: `${stroke * 3} ${stroke * 5}` }}
                 x1={pt.x} y1={pt.y} x2={rel.x} y2={rel.y} strokeWidth={stroke} key={idx}
             />
         ))}
@@ -100,14 +102,14 @@ export function ControlPoint({ svgItemEdit, cpIdx }: { svgItemEdit: SvgItemEdit;
             (activeEd || hoverEd) &&
             <rect
                 className="cursor-pointer"
-                style={{ stroke: '#9c00ff63', fill: editorColor(activeEd, hoverEd) }}
+                style={{ stroke: '#9c00ff63', fill: editorColor(activeEd, hoverEd, sectionEnabled) }}
                 x={pt.x - 8 * stroke} y={pt.y - 8 * stroke} width={stroke * 16} height={stroke * 16} strokeWidth={stroke * 16}
             />
         }
         {/* Control point as square */}
         <rect
             x={pt.x - 3 * stroke} y={pt.y - 3 * stroke} width={stroke * 6} height={stroke * 6} strokeWidth={stroke * 12}
-            style={{ stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow) }}
+            style={{ stroke: 'transparent', fill: pointColor(state.activeRow, state.hoverRow, sectionEnabled) }}
             className="cursor-pointer"
 
             onMouseEnter={() => {

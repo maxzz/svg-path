@@ -59,15 +59,11 @@ function RenderPath() {
 function RenderTargetPoints() {
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const edits = svgEditRoot.edits;
-    let ignoreAtom: PrimitiveAtom<boolean> | undefined;
     return (
         <g className="target-pts">
-            {edits.map((edit, editIdx) => {
-                if (edit.section !== -1) {
-                    ignoreAtom = edit.sectionIgonoreAtom;
-                }
-                return <TargetPoint key={editIdx} svgItemEdit={edit} ignoreAtom={ignoreAtom} />;
-            })}
+            {edits.map((edit, editIdx) => (
+                <TargetPoint key={editIdx} svgItemEdit={edit} sectionEnabledAtom={edit.sectionEnabledAtom} />
+            ))}
         </g>
     );
 }
@@ -79,8 +75,9 @@ function RenderControlPoints() {
         <g className="ctrl-pts">
             {edits.map((edit, editIdx) => {
                 const controls = edit.svgItem.controlLocations();
+                const sectionEnabledAtom = edit.sectionEnabledAtom;
                 return controls.map((cpt, cpIdx) => (
-                    <ControlPoint key={`${editIdx}${cpIdx}`} svgItemEdit={edit} cpIdx={cpIdx} />
+                    <ControlPoint key={`${editIdx}${cpIdx}`} svgItemEdit={edit} cpIdx={cpIdx} sectionEnabledAtom={sectionEnabledAtom} />
                 ));
             })}
         </g>
