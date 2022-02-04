@@ -1,4 +1,5 @@
 import React from "react";
+import { PrimitiveAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { canvasStrokeAtom, doSetStateAtom, CanvasDragEvent, SvgItemEditState, doCanvasPointClkAtom, SvgItemEdit } from "../../store/store";
 import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg/svg";
@@ -11,7 +12,7 @@ const pointColor = (active: boolean, hover: boolean): string => active ? '#009cf
 const editorColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : 'white';
 const stokeCpLineColor = (active: boolean, hover: boolean): string => active ? '#9c00ffa0' : hover ? '#ffad40' : '#fff5';
 
-export function TargetPoint({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
+export function TargetPoint({ svgItemEdit, ignoreAtom }: { svgItemEdit: SvgItemEdit; ignoreAtom: PrimitiveAtom<boolean> | undefined; }) {
     const asString = useAtomValue(svgItemEdit.standaloneStringAtom); // The main purpose is to trigger update
     const stroke = useAtomValue(canvasStrokeAtom);
     const doCanvasPointClk = useUpdateAtom(doCanvasPointClkAtom);

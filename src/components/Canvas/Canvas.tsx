@@ -1,4 +1,5 @@
 import React from 'react';
+import { PrimitiveAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
 import { canvasSizeAtom, canvasStrokeAtom, svgEditRootAtom, viewBoxAtom, doCanvasMouseDownAtom, doCanvasMouseMoveAtom, doCanvasMouseUpAtom, showCPsAtom, fillPathAtom } from '../../store/store';
@@ -58,11 +59,15 @@ function RenderPath() {
 function RenderTargetPoints() {
     const svgEditRoot = useAtomValue(svgEditRootAtom);
     const edits = svgEditRoot.edits;
+    let ignoreAtom: PrimitiveAtom<boolean> | undefined;
     return (
         <g className="target-pts">
-            {edits.map((edit, editIdx) => (
-                <TargetPoint key={editIdx} svgItemEdit={edit} />
-            ))}
+            {edits.map((edit, editIdx) => {
+                if (edit.section !== -1) {
+                    ignoreAtom = edit.sectionIgonoreAtom;
+                }
+                return <TargetPoint key={editIdx} svgItemEdit={edit} ignoreAtom={ignoreAtom} />;
+            })}
         </g>
     );
 }
