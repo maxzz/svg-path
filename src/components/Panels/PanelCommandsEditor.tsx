@@ -226,6 +226,8 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     </>);
 }
 
+//#region Sub headers
+
 function SubPathRaiobutton({ tooltip, ignoreAtom }: { tooltip?: string; ignoreAtom: PrimitiveAtom<boolean>; }) {
     const [checked, onClick] = useAtom(ignoreAtom);
     return (
@@ -249,12 +251,13 @@ function CompoundPathHeader() {
 function SubPathHeader({ ignoreAtom }: { ignoreAtom: PrimitiveAtom<boolean>; }) {
     return (
         <div className="px-2 flex justify-between text-[.65rem] leading-3 ">
-            <div className=""></div>
-            <div className="flex-1 mr-1 self-center h-px bg-slate-500"></div>
+            <div className="flex-1 mr-1 self-center h-px bg-gradient-to-r from-slate-500/10 via-slate-500/50 to-slate-500/10"></div>
             <SubPathRaiobutton ignoreAtom={ignoreAtom} />
         </div>
     );
 }
+
+//#endregion Sub headers
 
 export function PathCommandEditor() {
     const SvgEditRoot = useAtomValue(svgEditRootAtom);
