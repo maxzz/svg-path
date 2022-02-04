@@ -2,7 +2,7 @@ import { Atom, atom, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom
 import { toast, toastSVGParse } from "../components/UI/UiToaster";
 import atomWithCallback from "../hooks/atomsX";
 import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg/svg";
-import { getSvgItemAbsType, initPathSections } from "../svg/svg-utils";
+import { getSvgItemAbsType } from "../svg/svg-utils";
 import { getCanvasStroke, getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
 import debounce from "../utils/debounce";
 import { unexpected, _fViewBox, _ViewBox } from "../utils/debugging";
@@ -202,7 +202,9 @@ export type SvgItemEdit = {
     valueAtoms: SvgItemEditValueAtom[];
     standaloneStringAtom: PrimitiveAtom<string>;
     stateAtom: PrimitiveAtom<SvgItemEditState>;
+
     sectionIgonoreAtom?: PrimitiveAtom<boolean>; // created only for sections w/ section member !== -1
+    //sectionBlockedAtom: PrimitiveAtom<boolean>;
     sectionEnabledAtom: Atom<boolean>;
 };
 
@@ -267,20 +269,28 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         root.edits.push(newSvgEdit);
     });
     initPathSections(root.edits);
-    root.edits.forEach((edit) => edit.section !== -1 && (edit.sectionIgonoreAtom = atom<boolean>(false)));
-    let prevAtom: PrimitiveAtom<boolean> | undefined;
-    root.edits.forEach((edit) => {
-        if (!edit.sectionIgonoreAtom) {
-            edit.sectionIgonoreAtom = prevAtom;
-        }
-        prevAtom = edit.sectionIgonoreAtom;
-    });
     return root;
 
     function updateSubIndecies() {
         root.svg.path.forEach((svgItem) => {
             const controls = svgItem.controlLocations();
             controls.forEach((cpt, idx) => cpt.subIndex = idx);
+        });
+    }
+
+    function initPathSections(edits: SvgItemEdit[]): void {
+        let idx = 0;
+        edits.forEach((edit) => getSvgItemAbsType(edit.svgItem) === 'M' && (edit.section = idx++));
+        (idx === 1) && (edits[0].section = -1); // if there is only one section
+
+        edits.forEach((edit) => edit.section !== -1 && (edit.sectionIgonoreAtom = atom<boolean>(false)));
+
+        let prevAtom: PrimitiveAtom<boolean> | undefined;
+        edits.forEach((edit) => {
+            if (!edit.sectionIgonoreAtom) {
+                edit.sectionIgonoreAtom = prevAtom;
+            }
+            prevAtom = edit.sectionIgonoreAtom;
         });
     }
 
