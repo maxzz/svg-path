@@ -8,9 +8,9 @@ import { getSvgItemAbsType } from "../../svg/svg-utils";
 
 type CanvasDragHandler = (event: CanvasDragEvent) => void;
 
-const pointColor = (active: boolean, hover: boolean, sectionEnabled: boolean): string => !sectionEnabled ? '#0f0' : active ? '#009cff' : hover ? '#ff4343' : 'white';
-const editorColor = (active: boolean, hover: boolean, sectionEnabled: boolean): string => !sectionEnabled ? '#0f0' : active ? '#9c00ffa0' : hover ? '#ffad40' : 'white';
-const stokeCpLineColor = (active: boolean, hover: boolean, sectionEnabled: boolean): string => !sectionEnabled ? '#0f0' : active ? '#9c00ffa0' : hover ? '#ffad40' : '#fff5';
+const pointColor = (active: boolean, hover: boolean, sectionEnabled: boolean): string => !sectionEnabled ? '#777c' : active ? '#009cff' : hover ? '#ff4343' : 'white';
+const editorColor = (active: boolean, hover: boolean, sectionEnabled: boolean): string => !sectionEnabled ? '#777c' : active ? '#9c00ffa0' : hover ? '#ffad40' : 'white';
+const stokeCpLineColor = (active: boolean, hover: boolean, sectionEnabled: boolean): string => !sectionEnabled ? '#777c' : active ? '#9c00ffa0' : hover ? '#ffad40' : '#fff5';
 
 export function TargetPoint({ svgItemEdit, sectionEnabledAtom }: { svgItemEdit: SvgItemEdit; sectionEnabledAtom: Atom<boolean>; }) {
     const asString = useAtomValue(svgItemEdit.standaloneStringAtom); // The main purpose is to trigger update
@@ -37,9 +37,9 @@ export function TargetPoint({ svgItemEdit, sectionEnabledAtom }: { svgItemEdit: 
     }
     return (<>
         {/* A piece of this point path */}
-        {(state.activeRow || state.hoverRow) &&
+        {/* {(state.activeRow || state.hoverRow) && */}
             <path style={{ stroke: pointColor(state.activeRow, state.hoverRow, sectionEnabled), fill: 'none' }} strokeWidth={stroke} d={asString} />
-        }
+        {/* } */}
         {/* Active or hover circle marker */}
         {(activeEd || hoverEd) &&
             <circle
@@ -141,7 +141,9 @@ export function ControlPoint({ svgItemEdit, cpIdx, sectionEnabledAtom }: { svgIt
     </>);
 }
 
-//TODO: z command
+//TODO: SVG z command
 //  * not following first m command (as asString is not triggering updates). - done
 //  * there can be two z commands - done
 //  * z coomand should highlight corresponding first command in case of compound path - will not do
+
+//TODO: click on canvas point should enable disabled sub-path

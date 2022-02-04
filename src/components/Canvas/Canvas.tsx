@@ -51,8 +51,12 @@ function RenderPath() {
                 ? '#94a3b830'
                 : 'none'
         ;
+    if (!fill) {
+        return null;
+    }
     return (<>
-        {completePath && <path d={completePath} fill={fillColor} stroke="white" strokeWidth={stroke} />}
+        {completePath && <path d={completePath} fill={fillColor} stroke="none" strokeWidth={stroke} />}
+        {/* {completePath && <path d={completePath} fill={fillColor} stroke="white" strokeWidth={stroke} />} */}
     </>);
 }
 
