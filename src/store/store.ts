@@ -380,10 +380,15 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             return;
         }
 
+        const precision = get(precisionAtom);
+
         //root.svg.scale(x, y);
         const enabledEdits = getEnabledSvgItems(get, root.edits);
         if (enabledEdits.length) {
             enabledEdits.forEach((edit) => edit.svgItem.scale(x, y));
+            enabledEdits.forEach((edit) => {
+                edit.svgItem.values.forEach((value, idx) => edit.svgItem.values[idx] = parseFloat(value.toFixed(precision)));
+            });
             root.svg.refreshAbsolutePositions();
         }
 
@@ -392,7 +397,14 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     function doTrans(get: Getter, set: Setter,) {
         const x = get(operTransXAtom);
         const y = get(operTransYAtom);
-        root.svg.translate(x, y);
+
+        //root.svg.translate(x, y);
+        const enabledEdits = getEnabledSvgItems(get, root.edits);
+        if (enabledEdits.length) {
+            enabledEdits.forEach((edit) => edit.svgItem.translate(x, y, !!edit.sectionIgonoreAtom || edit.svgItemIdx === 0)); // force if section begins
+            root.svg.refreshAbsolutePositions();
+        }
+
         triggerUpdate(set, -2);
         set(operTransXAtom, 0);
         set(operTransYAtom, 0);
@@ -402,7 +414,14 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         set(pathUnsafeAtom, root.svg.asString(round));
     }
     function doSetRelAbs(get: Getter, set: Setter, relOrAbs: boolean) {
-        root.svg.setRelative(relOrAbs);
+
+        //root.svg.setRelative(relOrAbs);
+        const enabledEdits = getEnabledSvgItems(get, root.edits);
+        if (enabledEdits.length) {
+            enabledEdits.forEach((edit) => edit.svgItem.setRelative(relOrAbs));
+            root.svg.refreshAbsolutePositions();
+        }
+
         triggerUpdate(set, -2);
     }
 }

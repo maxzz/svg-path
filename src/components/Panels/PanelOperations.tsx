@@ -46,7 +46,7 @@ function UniformScaleControl() {
             )}
             strokeWidth={2}
             onClick={() => setUniScale((v) => !v)}
-            title="lock/unlock x and y scales"
+            title="Lock/Unlock x and y scales"
             onMouseDown={((event) => event.preventDefault())}
         />
     );
@@ -74,7 +74,7 @@ function ScaleContols() {
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operScaleXAtom} label={uniScale ? "Uniform scale" : "Scale X"} overlay={<UniformScaleControl />} className="flex-none" onEnter={doScale} />
             {!uniScale && <OperationInput atom={operScaleYAtom} label="Scale Y" className="flex-none" onEnter={doScale} />}
-            <Button onClick={doScale} style={{ transition: 'flex-basis .2s', flexBasis: !uniScale ? '30%' : '100%' }}
+            <Button title="Scale all commands (or selected sub-paths)" onClick={doScale} style={{ transition: 'flex-basis .2s', flexBasis: !uniScale ? '30%' : '100%' }}
             // onTransitionEnd={(...args) => { console.log('end', ...args); }} 
             >Scale</Button>
         </div>
@@ -87,7 +87,7 @@ function TranslateContols() {
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operTransXAtom} label="Translate X" onEnter={doTrans} />
             <OperationInput atom={operTransYAtom} label="Translate Y" onEnter={doTrans} />
-            <Button onClick={doTrans}>Translate</Button>
+            <Button title="Translate all commands (or selected sub-paths)" onClick={doTrans}>Translate</Button>
         </div>
     );
 }
@@ -99,8 +99,8 @@ function RoundConvertContols() {
         <div className="my-1 flex space-x-1">
             <OperationInput atom={operRoundAtom} label="Number of decimals" cleanup={cleanupValueUInt} />
             <Button title="Round all path numbers" onClick={doRound}>Round</Button>
-            <Button title="Convert all commands to relative" onClick={() => doSetRelAbs(true)}>To rel</Button>
-            <Button title="Convert all commands to absolute" onClick={() => doSetRelAbs(false)}>To abs</Button>
+            <Button title="Convert all commands (or selected sub-paths) to relative" onClick={() => doSetRelAbs(true)}>To rel</Button>
+            <Button title="Convert all commands (or selected sub-paths) to absolute" onClick={() => doSetRelAbs(false)}>To abs</Button>
         </div>
     );
 }
