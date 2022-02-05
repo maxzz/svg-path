@@ -1,1 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--iconoir" width="32" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g stroke-width="1.5" fill="none"><path d="M19 7v5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 9.5H9C3.5 9.5 3.5 18 9 18h10" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12.5 13L16 9.5L12.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--iconoir" width="32" height="32"
+    preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
+    <g stroke-width="1.5" fill="none">
+        <path d="M19 7v5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M16 9.5H9C3.5 9.5 3.5 18 9 18h10" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M12.5 13L16 9.5L12.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+    </g>
+</svg>

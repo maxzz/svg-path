@@ -98,3 +98,5 @@ m 12 13 l 5 -4 L 1 3
 //TODO: zoom buttons: -/+/fit
 
 //TODO: reverse sub-path points order
+
+//TODO: move path when hover over path line; set cursor move
