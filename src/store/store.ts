@@ -375,9 +375,10 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         }
     }
     function doUpdatePoint(get: Getter, set: Setter, { pt, newXY, svgItemIdx }: { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }) {
-        const precision = get(precisionAtom);
-        const xy = { x: roundNumberToPrecision(newXY.x, precision), y: roundNumberToPrecision(newXY.y, precision) };
-        svg.setLocation(pt, xy);
+        // const precision = get(precisionAtom);
+        // const xy = { x: roundNumberToPrecision(newXY.x, precision), y: roundNumberToPrecision(newXY.y, precision) };
+        // svg.setLocation(pt, xy);
+        svg.setLocation(pt, newXY);
         triggerUpdate(set, svgItemIdx);
     }
     function doScale(get: Getter, set: Setter,) {
