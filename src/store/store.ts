@@ -327,6 +327,10 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         set(root.allowUpdatesAtom, true);
     }
 
+    function getEnabledSvgItems(get: Getter, edits: SvgItemEdit[]): SvgItemEdit[] {
+        return edits.filter((edit) => get(edit.sectionEnabledAtom));
+    }
+
     // action atoms
 
     function doReloadAllValues({ get, set, nextValue: doUpdate }: { get: Getter, set: Setter, nextValue: boolean; }) {
@@ -375,7 +379,14 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             toast(`Can't scale to zero`);
             return;
         }
-        root.svg.scale(x, y);
+
+        //root.svg.scale(x, y);
+        const enabledEdits = getEnabledSvgItems(get, root.edits);
+        if (enabledEdits.length) {
+            enabledEdits.forEach((edit) => edit.svgItem.scale(x, y));
+            root.svg.refreshAbsolutePositions();
+        }
+
         triggerUpdate(set, -2);
     }
     function doTrans(get: Getter, set: Setter,) {
