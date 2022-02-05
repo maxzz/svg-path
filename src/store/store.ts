@@ -331,9 +331,13 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         return edits.filter((edit) => get(edit.sectionEnabledAtom));
     }
 
+    function roundNumberToPrecision(value: number, precision: number): number {
+        return parseFloat(value.toFixed(precision));
+    }
+
     function roundNumbersOfSvgItems(get: Getter, edits: SvgItemEdit[]) {
         const precision = get(precisionAtom);
-        edits.forEach((edit) => edit.svgItem.values.forEach((value, idx) => edit.svgItem.values[idx] = parseFloat(value.toFixed(precision))));
+        edits.forEach((edit) => edit.svgItem.values.forEach((value, idx) => edit.svgItem.values[idx] = roundNumberToPrecision(value, precision)));
     }
 
     // action atoms
@@ -371,7 +375,9 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         }
     }
     function doUpdatePoint(get: Getter, set: Setter, { pt, newXY, svgItemIdx }: { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }) {
-        svg.setLocation(pt, newXY);
+        const precision = get(precisionAtom);
+        const xy = { x: roundNumberToPrecision(newXY.x, precision), y: roundNumberToPrecision(newXY.y, precision) };
+        svg.setLocation(pt, xy);
         triggerUpdate(set, svgItemIdx);
     }
     function doScale(get: Getter, set: Setter,) {
