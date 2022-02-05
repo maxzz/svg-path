@@ -331,6 +331,11 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         return edits.filter((edit) => get(edit.sectionEnabledAtom));
     }
 
+    function roundNumbersOfSvgItems(get: Getter, edits: SvgItemEdit[]) {
+        const precision = get(precisionAtom);
+        edits.forEach((edit) => edit.svgItem.values.forEach((value, idx) => edit.svgItem.values[idx] = parseFloat(value.toFixed(precision))));
+    }
+
     // action atoms
 
     function doReloadAllValues({ get, set, nextValue: doUpdate }: { get: Getter, set: Setter, nextValue: boolean; }) {
@@ -380,15 +385,11 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             return;
         }
 
-        const precision = get(precisionAtom);
-
         //root.svg.scale(x, y);
         const enabledEdits = getEnabledSvgItems(get, root.edits);
         if (enabledEdits.length) {
             enabledEdits.forEach((edit) => edit.svgItem.scale(x, y));
-            enabledEdits.forEach((edit) => {
-                edit.svgItem.values.forEach((value, idx) => edit.svgItem.values[idx] = parseFloat(value.toFixed(precision)));
-            });
+            roundNumbersOfSvgItems(get, enabledEdits);
             root.svg.refreshAbsolutePositions();
         }
 
@@ -402,6 +403,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         const enabledEdits = getEnabledSvgItems(get, root.edits);
         if (enabledEdits.length) {
             enabledEdits.forEach((edit) => edit.svgItem.translate(x, y, !!edit.sectionIgonoreAtom || edit.svgItemIdx === 0)); // force if section begins
+            roundNumbersOfSvgItems(get, enabledEdits);
             root.svg.refreshAbsolutePositions();
         }
 
