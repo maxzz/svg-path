@@ -231,9 +231,9 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
 function SubPathRaiobutton({ tooltip, ignoreAtom }: { tooltip?: string; ignoreAtom: PrimitiveAtom<boolean>; }) {
     const [checked, onClick] = useAtom(ignoreAtom);
     return (
-        <div className="w-4 h-3 bg-slate-500 border rounded-sm flex items-center justify-center cursor-pointer" title={tooltip} onClick={() => onClick((v) => !v)}>
-            <div className="w-3 h-2 bg-slate-200 rounded-sm flex items-center justify-center">
-                {!checked && <div className="w-3 h-2 bg-slate-400 border rounded-sm"></div>}
+        <div className="w-3 h-3 bg-slate-500 border rounded-full flex items-center justify-center cursor-pointer" title={tooltip} onClick={() => onClick((v) => !v)}>
+            <div className="w-2 h-2 bg-slate-200 rounded-full flex items-center justify-center">
+                {!checked && <div className="w-2 h-2 bg-slate-400 border rounded-full"></div>}
             </div>
         </div>
     );
