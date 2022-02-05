@@ -56,7 +56,7 @@ function ViewBoxControls() {
             <ViewboxInput label="width" tooltip="view box width" idx={2} />
             <ViewboxInput label="height" tooltip="view box height" idx={3} />
 
-            <Button onClick={() => { setAutoZoom((v) => !v); }} scale={false} title={!autoZoom ? 'viewBox is locked' : 'viewBox is unlocked'}>
+            <Button onClick={() => { setAutoZoom((v) => !v); }} scale={false} title={`${!autoZoom ? 'viewBox is locked' : 'viewBox is unlocked'} (Alt+Shift+V)`}>
                 <UILockIcon className={`w-5 h-5 mx-0.5 ${autoZoom ? 'text-slate-700 fill-current' : 'text-slate-700 fill-current'}`} locked={!autoZoom} />
             </Button>
         </div>
@@ -157,7 +157,11 @@ function TicksControl({ className, ...rest }: React.HTMLAttributes<HTMLElement>)
 
 function PanelBody() {
     const doSnap = useUpdateAtom(snapToGridAtom);
-    useKey((event) => event.altKey && event.shiftKey && event.key === 'G', (event) => { event.preventDefault(); doSnap((v) => !v); });
+    const doZoom = useUpdateAtom(autoZoomAtom);
+    useKey(
+        (event) => event.altKey && event.shiftKey && (event.key === 'G' || event.key === 'V'),
+        (event) => { event.preventDefault(); event.key === 'G' && doSnap((v) => !v); event.key === 'V' && doZoom((v) => !v); }
+    );
     return (
         <div className="px-1.5 pt-1 pb-3 bg-slate-400/40 rounded flex items-center space-x-2">
             <div className="flex flex-col">
