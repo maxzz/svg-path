@@ -156,6 +156,8 @@ function TicksControl({ className, ...rest }: React.HTMLAttributes<HTMLElement>)
 }
 
 function PanelBody() {
+    const doSnap = useUpdateAtom(snapToGridAtom);
+    useKey((event) => event.altKey && event.shiftKey && event.key === 'G', (event) => { event.preventDefault(); doSnap((v) => !v); });
     return (
         <div className="px-1.5 pt-1 pb-3 bg-slate-400/40 rounded flex items-center space-x-2">
             <div className="flex flex-col">
@@ -166,7 +168,7 @@ function PanelBody() {
 
                 <div className="mt-2 grid grid-cols-[1fr,minmax(6rem,min-content)]">
                     {/* Snap controls */}
-                    <Checkbox label="Snap to grid" tooltip="Snap dragged points to grid" atom={snapToGridAtom} />
+                    <Checkbox label="Snap to grid" tooltip="Snap dragged points to grid (Alt+Shift+G)" atom={snapToGridAtom} />
                     <PrecisionInput className="justify-end" />
 
                     {/* Show grid and tick controls */}
