@@ -130,9 +130,7 @@ export const pathUnsafeAtom = atom(
 
 //#endregion Unsafe SVG Atom
 
-//#region SvgItemEdit state
-
-// new data container active and hover state
+//#region SvgItemEdit State
 
 //TODO: hover row and hover ed should be separate
 
@@ -183,11 +181,9 @@ export const doClearActiveAtom = atom(null, (get, set,) => {
     }
 });
 
-//#endregion SvgItemEdit state
+//#endregion SvgItemEdit State
 
 //#region SvgRoot
-
-// new data container
 
 export type SvgItemEditIsRelAtom = PrimitiveAtom<boolean>; // is relative or absolute
 export type SvgItemEditValueAtom = PrimitiveAtom<number>;
@@ -375,9 +371,6 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         }
     }
     function doUpdatePoint(get: Getter, set: Setter, { pt, newXY, svgItemIdx }: { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }) {
-        // const precision = get(precisionAtom);
-        // const xy = { x: roundNumberToPrecision(newXY.x, precision), y: roundNumberToPrecision(newXY.y, precision) };
-        // svg.setLocation(pt, xy);
         svg.setLocation(pt, newXY);
         triggerUpdate(set, svgItemIdx);
     }
@@ -391,29 +384,23 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             toast(`Can't scale to zero`);
             return;
         }
-
-        //root.svg.scale(x, y);
         const enabledEdits = getEnabledSvgItems(get, root.edits);
         if (enabledEdits.length) {
             enabledEdits.forEach((edit) => edit.svgItem.scale(x, y));
             roundNumbersOfSvgItems(get, enabledEdits);
             root.svg.refreshAbsolutePositions();
         }
-
         triggerUpdate(set, -2);
     }
     function doTrans(get: Getter, set: Setter,) {
         const x = get(operTransXAtom);
         const y = get(operTransYAtom);
-
-        //root.svg.translate(x, y);
         const enabledEdits = getEnabledSvgItems(get, root.edits);
         if (enabledEdits.length) {
             enabledEdits.forEach((edit) => edit.svgItem.translate(x, y, !!edit.sectionIgonoreAtom || edit.svgItemIdx === 0)); // force if section begins
             roundNumbersOfSvgItems(get, enabledEdits);
             root.svg.refreshAbsolutePositions();
         }
-
         triggerUpdate(set, -2);
         set(operTransXAtom, 0);
         set(operTransYAtom, 0);
@@ -477,9 +464,7 @@ export const svgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(getParsedSvg(
 
 //#endregion SvgRoot
 
-//#region canvas size
-
-// canvas size
+//#region Canvas Size
 
 export const viewBoxAtom = atom<ViewBox>([0, 0, 10, 10]);
 export const canvasStrokeAtom = atom(1);
@@ -493,18 +478,16 @@ export const doSetViewBoxAtom = atom((get) => get(viewBoxAtom), (get, set, box: 
     }
 });
 
-//#endregion canvas size
+//#endregion Canvas Size
 
 //#region canvas zoom
-
-// canvas zoom
-
-//const zoomAtom = atom(0);
 
 export type UpdateZoomEvent = {
     deltaY: number;
     pt?: ViewPoint;
 };
+
+//const zoomAtom = atom(0);
 
 export const doUpdateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEvent) => {
 
@@ -601,7 +584,7 @@ export const containerElmAtom = atom<HTMLElement | null | undefined>(undefined);
 
 //#endregion canvas zoom
 
-//#region canvas drag operations
+//#region Canvas Drag Operations
 
 // canvas drag operations
 
@@ -714,7 +697,7 @@ export const doCanvasMouseUpAtom = atom(null, (get, set,) => {
     }
 });
 
-//#endregion canvas drag operations
+//#endregion Canvas Drag Operations
 
 //#region Options
 
