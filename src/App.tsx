@@ -1,6 +1,6 @@
 import React from 'react';
 import { PathCanvas } from './components/Canvas/Canvas';
-import './App.css';
+import './App.scss';
 import { UIScrollbar } from './components/UI/UIScrollbar';
 import { PanelPath } from './components/Panels/PanelPath';
 //import { PanelCanvasControls } from './components/Panels/PanelCanvasControls';
@@ -98,5 +98,8 @@ m 12 13 l 5 -4 L 1 3
 //TODO: zoom buttons: -/+/fit
 
 //TODO: reverse sub-path points order
+//TODO: move sub-path down/up
+//TODO: hide/show sub-path
+//TODO: collapse/expand sub-path
 
 //TODO: move path when hover over path line; set cursor move

@@ -39,3 +39,38 @@
     cursor: url("./assets/cursors/asset4-32white-outline.png"), default;
     /* cursor: url("./assets/cursors/asset5-128.png"), default; */
 }
+
+
+//https://couleur.io
+// :root {
+//     --base-hue: 15;
+//     --base-sat: 40%;
+//     /* full color palette, from dark to light */
+//     --clr-10: hsl(var(--base-hue), var(--base-sat), 10%);
+//     --clr-20: hsl(var(--base-hue), var(--base-sat), 20%);
+//     --clr-30: hsl(var(--base-hue), var(--base-sat), 30%);
+//     --clr-40: hsl(var(--base-hue), var(--base-sat), 40%);
+//     --clr-50: hsl(var(--base-hue), var(--base-sat), 50%);
+//     --clr-60: hsl(var(--base-hue), var(--base-sat), 60%);
+//     --clr-70: hsl(var(--base-hue), var(--base-sat), 70%);
+//     --clr-80: hsl(var(--base-hue), var(--base-sat), 80%);
+//     --clr-90: hsl(var(--base-hue), var(--base-sat), 90%);
+//     --clr-95: hsl(var(--base-hue), var(--base-sat), 95%);
+//     --primary-lightness: 50%;
+//     /* primary color in varying opacity levels */
+//     --primary: hsl(var(--base-hue), var(--base-sat), var(--primary-lightness));
+//     --primary-75: hsla(var(--base-hue), var(--base-sat), var(--primary-lightness), 75%);
+//     --primary-50: hsla(var(--base-hue), var(--base-sat), var(--primary-lightness), 50%);
+//     --primary-25: hsla(var(--base-hue), var(--base-sat), var(--primary-lightness), 25%);
+//     --primary-15: hsla(var(--base-hue), var(--base-sat), var(--primary-lightness), 15%);
+//     --primary-10: hsla(var(--base-hue), var(--base-sat), var(--primary-lightness), 10%);
+//     --accent-hue: calc(var(--base-hue) + 180);
+//     --accent-lightness: 50%;
+//     /* accent color in varying opacity levels */
+//     --accent: hsl(var(--accent-hue), var(--base-sat), var(--accent-lightness));
+//     --accent-75: hsla(var(--accent-hue), var(--base-sat), var(--accent-lightness), 75%);
+//     --accent-50: hsla(var(--accent-hue), var(--base-sat), var(--accent-lightness), 50%);
+//     --accent-25: hsla(var(--accent-hue), var(--base-sat), var(--accent-lightness), 25%);
+//     --accent-15: hsla(var(--accent-hue), var(--base-sat), var(--accent-lightness), 15%);
+//     --accent-10: hsla(var(--accent-hue), var(--base-sat), var(--accent-lightness), 10%);
+//   }
