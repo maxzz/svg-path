@@ -37,21 +37,20 @@ export function TargetPoint({ svgItemEdit, sectionEnabledAtom }: { svgItemEdit: 
     }
     return (<>
         {/* A piece of this point path. No more condition: state.activeRow || state.hoverRow since there is no more complete path render */}
-        <g className="hover:cursor-move">
+        {/* <g className="hover:cursor-move"> */}
+        <g className="hover:custom-cursor">
             <path
                 style={{ stroke: pointColor(state.activeRow, state.hoverRow, sectionEnabled), fill: 'none' }}
                 strokeWidth={stroke}
                 d={asString}
-                onMouseMove={() => {
-                    console.log('path');
-                }}
             />
         </g>
-        <g className="hover:cursor-move stroke-transparent hover:stroke-orange-400">
+        {/* <g className="hover:cursor-move stroke-transparent hover:stroke-orange-400 custom-cursor"> */}
+        <g className="custom-cursor stroke-transparent hover:stroke-orange-400">
             <path
                 style={{ fill: 'none' }}
                 // style={{ stroke: 'transparent', fill: 'none' }}
-                strokeWidth={stroke * 3}
+                strokeWidth={stroke * 4}
                 d={asString}
                 onMouseMove={() => {
                     console.log('path');

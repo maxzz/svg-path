@@ -34,3 +34,8 @@
     clip-path: inset(50%);
 }
 */
+.custom-cursor {
+    /* cursor: url("./assets/cursors/asset3.png"), default; */
+    cursor: url("./assets/cursors/asset4-32white-outline.png"), default;
+    /* cursor: url("./assets/cursors/asset5-128.png"), default; */
+}
