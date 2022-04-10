@@ -40,7 +40,7 @@ export function useNumberInput(value: number, setValue: (v: number) => void, cle
     };
 }
 
-export function useNumberInputStable(value: number, setValue: (v: number) => void, cleanup?: (s: string) => string) {
+export function useNumberInputStable(value: number, setValue: (v: number) => void, cleanup?: (s: string) => string) { // stable in sense of callback functions
     const [local, setLocal] = React.useState('' + value);
     React.useEffect(() => setLocal('' + value), [value]);
 

@@ -1,3 +1,4 @@
+/**/
 @font-face {
     font-family: "Yanone";
     src: url("./assets/fonts/YanoneKaffeesatz-VariableFont_wght.ttf") format("truetype supports variations"),
@@ -10,6 +11,26 @@
     src: url("./assets/fonts/RobotoMono-Thin.ttf");
     font-weight: 400;
 }
+/**/
+
+/** /
+// yanone-kaffeesatz-200 - latin
+@font-face {
+    font-family: "Yanone";
+    font-style: normal;
+    font-weight: 200;
+    src: local("Yanone Kaffeesatz"), url("./assets/fonts/yanone-kaffeesatz-v22-latin-200.woff2") format("woff2"); // Chrome 26+, Opera 23+, Firefox 39+
+}
+/**/
+/** /
+// yanone-kaffeesatz-700 - latin
+@font-face {
+    font-family: "Yanone";
+    font-style: bold;
+    font-weight: 700;
+    src: local("Yanone Kaffeesatz"), url("./assets/fonts/yanone-kaffeesatz-v22-latin-700.woff2") format("woff2"); // Chrome 26+, Opera 23+, Firefox 39+
+}
+/**/
 
 /* https://divriots.com/blog/vite-in-the-browser */
 /*
@@ -39,7 +60,6 @@
     cursor: url("./assets/cursors/asset4-32white-outline.png"), default;
     /* cursor: url("./assets/cursors/asset5-128.png"), default; */
 }
-
 
 //https://couleur.io
 // :root {
