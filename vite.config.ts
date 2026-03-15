@@ -30,5 +30,8 @@ export default defineConfig({
             gzipSize: true,
             brotliSize: true,
         }),
-    ]
+    ],
+    server: {
+        port: 3001,
+    },
 });
