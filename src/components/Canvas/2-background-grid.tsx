@@ -1,7 +1,15 @@
-import React from "react";
 import { showGridAtom, showTicksAtom } from "../../store/store";
 import { useAtomValue } from "jotai/utils";
 //import { a } from "@react-spring/web";
+
+export function BackgroundGrid({ x, y, onClick }: { x: number; y: number; onClick?: () => void; }) {
+    return (
+        <g className="grid" onClick={onClick}>
+            <rect x={x} y={y} width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
+            <GridPattern x={x} y={y} />
+        </g >
+    );
+}
 
 function GridPattern({ x, y }: { x: number; y: number; }) {
     const showGrid = useAtomValue(showGridAtom);
@@ -29,15 +37,6 @@ function GridPattern({ x, y }: { x: number; y: number; }) {
             <rect x={x} y={y} width="100%" height="100%" fill={`url(#grid-patt-${showTicks ? 'c' : 'a'})`} />
         </>)}
     </>);
-}
-
-export function BackgroundGrid({ x, y, onClick }: { x: number; y: number; onClick?: () => void; }) {
-    return (
-        <g className="grid" onClick={onClick}>
-            <rect x={x} y={y} width="100%" height="100%" fill="#040d1c" /> {/* #002846 */}
-            <GridPattern x={x} y={y} />
-        </g >
-    );
 }
 
 //TODO: show the axis center cross lines

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PathCanvas } from './components/Canvas/Canvas';
+import { PathCanvas } from './components/Canvas/0-canvas';
 import './App.scss';
 import { UIScrollbar } from './components/UI/UIScrollbar';
 import { PanelPath } from './components/Panels/PanelPath';

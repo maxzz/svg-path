@@ -3,9 +3,9 @@ import { PrimitiveAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../hooks/utils';
 import { canvasSizeAtom, canvasStrokeAtom, svgEditRootAtom, viewBoxAtom, doCanvasMouseDownAtom, doCanvasMouseMoveAtom, doCanvasMouseUpAtom, showCPsAtom, fillPathAtom } from '../../store/store';
-import { useContainerZoom } from './useContainerZoom';
-import { ControlPoint, TargetPoint } from './CanvasPoints';
-import { CanvasTicks } from './CanvasTicks';
+import { useContainerZoom } from './4-use-container-zoom';
+import { ControlPoint, TargetPoint } from './1-canvas-points';
+import { CanvasTicks } from './3-canvas-ticks';
 
 function useMouseHandlers() {
     const doCanvasMouseDown = useUpdateAtom(doCanvasMouseDownAtom);

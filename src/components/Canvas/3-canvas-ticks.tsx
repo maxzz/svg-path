@@ -3,14 +3,6 @@ import { useAtomValue } from 'jotai/utils';
 import { ViewBox } from '../../svg/svg-utils-viewport';
 import { canvasSizeAtom, showGridAtom, showTicksAtom, tickIntevalAtom, viewBoxAtom, canvasStrokeAtom } from '../../store/store';
 
-function calcGrid(viewBox: ViewBox, canvasWidth: number) {
-    const doGrid = 5 * viewBox[2] <= canvasWidth;
-    return {
-        xGrid: doGrid ? Array(Math.ceil(viewBox[2]) + 1).fill(null).map((_, i) => Math.floor(viewBox[0]) + i) : [],
-        yGrid: doGrid ? Array(Math.ceil(viewBox[3]) + 1).fill(null).map((_, i) => Math.floor(viewBox[1]) + i) : [],
-    };
-}
-
 export function CanvasTicks() {
     const viewBox = useAtomValue(viewBoxAtom);
     const canvasSize = useAtomValue(canvasSizeAtom);
@@ -69,6 +61,14 @@ export function CanvasTicks() {
             </>}
         </g>
     );
+}
+
+function calcGrid(viewBox: ViewBox, canvasWidth: number) {
+    const doGrid = 5 * viewBox[2] <= canvasWidth;
+    return {
+        xGrid: doGrid ? Array(Math.ceil(viewBox[2]) + 1).fill(null).map((_, i) => Math.floor(viewBox[0]) + i) : [],
+        yGrid: doGrid ? Array(Math.ceil(viewBox[3]) + 1).fill(null).map((_, i) => Math.floor(viewBox[1]) + i) : [],
+    };
 }
 
 //TODO: font-mono allows align by number of chars.
