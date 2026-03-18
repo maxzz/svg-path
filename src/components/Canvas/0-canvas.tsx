@@ -7,6 +7,39 @@ import { useContainerZoom } from './4-use-container-zoom';
 import { ControlPoint, TargetPoint } from './1-canvas-points';
 import { CanvasTicks } from './3-canvas-ticks';
 
+export function PathCanvas() {
+    const { ref, parentRef, onWheel, } = useContainerZoom();
+    const showCPs = useAtomValue(showCPsAtom);
+    return (
+        <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
+            <CanvasSvgElement>
+                <CanvasTicks />
+                <RenderPath />
+                {showCPs && <g className="pts">
+                    <RenderControlPoints />
+                    <RenderTargetPoints />
+                </g>}
+            </CanvasSvgElement>
+        </div>
+    );
+}
+
+// Canvas SVG element
+
+function CanvasSvgElement({ children }: { children: React.ReactNode; }) {
+    const size = useAtomValue(canvasSizeAtom);
+    const viewBox = useAtomValue(viewBoxAtom);
+    const { onMouseDown, onMouseMove, onMouseUp } = useMouseHandlers();
+    if (!size.w || !size.h) {
+        return null;
+    }
+    return (
+        <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c] select-none" onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}>
+            {children}
+        </svg>
+    );
+}
+
 function useMouseHandlers() {
     const doCanvasMouseDown = useUpdateAtom(doCanvasMouseDownAtom);
     const doCanvasMouseMove = useUpdateAtom(doCanvasMouseMoveAtom);
@@ -23,19 +56,7 @@ function useMouseHandlers() {
     };
 }
 
-function CanvasSvgElement({ children }: { children: React.ReactNode; }) {
-    const size = useAtomValue(canvasSizeAtom);
-    const viewBox = useAtomValue(viewBoxAtom);
-    const { onMouseDown, onMouseMove, onMouseUp } = useMouseHandlers();
-    if (!size.w || !size.h) {
-        return null;
-    }
-    return (
-        <svg viewBox={viewBox.join(" ")} className="bg-[#040d1c] select-none" onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}>
-            {children}
-        </svg>
-    );
-}
+// Canvas path, target and control points
 
 function RenderPath() {
     const svgEditRoot = useAtomValue(svgEditRootAtom);
@@ -85,22 +106,5 @@ function RenderControlPoints() {
                 ));
             })}
         </g>
-    );
-}
-
-export function PathCanvas() {
-    const { ref, parentRef, onWheel, } = useContainerZoom();
-    const showCPs = useAtomValue(showCPsAtom);
-    return (
-        <div ref={mergeRef(ref, parentRef)} className="absolute w-full h-full overflow-hidden" onWheel={onWheel}>
-            <CanvasSvgElement>
-                <CanvasTicks />
-                <RenderPath />
-                {showCPs && <g className="pts">
-                    <RenderControlPoints />
-                    <RenderTargetPoints />
-                </g>}
-            </CanvasSvgElement>
-        </div>
     );
 }
