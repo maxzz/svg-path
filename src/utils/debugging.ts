@@ -1,4 +1,4 @@
-import { ViewBox, ViewPoint } from "../svg/svg-utils-viewport";
+import { ViewBox, ViewPoint } from "../svg-core/svg-utils-viewport";
 
 export function _ViewPoint(pt: ViewPoint, diggits = 0) {
     const p = {

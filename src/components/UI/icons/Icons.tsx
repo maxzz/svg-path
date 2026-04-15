@@ -1,16 +1,17 @@
-import React, { SVGProps } from "react";
+import { type SVGProps, type HTMLAttributes } from "react";
+import { classNames } from "../../../utils/classnames";
 
-export function IconChevronDown(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
-    const { title, ...rest } = props;
+export function IconChevronDown(props: SVGProps<SVGSVGElement> & HTMLAttributes<SVGSVGElement>) {
+    const { title, className, ...rest } = props;
     return (
-        <svg fill="currentColor" viewBox="0 0 24 24" {...rest}>
+        <svg className={classNames("fill-current", className)} viewBox="0 0 24 24" {...rest}>
             {title && <title>{title}</title>}
             <path d="M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6l-6-6l1.41-1.42z" />
         </svg>
     );
 }
 
-export function IconMenu(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
+export function IconMenu(props: SVGProps<SVGSVGElement> & HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
         <svg fill="currentColor" viewBox="0 0 24 24" {...rest}>
@@ -20,7 +21,7 @@ export function IconMenu(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<S
     );
 }
 
-export function IconLock(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
+export function IconLock(props: SVGProps<SVGSVGElement> & HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
         <svg fill="currentColor" viewBox="0 0 100 100" {...rest}>
@@ -30,7 +31,7 @@ export function IconLock(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<S
     );
 }
 
-export function IconSave(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
+export function IconSave(props: SVGProps<SVGSVGElement> & HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
         <svg fill="currentColor" viewBox="0 0 24 24" {...rest}>
@@ -40,7 +41,7 @@ export function IconSave(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<S
     );
 }
 
-export function IconSaveCneterRight(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
+export function IconSaveCneterRight(props: SVGProps<SVGSVGElement> & HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
         <svg fill="currentColor" viewBox="0 0 24 24" {...rest}>
@@ -50,7 +51,7 @@ export function IconSaveCneterRight(props: SVGProps<SVGSVGElement> & React.HTMLA
     );
 }
 
-export function IconCopy(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
+export function IconCopy(props: SVGProps<SVGSVGElement> & HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
         <svg fill="currentColor" viewBox="0 0 24 24" {...rest}>
@@ -60,7 +61,7 @@ export function IconCopy(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<S
     );
 }
 
-export function IconTrash(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
+export function IconTrash(props: SVGProps<SVGSVGElement> & HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
         <svg fill="currentColor" viewBox="0 0 24 24" {...rest}>
@@ -70,7 +71,7 @@ export function IconTrash(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<
     );
 }
 
-export function IconUndo(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
+export function IconUndo(props: SVGProps<SVGSVGElement> & HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
         <svg fill="none" strokeWidth="1.5" stroke="currentColor" viewBox="0 0 24 24" {...rest}>
@@ -82,7 +83,7 @@ export function IconUndo(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<S
     );
 }
 
-export function IconRedo(props: SVGProps<SVGSVGElement> & React.HTMLAttributes<SVGSVGElement>) {
+export function IconRedo(props: SVGProps<SVGSVGElement> & HTMLAttributes<SVGSVGElement>) {
     const { title, ...rest } = props;
     return (
         <svg fill="none" strokeWidth="1.5" stroke="currentColor" viewBox="0 0 24 24" {...rest}>

@@ -1,9 +1,9 @@
 import { Atom, atom, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom } from "jotai";
 import { toast, toastSVGParse } from "../components/UI/UiToaster";
-import atomWithCallback from "../hooks/atomsX";
-import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg/svg";
-import { getSvgItemAbsType } from "../svg/svg-utils";
-import { getCanvasStroke, getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg/svg-utils-viewport";
+import atomWithCallback from "../utils/hooks/atomsX";
+import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg-core/svg";
+import { getSvgItemAbsType } from "../svg-core/svg-utils";
+import { getCanvasStroke, getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg-core/svg-utils-viewport";
 import debounce from "../utils/debounce";
 import { unexpected, _fViewBox, _ViewBox } from "../utils/debugging";
 import uuid from "../utils/uuid";

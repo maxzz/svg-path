@@ -3,7 +3,7 @@ import { PrimitiveAtom, useAtom } from "jotai";
 import { doRoundAtom, doScaleAtom, doSetRelAbsAtom, doTransAtom, openPanelOperAtom, operRoundAtom, operScaleUniAtom, operScaleXAtom, operScaleYAtom, operTransXAtom, operTransYAtom } from "../../store/store";
 import { Accordion } from "../UI/Accordion";
 import { SectionPane } from "../UI/SectionPane";
-import { cleanupValueFloat, cleanupValueUInt, useNumberInput } from "../../hooks/useNumberInput";
+import { cleanupValueFloat, cleanupValueUInt, useNumberInput } from "../../utils/hooks/useNumberInput";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { IconLock } from "../UI/icons/Icons";
 import { classNames } from "../../utils/classnames";

@@ -1,7 +1,7 @@
 import React from 'react';
 import { PrimitiveAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { mergeRef } from '../../hooks/utils';
+import { mergeRef } from '../../utils/hooks/utils';
 import { canvasSizeAtom, canvasStrokeAtom, svgEditRootAtom, viewBoxAtom, doCanvasMouseDownAtom, doCanvasMouseMoveAtom, doCanvasMouseUpAtom, showCPsAtom, fillPathAtom } from '../../store/store';
 import { useContainerZoom } from './4-use-container-zoom';
 import { ControlPoint, TargetPoint } from './1-canvas-points';

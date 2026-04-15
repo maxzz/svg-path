@@ -2,8 +2,8 @@ import React, { Children, HTMLAttributes } from 'react';
 import { PrimitiveAtom, useAtom, WritableAtom } from 'jotai';
 import { doSetViewBoxAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, precisionAtom, showCPsAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom } from '../../store/store';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { useNumberInput } from '../../hooks/useNumberInput';
-import { ViewBox, ViewBoxManual } from '../../svg/svg-utils-viewport';
+import { useNumberInput } from '../../utils/hooks/useNumberInput';
+import { ViewBox, ViewBoxManual } from '../../svg-core/svg-utils-viewport';
 import { classNames } from '../../utils/classnames';
 //import { AccordionHorizontal } from '../UI/Accordion';
 

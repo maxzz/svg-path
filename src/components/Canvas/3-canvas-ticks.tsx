@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAtomValue } from 'jotai/utils';
-import { ViewBox } from '../../svg/svg-utils-viewport';
+import { ViewBox } from '../../svg-core/svg-utils-viewport';
 import { canvasSizeAtom, showGridAtom, showTicksAtom, tickIntevalAtom, viewBoxAtom, canvasStrokeAtom } from '../../store/store';
 
 export function CanvasTicks() {

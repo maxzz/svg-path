@@ -2,9 +2,9 @@ import React from "react";
 import { Atom, PrimitiveAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { canvasStrokeAtom, doSetStateAtom, CanvasDragEvent, SvgItemEditState, doCanvasPointClkAtom, SvgItemEdit } from "../../store/store";
-import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg/svg";
+import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg-core/svg";
 import { doTrace } from "../../utils/debugging";
-import { getSvgItemAbsType } from "../../svg/svg-utils";
+import { getSvgItemAbsType } from "../../svg-core/svg-utils";
 
 type CanvasDragHandler = (event: CanvasDragEvent) => void;
 
