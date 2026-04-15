@@ -1,11 +1,11 @@
-import React from 'react';
+import { type ButtonHTMLAttributes } from 'react';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { doClearPathAtom, doCopyPathAtom, doRedoPathAtom, doSavePathAtom, doUndoPathAtom, openPanelPathAtom, pathUnsafeAtom } from '../../store/store';
-import { Accordion } from '../UI/Accordion';
-import { SectionPane } from '../UI/SectionPane';
 import { classNames } from '../../utils/classnames';
-import { IconCopy, IconRedo, IconSave, IconTrash, IconUndo } from '../UI/icons';
+import { IconCopy, IconRedo, IconSave, IconTrash, IconUndo } from '../ui/icons';
+import { Accordion } from '../ui/Accordion';
+import { SectionPane } from '../ui/SectionPane';
+import { doClearPathAtom, doCopyPathAtom, doRedoPathAtom, doSavePathAtom, doUndoPathAtom, openPanelPathAtom, pathUnsafeAtom } from '../../store/store';
 
 function PathEditor() {
     const [path, setPath] = useAtom(pathUnsafeAtom);
@@ -20,7 +20,7 @@ function PathEditor() {
     );
 }
 
-function Button({ scale = true, disabled = false, children, className, ...rest }: { scale?: boolean; onClick: () => void; } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+function Button({ scale = true, disabled = false, children, className, ...rest }: { scale?: boolean; onClick: () => void; } & ButtonHTMLAttributes<HTMLButtonElement>) {
     return (
         <button
             className={classNames(

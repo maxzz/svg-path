@@ -5,7 +5,7 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useNumberInput } from '../../utils/hooks/useNumberInput';
 import { ViewBox, ViewBoxManual } from '../../svg-core/svg-utils-viewport';
 import { classNames } from '../../utils/classnames';
-//import { AccordionHorizontal } from '../UI/Accordion';
+//import { AccordionHorizontal } from '../ui/Accordion';
 
 function Button({ label, atom, leftBorder = true, ...rest }:
     { label: string; atom: PrimitiveAtom<boolean>; leftBorder?: boolean; } & HTMLAttributes<HTMLButtonElement>) {

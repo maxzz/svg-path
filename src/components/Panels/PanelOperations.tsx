@@ -1,25 +1,24 @@
-import React from "react";
+import { type ReactNode, useRef, type HTMLAttributes } from "react";
 import { PrimitiveAtom, useAtom } from "jotai";
-import { doRoundAtom, doScaleAtom, doSetRelAbsAtom, doTransAtom, openPanelOperAtom, operRoundAtom, operScaleUniAtom, operScaleXAtom, operScaleYAtom, operTransXAtom, operTransYAtom } from "../../store/store";
-import { Accordion } from "../UI/Accordion";
-import { SectionPane } from "../UI/SectionPane";
-import { cleanupValueFloat, cleanupValueUInt, useNumberInput } from "../../utils/hooks/useNumberInput";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { IconLock } from "../UI/icons";
 import { classNames } from "../../utils/classnames";
 import { useKey } from "react-use";
-import { a, config, useTransition } from "@react-spring/web";
+import { IconLock } from "../ui/icons";
+import { Accordion } from "../ui/Accordion";
+import { SectionPane } from "../ui/SectionPane";
+import { doRoundAtom, doScaleAtom, doSetRelAbsAtom, doTransAtom, openPanelOperAtom, operRoundAtom, operScaleUniAtom, operScaleXAtom, operScaleYAtom, operTransXAtom, operTransYAtom } from "../../store/store";
+import { cleanupValueFloat, cleanupValueUInt, useNumberInput } from "../../utils/hooks/useNumberInput";
 
-function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueFloat, onEnter, style }: React.HTMLAttributes<HTMLLabelElement> & {
+function OperationInput({ label, overlay, className, atom, cleanup = cleanupValueFloat, onEnter, style }: HTMLAttributes<HTMLLabelElement> & {
     label: string;
-    overlay?: React.ReactNode;
+    overlay?: ReactNode;
     atom: PrimitiveAtom<number>;
     cleanup?: (s: string) => string;
     onEnter?: () => void;
 }) {
     const [value, setValue] = useAtom(atom);
     const bind = useNumberInput(value, (v) => setValue(v), cleanup);
-    const inputRef = React.useRef(null);
+    const inputRef = useRef(null);
     useKey('Enter', () => onEnter && onEnter(), { target: inputRef.current }, [inputRef.current]);
     return (
         <label className={classNames("relative w-1/3 rounded-tl-sm overflow-hidden focus-within:text-blue-500", className)} style={style}>
@@ -52,7 +51,7 @@ function UniformScaleControl() {
     );
 }
 
-function Button({ scale = true, children, className, ...rest }: { scale?: boolean; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
+function Button({ scale = true, children, className, ...rest }: { scale?: boolean; onClick: () => void; } & HTMLAttributes<HTMLButtonElement>) {
     return (
         <button
             className={classNames(
@@ -106,7 +105,7 @@ function RoundConvertContols() {
 }
 /*
 function Toggle() {
-    const [toggle, set] = React.useState(false);
+    const [toggle, set] = useState(false);
     const transitions = useTransition(toggle, {
         from: { position: 'absolute', opacity: 0 },
         enter: { opacity: 1 },
@@ -138,7 +137,7 @@ function Toggle() {
 }
 
 function Mount() {
-    const [show, set] = React.useState(false);
+    const [show, set] = useState(false);
     const transitions = useTransition(show, {
         from: { opacity: 0 },
         enter: { opacity: 1 },

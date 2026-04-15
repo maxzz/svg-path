@@ -1,17 +1,17 @@
-import React from 'react';
+import { type HTMLAttributes } from 'react';
 import { PrimitiveAtom, useAtom, WritableAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { classNames } from '../../utils/classnames';
+import { UILockIcon } from '../ui/UILockIcon';
+import { SectionPane } from '../ui/SectionPane';
+import { Accordion } from '../ui/Accordion';
+import { useKey } from 'react-use';
+import { a, easings, useSpring } from '@react-spring/web';
+import { type ViewBox, type ViewBoxManual } from '../../svg-core/svg-utils-viewport';
 import { autoZoomAtom, doSetViewBoxAtom, doSetZoomAtom, fillPathAtom, minifyOutputAtom, openPanelOptsAtom, precisionAtom, showCPsAtom, showGridAtom, showTicksAtom, snapToGridAtom, tickIntevalAtom } from '../../store/store';
 import { useNumberInput } from '../../utils/hooks/useNumberInput';
-import { classNames } from '../../utils/classnames';
-import { ViewBox, ViewBoxManual } from '../../svg-core/svg-utils-viewport';
-import { SectionPane } from '../UI/SectionPane';
-import { Accordion } from '../UI/Accordion';
-import { useKey } from 'react-use';
-import { UILockIcon } from '../UI/UILockIcon';
-import { a, easings, useSpring } from '@react-spring/web';
 
-function Button({ scale = true, children, className, ...rest }: { scale?: boolean; onClick: () => void; } & React.HTMLAttributes<HTMLButtonElement>) {
+function Button({ scale = true, children, className, ...rest }: { scale?: boolean; onClick: () => void; } & HTMLAttributes<HTMLButtonElement>) {
     return (
         <button
             className={classNames(
@@ -94,7 +94,7 @@ function ZoomControls({ className }: { className?: string; }) {
     );
 }
 
-function Checkbox({ label, tooltip, atom, className, ...rest }: { label: string; tooltip: string; atom: PrimitiveAtom<boolean>; } & React.HTMLAttributes<HTMLLabelElement>) {
+function Checkbox({ label, tooltip, atom, className, ...rest }: { label: string; tooltip: string; atom: PrimitiveAtom<boolean>; } & HTMLAttributes<HTMLLabelElement>) {
     const [value, setValue] = useAtom(atom);
     return (
         <label className={classNames("w-min h-6 whitespace-nowrap flex items-center text-xs space-x-1.5 select-none", className)} title={tooltip} {...rest}>
@@ -110,7 +110,7 @@ function Checkbox({ label, tooltip, atom, className, ...rest }: { label: string;
 
 const showElementAnimConfig = { easing: easings.easeInOutQuart, duration: 200 };
 
-function PrecisionInput({ className, ...rest }: React.HTMLAttributes<HTMLLabelElement>) {
+function PrecisionInput({ className, ...rest }: HTMLAttributes<HTMLLabelElement>) {
     const snapToGrid = useAtomValue(snapToGridAtom);
     const [precision, setPrecision] = useAtom(precisionAtom);
     const bind = useNumberInput(precision, (v: number) => setPrecision(v));
@@ -129,7 +129,7 @@ function PrecisionInput({ className, ...rest }: React.HTMLAttributes<HTMLLabelEl
     );
 }
 
-function TicksControl({ className, ...rest }: React.HTMLAttributes<HTMLElement>) {
+function TicksControl({ className, ...rest }: HTMLAttributes<HTMLElement>) {
     const showGrid = useAtomValue(showGridAtom);
     const showTicks = useAtomValue(showTicksAtom);
     const [tickInteval, setTickInteval] = useAtom(tickIntevalAtom);

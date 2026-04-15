@@ -1,12 +1,12 @@
-import { Atom, atom, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom } from "jotai";
-import { toast, toastSVGParse } from "../components/UI/UiToaster";
+import { type Atom, atom, type Getter, type PrimitiveAtom, type SetStateAction, type Setter, type WritableAtom } from "jotai";
 import atomWithCallback from "../utils/hooks/atomsX";
-import { Svg, SvgControlPoint, SvgItem, SvgPoint } from "../svg-core/svg";
-import { getSvgItemAbsType } from "../svg-core/svg-utils";
-import { getCanvasStroke, getFitViewPort, scaleViewBox, updateViewPort, ViewBox, ViewBoxManual, ViewPoint } from "../svg-core/svg-utils-viewport";
-import debounce from "../utils/debounce";
-import { unexpected, _fViewBox, _ViewBox } from "../utils/debugging";
 import uuid from "../utils/uuid";
+import debounce from "../utils/debounce";
+import { toast, toastSVGParse } from "../components/ui/UiToaster";
+import { Svg, type SvgControlPoint, type SvgItem, type SvgPoint } from "../svg-core/svg";
+import { getSvgItemAbsType } from "../svg-core/svg-utils";
+import { getCanvasStroke, getFitViewPort, scaleViewBox, updateViewPort, type ViewBox, type ViewBoxManual, type ViewPoint } from "../svg-core/svg-utils-viewport";
+import { print_unexpected, toString_fViewBox, toString_ViewBox } from "../utils/debugging";
 
 namespace Storage {
     const KEY = 'react-svg-expo-01';
@@ -519,7 +519,7 @@ export const doUpdateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoom
     const canvasSize = get(canvasSizeAtom);
     const newStroke = getCanvasStroke(newViewBox[2], canvasSize.w);
 
-    //console.log('new zoom', (''+zoom).padStart(5, ' '), '-----old viewBox-----', _fViewBox(viewBox), '-----new viewBox-----', _fViewBox(newViewBox));
+    //console.log('new zoom', (''+zoom).padStart(5, ' '), '-----old viewBox-----', toString_fViewBox(viewBox), '-----new viewBox-----', toString_fViewBox(newViewBox));
 
     set(viewBoxAtom, newViewBox);
     set(canvasStrokeAtom, newStroke);
@@ -548,7 +548,7 @@ export const doUpdateViewBoxAtom = atom(null, (get, set,) => {
     const canvasSize = get(canvasSizeAtom);
 
     // if (!(canvasSize.w && canvasSize.h)) {
-    //     unexpected('updateViewBoxAtom');
+    //     print_unexpected('updateViewBoxAtom');
     // }
 
     if (canvasSize.w && canvasSize.h) {
@@ -675,7 +675,7 @@ export const doCanvasMouseMoveAtom = atom(null, (get, set, event: React.MouseEve
             //const startPt = getEventPt(containerRef, dragEventRef.current.event.clientX, dragEventRef.current.event.clientY);
             const startXY = canvasDragState.mdownXY!;
             const nowXY = getEventPt(viewBox, stroke, containerElm, event.clientX, event.clientY);
-            //console.log('move startPt', _ViewPoint(startPt).padEnd(20, ' '), 'pt', _ViewPoint(pt).padEnd(20, ' '), '--------------------------------', _fViewBox(viewBox));
+            //console.log('move startPt', toString_ViewPoint(startPt).padEnd(20, ' '), 'pt', toString_ViewPoint(pt).padEnd(20, ' '), '--------------------------------', toString_fViewBox(viewBox));
 
             set(viewBoxAtom, (prev) => ([
                 prev[0] + startXY.x - nowXY.x,

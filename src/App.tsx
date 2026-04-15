@@ -1,13 +1,12 @@
-import React from 'react';
 import { PathCanvas } from './components/Canvas/0-canvas';
 import './App.scss';
-import { UIScrollbar } from './components/UI/UIScrollbar';
+import { UIScrollbar } from './components/ui/UIScrollbar';
+import { UIToaster } from './components/ui/UiToaster';
 import { PanelPath } from './components/Panels/PanelPath';
 //import { PanelCanvasControls } from './components/Panels/PanelCanvasControls';
 import { PanelCommands } from './components/Panels/PanelCommands';
 import { PanelOperations } from './components/Panels/PanelOperations';
 import { PanelOptions } from './components/Panels/PanelOptions';
-import { UIToaster } from './components/UI/UiToaster';
 
 function PanelAllEditors() {
     return (

@@ -1,4 +1,4 @@
-import { unexpected } from "../utils/debugging";
+import { print_unexpected } from "../utils/debugging";
 import { SvgPoint } from "./svg";
 
 export type ViewPoint = { x: number; y: number; };
@@ -58,7 +58,7 @@ export function updateViewPort(canvas: ViewSize, x: number, y: number, w: number
     }
 
     if (!canvas.w || !canvas.h) {
-        unexpected('updateViewPort');
+        print_unexpected('updateViewPort');
         return;
     }
 
@@ -88,7 +88,7 @@ export function zoomAuto(canvas: ViewSize, targetPoints: SvgPoint[], viewPortLoc
     }
 
     if (!canvas.w || !canvas.h) {
-        unexpected('zoomAuto');
+        print_unexpected('zoomAuto');
         return;
     }
 
@@ -112,7 +112,7 @@ export function zoomAuto(canvas: ViewSize, targetPoints: SvgPoint[], viewPortLoc
 export function getFitViewPort(canvas: ViewSize, targetPoints: SvgPoint[]): CanvasSize | undefined {
 
     if (!canvas.w || !canvas.h) {
-        unexpected('getFitViewPort');
+        print_unexpected('getFitViewPort');
         return;
     }
 

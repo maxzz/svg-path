@@ -1,8 +1,7 @@
-import React from 'react';
 import { useAtom } from 'jotai';
 import { openPanelCmdsAtom } from '../../store/store';
-import { SectionPane } from '../UI/SectionPane';
-import { Accordion } from '../UI/Accordion';
+import { SectionPane } from '../ui/SectionPane';
+import { Accordion } from '../ui/Accordion';
 import { PathCommandEditor } from './PanelCommandsEditor';
 
 export function PanelCommands() {

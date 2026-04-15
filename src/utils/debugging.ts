@@ -1,6 +1,6 @@
-import { ViewBox, ViewPoint } from "../svg-core/svg-utils-viewport";
+import { type ViewBox, type ViewPoint } from "../svg-core/svg-utils-viewport";
 
-export function _ViewPoint(pt: ViewPoint, diggits = 0) {
+export function toString_ViewPoint(pt: ViewPoint, diggits = 0) {
     const p = {
         x: pt.x.toFixed(diggits),
         y: pt.y.toFixed(diggits)
@@ -8,15 +8,15 @@ export function _ViewPoint(pt: ViewPoint, diggits = 0) {
     return `${p.x}, ${p.y}`;
 }
 
-export function _ViewBox(viewBox: ViewBox, diggits = 2): string {
+export function toString_ViewBox(viewBox: ViewBox, diggits = 2): string {
     return viewBox.map(_ => _.toFixed(diggits)).join(' ');
 }
 
-export function _fViewBox(viewBox: ViewBox, diggits = 0): string {
+export function toString_fViewBox(viewBox: ViewBox, diggits = 0): string {
     return viewBox.map(pt => pt.toFixed(diggits).padStart(4, ' ')).join(" ");
 }
 
-export function unexpected(...rest: any[]) {
+export function print_unexpected(...rest: any[]) {
     //debugger
     console.log(`%cneed check`, 'color: red', ...rest);
 }
