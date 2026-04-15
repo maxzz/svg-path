@@ -248,6 +248,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         doRoundAtom: atom(null, doRound),
         doSetRelAbsAtom: atom(null, doSetRelAbs),
     };
+    
     updateSubIndecies();
     svg.path.forEach(
         (svgItem, svgItemIdx) => {
@@ -371,6 +372,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
     function doReloadAllValues({ get, set, nextValue: doUpdate }: { get: Getter, set: Setter, nextValue: boolean; }) {
         doUpdate && reloadAllItemValues(get, set);
     }
+
     function doReloadSvgItemIdx({ get, set, nextValue: svgItemIdx }: { get: Getter; set: Setter, nextValue: number; }) {
         if (svgItemIdx >= 0) {
             //Fix for problem w/ absolute/relative commands: M 5 25 m 13 2 v 10 h 10 Z
@@ -399,10 +401,12 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             set(_pathUnsafeAtom, svg.asString(precision, minify));
         }
     }
+
     function doUpdatePoint(get: Getter, set: Setter, { pt, newXY, svgItemIdx }: { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }) {
         svg.setLocation(pt, newXY);
         triggerUpdate(set, svgItemIdx);
     }
+
     function doScale(get: Getter, set: Setter,) {
         const x = get(operScaleXAtom);
         const y = get(operScaleYAtom);
@@ -423,6 +427,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         }
         triggerUpdate(set, -2);
     }
+
     function doTrans(get: Getter, set: Setter,) {
         const x = get(operTransXAtom);
         const y = get(operTransYAtom);
@@ -438,10 +443,12 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         set(operTransXAtom, 0);
         set(operTransYAtom, 0);
     }
+
     function doRound(get: Getter, set: Setter,) {
         const round = get(operRoundAtom);
         set(pathUnsafeAtom, root.svg.asString(round));
     }
+
     function doSetRelAbs(get: Getter, set: Setter, relOrAbs: boolean) {
 
         //root.svg.setRelative(relOrAbs);
