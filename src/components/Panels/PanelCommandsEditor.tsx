@@ -3,7 +3,7 @@ import { PrimitiveAtom, useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { doSetStateAtom, ignoreAllAtom, svgEditRootAtom, SvgItemEdit, SvgItemEditState } from "../../store/store";
 import { useDebounce, useHoverDirty } from "react-use";
-import { IconMenu } from "../UI/icons/Icons";
+import { IconMenu } from "../UI/icons";
 import { getSvgItemAbsType, getTooltip, getValueToPoint } from "../../svg-core/svg-utils";
 import { useNumberInput } from "../../utils/hooks/useNumberInput";
 import { doTrace } from "../../utils/debugging";

@@ -5,7 +5,7 @@ import { doClearPathAtom, doCopyPathAtom, doRedoPathAtom, doSavePathAtom, doUndo
 import { Accordion } from '../UI/Accordion';
 import { SectionPane } from '../UI/SectionPane';
 import { classNames } from '../../utils/classnames';
-import { IconCopy, IconRedo, IconSave, IconTrash, IconUndo } from '../UI/icons/Icons';
+import { IconCopy, IconRedo, IconSave, IconTrash, IconUndo } from '../UI/icons';
 
 function PathEditor() {
     const [path, setPath] = useAtom(pathUnsafeAtom);

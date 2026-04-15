@@ -1,5 +1,5 @@
 import { type SVGProps, type HTMLAttributes } from "react";
-import { classNames } from "../../../utils/classnames";
+import { classNames } from "../../../../utils/classnames";
 
 export function IconChevronDown(props: SVGProps<SVGSVGElement> & HTMLAttributes<SVGSVGElement>) {
     const { title, className, ...rest } = props;

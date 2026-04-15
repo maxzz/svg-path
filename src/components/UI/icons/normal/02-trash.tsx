@@ -1,9 +1,10 @@
 import { type SVGProps, type HTMLAttributes } from "react";
+import { classNames } from "../../../../utils/classnames";
 
 export function IconTrash(props: SVGProps<SVGSVGElement> & HTMLAttributes<SVGSVGElement>) {
     const { title, className, ...rest } = props;
     return (
-        <svg className={className} fill="currentColor" viewBox="0 0 24 24" {...rest}>
+        <svg className={classNames("fill-current", className)} viewBox="0 0 24 24" {...rest}>
             {title && <title>{title}</title>}
             <path
                 fillRule="evenodd"
@@ -13,4 +14,3 @@ export function IconTrash(props: SVGProps<SVGSVGElement> & HTMLAttributes<SVGSVG
         </svg>
     );
 }
-

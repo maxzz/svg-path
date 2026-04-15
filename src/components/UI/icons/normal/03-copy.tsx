@@ -9,4 +9,3 @@ export function IconCopy(props: SVGProps<SVGSVGElement> & HTMLAttributes<SVGSVGE
         </svg>
     );
 }
-

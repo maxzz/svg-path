@@ -5,7 +5,7 @@ import { Accordion } from "../UI/Accordion";
 import { SectionPane } from "../UI/SectionPane";
 import { cleanupValueFloat, cleanupValueUInt, useNumberInput } from "../../utils/hooks/useNumberInput";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { IconLock } from "../UI/icons/Icons";
+import { IconLock } from "../UI/icons";
 import { classNames } from "../../utils/classnames";
 import { useKey } from "react-use";
 import { a, config, useTransition } from "@react-spring/web";

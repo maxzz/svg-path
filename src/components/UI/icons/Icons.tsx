@@ -1,9 +1,0 @@
-export { IconChevronDown } from "./IconChevronDown";
-export { IconMenu } from "./IconMenu";
-export { IconLock } from "./IconLock";
-export { IconSave } from "./IconSave";
-export { IconSaveCneterRight } from "./IconSaveCneterRight";
-export { IconCopy } from "./IconCopy";
-export { IconTrash } from "./IconTrash";
-export { IconUndo } from "./IconUndo";
-export { IconRedo } from "./IconRedo";
