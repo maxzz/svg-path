@@ -200,7 +200,7 @@ export type SvgItemEdit = {
     stateAtom: PrimitiveAtom<SvgItemEditState>;
 
     sectionIgonoreAtom?: PrimitiveAtom<boolean>; // created only for sections w/ section member !== -1
-    sectionIgnRefAtom: PrimitiveAtom<boolean>; // ref to the start section sectionIgonoreAtom or AllwaysEnabledAtom (internal used by sectionEnabledAtom)
+    sectionIgnRefAtom: PrimitiveAtom<boolean>;   // ref to the start section sectionIgonoreAtom or AllwaysEnabledAtom (internal used by sectionEnabledAtom)
     sectionEnabledAtom: Atom<boolean>;
 };
 
@@ -213,7 +213,7 @@ export type SvgEditRoot = {
     edits: SvgItemEdit[];
     completePathAtom: PrimitiveAtom<string>;
     doUpdatePointAtom: WritableAtom<null, { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }>;
-    allowUpdatesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
+    allowUpdatesAtom: PrimitiveAtom<boolean>;      // do nothing in atoms callback
     doReloadAllValuesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
     doReloadSvgItemIdxAtom: PrimitiveAtom<number>; // if -1 then do nothing
 
@@ -876,4 +876,3 @@ export const disableHistoryAtom = atom(null, // During point drag operation on c
 //TODO: show error messages from SVG parser
 
 //TODO: calc first points in compound path
-

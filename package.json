@@ -36,6 +36,7 @@
         "use-deep-compare-effect": "^1.8.1"
     },
     "scripts": {
+        "tsc": "tsc -w",
         "dev": "vite",
         "build": "vite build",
         "build:check": "tsc && vite build",

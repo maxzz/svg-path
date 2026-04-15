@@ -1,4 +1,4 @@
-import React from "react";
+import { Fragment, useRef, useState, useEffect } from "react";
 import { PrimitiveAtom, useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { doSetStateAtom, ignoreAllAtom, svgEditRootAtom, SvgItemEdit, SvgItemEditState } from "../../store/store";
@@ -10,140 +10,64 @@ import { doTrace } from "../../utils/debugging";
 import "../UI/pathcommands-tooltip.scss";
 import { classNames } from "../../utils/classnames";
 
-function RowCommandName({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
-    const itemType = useAtomValue(svgItemEdit.typeAtom);
-    const [isRel, setIsRel] = useAtom(svgItemEdit.isRelAtom);
+export function PathCommandEditor() {
+    const SvgEditRoot = useAtomValue(svgEditRootAtom);
+    const edits = SvgEditRoot.edits;
+    const isCompoundPath = edits[0]?.section !== -1;
+    doTrace && console.log('=============== PathCommandEditor render rows (only on SvgEditRoot change) ===============');
     return (
-        <label
-            className={classNames(
-                `flex-0 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 cursor-pointer select-none`,
-                !isRel ? 'bg-slate-500' : 'bg-slate-400'
+        <div className="my-1 py-0.5 space-y-0.5">
+            {isCompoundPath && (
+                <CompoundPathHeader />
             )}
-            onClick={() => setIsRel(v => !v)}
-        >
-            <div>{itemType}</div>
-        </label>
+
+            {edits.map(
+                (edit, idx) => (
+                    <Fragment key={idx}>
+                        {edit.sectionIgonoreAtom && (
+                            <SubPathHeader ignoreAtom={edit.sectionIgonoreAtom} />
+                        )}
+
+                        <CommandRow svgItemEdit={edit} />
+                    </Fragment>
+                )
+            )}
+        </div >
     );
 }
 
-function MiniTooltip({ tooltip, isFirstRow }: { tooltip: string, isFirstRow: boolean; }) {
+//#region Sub headers
+
+function CompoundPathHeader() {
     return (
-        <div className={`mini-tooltip ${isFirstRow ? 'tooltip-down' : 'tooltip-up'} text-xs text-slate-100 bg-slate-400 rounded z-10`}>
-            {tooltip}
+        <div className="px-2 text-xs flex items-center justify-between ">
+            <div className="">Compound path</div>
+            <SubPathRaiobutton ignoreAtom={ignoreAllAtom} />
         </div>
     );
 }
 
-function ValueArcOption({ atom, isFirstRow, isActiveRow, isHoverRow, svgItemIdx, debugIdx, stateAtom }: {
-    atom: PrimitiveAtom<number>;
-
-    isFirstRow: boolean;
-    isActiveRow: boolean;
-    isHoverRow: boolean;
-
-    svgItemIdx: number;
-    stateAtom: PrimitiveAtom<SvgItemEditState>;
-    debugIdx: number;
-}) {
-    const [value, setValue] = useAtom(atom);
-
-    const editorIdx = [svgItemIdx, getValueToPoint('a', debugIdx)];
-
-    const setState = useUpdateAtom(doSetStateAtom);
-    const editContainerRef = React.useRef(null);
-    const isHovering = useHoverDirty(editContainerRef);
-    React.useEffect(() => setState({ atom: stateAtom, states: { hoverEd: isHovering ? editorIdx[1] : -1 } }), [isHovering]);
-
+function SubPathHeader({ ignoreAtom }: { ignoreAtom: PrimitiveAtom<boolean>; }) {
     return (
-        <div className="relative pb-1">
-            <input
-                type="checkbox"
-                className={`w-3 h-3 rounded text-slate-400 bg-slate-200 focus:ring-slate-500 focus:ring-offset-1 focus:ring-1 focus:outline-none`}
-                ref={editContainerRef}
-                checked={!!value}
-                onChange={() => setValue(value ? 0 : 1)}
-            />
-            {/* tooltip */}
-            {isActiveRow && isHovering && <MiniTooltip tooltip={getTooltip('a', debugIdx)} isFirstRow={isFirstRow} />}
+        <div className="px-2 flex justify-between text-[.65rem] leading-3 ">
+            <div className="flex-1 mr-1 self-center h-px bg-gradient-to-r from-slate-500/10 via-slate-500/50 to-slate-500/10"></div>
+            <SubPathRaiobutton ignoreAtom={ignoreAtom} />
         </div>
     );
 }
 
-function ValueArcOptions(props: {
-    atomA: PrimitiveAtom<number>;
-    atomB: PrimitiveAtom<number>;
-
-    isFirstRow: boolean;
-    isActiveRow: boolean;
-    isHoverRow: boolean;
-
-    svgItemIdx: number;
-    stateAtom: PrimitiveAtom<SvgItemEditState>;
-}) {
-    const { atomA, atomB, ...rest } = props;
+function SubPathRaiobutton({ tooltip, ignoreAtom }: { tooltip?: string; ignoreAtom: PrimitiveAtom<boolean>; }) {
+    const [checked, onClick] = useAtom(ignoreAtom);
     return (
-        <label className="px-0.5 flex items-center space-x-0.5">
-            <ValueArcOption atom={atomA} {...rest} debugIdx={3} />
-            <ValueArcOption atom={atomB} {...rest} debugIdx={4} />
-        </label>
+        <div className="w-3 h-3 bg-slate-500 border rounded-full flex items-center justify-center cursor-pointer" title={tooltip} onClick={() => onClick((v) => !v)}>
+            <div className="w-2 h-2 bg-slate-200 rounded-full flex items-center justify-center">
+                {!checked && <div className="w-2 h-2 bg-slate-400 border rounded-full"></div>}
+            </div>
+        </div>
     );
 }
 
-function ValueInput({ atom, isFirstRow, isActiveRow, isHoverRow, editorIdx, debugIdx, stateAtom, tooltip }: {
-    atom: PrimitiveAtom<number>;
-    isFirstRow: boolean;
-    isActiveRow: boolean;
-    isHoverRow: boolean;
-    editorIdx: [number, number];
-    debugIdx: number;
-    stateAtom: PrimitiveAtom<SvgItemEditState>;
-    tooltip: string;
-}) {
-    doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] enter`, 'color: #bbf5');
-
-    const [value, setValue] = useAtom(atom);
-    const { onBlur: onBlurInput, ...bindRest } = useNumberInput(value, (v) => setValue(v));
-
-    const setState = useUpdateAtom(doSetStateAtom);
-
-    const editContainerRef = React.useRef(null);
-    const isHovering = useHoverDirty(editContainerRef);
-
-    React.useEffect(() => {
-        //if (editContainerRef.current) {
-        doTrace && console.log(`%cValueInput useEffect[isHovering] [${editorIdx}].[${debugIdx}]  single edit hovering=${isHovering} labelRef=${editContainerRef.current ? 'exist' : 'null'}`, 'color: #bbf5');
-
-        setState({ atom: stateAtom, states: { hoverEd: isHovering ? editorIdx[1] : -1 } });
-        //}
-    }, [isHovering]);
-
-    doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] done: hovering=${isHovering} labelRef=${editContainerRef.current ? 'exist' : 'null'} value=${value}`, 'color: #bbf5');
-
-    return (
-        <label
-            className={classNames(
-                `relative flex-1 flex w-[2.4rem] h-5 bg-slate-200 text-slate-900 focus-within:text-blue-500 rounded-tl-sm`,
-                `${isActiveRow ? 'bg-blue-300' : isHoverRow ? 'bg-slate-400/40' : ''}`,
-            )}
-            ref={editContainerRef}
-        >
-            {doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] %c..... from render tree`, 'color: 1#bbf1', 'color: #bbf1')}
-            {/* value */}
-            <input
-                className={classNames(
-                    `px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter border-b-2`,
-                    `focus:border-blue-500 cursor-default focus:cursor-text focus:outline-none`,
-                    isActiveRow ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverRow ? 'bg-slate-200 border-slate-400/40' : '',
-                )}
-                {...bindRest}
-                onFocus={() => setState({ atom: stateAtom, states: { activeEd: editorIdx[1] } })}
-                onBlur={() => (onBlurInput(), setState({ atom: stateAtom, states: { activeEd: -1 } }))}
-            />
-            {/* tooltip */}
-            {isActiveRow && isHovering && <MiniTooltip tooltip={tooltip} isFirstRow={isFirstRow} />}
-        </label>
-    );
-}
+//#endregion Sub headers
 
 function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
 
@@ -157,12 +81,12 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     const isActiveRow = state.activeRow;
     const isHoverRow = state.hoverRow;
 
-    const rowContainerRef = React.useRef(null);
+    const rowContainerRef = useRef(null);
     const isHovering = useHoverDirty(rowContainerRef);
-    const [isHoveringDebounced, setIsHoveringDebounced] = React.useState(false);
+    const [isHoveringDebounced, setIsHoveringDebounced] = useState(false);
     useDebounce(() => setIsHoveringDebounced(isHovering), 100, [isHovering]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         doTrace && console.log(`%cRow useEffect[isHovering] [${svgItemIdx}  ] row hover debounced value = ${isHoveringDebounced} ref=${rowContainerRef.current ? 'exist' : 'null'}`, 'color: #bbf8');
 
         setState({ atom: stateAtom, states: { hoverRow: isHovering } });
@@ -226,54 +150,138 @@ function CommandRow({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
     </>);
 }
 
-//#region Sub headers
-
-function SubPathRaiobutton({ tooltip, ignoreAtom }: { tooltip?: string; ignoreAtom: PrimitiveAtom<boolean>; }) {
-    const [checked, onClick] = useAtom(ignoreAtom);
+function RowCommandName({ svgItemEdit }: { svgItemEdit: SvgItemEdit; }) {
+    const itemType = useAtomValue(svgItemEdit.typeAtom);
+    const [isRel, setIsRel] = useAtom(svgItemEdit.isRelAtom);
     return (
-        <div className="w-3 h-3 bg-slate-500 border rounded-full flex items-center justify-center cursor-pointer" title={tooltip} onClick={() => onClick((v) => !v)}>
-            <div className="w-2 h-2 bg-slate-200 rounded-full flex items-center justify-center">
-                {!checked && <div className="w-2 h-2 bg-slate-400 border rounded-full"></div>}
-            </div>
+        <label
+            className={classNames(
+                `flex-0 w-5 h-5 leading-3 text-xs flex items-center justify-center rounded-l-[0.2rem] text-center text-slate-900 cursor-pointer select-none`,
+                !isRel ? 'bg-slate-500' : 'bg-slate-400'
+            )}
+            onClick={() => setIsRel(v => !v)}
+        >
+            <div>{itemType}</div>
+        </label>
+    );
+}
+
+function ValueInput({ atom, isFirstRow, isActiveRow, isHoverRow, editorIdx, debugIdx, stateAtom, tooltip }: {
+    atom: PrimitiveAtom<number>;
+    isFirstRow: boolean;
+    isActiveRow: boolean;
+    isHoverRow: boolean;
+    editorIdx: [number, number];
+    debugIdx: number;
+    stateAtom: PrimitiveAtom<SvgItemEditState>;
+    tooltip: string;
+}) {
+    doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] enter`, 'color: #bbf5');
+
+    const [value, setValue] = useAtom(atom);
+    const { onBlur: onBlurInput, ...bindRest } = useNumberInput(value, (v) => setValue(v));
+
+    const setState = useUpdateAtom(doSetStateAtom);
+
+    const editContainerRef = useRef(null);
+    const isHovering = useHoverDirty(editContainerRef);
+
+    useEffect(() => {
+        //if (editContainerRef.current) {
+        doTrace && console.log(`%cValueInput useEffect[isHovering] [${editorIdx}].[${debugIdx}]  single edit hovering=${isHovering} labelRef=${editContainerRef.current ? 'exist' : 'null'}`, 'color: #bbf5');
+
+        setState({ atom: stateAtom, states: { hoverEd: isHovering ? editorIdx[1] : -1 } });
+        //}
+    }, [isHovering]);
+
+    doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] done: hovering=${isHovering} labelRef=${editContainerRef.current ? 'exist' : 'null'} value=${value}`, 'color: #bbf5');
+
+    return (
+        <label
+            className={classNames(
+                `relative flex-1 flex w-[2.4rem] h-5 bg-slate-200 text-slate-900 focus-within:text-blue-500 rounded-tl-sm`,
+                `${isActiveRow ? 'bg-blue-300' : isHoverRow ? 'bg-slate-400/40' : ''}`,
+            )}
+            ref={editContainerRef}
+        >
+            {doTrace && console.log(`%c ------ render single edit [${editorIdx}].[${debugIdx}] %c..... from render tree`, 'color: 1#bbf1', 'color: #bbf1')}
+            {/* value */}
+            <input
+                className={classNames(
+                    `px-px pt-0.5 w-full h-full text-[10px] text-center tracking-tighter border-b-2`,
+                    `focus:border-blue-500 cursor-default focus:cursor-text focus:outline-none`,
+                    isActiveRow ? 'text-blue-900 bg-[#fff5] border-blue-300' : isHoverRow ? 'bg-slate-200 border-slate-400/40' : '',
+                )}
+                {...bindRest}
+                onFocus={() => setState({ atom: stateAtom, states: { activeEd: editorIdx[1] } })}
+                onBlur={() => (onBlurInput(), setState({ atom: stateAtom, states: { activeEd: -1 } }))}
+            />
+            {/* tooltip */}
+            {isActiveRow && isHovering && <MiniTooltip tooltip={tooltip} isFirstRow={isFirstRow} />}
+        </label>
+    );
+}
+
+function ValueArcOption({ atom, isFirstRow, isActiveRow, isHoverRow, svgItemIdx, debugIdx, stateAtom }: {
+    atom: PrimitiveAtom<number>;
+
+    isFirstRow: boolean;
+    isActiveRow: boolean;
+    isHoverRow: boolean;
+
+    svgItemIdx: number;
+    stateAtom: PrimitiveAtom<SvgItemEditState>;
+    debugIdx: number;
+}) {
+    const [value, setValue] = useAtom(atom);
+
+    const editorIdx = [svgItemIdx, getValueToPoint('a', debugIdx)];
+
+    const setState = useUpdateAtom(doSetStateAtom);
+    const editContainerRef = useRef(null);
+    const isHovering = useHoverDirty(editContainerRef);
+    useEffect(() => setState({ atom: stateAtom, states: { hoverEd: isHovering ? editorIdx[1] : -1 } }), [isHovering]);
+
+    return (
+        <div className="relative pb-1">
+            <input
+                type="checkbox"
+                className={`w-3 h-3 rounded text-slate-400 bg-slate-200 focus:ring-slate-500 focus:ring-offset-1 focus:ring-1 focus:outline-none`}
+                ref={editContainerRef}
+                checked={!!value}
+                onChange={() => setValue(value ? 0 : 1)}
+            />
+            {/* tooltip */}
+            {isActiveRow && isHovering && <MiniTooltip tooltip={getTooltip('a', debugIdx)} isFirstRow={isFirstRow} />}
         </div>
     );
 }
 
-function CompoundPathHeader() {
+function ValueArcOptions(props: {
+    atomA: PrimitiveAtom<number>;
+    atomB: PrimitiveAtom<number>;
+
+    isFirstRow: boolean;
+    isActiveRow: boolean;
+    isHoverRow: boolean;
+
+    svgItemIdx: number;
+    stateAtom: PrimitiveAtom<SvgItemEditState>;
+}) {
+    const { atomA, atomB, ...rest } = props;
     return (
-        <div className="px-2 text-xs flex items-center justify-between ">
-            <div className="">Compound path</div>
-            <SubPathRaiobutton ignoreAtom={ignoreAllAtom} />
-        </div>
+        <label className="px-0.5 flex items-center space-x-0.5">
+            <ValueArcOption atom={atomA} {...rest} debugIdx={3} />
+            <ValueArcOption atom={atomB} {...rest} debugIdx={4} />
+        </label>
     );
 }
 
-function SubPathHeader({ ignoreAtom }: { ignoreAtom: PrimitiveAtom<boolean>; }) {
+function MiniTooltip({ tooltip, isFirstRow }: { tooltip: string, isFirstRow: boolean; }) {
     return (
-        <div className="px-2 flex justify-between text-[.65rem] leading-3 ">
-            <div className="flex-1 mr-1 self-center h-px bg-gradient-to-r from-slate-500/10 via-slate-500/50 to-slate-500/10"></div>
-            <SubPathRaiobutton ignoreAtom={ignoreAtom} />
+        <div className={`mini-tooltip ${isFirstRow ? 'tooltip-down' : 'tooltip-up'} text-xs text-slate-100 bg-slate-400 rounded z-10`}>
+            {tooltip}
         </div>
-    );
-}
-
-//#endregion Sub headers
-
-export function PathCommandEditor() {
-    const SvgEditRoot = useAtomValue(svgEditRootAtom);
-    const edits = SvgEditRoot.edits;
-    const isCompoundPath = edits[0]?.section !== -1;
-    doTrace && console.log('=============== PathCommandEditor render rows (only on SvgEditRoot change) ===============');
-    return (
-        <div className="my-1 py-0.5 space-y-0.5">
-            {isCompoundPath && <CompoundPathHeader />}
-            {edits.map((edit, idx) => (
-                <React.Fragment key={idx}>
-                    {edit.sectionIgonoreAtom && <SubPathHeader ignoreAtom={edit.sectionIgonoreAtom} />}
-                    <CommandRow svgItemEdit={edit} />
-                </React.Fragment>
-            ))}
-        </div >
     );
 }
 
