@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment } from 'react';
 import { useAtomValue } from 'jotai/utils';
 import { ViewBox } from '../../svg-core/svg-utils-viewport';
 import { canvasSizeAtom, showGridAtom, showTicksAtom, tickIntevalAtom, viewBoxAtom, canvasStrokeAtom } from '../../store/store';
@@ -8,14 +8,19 @@ export function CanvasTicks() {
     const canvasSize = useAtomValue(canvasSizeAtom);
     const canvasStroke = useAtomValue(canvasStrokeAtom);
     const showTicks = useAtomValue(showTicksAtom);
+    
     const tickInteval = useAtomValue(tickIntevalAtom);
     const showGrid = useAtomValue(showGridAtom);
+
     if (!showGrid) {
         return null;
     }
+
     const grid = calcGrid(viewBox, canvasSize.w);
+
     return (
         <g className="svg-ticks">
+
             {/* X axis (vertical lines) */}
             {grid.xGrid.map((v) =>
                 <line
@@ -24,6 +29,7 @@ export function CanvasTicks() {
                     style={{ strokeWidth: canvasStroke }}
                 />
             )}
+
             {/* Y axis (horizontal lines) */}
             {grid.yGrid.map((v) =>
                 <line
@@ -33,9 +39,9 @@ export function CanvasTicks() {
                 />
             )}
 
-            {showTicks && <>
+            {showTicks && (<>
                 {/* X axis numbers */}
-                {grid.xGrid.map((v) => <React.Fragment key={v}>
+                {grid.xGrid.map((v) => <Fragment key={v}>
                     {v % tickInteval === 0 &&
                         <text className="fill-[#744]"
                             y={-5 * canvasStroke}
@@ -45,9 +51,10 @@ export function CanvasTicks() {
                             {v}
                         </text>
                     }
-                </React.Fragment>)}
+                </Fragment>)}
+
                 {/* Y axis numbers */}
-                {grid.yGrid.map((v) => <React.Fragment key={v}>
+                {grid.yGrid.map((v) => <Fragment key={v}>
                     {v % tickInteval === 0 &&
                         <text className="fill-[#744]"
                             x={-5 * canvasStroke}
@@ -57,8 +64,8 @@ export function CanvasTicks() {
                             {v}
                         </text>
                     }
-                </React.Fragment>)}
-            </>}
+                </Fragment>)}
+            </>)}
         </g>
     );
 }

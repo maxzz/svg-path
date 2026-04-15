@@ -10,7 +10,7 @@
  * 
  * https://github.com/antfu/vueuse/blob/master/packages/core/useThrottleFn/index.ts
  */
-export default function throttle<T extends Function>(fn: T, delay = 200, trailing = true): T {
+export function throttle<T extends Function>(fn: T, delay = 200, trailing = true): T {
     if (delay <= 0) {
         return fn;
     }

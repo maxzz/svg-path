@@ -1,16 +1,9 @@
-import React from "react";
-import { Atom, PrimitiveAtom } from "jotai";
+import { type Atom, type PrimitiveAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { canvasStrokeAtom, doSetStateAtom, CanvasDragEvent, SvgItemEditState, doCanvasPointClkAtom, SvgItemEdit } from "../../store/store";
-import { formatNumber, SvgControlPoint, SvgPoint } from "../../svg-core/svg";
+import { canvasStrokeAtom, doSetStateAtom, type CanvasDragEvent, type SvgItemEditState, doCanvasPointClkAtom, type SvgItemEdit } from "../../store/store";
+import { formatNumber, type SvgControlPoint, type SvgPoint } from "../../svg-core/svg";
 import { doTrace } from "../../utils/debugging";
 import { getSvgItemAbsType } from "../../svg-core/svg-utils";
-
-type CanvasDragHandler = (event: CanvasDragEvent) => void;
-
-const pointColor = (active: boolean, hover: boolean, sectionEnabled: boolean): string => !sectionEnabled ? '#777c' : active ? '#009cff' : hover ? '#ff4343' : 'white';
-const editorColor = (active: boolean, hover: boolean, sectionEnabled: boolean): string => !sectionEnabled ? '#777c' : active ? '#9c00ffa0' : hover ? '#ffad40' : 'white';
-const stokeCpLineColor = (active: boolean, hover: boolean, sectionEnabled: boolean): string => !sectionEnabled ? '#777c' : active ? '#9c00ffa0' : hover ? '#ffad40' : '#fff5';
 
 export function TargetPoint({ svgItemEdit, sectionEnabledAtom }: { svgItemEdit: SvgItemEdit; sectionEnabledAtom: Atom<boolean>; }) {
     const asString = useAtomValue(svgItemEdit.standaloneStringAtom); // The main purpose is to trigger update
@@ -35,6 +28,7 @@ export function TargetPoint({ svgItemEdit, sectionEnabledAtom }: { svgItemEdit: 
     if (ptType === 'Z') {
         return null;
     }
+    
     return (<>
         {/* A piece of this point path. No more condition: state.activeRow || state.hoverRow since there is no more complete path render */}
         {/* <g className="hover:cursor-move"> */}
@@ -156,6 +150,20 @@ export function ControlPoint({ svgItemEdit, cpIdx, sectionEnabledAtom }: { svgIt
             <title>abs: {formatNumber(pt.x, 2)},{formatNumber(pt.y, 2)}</title>
         </rect>
     </>);
+}
+
+type CanvasDragHandler = (event: CanvasDragEvent) => void;
+
+function pointColor(active: boolean, hover: boolean, sectionEnabled: boolean): string {
+    return !sectionEnabled ? '#777c' : active ? '#009cff' : hover ? '#ff4343' : 'white';
+}
+
+function editorColor(active: boolean, hover: boolean, sectionEnabled: boolean): string {
+    return !sectionEnabled ? '#777c' : active ? '#9c00ffa0' : hover ? '#ffad40' : 'white';
+}
+
+function stokeCpLineColor(active: boolean, hover: boolean, sectionEnabled: boolean): string {
+    return !sectionEnabled ? '#777c' : active ? '#9c00ffa0' : hover ? '#ffad40' : '#fff5';
 }
 
 //TODO: SVG z command

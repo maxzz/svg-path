@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 import { openPanelCmdsAtom } from '../../store/store';
 import { SectionPane } from '../ui/SectionPane';
 import { Accordion } from '../ui/Accordion';
-import { PathCommandEditor } from './PanelCommandsEditor';
+import { PathCommandEditor } from './2-2-panel-commands-editor';
 
 export function PanelCommands() {
     const [open, setOpen] = useAtom(openPanelCmdsAtom);

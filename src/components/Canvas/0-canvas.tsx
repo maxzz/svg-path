@@ -1,11 +1,10 @@
-import React from 'react';
-import { PrimitiveAtom } from 'jotai';
+import { useCallback, type MouseEvent as ReactMouseEvent } from 'react';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { mergeRef } from '../../utils/hooks/utils';
 import { canvasSizeAtom, canvasStrokeAtom, svgEditRootAtom, viewBoxAtom, doCanvasMouseDownAtom, doCanvasMouseMoveAtom, doCanvasMouseUpAtom, showCPsAtom, fillPathAtom } from '../../store/store';
 import { useContainerZoom } from './4-use-container-zoom';
 import { ControlPoint, TargetPoint } from './1-canvas-points';
-import { CanvasTicks } from './3-canvas-ticks';
+import { CanvasTicks } from './3-canvas-bg-ticks';
 
 export function PathCanvas() {
     const { ref, parentRef, onWheel, } = useContainerZoom();
@@ -15,10 +14,14 @@ export function PathCanvas() {
             <CanvasSvgElement>
                 <CanvasTicks />
                 <RenderPath />
-                {showCPs && <g className="pts">
-                    <RenderControlPoints />
-                    <RenderTargetPoints />
-                </g>}
+
+                {showCPs && (
+                    <g className="pts">
+                        <RenderControlPoints />
+                        <RenderTargetPoints />
+                    </g>
+                )}
+
             </CanvasSvgElement>
         </div>
     );
@@ -45,15 +48,11 @@ function useMouseHandlers() {
     const doCanvasMouseMove = useUpdateAtom(doCanvasMouseMoveAtom);
     const doCanvasMouseUp = useUpdateAtom(doCanvasMouseUpAtom);
 
-    const onMouseDown = React.useCallback((event: React.MouseEvent) => doCanvasMouseDown(event), []);
-    const onMouseUp = React.useCallback(() => doCanvasMouseUp(), []);
-    const onMouseMove = React.useCallback((event: React.MouseEvent) => doCanvasMouseMove(event), []);
+    const onMouseDown = useCallback((event: ReactMouseEvent) => doCanvasMouseDown(event), []);
+    const onMouseUp = useCallback(() => doCanvasMouseUp(), []);
+    const onMouseMove = useCallback((event: ReactMouseEvent) => doCanvasMouseMove(event), []);
 
-    return {
-        onMouseDown,
-        onMouseUp,
-        onMouseMove,
-    };
+    return { onMouseDown, onMouseUp, onMouseMove, };
 }
 
 // Canvas path, target and control points
@@ -64,19 +63,21 @@ function RenderPath() {
     const stroke = useAtomValue(canvasStrokeAtom);
     const showCPs = useAtomValue(showCPsAtom);
     const fill = useAtomValue(fillPathAtom);
-    const fillColor = fill
-        ? '#94a3b830'
-        : !showCPs
-            ? 'none'
-            : fill
-                ? '#94a3b830'
-                : 'none'
-        ;
+    const fillColor =
+        fill
+            ? '#94a3b830'
+            : !showCPs
+                ? 'none'
+                : fill
+                    ? '#94a3b830'
+                    : 'none';
     if (!fill) {
         return null;
     }
     return (<>
-        {completePath && <path d={completePath} fill={fillColor} stroke="none" strokeWidth={stroke} />}
+        {completePath && (
+            <path d={completePath} fill={fillColor} stroke="none" strokeWidth={stroke} />
+        )}
         {/* {completePath && <path d={completePath} fill={fillColor} stroke="white" strokeWidth={stroke} />} */}
     </>);
 }
@@ -86,9 +87,11 @@ function RenderTargetPoints() {
     const edits = svgEditRoot.edits;
     return (
         <g className="target-pts">
-            {edits.map((edit, editIdx) => (
-                <TargetPoint key={editIdx} svgItemEdit={edit} sectionEnabledAtom={edit.sectionEnabledAtom} />
-            ))}
+            {edits.map(
+                (edit, editIdx) => (
+                    <TargetPoint key={editIdx} svgItemEdit={edit} sectionEnabledAtom={edit.sectionEnabledAtom} />
+                )
+            )}
         </g>
     );
 }
@@ -98,13 +101,15 @@ function RenderControlPoints() {
     const edits = svgEditRoot.edits;
     return (
         <g className="ctrl-pts">
-            {edits.map((edit, editIdx) => {
-                const controls = edit.svgItem.controlLocations();
-                const sectionEnabledAtom = edit.sectionEnabledAtom;
-                return controls.map((cpt, cpIdx) => (
-                    <ControlPoint key={`${editIdx}${cpIdx}`} svgItemEdit={edit} cpIdx={cpIdx} sectionEnabledAtom={sectionEnabledAtom} />
-                ));
-            })}
+            {edits.map(
+                (edit, editIdx) => {
+                    const controls = edit.svgItem.controlLocations();
+                    const sectionEnabledAtom = edit.sectionEnabledAtom;
+                    return controls.map((cpt, cpIdx) => (
+                        <ControlPoint key={`${editIdx}${cpIdx}`} svgItemEdit={edit} cpIdx={cpIdx} sectionEnabledAtom={sectionEnabledAtom} />
+                    ));
+                }
+            )}
         </g>
     );
 }

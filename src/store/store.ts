@@ -6,7 +6,7 @@ import { toast, toastSVGParse } from "../components/ui/UiToaster";
 import { Svg, type SvgControlPoint, type SvgItem, type SvgPoint } from "../svg-core/svg";
 import { getSvgItemAbsType } from "../svg-core/svg-utils";
 import { getCanvasStroke, getFitViewPort, scaleViewBox, updateViewPort, type ViewBox, type ViewBoxManual, type ViewPoint } from "../svg-core/svg-utils-viewport";
-import { print_unexpected, toString_fViewBox, toString_ViewBox } from "../utils/debugging";
+//import { print_unexpected, toString_fViewBox, toString_ViewBox } from "../utils/debugging";
 
 namespace Storage {
     const KEY = 'react-svg-expo-01';
@@ -83,12 +83,14 @@ namespace Storage {
 function getParsedSvg(path: string): Svg | undefined {
     try {
         const svg = new Svg(path);
+
         if (svg.path.length) {
             const first = getSvgItemAbsType(svg.path[0]);
             if (first !== 'M') {
                 throw new Error("The path must start with moveto command (('M' or 'm')");
             }
         }
+
         return svg;
     } catch (error) {
         if (typeof error === 'string') {
@@ -155,31 +157,37 @@ const globalEditState: Record<keyof SvgItemEditState, PrimitiveAtom<SvgItemEditS
     hoverEd: undefined,
 };
 
-export const doSetStateAtom = atom(null, (get, set, { atom, states }: { atom: PrimitiveAtom<SvgItemEditState>; states: Partial<SvgItemEditState>; }) => {
-    const newState: Partial<SvgItemEditState> = {};
+export const doSetStateAtom = atom(null,
+    (get, set, { atom, states }: { atom: PrimitiveAtom<SvgItemEditState>; states: Partial<SvgItemEditState>; }) => {
+        const newState: Partial<SvgItemEditState> = {};
 
-    for (const [name, val] of Object.entries(states)) {
-        const key = name as keyof SvgItemEditState;
-        const globalStateAtom = globalEditState[key];
-        if (globalStateAtom && globalStateAtom !== atom) {
-            set(globalStateAtom, (prev) => ({ ...prev, [key]: false }));
+        for (const [name, val] of Object.entries(states)) {
+            const key = name as keyof SvgItemEditState;
+
+            const globalStateAtom = globalEditState[key];
+            if (globalStateAtom && globalStateAtom !== atom) {
+                set(globalStateAtom, (prev) => ({ ...prev, [key]: false }));
+            }
+
+            globalEditState[key] = val && val !== -1 ? atom : undefined; // there can be only one
+            (newState[key] as boolean | number) = val;
         }
-        globalEditState[key] = val && val !== -1 ? atom : undefined; // there can be only one
-        (newState[key] as boolean | number) = val;
+
+        const before = get(atom);
+        const areDiff = Object.entries(newState).some(([key, val]) => before[key as keyof SvgItemEditState] !== val);
+
+        areDiff && set(atom, (prev) => ({ ...prev, ...newState }));
     }
+);
 
-    const before = get(atom);
-    const areDiff = Object.entries(newState).some(([key, val]) => before[key as keyof SvgItemEditState] !== val);
-
-    areDiff && set(atom, (prev) => ({ ...prev, ...newState }));
-});
-
-export const doClearActiveAtom = atom(null, (get, set,) => {
-    if (globalEditState.activeRow) {
-        set(globalEditState.activeRow, (prev) => ({ ...prev, activeRow: false }));
-        globalEditState.activeRow = undefined;
+export const doClearActiveAtom = atom(null,
+    (get, set,) => {
+        if (globalEditState.activeRow) {
+            set(globalEditState.activeRow, (prev) => ({ ...prev, activeRow: false }));
+            globalEditState.activeRow = undefined;
+        }
     }
-});
+);
 
 //#endregion SvgItemEdit State
 
@@ -241,63 +249,75 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         doSetRelAbsAtom: atom(null, doSetRelAbs),
     };
     updateSubIndecies();
-    svg.path.forEach((svgItem, svgItemIdx) => {
-        const newSvgEdit: SvgItemEdit = {
-            id: uuid(),
-            section: -1,
-            svgItemIdx,
-            svgItem,
-            typeAtom: atom(svgItem.getType()),
-            isRelAtom: atomWithCallback(svgItem.relative, ({ get, set, nextValue }) => {
-                svgItem.setRelative(nextValue);
-                root.svg.refreshAbsolutePositions();
-                triggerUpdate(set, svgItemIdx);
-            }),
-            valueAtoms: svgItem.values.map((value, idx) => atomWithCallback(value, ((idx) => ({ get, set, nextValue }) => {
-                if (get(root.allowUpdatesAtom)) {
-                    svgItem.values[idx] = nextValue;
+    svg.path.forEach(
+        (svgItem, svgItemIdx) => {
+            const newSvgEdit: SvgItemEdit = {
+                id: uuid(),
+                section: -1,
+                svgItemIdx,
+                svgItem,
+                typeAtom: atom(svgItem.getType()),
+                isRelAtom: atomWithCallback(svgItem.relative, ({ get, set, nextValue }) => {
+                    svgItem.setRelative(nextValue);
                     root.svg.refreshAbsolutePositions();
                     triggerUpdate(set, svgItemIdx);
-                }
-            })(idx))),
-            standaloneStringAtom: atom(svgItem.asStandaloneString()),
-            stateAtom: atom<SvgItemEditState>({ activeRow: false, hoverRow: false, activeEd: -1, hoverEd: -1, }),
-            sectionIgnRefAtom: AllwaysNotIgnoreSectionAtom,
-            sectionEnabledAtom: atom<boolean>((get) => !newSvgEdit.sectionIgnRefAtom || !get(newSvgEdit.sectionIgnRefAtom)),
-        };
-        root.edits.push(newSvgEdit);
-    });
+                }),
+                valueAtoms: svgItem.values.map(
+                    (value, idx) => atomWithCallback(value, ((idx) => ({ get, set, nextValue }) => {
+                        if (get(root.allowUpdatesAtom)) {
+                            svgItem.values[idx] = nextValue;
+                            root.svg.refreshAbsolutePositions();
+                            triggerUpdate(set, svgItemIdx);
+                        }
+                    })(idx))
+                ),
+                standaloneStringAtom: atom(svgItem.asStandaloneString()),
+                stateAtom: atom<SvgItemEditState>({ activeRow: false, hoverRow: false, activeEd: -1, hoverEd: -1, }),
+                sectionIgnRefAtom: AllwaysNotIgnoreSectionAtom,
+                sectionEnabledAtom: atom<boolean>((get) => !newSvgEdit.sectionIgnRefAtom || !get(newSvgEdit.sectionIgnRefAtom)),
+            };
+            root.edits.push(newSvgEdit);
+        }
+    );
     initPathSections(root.edits);
     return root;
 
     function updateSubIndecies() {
-        root.svg.path.forEach((svgItem) => {
-            const controls = svgItem.controlLocations();
-            controls.forEach((cpt, idx) => cpt.subIndex = idx);
-        });
+        root.svg.path.forEach(
+            (svgItem) => {
+                const controls = svgItem.controlLocations();
+                controls.forEach((cpt, idx) => cpt.subIndex = idx);
+            }
+        );
     }
 
     function initPathSections(edits: SvgItemEdit[]): void {
         // detect sections
         let idx = 0;
-        edits.forEach((edit) => getSvgItemAbsType(edit.svgItem) === 'M' && (edit.section = idx++));
+        edits.forEach(
+            (edit) => getSvgItemAbsType(edit.svgItem) === 'M' && (edit.section = idx++)
+        );
         if (idx === 1) { // if there is only one section then don't show as a compound path
             edits[0].section = -1;
         }
 
         // create section atoms
-        edits.forEach((edit) => edit.section !== -1 && (edit.sectionIgonoreAtom = atom<boolean>(false)));
+        edits.forEach(
+            (edit) => edit.section !== -1 && (edit.sectionIgonoreAtom = atom<boolean>(false))
+        );
 
         // propagate section start item to each item inside group
         let prevAtom: PrimitiveAtom<boolean> | undefined;
-        edits.forEach((edit) => {
-            if (edit.sectionIgonoreAtom) {
-                prevAtom = edit.sectionIgonoreAtom;
+        edits.forEach(
+            (edit) => {
+                if (edit.sectionIgonoreAtom) {
+                    prevAtom = edit.sectionIgonoreAtom;
+                }
+                if (prevAtom) {
+                    edit.sectionIgnRefAtom = prevAtom;
+                }
             }
-            if (prevAtom) {
-                edit.sectionIgnRefAtom = prevAtom;
-            }
-        });
+        );
     }
 
     function triggerUpdate(set: Setter, svgItemIdx: number = -2) {
@@ -312,19 +332,25 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 
     function reloadAllItemValues(get: Getter, set: Setter) {
         set(root.allowUpdatesAtom, false);
-        root.svg.path.forEach((svgItem, svgItemIdx) => {
-            const thisRowAtoms = root.edits[svgItemIdx].valueAtoms;
-            svgItem.values.forEach((value, idx) => {
-                if (get(thisRowAtoms[idx]) != value) {
-                    set(thisRowAtoms[idx], value);
-                }
-            });
-        });
+        root.svg.path.forEach(
+            (svgItem, svgItemIdx) => {
+                const thisRowAtoms = root.edits[svgItemIdx].valueAtoms;
+                svgItem.values.forEach(
+                    (value, idx) => {
+                        if (get(thisRowAtoms[idx]) != value) {
+                            set(thisRowAtoms[idx], value);
+                        }
+                    }
+                );
+            }
+        );
         set(root.allowUpdatesAtom, true);
     }
 
     function getEnabledSvgItems(get: Getter, edits: SvgItemEdit[]): SvgItemEdit[] {
-        return edits.filter((edit) => get(edit.sectionEnabledAtom));
+        return edits.filter(
+            (edit) => get(edit.sectionEnabledAtom)
+        );
     }
 
     function roundNumberToPrecision(value: number, precision: number): number {
@@ -333,7 +359,11 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 
     function roundNumbersOfSvgItems(get: Getter, edits: SvgItemEdit[]) {
         const precision = get(precisionAtom);
-        edits.forEach((edit) => edit.svgItem.values.forEach((value, idx) => edit.svgItem.values[idx] = roundNumberToPrecision(value, precision)));
+        edits.forEach(
+            (edit) => edit.svgItem.values.forEach(
+                (value, idx) => edit.svgItem.values[idx] = roundNumberToPrecision(value, precision)
+            )
+        );
     }
 
     // action atoms
@@ -342,6 +372,17 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         doUpdate && reloadAllItemValues(get, set);
     }
     function doReloadSvgItemIdx({ get, set, nextValue: svgItemIdx }: { get: Getter; set: Setter, nextValue: number; }) {
+        if (svgItemIdx >= 0) {
+            //Fix for problem w/ absolute/relative commands: M 5 25 m 13 2 v 10 h 10 Z
+            //updateItem(svgItemIdx, true);
+            // (svgItemIdx - 1 >= 0) && updateItem(svgItemIdx - 1);
+            // (svgItemIdx + 1 < root.edits.length) && updateItem(svgItemIdx + 1);
+            root.edits.forEach((edit, idx) => updateItem(idx, true));
+            updateCompletePath();
+        } else if (svgItemIdx === -2) {
+            root.edits.forEach((edit, idx) => updateItem(idx, true));
+            updateCompletePath();
+        }
 
         function updateItem(svgItemIdx: number, updateType: boolean = false) {
             const svgEdit = root.edits[svgItemIdx];
@@ -356,18 +397,6 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             const precision = get(precisionAtom);
             set(root.completePathAtom, root.svg.asString());
             set(_pathUnsafeAtom, svg.asString(precision, minify));
-        }
-
-        if (svgItemIdx >= 0) {
-            //Fix for problem w/ absolute/relative commands: M 5 25 m 13 2 v 10 h 10 Z
-            //updateItem(svgItemIdx, true);
-            // (svgItemIdx - 1 >= 0) && updateItem(svgItemIdx - 1);
-            // (svgItemIdx + 1 < root.edits.length) && updateItem(svgItemIdx + 1);
-            root.edits.forEach((edit, idx) => updateItem(idx, true));
-            updateCompletePath();
-        } else if (svgItemIdx === -2) {
-            root.edits.forEach((edit, idx) => updateItem(idx, true));
-            updateCompletePath();
         }
     }
     function doUpdatePoint(get: Getter, set: Setter, { pt, newXY, svgItemIdx }: { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }) {
@@ -386,7 +415,9 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         }
         const enabledEdits = getEnabledSvgItems(get, root.edits);
         if (enabledEdits.length) {
-            enabledEdits.forEach((edit) => edit.svgItem.scale(x, y));
+            enabledEdits.forEach(
+                (edit) => edit.svgItem.scale(x, y)
+            );
             roundNumbersOfSvgItems(get, enabledEdits);
             root.svg.refreshAbsolutePositions();
         }
@@ -397,7 +428,9 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         const y = get(operTransYAtom);
         const enabledEdits = getEnabledSvgItems(get, root.edits);
         if (enabledEdits.length) {
-            enabledEdits.forEach((edit) => edit.svgItem.translate(x, y, !!edit.sectionIgonoreAtom || edit.svgItemIdx === 0)); // force if section begins
+            enabledEdits.forEach(
+                (edit) => edit.svgItem.translate(x, y, !!edit.sectionIgonoreAtom || edit.svgItemIdx === 0)
+            ); // force if section begins
             roundNumbersOfSvgItems(get, enabledEdits);
             root.svg.refreshAbsolutePositions();
         }
@@ -414,7 +447,9 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         //root.svg.setRelative(relOrAbs);
         const enabledEdits = getEnabledSvgItems(get, root.edits);
         if (enabledEdits.length) {
-            enabledEdits.forEach((edit) => edit.svgItem.setRelative(relOrAbs));
+            enabledEdits.forEach(
+                (edit) => edit.svgItem.setRelative(relOrAbs)
+            );
             root.svg.refreshAbsolutePositions();
         }
 
@@ -425,40 +460,56 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
 export const ignoreAllAtom = atom(
     (get) => {
         const svgEditRoot = get(svgEditRootAtom);
-        return svgEditRoot.edits.some((edit) => edit.sectionIgonoreAtom && get(edit.sectionIgonoreAtom));
+        return svgEditRoot.edits.some(
+            (edit) => edit.sectionIgonoreAtom && get(edit.sectionIgonoreAtom)
+        );
     },
     (get, set, value: SetStateAction<boolean>) => {
         const realValue = typeof value === 'function' ? value(get(ignoreAllAtom)) : value;
         const svgEditRoot = get(svgEditRootAtom);
-        svgEditRoot.edits.forEach((edit) => edit.sectionIgonoreAtom && set(edit.sectionIgonoreAtom, realValue));
+        svgEditRoot.edits.forEach(
+            (edit) => edit.sectionIgonoreAtom && set(edit.sectionIgonoreAtom, realValue)
+        );
     }
 );
 
-export const doScaleAtom = atom(null, (get, set,) => {
-    const svgEditRoot = get(svgEditRootAtom);
-    set(svgEditRoot.doScaleAtom);
-    if (get(autoZoomAtom)) {
-        set(doAutoZoomAtom);
+export const doScaleAtom = atom(
+    null,
+    (get, set,) => {
+        const svgEditRoot = get(svgEditRootAtom);
+        set(svgEditRoot.doScaleAtom);
+        if (get(autoZoomAtom)) {
+            set(doAutoZoomAtom);
+        }
     }
-});
+);
 
-export const doTransAtom = atom(null, (get, set,) => {
-    const svgEditRoot = get(svgEditRootAtom);
-    set(svgEditRoot.doTransAtom);
-    if (get(autoZoomAtom)) {
-        set(doAutoZoomAtom);
+export const doTransAtom = atom(
+    null,
+    (get, set,) => {
+        const svgEditRoot = get(svgEditRootAtom);
+        set(svgEditRoot.doTransAtom);
+        if (get(autoZoomAtom)) {
+            set(doAutoZoomAtom);
+        }
     }
-});
+);
 
-export const doRoundAtom = atom(null, (get, set,) => {
-    const svgEditRoot = get(svgEditRootAtom);
-    set(svgEditRoot.doRoundAtom);
-});
+export const doRoundAtom = atom(
+    null,
+    (get, set,) => {
+        const svgEditRoot = get(svgEditRootAtom);
+        set(svgEditRoot.doRoundAtom);
+    }
+);
 
-export const doSetRelAbsAtom = atom(null, (get, set, relOrAbs: boolean) => {
-    const svgEditRoot = get(svgEditRootAtom);
-    set(svgEditRoot.doSetRelAbsAtom, relOrAbs);
-});
+export const doSetRelAbsAtom = atom(
+    null,
+    (get, set, relOrAbs: boolean) => {
+        const svgEditRoot = get(svgEditRootAtom);
+        set(svgEditRoot.doSetRelAbsAtom, relOrAbs);
+    }
+);
 
 export const svgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(getParsedSvg(Storage.initialData.path) || new Svg('')));
 
@@ -469,14 +520,17 @@ export const svgEditRootAtom = atom<SvgEditRoot>(createSvgEditRoot(getParsedSvg(
 export const viewBoxAtom = atom<ViewBox>([0, 0, 10, 10]);
 export const canvasStrokeAtom = atom(1);
 
-export const doSetViewBoxAtom = atom((get) => get(viewBoxAtom), (get, set, box: ViewBoxManual) => {
-    const canvasSize = get(canvasSizeAtom);
-    const newBox = updateViewPort(canvasSize, ...box, true);
-    if (newBox) {
-        set(viewBoxAtom, newBox.viewBox);
-        set(canvasStrokeAtom, newBox.stroke);
+export const doSetViewBoxAtom = atom(
+    (get) => get(viewBoxAtom),
+    (get, set, box: ViewBoxManual) => {
+        const canvasSize = get(canvasSizeAtom);
+        const newBox = updateViewPort(canvasSize, ...box, true);
+        if (newBox) {
+            set(viewBoxAtom, newBox.viewBox);
+            set(canvasStrokeAtom, newBox.stroke);
+        }
     }
-});
+);
 
 //#endregion Canvas Size
 
@@ -489,83 +543,95 @@ export type UpdateZoomEvent = {
 
 //const zoomAtom = atom(0);
 
-export const doUpdateZoomAtom = atom(null, (get, set, { deltaY, pt }: UpdateZoomEvent) => {
+export const doUpdateZoomAtom = atom(
+    null,
+    (get, set, { deltaY, pt }: UpdateZoomEvent) => {
 
-    // let zoom = Math.min(1000, Math.max(-450, get(zoomAtom) + deltaY));
-    let zoom = Math.min(1000, Math.max(-450, deltaY));
-    //set(zoomAtom, zoom);
+        // let zoom = Math.min(1000, Math.max(-450, get(zoomAtom) + deltaY));
+        let zoom = Math.min(1000, Math.max(-450, deltaY));
+        //set(zoomAtom, zoom);
 
-    // let stroke = get(viewBoxStrokeAtom);
-    // let [x, y] = get(viewBoxAtom);
-    // x += pt.x;
-    // y += pt.y;
-    // console.log('update', { x, y });
+        // let stroke = get(viewBoxStrokeAtom);
+        // let [x, y] = get(viewBoxAtom);
+        // x += pt.x;
+        // y += pt.y;
+        // console.log('update', { x, y });
 
-    /*
-    const unscaledPathBoundingBox = get(unscaledPathBoundingBoxAtom);
+        /*
+        const unscaledPathBoundingBox = get(unscaledPathBoundingBoxAtom);
+    
+        const scale = Math.pow(1.005, zoom);
+        const newPort = zoomViewPort(unscaledPathBoundingBox, scale);
+        // const newPort = zoomViewPort(unscaledPathBoundingBox, scale, pt);
+        // const newPort = zoomViewPort(unscaledPathBoundingBox, scale, { x, y });
+        set(viewBoxAtom, newPort);
+        */
 
-    const scale = Math.pow(1.005, zoom);
-    const newPort = zoomViewPort(unscaledPathBoundingBox, scale);
-    // const newPort = zoomViewPort(unscaledPathBoundingBox, scale, pt);
-    // const newPort = zoomViewPort(unscaledPathBoundingBox, scale, { x, y });
-    set(viewBoxAtom, newPort);
-    */
+        const viewBox = get(viewBoxAtom);
 
-    const viewBox = get(viewBoxAtom);
+        const scale = Math.pow(1.005, zoom);
+        const newViewBox = scaleViewBox(viewBox, scale);
 
-    const scale = Math.pow(1.005, zoom);
-    const newViewBox = scaleViewBox(viewBox, scale);
+        const canvasSize = get(canvasSizeAtom);
+        const newStroke = getCanvasStroke(newViewBox[2], canvasSize.w);
 
-    const canvasSize = get(canvasSizeAtom);
-    const newStroke = getCanvasStroke(newViewBox[2], canvasSize.w);
+        //console.log('new zoom', (''+zoom).padStart(5, ' '), '-----old viewBox-----', toString_fViewBox(viewBox), '-----new viewBox-----', toString_fViewBox(newViewBox));
 
-    //console.log('new zoom', (''+zoom).padStart(5, ' '), '-----old viewBox-----', toString_fViewBox(viewBox), '-----new viewBox-----', toString_fViewBox(newViewBox));
-
-    set(viewBoxAtom, newViewBox);
-    set(canvasStrokeAtom, newStroke);
-});
-
-export const doAutoZoomAtom = atom(null, (get, set,) => {
-    const canvasSize = get(canvasSizeAtom);
-    const svgEditRoot = get(svgEditRootAtom);
-    const targets = svgEditRoot.svg.targetLocations();
-    const box = getFitViewPort(canvasSize, targets);
-    if (box) {
-        set(viewBoxAtom, box.port);
-        set(canvasStrokeAtom, box.stroke);
+        set(viewBoxAtom, newViewBox);
+        set(canvasStrokeAtom, newStroke);
     }
-});
+);
 
-export const doSetZoomAtom = atom(null, (get, set, delta: number) => {
-    if (!delta) {
-        set(doAutoZoomAtom);
-    } else {
-        set(doUpdateZoomAtom, { deltaY: delta });
+export const doAutoZoomAtom = atom(
+    null,
+    (get, set,) => {
+        const canvasSize = get(canvasSizeAtom);
+        const svgEditRoot = get(svgEditRootAtom);
+        const targets = svgEditRoot.svg.targetLocations();
+        const box = getFitViewPort(canvasSize, targets);
+        if (box) {
+            set(viewBoxAtom, box.port);
+            set(canvasStrokeAtom, box.stroke);
+        }
     }
-});
+);
 
-export const doUpdateViewBoxAtom = atom(null, (get, set,) => {
-    const canvasSize = get(canvasSizeAtom);
-
-    // if (!(canvasSize.w && canvasSize.h)) {
-    //     print_unexpected('updateViewBoxAtom');
-    // }
-
-    if (canvasSize.w && canvasSize.h) {
-        const needInitialZoom = get(needInitialZoomAtom);
-        if (needInitialZoom) {
+export const doSetZoomAtom = atom(
+    null,
+    (get, set, delta: number) => {
+        if (!delta) {
             set(doAutoZoomAtom);
-            set(needInitialZoomAtom, false);
         } else {
-            const viewBox = get(viewBoxAtom);
-            const box = updateViewPort(canvasSize, viewBox[0], viewBox[1], viewBox[2], null, true);
-            if (box) {
-                set(viewBoxAtom, box.viewBox);
-                set(canvasStrokeAtom, box.stroke);
+            set(doUpdateZoomAtom, { deltaY: delta });
+        }
+    }
+);
+
+export const doUpdateViewBoxAtom = atom(
+    null,
+    (get, set,) => {
+        const canvasSize = get(canvasSizeAtom);
+
+        // if (!(canvasSize.w && canvasSize.h)) {
+        //     print_unexpected('updateViewBoxAtom');
+        // }
+
+        if (canvasSize.w && canvasSize.h) {
+            const needInitialZoom = get(needInitialZoomAtom);
+            if (needInitialZoom) {
+                set(doAutoZoomAtom);
+                set(needInitialZoomAtom, false);
+            } else {
+                const viewBox = get(viewBoxAtom);
+                const box = updateViewPort(canvasSize, viewBox[0], viewBox[1], viewBox[2], null, true);
+                if (box) {
+                    set(viewBoxAtom, box.viewBox);
+                    set(canvasStrokeAtom, box.stroke);
+                }
             }
         }
     }
-});
+);
 
 // canvas container and size
 
@@ -618,84 +684,96 @@ export const canvasDragStateAtom = atom(
     (get) => get(_canvasDragStateAtom)
 );
 
-export const doCanvasPointClkAtom = atom(null, (get, set, event: CanvasDragEvent) => {
-    if (event.mdownEvent.button !== 0) {
-        return;
+export const doCanvasPointClkAtom = atom(
+    null,
+    (get, set, event: CanvasDragEvent) => {
+        if (event.mdownEvent.button !== 0) {
+            return;
+        }
+        const containerElm = get(containerElmAtom);
+        if (containerElm) {
+            event.mmoved = false;
+            set(_canvasDragStateAtom, event);
+        }
     }
-    const containerElm = get(containerElmAtom);
-    if (containerElm) {
-        event.mmoved = false;
-        set(_canvasDragStateAtom, event);
-    }
-});
+);
 
-export const doCanvasMouseDownAtom = atom(null, (get, set, event: React.MouseEvent) => {
-    const containerElm = get(containerElmAtom);
-    if (containerElm) {
+export const doCanvasMouseDownAtom = atom(
+    null,
+    (get, set, event: React.MouseEvent) => {
+        const containerElm = get(containerElmAtom);
+        if (containerElm) {
+            const viewBox = get(viewBoxAtom);
+            const stroke = get(canvasStrokeAtom);
+            const xy = getEventPt(viewBox, stroke, containerElm, event.clientX, event.clientY);
+            set(_canvasDragStateAtom, { mdownEvent: event, mdownXY: xy, svgItemIdx: -1, mmoved: false });
+        }
+    }
+);
+
+export const doCanvasMouseMoveAtom = atom(
+    null,
+    (get, set, event: React.MouseEvent) => {
+        const canvasDragState = get(_canvasDragStateAtom);
+        if (!canvasDragState) {
+            return;
+        }
+
         const viewBox = get(viewBoxAtom);
         const stroke = get(canvasStrokeAtom);
-        const xy = getEventPt(viewBox, stroke, containerElm, event.clientX, event.clientY);
-        set(_canvasDragStateAtom, { mdownEvent: event, mdownXY: xy, svgItemIdx: -1, mmoved: false });
-    }
-});
+        const containerElm = get(containerElmAtom);
+        if (containerElm) {
+            event.stopPropagation();
+            canvasDragState.mmoved = true;
 
-export const doCanvasMouseMoveAtom = atom(null, (get, set, event: React.MouseEvent) => {
-    const canvasDragState = get(_canvasDragStateAtom);
-    if (!canvasDragState) {
-        return;
-    }
+            const precision = get(precisionAtom);
+            const snapToGrid = get(snapToGridAtom);
 
-    const viewBox = get(viewBoxAtom);
-    const stroke = get(canvasStrokeAtom);
-    const containerElm = get(containerElmAtom);
-    if (containerElm) {
-        event.stopPropagation();
-        canvasDragState.mmoved = true;
+            if (canvasDragState.mdownPt) {
+                const nowXY = getEventPt(viewBox, stroke, containerElm, event.clientX, event.clientY);
 
-        const precision = get(precisionAtom);
-        const snapToGrid = get(snapToGridAtom);
+                const decimals = snapToGrid
+                    ? 0
+                    : event.ctrlKey
+                        ? precision
+                            ? 0
+                            : 3
+                        : precision;
+                nowXY.x = parseFloat(nowXY.x.toFixed(decimals));
+                nowXY.y = parseFloat(nowXY.y.toFixed(decimals));
+                //console.log('move', nowXY.x, nowXY.y);
 
-        if (canvasDragState.mdownPt) {
-            const nowXY = getEventPt(viewBox, stroke, containerElm, event.clientX, event.clientY);
+                const svgEditRoot = get(svgEditRootAtom);
+                set(svgEditRoot.doUpdatePointAtom, { pt: canvasDragState.mdownPt, newXY: nowXY, svgItemIdx: canvasDragState.svgItemIdx });
+            } else {
+                //const startPt = getEventPt(containerRef, dragEventRef.current.event.clientX, dragEventRef.current.event.clientY);
+                const startXY = canvasDragState.mdownXY!;
+                const nowXY = getEventPt(viewBox, stroke, containerElm, event.clientX, event.clientY);
+                //console.log('move startPt', toString_ViewPoint(startPt).padEnd(20, ' '), 'pt', toString_ViewPoint(pt).padEnd(20, ' '), '--------------------------------', toString_fViewBox(viewBox));
 
-            const decimals = snapToGrid
-                ? 0
-                : event.ctrlKey
-                    ? precision
-                        ? 0
-                        : 3
-                    : precision;
-            nowXY.x = parseFloat(nowXY.x.toFixed(decimals));
-            nowXY.y = parseFloat(nowXY.y.toFixed(decimals));
-            //console.log('move', nowXY.x, nowXY.y);
-
-            const svgEditRoot = get(svgEditRootAtom);
-            set(svgEditRoot.doUpdatePointAtom, { pt: canvasDragState.mdownPt, newXY: nowXY, svgItemIdx: canvasDragState.svgItemIdx });
-        } else {
-            //const startPt = getEventPt(containerRef, dragEventRef.current.event.clientX, dragEventRef.current.event.clientY);
-            const startXY = canvasDragState.mdownXY!;
-            const nowXY = getEventPt(viewBox, stroke, containerElm, event.clientX, event.clientY);
-            //console.log('move startPt', toString_ViewPoint(startPt).padEnd(20, ' '), 'pt', toString_ViewPoint(pt).padEnd(20, ' '), '--------------------------------', toString_fViewBox(viewBox));
-
-            set(viewBoxAtom, (prev) => ([
-                prev[0] + startXY.x - nowXY.x,
-                prev[1] + startXY.y - nowXY.y,
-                prev[2],
-                prev[3],
-            ]));
+                set(viewBoxAtom, (prev) => ([
+                    prev[0] + startXY.x - nowXY.x,
+                    prev[1] + startXY.y - nowXY.y,
+                    prev[2],
+                    prev[3],
+                ]));
+            }
         }
     }
-});
+);
 
-export const doCanvasMouseUpAtom = atom(null, (get, set,) => {
-    const canvasDragState = get(_canvasDragStateAtom);
-    if (canvasDragState) {
-        if (!canvasDragState.mdownPt && !canvasDragState.mmoved) {
-            set(doClearActiveAtom);
+export const doCanvasMouseUpAtom = atom(
+    null,
+    (get, set,) => {
+        const canvasDragState = get(_canvasDragStateAtom);
+        if (canvasDragState) {
+            if (!canvasDragState.mdownPt && !canvasDragState.mmoved) {
+                set(doClearActiveAtom);
+            }
+            set(_canvasDragStateAtom, null);
         }
-        set(_canvasDragStateAtom, null);
     }
-});
+);
 
 //#endregion Canvas Drag Operations
 
@@ -772,21 +850,10 @@ export const operRoundAtom = atom(1);  // round path numbers
 
 //#region Path Operations
 
-export const doSavePathAtom = atom(null, (get, set,) => {
-
-});
-
-export const doCopyPathAtom = atom(null, (get, set,) => {
-
-});
-
-export const doUndoPathAtom = atom(null, (get, set,) => {
-
-});
-
-export const doRedoPathAtom = atom(null, (get, set,) => {
-
-});
+export const doSavePathAtom = atom(null, (get, set,) => { });
+export const doCopyPathAtom = atom(null, (get, set,) => { });
+export const doUndoPathAtom = atom(null, (get, set,) => { });
+export const doRedoPathAtom = atom(null, (get, set,) => { });
 
 export const doClearPathAtom = atom(null, (get, set,) => {
     if (get(pathUnsafeAtom).length) {
@@ -805,69 +872,86 @@ const historyDisabledAtom = atom(true);
 const historyAtom = atom<string[]>([]);
 const historyPtrAtom = atom(0);
 
-export const historyAddAtom = atom(null, (get, set, v: string) => {
-    let history = get(historyAtom);
-    let historyPtr = get(historyPtrAtom);
+export const historyAddAtom = atom(
+    null,
+    (get, set, v: string) => {
+        let history = get(historyAtom);
+        let historyPtr = get(historyPtrAtom);
 
-    if (history.length >= HISTORY_MAX) {
-        history.shift();
-        historyPtr--;
+        if (history.length >= HISTORY_MAX) {
+            history.shift();
+            historyPtr--;
+        }
+
+        set(historyAtom, [...history, v]);
+        set(historyPtrAtom, historyPtr++);
     }
+);
 
-    set(historyAtom, [...history, v]);
-    set(historyPtrAtom, historyPtr++);
-});
+function canUndo(hist: string[], histPtr: number): boolean {
+    return !!hist.length && histPtr > 0;
+}
 
-const canUndo = (hist: string[], histPtr: number): boolean => !!hist.length && histPtr > 0;
-const canRedo = (hist: string[], histPtr: number): boolean => !!hist.length && histPtr < hist.length - 1;
+function canRedo(hist: string[], histPtr: number): boolean {
+    return !!hist.length && histPtr < hist.length - 1;
+}
 
-export const historyUndoAtom = atom(null, (get, set, v: string) => {
-    let hist = get(historyAtom);
-    let histPtr = get(historyPtrAtom);
+export const historyUndoAtom = atom(
+    null,
+    (get, set, v: string) => {
+        let hist = get(historyAtom);
+        let histPtr = get(historyPtrAtom);
 
-    if (canUndo(hist, histPtr)) {
-        histPtr--;
-        set(historyPtrAtom, histPtr);
-        set(pathUnsafeAtom, hist[histPtr]);
+        if (canUndo(hist, histPtr)) {
+            histPtr--;
+            set(historyPtrAtom, histPtr);
+            set(pathUnsafeAtom, hist[histPtr]);
+        }
     }
-});
+);
 
 //TODO: redo has no params
 //TODO: add command: add to history
 //TODO: add command should use histPtr (not always at the end)
 
-export const historyRedoAtom = atom(null, (get, set, v: string) => {
-    let hist = get(historyAtom);
-    let histPtr = get(historyPtrAtom);
+export const historyRedoAtom = atom(
+    null,
+    (get, set, v: string) => {
+        let hist = get(historyAtom);
+        let histPtr = get(historyPtrAtom);
 
-    if (canRedo(hist, histPtr)) {
-        histPtr++;
-        set(historyPtrAtom, histPtr);
-        set(pathUnsafeAtom, hist[histPtr]);
+        if (canRedo(hist, histPtr)) {
+            histPtr++;
+            set(historyPtrAtom, histPtr);
+            set(pathUnsafeAtom, hist[histPtr]);
+        }
     }
-});
+);
 
-export const disableHistoryAtom = atom(null, // During point drag operation on canvas.
+export const disableHistoryAtom = atom( // During point drag operation on canvas.
+    null,
     (get, set, disabled: boolean) => {
         set(historyDisabledAtom, disabled);
     }
-);;
+);
 
 //TODO: can undo
 //TODO: can redo
 //TODO: setHistoryDisabled <- for point drag operation on canvas
 
-// export const historyDeleteAtom = atom(null, (get, set, v: string) => {
-//     let history = get(historyAtom);
-//     let historyPtr = get(historyPtrAtom);
+// export const historyDeleteAtom = atom(
+//     null,
+//     (get, set, v: string) => {
+//         let history = get(historyAtom);
+//         let historyPtr = get(historyPtrAtom);
 
-//     if (history.length) {
-//         history.pop();
-//         set(historyAtom, [...history, v]);
-//         set(historyPtrAtom, historyPtr--);
+//         if (history.length) {
+//             history.pop();
+//             set(historyAtom, [...history, v]);
+//             set(historyPtrAtom, historyPtr--);
+//         }
 //     }
-// });
-
+// );
 //
 
 //#endregion History

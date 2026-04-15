@@ -1,6 +1,5 @@
-import { showGridAtom, showTicksAtom } from "../../store/store";
 import { useAtomValue } from "jotai/utils";
-//import { a } from "@react-spring/web";
+import { showGridAtom, showTicksAtom } from "../../store/store";
 
 export function BackgroundGrid({ x, y, onClick }: { x: number; y: number; onClick?: () => void; }) {
     return (
@@ -21,6 +20,7 @@ function GridPattern({ x, y }: { x: number; y: number; }) {
                 <pattern id="grid-patt-a" width={10} height={10} patternUnits="userSpaceOnUse">
                     <path d="M10 0H0v10" fill="none" stroke="#fff" strokeWidth={0.3} strokeOpacity={0.5} />
                 </pattern>
+                
                 {showTicks && <>
                     {/* 100-ticks */}
                     <pattern id="grid-patt-b" width={100} height={100} patternUnits="userSpaceOnUse">
@@ -34,6 +34,7 @@ function GridPattern({ x, y }: { x: number; y: number; }) {
                     </pattern>
                 </>}
             </defs>
+
             <rect x={x} y={y} width="100%" height="100%" fill={`url(#grid-patt-${showTicks ? 'c' : 'a'})`} />
         </>)}
     </>);
