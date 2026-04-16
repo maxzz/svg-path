@@ -143,13 +143,6 @@ export type SvgItemEditState = {
     hoverEd: number;     // hover input control index in editor
 };
 
-// const globalEditState: GlobalEditState = {
-//     active: undefined,
-//     hover: undefined,
-//     activeEd: undefined,
-//     hoverEd: undefined,
-// };
-
 const globalEditState: Record<keyof SvgItemEditState, PrimitiveAtom<SvgItemEditState> | undefined> = {
     activeRow: undefined,
     hoverRow: undefined,
@@ -157,7 +150,8 @@ const globalEditState: Record<keyof SvgItemEditState, PrimitiveAtom<SvgItemEditS
     hoverEd: undefined,
 };
 
-export const doSetStateAtom = atom(null,
+export const doSetStateAtom = atom(
+    null,
     (get, set, { atom, states }: { atom: PrimitiveAtom<SvgItemEditState>; states: Partial<SvgItemEditState>; }) => {
         const newState: Partial<SvgItemEditState> = {};
 
@@ -180,7 +174,8 @@ export const doSetStateAtom = atom(null,
     }
 );
 
-export const doClearActiveAtom = atom(null,
+export const doClearActiveAtom = atom(
+    null,
     (get, set,) => {
         if (globalEditState.activeRow) {
             set(globalEditState.activeRow, (prev) => ({ ...prev, activeRow: false }));
@@ -234,6 +229,7 @@ export type SvgEditRoot = {
 const AllwaysNotIgnoreSectionAtom = atom(false);
 
 function createSvgEditRoot(svg: Svg): SvgEditRoot {
+
     const root: SvgEditRoot = {
         svg,
         edits: [],
@@ -248,8 +244,9 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         doRoundAtom: atom(null, doRound),
         doSetRelAbsAtom: atom(null, doSetRelAbs),
     };
-    
+
     updateSubIndecies();
+
     svg.path.forEach(
         (svgItem, svgItemIdx) => {
             const newSvgEdit: SvgItemEdit = {
@@ -258,19 +255,25 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
                 svgItemIdx,
                 svgItem,
                 typeAtom: atom(svgItem.getType()),
-                isRelAtom: atomWithCallback(svgItem.relative, ({ get, set, nextValue }) => {
-                    svgItem.setRelative(nextValue);
-                    root.svg.refreshAbsolutePositions();
-                    triggerUpdate(set, svgItemIdx);
-                }),
+                isRelAtom: atomWithCallback(svgItem.relative,
+                    ({ get, set, nextValue }) => {
+                        svgItem.setRelative(nextValue);
+                        root.svg.refreshAbsolutePositions();
+                        triggerUpdate(set, svgItemIdx);
+                    }
+                ),
                 valueAtoms: svgItem.values.map(
-                    (value, idx) => atomWithCallback(value, ((idx) => ({ get, set, nextValue }) => {
-                        if (get(root.allowUpdatesAtom)) {
-                            svgItem.values[idx] = nextValue;
-                            root.svg.refreshAbsolutePositions();
-                            triggerUpdate(set, svgItemIdx);
-                        }
-                    })(idx))
+                    (value, idx) => atomWithCallback(value,
+                        (
+                            (idx) => ({ get, set, nextValue }) => {
+                                if (get(root.allowUpdatesAtom)) {
+                                    svgItem.values[idx] = nextValue;
+                                    root.svg.refreshAbsolutePositions();
+                                    triggerUpdate(set, svgItemIdx);
+                                }
+                            }
+                        )(idx)
+                    )
                 ),
                 standaloneStringAtom: atom(svgItem.asStandaloneString()),
                 stateAtom: atom<SvgItemEditState>({ activeRow: false, hoverRow: false, activeEd: -1, hoverEd: -1, }),
@@ -280,6 +283,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
             root.edits.push(newSvgEdit);
         }
     );
+
     initPathSections(root.edits);
     return root;
 
@@ -287,7 +291,9 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         root.svg.path.forEach(
             (svgItem) => {
                 const controls = svgItem.controlLocations();
-                controls.forEach((cpt, idx) => cpt.subIndex = idx);
+                controls.forEach(
+                    (cpt, idx) => cpt.subIndex = idx
+                );
             }
         );
     }
@@ -794,17 +800,20 @@ export const showCPsAtom = atomWithCallback(Storage.initialData.showCPs, ({ get 
 export const fillPathAtom = atomWithCallback(Storage.initialData.fillPath, ({ get }) => Storage.save(get));
 export const _minifyOutputAtom = atomWithCallback(Storage.initialData.minifyOutput, ({ get }) => Storage.save(get));
 
-export const doSetMinifyAtom = atom(null, (get, set, newMinify: boolean) => {
-    let path = get(_pathUnsafeAtom);
-    const newSvg = getParsedSvg(path);
-    if (newSvg) {
-        const precision = get(precisionAtom);
-        path = newSvg.asString(precision, newMinify);
-        set(_pathUnsafeAtom, path);
-    }
+export const doSetMinifyAtom = atom(
+    null,
+    (get, set, newMinify: boolean) => {
+        let path = get(_pathUnsafeAtom);
+        const newSvg = getParsedSvg(path);
+        if (newSvg) {
+            const precision = get(precisionAtom);
+            path = newSvg.asString(precision, newMinify);
+            set(_pathUnsafeAtom, path);
+        }
 
-    set(_minifyOutputAtom, newMinify);
-});
+        set(_minifyOutputAtom, newMinify);
+    }
+);
 
 export const minifyOutputAtom = atom(
     (get) => get(_minifyOutputAtom),
@@ -833,20 +842,26 @@ export const openPanelOptsAtom = atomWithCallback(Storage.initialData.openPanelO
 //#region Operations
 
 const _operScaleUniAtom = atom(true); // uniform scale
-export const operScaleUniAtom = atom((get) => get(_operScaleUniAtom), (get, set, value: SetStateAction<boolean>) => {
-    set(_operScaleUniAtom, value);
-    if (get(_operScaleUniAtom)) {
-        set(operScaleYAtom, get(_operScaleXAtom));
+export const operScaleUniAtom = atom(
+    (get) => get(_operScaleUniAtom),
+    (get, set, value: SetStateAction<boolean>) => {
+        set(_operScaleUniAtom, value);
+        if (get(_operScaleUniAtom)) {
+            set(operScaleYAtom, get(_operScaleXAtom));
+        }
     }
-});
+);
 
 const _operScaleXAtom = atom(1); // scale
-export const operScaleXAtom = atom((get) => get(_operScaleXAtom), (get, set, value: SetStateAction<number>) => {
-    set(_operScaleXAtom, value);
-    if (get(operScaleUniAtom)) {
-        set(operScaleYAtom, get(_operScaleXAtom));
+export const operScaleXAtom = atom(
+    (get) => get(_operScaleXAtom),
+    (get, set, value: SetStateAction<number>) => {
+        set(_operScaleXAtom, value);
+        if (get(operScaleUniAtom)) {
+            set(operScaleYAtom, get(_operScaleXAtom));
+        }
     }
-});
+);
 
 export const operScaleYAtom = atom(1); // scale
 export const operTransXAtom = atom(0); // translate
@@ -862,11 +877,14 @@ export const doCopyPathAtom = atom(null, (get, set,) => { });
 export const doUndoPathAtom = atom(null, (get, set,) => { });
 export const doRedoPathAtom = atom(null, (get, set,) => { });
 
-export const doClearPathAtom = atom(null, (get, set,) => {
-    if (get(pathUnsafeAtom).length) {
-        set(pathUnsafeAtom, '');
+export const doClearPathAtom = atom(
+    null,
+    (get, set,) => {
+        if (get(pathUnsafeAtom).length) {
+            set(pathUnsafeAtom, '');
+        }
     }
-});
+);
 
 //#endregion Path Operations
 
