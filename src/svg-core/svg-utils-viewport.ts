@@ -1,5 +1,5 @@
 import { print_unexpected } from "../utils/debugging";
-import { SvgPathPoint } from "./svg";
+import { type SvgPathPoint } from "./svg";
 
 export type ViewPoint = { x: number; y: number; };
 export type ViewSize = { w: number; h: number; };
