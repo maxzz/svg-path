@@ -1,7 +1,7 @@
 import { type Atom, type PrimitiveAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { canvasStrokeAtom, doSetStateAtom, type CanvasDragEvent, type SvgItemEditState, doCanvasPointClkAtom, type SvgItemEdit } from "../../store/store";
-import { formatNumber, type SvgControlPoint, type SvgPoint } from "../../svg-core/svg";
+import { formatNumber, type SvgCtrlPoint, type SvgPathPoint } from "../../svg-core/svg";
 import { doTrace } from "../../utils/debugging";
 import { getSvgItemAbsType } from "../../svg-core/svg-utils";
 
@@ -14,7 +14,7 @@ export function TargetPoint({ svgItemEdit, sectionEnabledAtom }: { svgItemEdit: 
     const svgItemIdx = svgItemEdit.svgItemIdx;
     const stateAtom = svgItemEdit.stateAtom;
 
-    const pt: SvgPoint = svgItemEdit.svgItem.targetLocation();
+    const pt: SvgPathPoint = svgItemEdit.svgItem.targetLocation();
     const ptType = getSvgItemAbsType(svgItemEdit.svgItem);
     const isMCommand = ptType === 'M';
 
@@ -90,8 +90,8 @@ export function ControlPoint({ svgItemEdit, cpIdx, sectionEnabledAtom }: { svgIt
     const svgItemIdx = svgItemEdit.svgItemIdx;
     const stateAtom = svgItemEdit.stateAtom;
 
-    const controls: SvgControlPoint[] = svgItemEdit.svgItem.controlLocations();
-    const pt: SvgControlPoint = controls[cpIdx];
+    const controls: SvgCtrlPoint[] = svgItemEdit.svgItem.controlLocations();
+    const pt: SvgCtrlPoint = controls[cpIdx];
 
     const state = useAtomValue(stateAtom);
     const activeEd = state.activeRow && state.activeEd === pt.subIndex;

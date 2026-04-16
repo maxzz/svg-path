@@ -1,5 +1,5 @@
 import { print_unexpected } from "../utils/debugging";
-import { SvgPoint } from "./svg";
+import { SvgPathPoint } from "./svg";
 
 export type ViewPoint = { x: number; y: number; };
 export type ViewSize = { w: number; h: number; };
@@ -17,7 +17,7 @@ type CanvasSize = {
     stroke: number; // SVG stroke scaled width
 };
 
-export function getPointsBoundingBox(targetPoints: SvgPoint[]): { xmin: number; ymin: number; xmax: number; ymax: number; } {
+export function getPointsBoundingBox(targetPoints: SvgPathPoint[]): { xmin: number; ymin: number; xmax: number; ymax: number; } {
     let xmin = 0;
     let ymin = 0;
     let xmax = 10;
@@ -82,7 +82,7 @@ export function updateViewPort(canvas: ViewSize, x: number, y: number, w: number
     };
 }
 
-export function zoomAuto(canvas: ViewSize, targetPoints: SvgPoint[], viewPortLocked = false): ViewBoxWithStroke | undefined {
+export function zoomAuto(canvas: ViewSize, targetPoints: SvgPathPoint[], viewPortLocked = false): ViewBoxWithStroke | undefined {
     if (viewPortLocked) {
         return;
     }
@@ -109,7 +109,7 @@ export function zoomAuto(canvas: ViewSize, targetPoints: SvgPoint[], viewPortLoc
     return updateViewPort(canvas, x, y, w, h, false, viewPortLocked);
 }
 
-export function getFitViewPort(canvas: ViewSize, targetPoints: SvgPoint[]): CanvasSize | undefined {
+export function getFitViewPort(canvas: ViewSize, targetPoints: SvgPathPoint[]): CanvasSize | undefined {
 
     if (!canvas.w || !canvas.h) {
         print_unexpected('getFitViewPort');

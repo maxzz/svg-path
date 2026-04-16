@@ -3,7 +3,7 @@ import atomWithCallback from "../utils/hooks/atomsX";
 import uuid from "../utils/uuid";
 import debounce from "../utils/debounce";
 import { toast, toastSVGParse } from "../components/ui/UiToaster";
-import { Svg, type SvgControlPoint, type SvgItem, type SvgPoint } from "../svg-core/svg";
+import { Svg, type SvgCtrlPoint, type SvgItem, type SvgPathPoint } from "../svg-core/svg";
 import { getSvgItemAbsType } from "../svg-core/svg-utils";
 import { getCanvasStroke, getFitViewPort, scaleViewBox, updateViewPort, type ViewBox, type ViewBoxManual, type ViewPoint } from "../svg-core/svg-utils-viewport";
 //import { print_unexpected, toString_fViewBox, toString_ViewBox } from "../utils/debugging";
@@ -220,7 +220,7 @@ export type SvgEditRoot = {
     svg: Svg;
     edits: SvgItemEdit[];
     completePathAtom: PrimitiveAtom<string>;
-    doUpdatePointAtom: WritableAtom<null, { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }>;
+    doUpdatePointAtom: WritableAtom<null, { pt: SvgPathPoint | SvgCtrlPoint, newXY: ViewPoint, svgItemIdx: number; }>;
     allowUpdatesAtom: PrimitiveAtom<boolean>;      // do nothing in atoms callback
     doReloadAllValuesAtom: PrimitiveAtom<boolean>; // do nothing in atoms callback
     doReloadSvgItemIdxAtom: PrimitiveAtom<number>; // if -1 then do nothing
@@ -402,7 +402,7 @@ function createSvgEditRoot(svg: Svg): SvgEditRoot {
         }
     }
 
-    function doUpdatePoint(get: Getter, set: Setter, { pt, newXY, svgItemIdx }: { pt: SvgPoint | SvgControlPoint, newXY: ViewPoint, svgItemIdx: number; }) {
+    function doUpdatePoint(get: Getter, set: Setter, { pt, newXY, svgItemIdx }: { pt: SvgPathPoint | SvgCtrlPoint, newXY: ViewPoint, svgItemIdx: number; }) {
         svg.setLocation(pt, newXY);
         triggerUpdate(set, svgItemIdx);
     }
@@ -663,7 +663,7 @@ export const containerElmAtom = atom<HTMLElement | null | undefined>(undefined);
 
 export type CanvasDragEvent = {
     mdownEvent: React.MouseEvent;           // mouse down event
-    mdownPt?: SvgPoint | SvgControlPoint;   // SVG point
+    mdownPt?: SvgPathPoint | SvgCtrlPoint;   // SVG point
     mdownXY?: ViewPoint;                    // mouse down event point
     svgItemIdx: number;                     // SVG item index
     mmoved?: boolean;                       // mouse moved between mouse down and mouse up

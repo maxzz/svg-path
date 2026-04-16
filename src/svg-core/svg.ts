@@ -16,7 +16,7 @@ export class Point {
     }
 }
 
-export class SvgPoint extends Point {
+export class SvgPathPoint extends Point {
     itemReference: SvgItem = new DummySvgItem();
     movable = true;
     
@@ -27,7 +27,7 @@ export class SvgPoint extends Point {
     }
 }
 
-export class SvgControlPoint extends SvgPoint {
+export class SvgCtrlPoint extends SvgPathPoint {
     subIndex: number = 0;
     constructor(point: Point, public relations: Point[], movable = true) {
         super(point.x, point.y, movable);
@@ -39,8 +39,8 @@ export abstract class SvgItem {
     values: number[];
 
     previousPoint: Point = new Point(0, 0);
-    absolutePoints: SvgPoint[] = [];
-    absoluteControlPoints: SvgControlPoint[] = [];
+    absolutePoints: SvgPathPoint[] = [];
+    absoluteControlPoints: SvgCtrlPoint[] = [];
 
     id: string = uuid();
 
@@ -137,7 +137,7 @@ export abstract class SvgItem {
 
         for (let i = 0; i < this.values.length - 1; i += 2) {
             this.absolutePoints.push(
-                new SvgPoint(current.x + this.values[i], current.y + this.values[i + 1])
+                new SvgPathPoint(current.x + this.values[i], current.y + this.values[i + 1])
             );
         }
     }
@@ -175,7 +175,7 @@ export abstract class SvgItem {
         });
     }
 
-    public targetLocation(): SvgPoint {
+    public targetLocation(): SvgPathPoint {
         const l = this.absolutePoints.length;
         return this.absolutePoints[l - 1];
     }
@@ -197,7 +197,7 @@ export abstract class SvgItem {
         this.values[2 * idx + 1] += dy;
     }
 
-    public controlLocations(): SvgControlPoint[] {
+    public controlLocations(): SvgCtrlPoint[] {
         return this.absoluteControlPoints;
     }
 
@@ -249,8 +249,8 @@ class CurveTo extends SvgItem {
         }
 
         this.absoluteControlPoints = [
-            new SvgControlPoint(this.absolutePoints[0], [previousTarget.targetLocation()]),
-            new SvgControlPoint(this.absolutePoints[1], [this.targetLocation()])
+            new SvgCtrlPoint(this.absolutePoints[0], [previousTarget.targetLocation()]),
+            new SvgCtrlPoint(this.absolutePoints[1], [this.targetLocation()])
         ];
     }
 
@@ -275,17 +275,17 @@ class SmoothCurveTo extends SvgItem {
             const prevControl = previousTarget.absoluteControlPoints[1];
             const pts = new Point(2 * prevLoc.x - prevControl.x, 2 * prevLoc.y - prevControl.y);
             this.absoluteControlPoints.push(
-                new SvgControlPoint(pts, [prevLoc], false)
+                new SvgCtrlPoint(pts, [prevLoc], false)
             );
         } else {
             const current = previousTarget ? previousTarget.targetLocation() : new Point(0, 0);
             const pts = new Point(current.x, current.y);
             this.absoluteControlPoints.push(
-                new SvgControlPoint(pts, [], false)
+                new SvgCtrlPoint(pts, [], false)
             );
         }
         this.absoluteControlPoints.push(
-            new SvgControlPoint(this.absolutePoints[0], [this.targetLocation()]),
+            new SvgCtrlPoint(this.absolutePoints[0], [this.targetLocation()]),
         );
     }
 
@@ -329,7 +329,7 @@ class QuadraticBezierCurveTo extends SvgItem {
             throw 'Invalid path';
         }
         this.absoluteControlPoints = [
-            new SvgControlPoint(this.absolutePoints[0], [previousTarget.targetLocation(), this.targetLocation()])
+            new SvgCtrlPoint(this.absolutePoints[0], [previousTarget.targetLocation(), this.targetLocation()])
         ];
     }
 
@@ -350,14 +350,14 @@ class SmoothQuadraticBezierCurveTo extends SvgItem {
             const previous = previousTarget ? previousTarget.targetLocation() : new Point(0, 0);
             const pts = new Point(previous.x, previous.y);
             this.absoluteControlPoints = [
-                new SvgControlPoint(pts, [], false)
+                new SvgCtrlPoint(pts, [], false)
             ];
         } else {
             const prevLoc = previousTarget.targetLocation();
             const prevControl = previousTarget.absoluteControlPoints[0];
             const pts = new Point(2 * prevLoc.x - prevControl.x, 2 * prevLoc.y - prevControl.y);
             this.absoluteControlPoints = [
-                new SvgControlPoint(pts, [prevLoc, this.targetLocation()], false)
+                new SvgCtrlPoint(pts, [prevLoc, this.targetLocation()], false)
             ];
         }
     }
@@ -381,7 +381,7 @@ class ClosePath extends SvgItem {
 
     public refreshAbsolutePoints(origin: Point, previous: SvgItem | null) {
         this.previousPoint = previous ? previous.targetLocation() : new Point(0, 0);
-        this.absolutePoints = [new SvgPoint(origin.x, origin.y, false)];
+        this.absolutePoints = [new SvgPathPoint(origin.x, origin.y, false)];
     }
 
 }
@@ -392,9 +392,9 @@ class HorizontalLineTo extends SvgItem {
     public refreshAbsolutePoints(origin: Point, previous: SvgItem | null) {
         this.previousPoint = previous ? previous.targetLocation() : new Point(0, 0);
         if (this.relative) {
-            this.absolutePoints = [new SvgPoint(this.values[0] + this.previousPoint.x, this.previousPoint.y)];
+            this.absolutePoints = [new SvgPathPoint(this.values[0] + this.previousPoint.x, this.previousPoint.y)];
         } else {
-            this.absolutePoints = [new SvgPoint(this.values[0], this.previousPoint.y)];
+            this.absolutePoints = [new SvgPathPoint(this.values[0], this.previousPoint.y)];
         }
     }
 
@@ -421,9 +421,9 @@ class VerticalLineTo extends SvgItem {
     public refreshAbsolutePoints(origin: Point, previous: SvgItem | null) {
         this.previousPoint = previous ? previous.targetLocation() : new Point(0, 0);
         if (this.relative) {
-            this.absolutePoints = [new SvgPoint(this.previousPoint.x, this.values[0] + this.previousPoint.y)];
+            this.absolutePoints = [new SvgPathPoint(this.previousPoint.x, this.values[0] + this.previousPoint.y)];
         } else {
-            this.absolutePoints = [new SvgPoint(this.previousPoint.x, this.values[0])];
+            this.absolutePoints = [new SvgPathPoint(this.previousPoint.x, this.values[0])];
         }
     }
 
@@ -475,9 +475,9 @@ class EllipticalArcTo extends SvgItem {
     public refreshAbsolutePoints(origin: Point, previous: SvgItem | null) {
         this.previousPoint = previous ? previous.targetLocation() : new Point(0, 0);
         if (this.relative) {
-            this.absolutePoints = [new SvgPoint(this.values[5] + this.previousPoint.x, this.values[6] + this.previousPoint.y)];
+            this.absolutePoints = [new SvgPathPoint(this.values[5] + this.previousPoint.x, this.values[6] + this.previousPoint.y)];
         } else {
-            this.absolutePoints = [new SvgPoint(this.values[5], this.values[6])];
+            this.absolutePoints = [new SvgPathPoint(this.values[5], this.values[6])];
         }
     }
 
@@ -588,12 +588,12 @@ export class Svg {
             }).join(minify ? '' : ' ');
     }
 
-    targetLocations(): SvgPoint[] {
+    targetLocations(): SvgPathPoint[] {
         return this.path.map((it) => it.targetLocation());
     }
 
-    controlLocations(): SvgControlPoint[] {
-        let result: SvgControlPoint[] = [];
+    controlLocations(): SvgCtrlPoint[] {
+        let result: SvgCtrlPoint[] = [];
 
         for (let i = 1; i < this.path.length; ++i) {
             const controls = this.path[i].controlLocations();
@@ -605,8 +605,8 @@ export class Svg {
         return result;
     }
 
-    setLocation(ptReference: SvgPoint, to: Point) {
-        if (ptReference instanceof SvgControlPoint) {
+    setLocation(ptReference: SvgPathPoint, to: Point) {
+        if (ptReference instanceof SvgCtrlPoint) {
             ptReference.itemReference.setControlLocation(ptReference.subIndex, to);
         } else {
             ptReference.itemReference.setTargetLocation(to);
